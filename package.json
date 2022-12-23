@@ -1,4 +1,14 @@
 {
+  "name": "moonholdings.xyz",
+  "version": "0.5.0",
+  "description": "Skyrocketing portfolio decision making. The Web3 Portfolio Intelligence App.",
+  "author": "Leon <leon@moonholdings.xyz> (https://twitter.com/leongaban)",
+  "contributors": [
+    "Leon Gaban",
+    "Abeer Abdul Ahad",
+    "Mitt Mehta",
+    "Ajoy Thomas"
+  ],
   "private": true,
   "scripts": {
     "dev": "next dev",
