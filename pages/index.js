@@ -1,27 +1,69 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import { Provider, useDispatch, useSelector } from 'react-redux'
-import { store } from '../store'
-import { signup } from '../store/userSlice'
+import React, { useState } from 'react'
+import axios from 'axios'
 
-export default function Home() {
-  const dispatch = useDispatch()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+const index = () => {
+  const [registerEmail, setRegisterEmail] = useState('')
+  const [registerPassword, setRegisterPassword] = useState('')
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
 
-  const status = useSelector((state) => state.user.status)
+  const register = () => {
+    axios({
+      method: 'POST',
+      data: {
+        email: registerEmail,
+        password: registerPassword,
+      },
+      withCredentials: true,
+      url: 'http://localhost:9000/api/register',
+    }).then((res) => console.log(res))
+  }
 
-  const submit = () => {
-    const data = dispatch(signup({email, password}))
+  const login = () => {
+    axios({
+      method: 'POST',
+      data: {
+        email: loginEmail,
+        password: loginPassword,
+      },
+      withCredentials: true,
+      url: 'http://localhost:9000/api/login',
+    }).then((res) => console.log(res))
   }
 
   return (
-    <Provider store={store}>
-      <div className={styles.container}>
-        <input type="email" onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" onChange={(e) => setPassword(e.target.value)} />
-        <button onClick={submit}>Signup</button>
+    <div>
+      <div>
+        <h1>Register</h1>
+        <input
+          type="email"
+          placeholder="email"
+          onChange={(e) => setRegisterEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="password"
+          onChange={(e) => setRegisterPassword(e.target.value)}
+        />
+        <button onClick={register}>Register</button>
       </div>
-    </Provider>
+
+      <div>
+        <h1>Login</h1>
+        <input
+          type="email"
+          placeholder="email"
+          onChange={(e) => setLoginEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="password"
+          onChange={(e) => setLoginPassword(e.target.value)}
+        />
+        <button onClick={login}>Login</button>
+      </div>
+    </div>
   )
 }
+
+export default index
