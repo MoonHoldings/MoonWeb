@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { useSelector } from 'react-redux'
 
 const index = () => {
+  const { status } = useSelector((state) => state.auth)
   const [registerEmail, setRegisterEmail] = useState('')
   const [registerPassword, setRegisterPassword] = useState('')
   const [loginEmail, setLoginEmail] = useState('')
@@ -33,6 +35,7 @@ const index = () => {
 
   return (
     <div>
+      <h2>{status}</h2>
       <div>
         <h1>Register</h1>
         <input
