@@ -4,20 +4,24 @@ import Link from 'next/link'
 
 const Navbar = () => {
   return (
-    <div className="flex h-[4.6rem] items-center items-center justify-between border-b border-gray-800 px-[2rem] dark:bg-black">
+    <div className="fixed top-0 left-0 right-0 z-50 flex h-[4.6rem] items-center items-center justify-between border-b border-gray-800 bg-black px-[2rem]">
       <Link href="#" className="flex items-center">
         <img
-          className="mr-[0.7rem] h-[3rem] w-[3rem]"
+          className="mr-[0.7rem] h-[2.6rem] w-[2.6rem]"
           src="/images/svgs/moon-holdings-logo-white.svg"
           alt=""
         />
-        <div className="font-poppins text-[1.6rem] font-bold">
+        <div className="font-poppins text-[1.8rem] font-bold">
           {MOON_HOLDINGS}
         </div>
       </Link>
 
       <button>
-        <img src="/images/svgs/icon-hamburger-menu.svg" alt="hamburger-menu" />
+        <img
+          className="h-[3rem]"
+          src="/images/svgs/icon-hamburger-menu.svg"
+          alt="Hamburger menu"
+        />
       </button>
     </div>
   )
