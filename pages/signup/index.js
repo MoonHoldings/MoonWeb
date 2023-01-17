@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { signupResult } from 'redux/reducers/authSlice'
 import { signup } from 'redux/reducers/authSlice'
 
 const index = () => {
@@ -8,8 +7,7 @@ const index = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const regResult = useSelector(signupResult)
-  const { status } = useSelector((state) => state.auth)
+  const { signUpSuccess } = useSelector((state) => state.auth)
 
   const register = () => {
     dispatch(signup({ email, password }))
@@ -17,13 +15,8 @@ const index = () => {
 
   //=== TIP: you have to add NEXT_PUBLIC_ before any env variable (nextjs rule)
   useEffect(() => {
-    console.log(
-      'process.env.MOON_SERVER_URL',
-      process.env.NEXT_PUBLIC_MOON_SERVER_URL
-    )
-    console.log(status)
-    console.log(regResult)
-  }, [status])
+    console.log('signUpSuccess', signUpSuccess)
+  }, [signUpSuccess])
 
   return (
     <div className="flex flex-col items-center pt-[4.6rem]">
