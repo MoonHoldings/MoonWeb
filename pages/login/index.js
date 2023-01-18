@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from 'redux/reducers/authSlice'
 
@@ -8,16 +8,15 @@ const index = () => {
   const [password, setPassword] = useState('')
 
   const { user } = useSelector((state) => state.auth)
+  const { loginSuccess } = useSelector((state) => state.auth)
 
   const loginUser = () => {
     dispatch(login({ email, password }))
   }
 
   useEffect(() => {
-    if (user !== {}) {
-      console.log(user)
-    }
-  }, [user])
+    console.log(user)
+  }, [loginSuccess])
 
   return (
     <div className="flex flex-col items-center pt-[4.6rem]">

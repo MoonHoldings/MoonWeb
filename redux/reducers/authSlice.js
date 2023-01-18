@@ -5,13 +5,13 @@ const initialState = {
   signUpSuccess: null,
   loginSuccess: null,
   error: null,
-  user: {},
+  user: null,
 }
 
 export const signup = createAsyncThunk('auth/signup', async (creds) => {
   try {
     const response = await axios.post(
-      `http://localhost:9000/api/register`,
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/register`,
       creds,
       {
         headers: { 'Content-Type': 'application/json' },
@@ -30,12 +30,14 @@ export const signup = createAsyncThunk('auth/signup', async (creds) => {
 export const login = createAsyncThunk('auth/login', async (creds) => {
   try {
     const response = await axios.post(
-      `http://localhost:9000/api/login`,
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/login`,
       creds,
       {
+        withCredentials: true,
         headers: { 'Content-Type': 'application/json' },
       }
     )
+    console.log('response.data', response.data)
 
     return response.data
   } catch (error) {
