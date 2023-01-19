@@ -13,6 +13,19 @@ const index = () => {
     dispatch(signup({ email, password }))
   }
 
+  const discordAuth = () => {
+    window.open(
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
+      '_self'
+    )
+  }
+  const twitterAuth = () => {
+    window.open(
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/twitter`,
+      '_self'
+    )
+  }
+
   //=== TIP: you have to add NEXT_PUBLIC_ before any env variable (nextjs rule)
   useEffect(() => {
     console.log('signUpSuccess', signUpSuccess)
@@ -43,10 +56,16 @@ const index = () => {
           Submit
         </button>
       </div>
-      <button className="m-2 block bg-indigo-600 p-2 text-[1.6rem]">
+      <button
+        onClick={discordAuth}
+        className="m-2 block bg-indigo-600 p-2 text-[1.6rem]"
+      >
         Discord
       </button>
-      <button className="m-2 block bg-blue-600 p-2 text-[1.6rem]">
+      <button
+        onClick={twitterAuth}
+        className="m-2 block bg-blue-600 p-2 text-[1.6rem]"
+      >
         Twitter
       </button>
     </div>

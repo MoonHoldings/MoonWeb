@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from 'redux/reducers/authSlice'
@@ -14,9 +15,25 @@ const index = () => {
     dispatch(login({ email, password }))
   }
 
+  const discordAuth = () => {
+    window.open(
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
+      '_self'
+    )
+  }
+
   useEffect(() => {
-    console.log(user)
-  }, [loginSuccess])
+    axios({
+      method: 'GET',
+      url: `http://localhost:9000/api/get-user`,
+      withCredentials: true,
+    }).then((res) => {
+      console.log(res.data)
+    })
+  }, [])
+  // useEffect(() => {
+  //   console.log(user)
+  // }, [loginSuccess])
 
   return (
     <div className="flex flex-col items-center pt-[4.6rem]">
@@ -43,7 +60,10 @@ const index = () => {
           Submit
         </button>
       </div>
-      <button className="m-2 block bg-indigo-600 p-2 text-[1.6rem]">
+      <button
+        onClick={discordAuth}
+        className="m-2 block bg-indigo-600 p-2 text-[1.6rem]"
+      >
         Discord
       </button>
       <button className="m-2 block bg-blue-600 p-2 text-[1.6rem]">
