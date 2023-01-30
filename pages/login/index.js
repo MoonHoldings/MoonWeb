@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
-import { login } from 'redux/reducers/authSlice'
+import { changeLoginType, getUser, login } from 'redux/reducers/authSlice'
 
 const index = () => {
   const router = useRouter()
@@ -10,18 +10,27 @@ const index = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const { user } = useSelector((state) => state.auth)
-  const { loginSuccess } = useSelector((state) => state.auth)
-
-  const loginUser = () => {
-    dispatch(login({ email, password }))
-  }
+  const { user, loginSuccess, loginType } = useSelector((state) => state.auth)
 
   const signupInstead = () => {
     router.push('/signup')
   }
 
+  const loginUser = () => {
+    dispatch(changeLoginType('local'))
+    dispatch(login({ email, password }))
+  }
+
+  const twitterAuth = () => {
+    dispatch(changeLoginType('twitter'))
+    window.open(
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/twitter`,
+      '_self'
+    )
+  }
+
   const discordAuth = () => {
+    dispatch(changeLoginType('discord'))
     window.open(
       `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
       '_self'
@@ -29,14 +38,13 @@ const index = () => {
   }
 
   useEffect(() => {
-    axios({
-      method: 'GET',
-      url: `http://localhost:9000/api/get-user`,
-      withCredentials: true,
-    }).then((res) => {
-      console.log(res.data)
-    })
-  }, [])
+    console.log('user', user)
+    console.log('loginType', loginType)
+
+    if (loginType !== 'local') {
+      dispatch(getUser())
+    }
+  }, [loginSuccess, loginType])
 
   return (
     <div className="flex h-screen flex-col items-center bg-black pt-[4.6rem]">
@@ -60,7 +68,10 @@ border border-[#50545A] py-[1.1rem]"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="primary-btn-gradient mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] text-[1.8rem] text-black">
+          <button
+            onClick={loginUser}
+            className="primary-btn-gradient mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] text-[1.8rem] text-black"
+          >
             Login
           </button>
         </div>
@@ -68,7 +79,10 @@ border border-[#50545A] py-[1.1rem]"
           className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
 border border-[#50545A] py-[1.1rem]"
         >
-          <button className="mx-[1.1rem] ml-[1.1rem] mb-[1rem] h-[5rem] w-[25.2rem] rounded-[1rem] bg-[#55ACEE] text-[1.8rem] text-white">
+          <button
+            onClick={twitterAuth}
+            className="mx-[1.1rem] ml-[1.1rem] mb-[1rem] h-[5rem] w-[25.2rem] rounded-[1rem] bg-[#55ACEE] text-[1.8rem] text-white"
+          >
             Login with Twitter
           </button>
           <button
