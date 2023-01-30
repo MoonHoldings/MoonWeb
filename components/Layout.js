@@ -1,10 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import Navbar from './Navbar'
 
 const Layout = ({ children }) => {
+  const router = useRouter()
+  const [innerWidth, setInnerWidth] = useState(0)
+
+  useEffect(() => {
+    setInnerWidth(window.innerWidth)
+    window.addEventListener('resize', windowResize)
+  }, [])
+
+  const windowResize = () => {
+    setInnerWidth(window.innerWidth)
+  }
+
   return (
     <>
-      <Navbar />
+      {innerWidth < 600 ? '' : <Navbar />}
       <div>{children}</div>
     </>
   )
