@@ -6,10 +6,10 @@ import Link from 'next/link'
 const Navbar = () => {
   const router = useRouter()
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex h-[4.6rem] items-center items-center justify-between border-b border-gray-800 bg-black px-[2rem]">
+    <div className="fixed top-0 left-0 right-0 z-50 flex h-[4.6rem] items-center justify-between border-b border-gray-800 bg-black px-[2rem]">
       <Link
         href="/"
-        className="flex items-center "
+        className="flex items-center"
         style={{ order: router.pathname === '/nft' && '2' }}
       >
         {router.pathname === '/nft' ? (
