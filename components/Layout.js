@@ -17,7 +17,12 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      {innerWidth < 600 ? '' : <Navbar />}
+      {innerWidth < 600 &&
+      (router.pathname === '/login' || router.pathname === '/signup') ? (
+        ''
+      ) : (
+        <Navbar />
+      )}
       <div>{children}</div>
     </>
   )

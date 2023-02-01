@@ -1,29 +1,34 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
-import { signup } from 'redux/reducers/authSlice'
+import { changeLoginType, signup } from 'redux/reducers/authSlice'
 
 const index = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const { signUpSuccess } = useSelector((state) => state.auth)
 
   const register = () => {
-    dispatch(signup({ email, password }))
+    if (password === confirmPassword) {
+      dispatch(signup({ email, password }))
+    }
   }
 
-  const discordAuth = () => {
+  const twitterAuth = () => {
+    dispatch(changeLoginType('twitter'))
     window.open(
-      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/twitter`,
       '_self'
     )
   }
-  const twitterAuth = () => {
+  const discordAuth = () => {
+    dispatch(changeLoginType('discord'))
     window.open(
-      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/twitter`,
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
       '_self'
     )
   }
@@ -63,7 +68,7 @@ border border-[#50545A] py-[1.1rem]"
             className="form-field"
             type="password"
             placeholder="Confirm Password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <div className="mx-[1.1rem] mb-[1rem] text-[1.2rem] text-[#A6A6A6]">
             Minimum 8 characters long, at least 1 special, 1 number and 1 letter
@@ -101,11 +106,18 @@ border border-[#50545A] py-[1.1rem]"
         </button>
       </div>
 
-      <img
-        src="/images/gifs/moon-holdings-banner-wide.gif"
-        alt=""
-        className="z-{25} fixed bottom-0 hidden max-w-[144rem] md:-bottom-[5rem] md:block md:w-full lg:-bottom-[8rem]"
-      />
+      <div className="flex justify-center">
+        <img
+          src="/images/gifs/moon-holdings-banner-wide.gif"
+          alt=""
+          className="z-{25} fixed bottom-0 hidden w-full max-w-[144rem] md:-bottom-[5rem] md:block md:w-full lg:-bottom-[8rem]"
+        />
+        <img
+          src="/images/gifs/moon-holdings-banner-cropped.gif"
+          alt=""
+          className="z-{25} fixed bottom-0 w-full max-w-[144rem] md:hidden"
+        />
+      </div>
     </div>
   )
 }

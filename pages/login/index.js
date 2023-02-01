@@ -95,17 +95,24 @@ border border-[#50545A] py-[1.1rem]"
         <div className="mb-[1rem] text-[1.6rem]">or</div>
         <button
           onClick={signupInstead}
-          className="mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] border text-[1.8rem] text-white"
+          className="mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] border bg-black text-[1.8rem] text-white"
         >
           Sign Up
         </button>
       </div>
 
-      <img
-        src="/images/gifs/moon-holdings-banner-wide.gif"
-        alt=""
-        className="z-{25} fixed bottom-0 hidden max-w-[144rem] md:-bottom-[5rem] md:block md:w-full lg:-bottom-[8rem]"
-      />
+      <div className="flex justify-center">
+        <img
+          src="/images/gifs/moon-holdings-banner-wide.gif"
+          alt=""
+          className="z-{25} fixed bottom-0 hidden w-full max-w-[144rem] md:-bottom-[5rem] md:block md:w-full lg:-bottom-[8rem]"
+        />
+        <img
+          src="/images/gifs/moon-holdings-banner-cropped.gif"
+          alt=""
+          className="z-{25} fixed bottom-0 w-full max-w-[144rem] md:hidden"
+        />
+      </div>
     </div>
   )
 }
