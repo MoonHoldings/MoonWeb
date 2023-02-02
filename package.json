@@ -19,6 +19,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.2",
+    "framer-motion": "^9.0.0",
     "next": "latest",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
