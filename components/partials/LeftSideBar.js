@@ -1,11 +1,25 @@
 import React from 'react'
+import { motion } from 'framer-motion'
+import { useDispatch } from 'react-redux'
+import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
 
 const LeftSideBar = () => {
+  const dispatch = useDispatch()
+
+  const leftArrowClick = () => {
+    dispatch(changeLeftSideBarOpen(false))
+  }
   return (
-    <div className="fixed z-[51] h-full w-full bg-[#191C20]">
+    <motion.div
+      className="fixed z-[51] h-full w-full bg-[#191C20]"
+      initial={{ x: '-101%' }}
+      animate={{ x: '0%' }}
+      exit={{ x: '-101%' }}
+      transition={{ duration: 0.6, type: 'spring' }}
+    >
       {/* Header */}
       <div className="mt-[1rem] mb-[4.6rem] flex h-[4.6rem] justify-between px-[1.7rem]">
-        <button className="h-full">
+        <button onClick={leftArrowClick} className="h-full">
           <img
             className="h-[2.5rem] w-[2.5rem]"
             src="/images/svgs/arrow-left.svg"
@@ -44,7 +58,7 @@ const LeftSideBar = () => {
           />
           Dashboard
         </button>
-        <hr class=" mb-[1rem] h-[0.2rem] w-full rounded border-0 bg-black" />
+        <hr className=" mb-[1rem] h-[0.2rem] w-full rounded border-0 bg-black" />
         <ul className="dashboard-menu">
           <li className="mb-[1rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[1.6rem] text-[#62EAD2]">
@@ -108,7 +122,7 @@ const LeftSideBar = () => {
           <img src="/images/svgs/gear.svg" alt="" />
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

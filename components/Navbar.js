@@ -1,10 +1,18 @@
 import React from 'react'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import { useRouter } from 'next/router'
+import { useDispatch } from 'react-redux'
 import Link from 'next/link'
+import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
 
 const Navbar = () => {
+  const dispatch = useDispatch()
   const router = useRouter()
+
+  const clickHamburgerMenu = () => {
+    dispatch(changeLeftSideBarOpen(true))
+  }
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex h-[4.6rem] items-center justify-between border-b border-gray-800 bg-black px-[2rem]">
       <Link
@@ -33,7 +41,10 @@ const Navbar = () => {
         </div>
       </Link>
 
-      <button style={{ order: router.pathname === '/nft' && '1' }}>
+      <button
+        onClick={clickHamburgerMenu}
+        style={{ order: router.pathname === '/nft' && '1' }}
+      >
         <img
           className="h-[2rem]"
           src="/images/svgs/hamburger-menu-white.svg"
