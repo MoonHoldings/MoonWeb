@@ -59,7 +59,7 @@ const RightSideBar = () => {
 
       <ul className="dashboard-menu">
         <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
-          <div className="flex h-[4.1rem] w-full items-center text-[1.6rem] text-[#62EAD2]">
+          <div className="flex h-[4.1rem] w-full items-center text-[1.6rem] text-white">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
               src="/images/svgs/wallet-white.svg"
