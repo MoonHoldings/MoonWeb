@@ -2,6 +2,7 @@ const { createSlice } = require('@reduxjs/toolkit')
 
 const initialState = {
   leftSideBarOpen: false,
+  rightSideBarOpen: false,
 }
 
 const utilSlice = createSlice({
@@ -11,9 +12,13 @@ const utilSlice = createSlice({
     changeLeftSideBarOpen(state, action) {
       state.leftSideBarOpen = action.payload
     },
+    changeRightSideBarOpen(state, action) {
+      state.rightSideBarOpen = action.payload
+    },
   },
 })
 
-export const { changeLeftSideBarOpen } = utilSlice.actions
+export const { changeLeftSideBarOpen, changeRightSideBarOpen } =
+  utilSlice.actions
 
 export default utilSlice.reducer

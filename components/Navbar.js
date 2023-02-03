@@ -3,7 +3,10 @@ import { MOON_HOLDINGS } from 'app/constants/copy'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import Link from 'next/link'
-import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
+import {
+  changeLeftSideBarOpen,
+  changeRightSideBarOpen,
+} from 'redux/reducers/utilSlice'
 
 const Navbar = () => {
   const dispatch = useDispatch()
@@ -11,6 +14,9 @@ const Navbar = () => {
 
   const clickHamburgerMenu = () => {
     dispatch(changeLeftSideBarOpen(true))
+  }
+  const clickWallet = () => {
+    dispatch(changeRightSideBarOpen(true))
   }
 
   return (
@@ -53,7 +59,10 @@ const Navbar = () => {
       </button>
 
       {router.pathname === '/nft' && (
-        <button style={{ order: router.pathname === '/nft' && '3' }}>
+        <button
+          onClick={clickWallet}
+          style={{ order: router.pathname === '/nft' && '3' }}
+        >
           <img
             className="h-[2rem]"
             src="/images/svgs/wallet-white.svg"

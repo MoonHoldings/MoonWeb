@@ -118,7 +118,7 @@ const LeftSideBar = () => {
           <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
           <div className="text-[1.7rem]">Consistent Brave Bull</div>
         </div>
-        <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-black bg-[#191C20]">
+        <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20]">
           <img src="/images/svgs/gear.svg" alt="" />
         </button>
       </div>
