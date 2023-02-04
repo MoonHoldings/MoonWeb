@@ -42,7 +42,7 @@ const Navbar = () => {
           />
         )}
 
-        <div className="font-poppins text-[1.6rem] font-bold">
+        <div className="font-poppins text-[1.6rem] font-bold text-white">
           {MOON_HOLDINGS}
         </div>
       </Link>

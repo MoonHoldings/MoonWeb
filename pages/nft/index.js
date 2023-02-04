@@ -9,7 +9,7 @@ const index = () => {
     (state) => state.util
   )
   return (
-    <div>
+    <div className="min-h-screen bg-black">
       <AnimatePresence>
         {leftSideBarOpen === true ? <LeftSideBar /> : ''}
         {rightSideBarOpen === true ? <RightSideBar /> : ''}

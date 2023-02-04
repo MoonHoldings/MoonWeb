@@ -31,8 +31,8 @@ const RightSideBar = () => {
       <div className="profile-intro mb-[2.66rem] flex items-center">
         <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black"></div>
         <div className="total-value flex h-[8.6rem] flex-col justify-between">
-          <div className="text-[3.2rem]">$1,890,792</div>
-          <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[2rem] bg-black text-[1.4rem]">
+          <div className="text-[3.2rem] text-white">$1,890,792</div>
+          <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[2rem] bg-black text-[1.4rem] text-white">
             <img
               className="mr-[0.6rem] h-[2.4rem] w-[2.4rem]"
               src="/images/svgs/growth-rate.svg"
