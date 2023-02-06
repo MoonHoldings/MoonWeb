@@ -10,17 +10,17 @@ const RightSideBar = () => {
   }
   return (
     <motion.div
-      className="fixed z-[51] h-full w-full bg-[rgb(25,28,32)] px-[1.7rem]"
+      className="fixed top-0 left-0 z-[51] h-full w-full bg-[rgb(25,28,32)] px-[1.7rem] md:static md:order-3 md:w-[30.8rem] md:rounded-[1.5rem]"
       initial={{ x: '101%' }}
       animate={{ x: '0%' }}
-      exit={{ x: '-101%' }}
+      exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Header */}
       <div className="mt-[1rem] mb-[2.8rem] h-[4.6rem]">
-        <button onClick={leftArrowClick} className="h-full">
+        <button onClick={leftArrowClick} className="float-right h-full">
           <img
-            className="h-[2.5rem] w-[2.5rem]"
+            className="h-[2.5rem] w-[2.5rem] rotate-180"
             src="/images/svgs/arrow-left.svg"
             alt="arrow left"
           />

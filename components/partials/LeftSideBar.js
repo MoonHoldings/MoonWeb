@@ -11,7 +11,7 @@ const LeftSideBar = () => {
   }
   return (
     <motion.div
-      className="fixed z-[51] h-full w-full bg-[#191C20]"
+      className="fixed left-0 top-0 z-[51] h-full w-full bg-[#191C20] md:static md:order-1 md:h-[calc(100%-1.7rem)] md:w-[28.8rem] md:rounded-[1.5rem]"
       initial={{ x: '-101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '-101%' }}
@@ -113,7 +113,7 @@ const LeftSideBar = () => {
         </ul>
       </div>
       {/* Profile Info */}
-      <div className="profile-info absolute bottom-1 mx-[1.7rem] flex h-[7.4rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem]">
+      <div className="profile-info absolute bottom-1 mx-[1.7rem] mb-[1.7rem] flex h-[7.4rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] lg:w-[28.8rem]">
         <div className="flex items-center">
           <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
           <div className="text-[1.7rem] text-white">Consistent Brave Bull</div>
