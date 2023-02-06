@@ -4,7 +4,7 @@ const NFTCard = () => {
   return (
     <div className="h-[24.952rem] rounded-[1rem] border-2 border-[#62EAD2] p-[1rem] text-white">
       <img
-        className="mb-[1rem] h-[14.75rem] w-[14.75rem] rounded-[1rem] object-cover"
+        className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover"
         src="/images/dummy-img.jpg"
         alt="NFT picture"
       />
