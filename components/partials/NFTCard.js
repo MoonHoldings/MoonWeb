@@ -2,9 +2,9 @@ import React from 'react'
 
 const NFTCard = () => {
   return (
-    <div className="h-[24.952rem] rounded-[1rem] border-2 border-[#62EAD2] p-[1rem] text-white">
+    <div className="h-[24.952rem] rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] text-white lg:h-[30.06rem]">
       <img
-        className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover"
+        className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover lg:h-[20.08rem]"
         src="/images/dummy-img.jpg"
         alt="NFT picture"
       />

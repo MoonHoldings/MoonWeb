@@ -21,7 +21,7 @@ const index = () => {
     setInnerWidth(window.innerWidth)
   }
   return (
-    <div className="min-h-screen px-[1.7rem] pt-[4.6rem] md:mx-auto md:grid md:max-w-[144rem] md:grid-cols-[28.8rem_auto_30.8rem] md:gap-[3.2rem] md:pt-[1.7rem]">
+    <div className="min-h-screen px-[1.7rem] pt-[4.6rem] md:mx-auto md:grid md:grid-cols-[28.8rem_auto_30.8rem] md:gap-[3.2rem] md:pt-[1.7rem] lg:max-w-[144rem]">
       <AnimatePresence>
         {leftSideBarOpen === true && innerWidth < 960 ? <LeftSideBar /> : ''}
         {rightSideBarOpen === true && innerWidth < 960 ? <RightSideBar /> : ''}
@@ -47,12 +47,12 @@ const index = () => {
       </div>
 
       {/* NFT Portfolio */}
-      <div className="nft-portfolio mt-[2rem] text-white">
+      <div className="nft-portfolio mt-[2rem] text-white md:order-2">
         <h1 className="text-[2.9rem]">NFT Portfolio</h1>
         <p className="mb-[4.8rem] text-[1.6rem]">
           You have <u>20</u> collections containing <u>125</u> NFTs
         </p>
-        <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem]">
+        <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] lg:grid-cols-4">
           {[1, 2, 3, 4, 5].map((card) => (
             <NFTCard key={card} />
           ))}

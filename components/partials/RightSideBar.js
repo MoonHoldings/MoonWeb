@@ -20,7 +20,7 @@ const RightSideBar = () => {
       <div className="mt-[1rem] mb-[2.8rem] h-[4.6rem]">
         <button onClick={leftArrowClick} className="float-right h-full">
           <img
-            className="h-[2.5rem] w-[2.5rem] rotate-180"
+            className="h-[2.4rem] w-[2.4rem] rotate-180"
             src="/images/svgs/arrow-left.svg"
             alt="arrow left"
           />
@@ -44,7 +44,7 @@ const RightSideBar = () => {
       </div>
 
       {/* Search */}
-      <div className="search mb-[1rem] grid h-[3.8rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem]">
+      <div className="search mb-[1rem] grid h-[3.766rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem]">
         <img
           className="h-[1.6rem] w-[1.6rem]"
           src="/images/svgs/magnifyingglass.svg"
@@ -57,9 +57,9 @@ const RightSideBar = () => {
         />
       </div>
 
-      <ul className="dashboard-menu">
+      <ul className="dashboard-menu text-[1.4rem]">
         <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
-          <div className="flex h-[4.1rem] w-full items-center text-[1.6rem] text-white">
+          <div className="flex h-[4.1rem] w-full items-center text-white">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
               src="/images/svgs/wallet-white.svg"
@@ -68,11 +68,15 @@ const RightSideBar = () => {
             Connect Wallet
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-            <img src="/images/svgs/+.svg" alt="plus sign" />
+            <img
+              className="h-[0.8rem] w-[0.8rem]"
+              src="/images/svgs/+.svg"
+              alt="plus sign"
+            />
           </button>
         </li>
         <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
-          <div className="flex h-[4.1rem] w-full items-center text-[1.6rem] text-[#FFFFFF]">
+          <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
               src="/images/svgs/wallet-white.svg"
@@ -81,11 +85,15 @@ const RightSideBar = () => {
             Add Wallet Addresses
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-            <img src="/images/svgs/+.svg" alt="plus sign" />
+            <img
+              className="h-[0.8rem] w-[0.8rem]"
+              src="/images/svgs/+.svg"
+              alt="plus sign"
+            />
           </button>
         </li>
         <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
-          <div className="flex h-[4.1rem] w-full items-center text-[1.6rem] text-white">
+          <div className="flex h-[4.1rem] w-full items-center text-white">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
               src="/images/svgs/net.svg"
@@ -95,13 +103,14 @@ const RightSideBar = () => {
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
             <img
+              className="h-[0.8rem] w-[0.8rem]"
               src="/images/svgs/right-bold-chevron.svg"
               alt="Right Angle Bold Chevron"
             />
           </button>
         </li>
         <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
-          <div className="flex h-[4.1rem] w-full items-center text-[1.6rem] text-white">
+          <div className="flex h-[4.1rem] w-full items-center text-white">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
               src="/images/svgs/net.svg"
@@ -111,13 +120,14 @@ const RightSideBar = () => {
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
             <img
+              className="h-[0.8rem] w-[0.8rem]"
               src="/images/svgs/right-bold-chevron.svg"
               alt="Right Angle Bold Chevron"
             />
           </button>
         </li>
         <li className="flex h-[6.4rem] items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem]">
-          <div className="flex w-full items-center text-[1.6rem] text-white">
+          <div className="flex w-full items-center text-white">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
               src="/images/svgs/power-off.svg"
