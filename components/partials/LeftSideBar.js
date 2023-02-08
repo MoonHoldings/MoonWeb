@@ -11,7 +11,7 @@ const LeftSideBar = () => {
   }
   return (
     <motion.div
-      className="fixed left-0 top-0 z-[51] h-full w-full bg-[#191C20] lg:static lg:order-1 lg:max-h-[calc(100%-1.5rem)] lg:w-[28.8rem] lg:rounded-[2rem]"
+      className="fixed left-0 top-0 z-[51] h-full w-full bg-[#191C20] lg:static lg:order-1 lg:h-auto lg:max-h-[calc(100%-1.5rem)] lg:w-[28.8rem] lg:rounded-[2rem]"
       initial={{ x: '-101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '-101%' }}
@@ -49,7 +49,7 @@ const LeftSideBar = () => {
         </button>
       </div>
       {/* Menu Options */}
-      <div className="sidebar-menu px-[1.7rem] text-[1.4rem] font-medium lg:px-[1.5rem]">
+      <div className="sidebar-menu px-[1.7rem] text-[1.4rem] font-medium lg:mb-[29.5rem] lg:px-[1.5rem]">
         <button className="mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] text-[#666666] lg:mb-[2rem]">
           <img
             className="mr-[1rem] h-[2.1rem] w-[2.1rem] lg:h-[2.5rem] lg:w-[2.5rem]"

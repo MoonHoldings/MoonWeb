@@ -15,6 +15,7 @@ module.exports = {
     },
     fontFamily: {
       poppins: ['Poppins', ...defaultTheme.fontFamily.sans],
+      inter: ['Inter', ...defaultTheme.fontFamily.sans],
     },
     extend: {},
   },
