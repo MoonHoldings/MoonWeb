@@ -21,7 +21,7 @@ const index = () => {
     setInnerWidth(window.innerWidth)
   }
   return (
-    <div className="min-h-screen px-[1.7rem] pt-[4.6rem] lg:mx-auto lg:grid lg:max-w-[144rem] lg:grid-cols-[28.8rem_auto_30.8rem] lg:items-start lg:gap-[3.2rem] lg:pt-[1.7rem]">
+    <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:max-w-[144rem] xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
       <AnimatePresence>
         {leftSideBarOpen === true && innerWidth < 960 ? <LeftSideBar /> : ''}
         {rightSideBarOpen === true && innerWidth < 960 ? <RightSideBar /> : ''}
@@ -34,7 +34,7 @@ const index = () => {
       ) : (
         <></>
       )}
-      <div className="welcome-message mt-[10rem] hidden text-[1.6rem] font-semibold md:order-2 md:mt-[15rem]">
+      <div className="welcome-message mt-[10rem] hidden border text-[1.6rem] font-semibold md:order-2 md:mt-[15rem]">
         <h1 className="text-[2.2rem] font-bold">Welcome to MoonHoldings</h1>
         <p className="mb-[2rem]">
           Let’s start by connecting wallets to pull in your NFTs.
@@ -52,7 +52,7 @@ const index = () => {
         <p className="mb-[4.8rem] text-[1.6rem]">
           You have <u>20</u> collections containing <u>125</u> NFTs
         </p>
-        <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] lg:grid-cols-3">
+        <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
           {[1, 2, 3, 4, 5].map((card) => (
             <NFTCard key={card} />
           ))}
