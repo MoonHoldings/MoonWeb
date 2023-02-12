@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { changeRightSideBarOpen } from 'redux/reducers/utilSlice'
+import {
+  changeAddWalletModalOpen,
+  changeRightSideBarOpen,
+} from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { clearConfigCache } from 'prettier'
 
@@ -8,6 +11,10 @@ const RightSideBar = () => {
   const dispatch = useDispatch()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
+
+  const addWalletAddress = () => {
+    dispatch(changeAddWalletModalOpen(true))
+  }
 
   const seeAllOrLessExchanges = () => {
     const exchangeNum = allExchanges.length
@@ -120,7 +127,10 @@ const RightSideBar = () => {
               />
               Add Wallet Addresses
             </div>
-            <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+            <button
+              onClick={addWalletAddress}
+              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+            >
               <img
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
