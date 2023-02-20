@@ -11,6 +11,7 @@ const WalletsModal = () => {
 
   const walletBtnClick = (walletName) => {
     select(walletName)
+    dispatch(changeWalletsModalOpen(false))
   }
 
   const closeWalletsModal = () => {
