@@ -215,8 +215,11 @@ const RightSideBar = () => {
         </div>
         {/* All Exchanges */}
         <ul className="all-exchanges mb-[2rem]">
-          {allExchanges.map((exchange) => (
-            <li className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]">
+          {allExchanges.map((exchange, index) => (
+            <li
+              key={index}
+              className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
+            >
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/net.svg"
@@ -259,8 +262,9 @@ const RightSideBar = () => {
 
         {/* All Wallets */}
         <ul className="all-wallets mb-[2rem] grid grid-cols-2 gap-[1rem]">
-          {allWallets.map((wallet) => (
+          {allWallets.map((wallet, index) => (
             <li
+              key={index}
               onClick={removeWallet(wallet)}
               className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
             >

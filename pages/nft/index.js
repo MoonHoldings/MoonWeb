@@ -5,6 +5,11 @@ import RightSideBar from 'components/partials/RightSideBar'
 import { AnimatePresence } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import dynamic from 'next/dynamic'
+
+const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
+  ssr: false,
+}) // fixes hydration
 
 const index = () => {
   const [innerWidth, setInnerWidth] = useState(null)
@@ -35,6 +40,7 @@ const index = () => {
             ''
           )}
         </AnimatePresence>
+        <WalletsModal />
         {innerWidth > 959 ? (
           <>
             <LeftSideBar />
