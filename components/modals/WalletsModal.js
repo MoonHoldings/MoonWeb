@@ -1,19 +1,35 @@
 import React from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Image from 'next/image'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeWalletsModalOpen } from 'redux/reducers/utilSlice'
+import { motion } from 'framer-motion'
 
 const WalletsModal = () => {
   const { wallets, select } = useWallet()
+  const dispatch = useDispatch()
 
   const walletBtnClick = (walletName) => {
     select(walletName)
   }
 
+  const closeWalletsModal = () => {
+    dispatch(changeWalletsModalOpen(false))
+  }
+
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center bg-[#00000099] font-inter">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.3 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.3 }}
+      transition={{ duration: 0.5, type: 'spring' }}
+      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center bg-[#00000099] font-inter"
+    >
       <div className="modal relative min-w-[18rem] rounded-[1rem] bg-[#191F2D] p-[2rem] text-white shadow-lg xl:min-h-[28rem] xl:min-w-[30rem]">
-        <button className="absolute right-[1.5rem] top-[1.5rem]">
+        <button
+          onClick={closeWalletsModal}
+          className="absolute right-[1.5rem] top-[1.5rem]"
+        >
           <Image
             src="/images/svgs/cross-btn.svg"
             alt="cross button"
@@ -42,7 +58,7 @@ const WalletsModal = () => {
             ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

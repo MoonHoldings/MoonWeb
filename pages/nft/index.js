@@ -14,9 +14,12 @@ const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
 const index = () => {
   const [innerWidth, setInnerWidth] = useState(null)
 
-  const { leftSideBarOpen, rightSideBarOpen } = useSelector(
-    (state) => state.util
-  )
+  const {
+    leftSideBarOpen,
+    rightSideBarOpen,
+    walletsModalOpen,
+    addWalletModalOpen,
+  } = useSelector((state) => state.util)
 
   useEffect(() => {
     setInnerWidth(window.innerWidth)
@@ -29,7 +32,7 @@ const index = () => {
   return (
     <>
       <AnimatePresence>
-        <AddWalletModal />
+        {addWalletModalOpen && <AddWalletModal />}
       </AnimatePresence>
       <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:max-w-[144rem] xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
         <AnimatePresence>
@@ -40,7 +43,11 @@ const index = () => {
             ''
           )}
         </AnimatePresence>
-        <WalletsModal />
+
+        <AnimatePresence>
+          {walletsModalOpen && <WalletsModal />}
+        </AnimatePresence>
+
         {innerWidth > 959 ? (
           <>
             <LeftSideBar />

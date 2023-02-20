@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
+  changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { clearConfigCache } from 'prettier'
@@ -14,6 +15,9 @@ const RightSideBar = () => {
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
+  }
+  const connectWallet = () => {
+    dispatch(changeWalletsModalOpen(true))
   }
 
   const seeAllOrLessExchanges = () => {
@@ -110,7 +114,10 @@ const RightSideBar = () => {
               />
               Connect Wallet
             </div>
-            <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+            <button
+              onClick={connectWallet}
+              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+            >
               <img
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
