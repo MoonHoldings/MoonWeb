@@ -4,14 +4,18 @@ import NFTCard from 'components/partials/NFTCard'
 import RightSideBar from 'components/partials/RightSideBar'
 import { AnimatePresence } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { addAddress } from 'redux/reducers/walletSlice'
 
 const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
   ssr: false,
 }) // fixes hydration
 
 const index = () => {
+  const dispatch = useDispatch()
+  const { publicKey } = useWallet()
   const [innerWidth, setInnerWidth] = useState(null)
 
   const {
@@ -24,7 +28,11 @@ const index = () => {
   useEffect(() => {
     setInnerWidth(window.innerWidth)
     window.addEventListener('resize', windowResize)
-  }, [])
+
+    if (publicKey) {
+      dispatch(addAddress(publicKey.toBase58()))
+    }
+  }, [publicKey])
 
   const windowResize = () => {
     setInnerWidth(window.innerWidth)
