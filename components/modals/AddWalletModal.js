@@ -46,7 +46,7 @@ const AddWalletModal = () => {
           <input
             className="border-none bg-transparent outline-none placeholder:text-[#61DAE9]"
             type="text"
-            placeholder="Search Coins"
+            placeholder="Wallet Address"
             onChange={(e) => setWalletAddress(e.target.value)}
           />
         </div>
