@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
+import { addAddress } from 'redux/reducers/walletSlice'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
   const [walletAddress, setWalletAddress] = useState('')
-  const { addWalletModalOpen } = useSelector((state) => state.util)
 
   const closeModal = () => {
     dispatch(changeAddWalletModalOpen(false))
   }
 
   const addWallet = () => {
-    console.log(walletAddress)
+    dispatch(addAddress(walletAddress))
   }
   return (
     <motion.div
@@ -21,8 +21,9 @@ const AddWalletModal = () => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0 }}
       transition={{ duration: 0.5, type: 'spring' }}
-      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center bg-[#00000099] p-[1rem] font-inter"
+      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center p-[1rem] font-inter"
     >
+      <Overlay closeModal={closeModal} />
       <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] drop-shadow-lg">
         <div className="top-line mb-[1rem] flex justify-between py-[1rem]">
           <h1 className="text-[1.8rem] font-[700]">Add your Solana wallet</h1>
@@ -58,6 +59,15 @@ const AddWalletModal = () => {
         </button>
       </div>
     </motion.div>
+  )
+}
+
+const Overlay = ({ closeModal }) => {
+  return (
+    <div
+      onClick={closeModal}
+      className="absolute h-full w-full bg-[#00000099]"
+    />
   )
 }
 

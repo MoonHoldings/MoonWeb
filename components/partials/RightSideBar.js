@@ -6,10 +6,11 @@ import {
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
-import { clearConfigCache } from 'prettier'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
+  const { disconnect } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
 
@@ -18,6 +19,9 @@ const RightSideBar = () => {
   }
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
+  }
+  const disconnectWallets = () => {
+    disconnect()
   }
 
   const seeAllOrLessExchanges = () => {
@@ -294,7 +298,10 @@ const RightSideBar = () => {
             />
             Disconnect Wallets
           </div>
-          <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+          <button
+            onClick={disconnectWallets}
+            className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+          >
             <img
               className="h-[0.8rem] w-[0.8rem]"
               src="/images/svgs/+.svg"

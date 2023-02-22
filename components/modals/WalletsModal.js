@@ -24,8 +24,9 @@ const WalletsModal = () => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.3 }}
       transition={{ duration: 0.5, type: 'spring' }}
-      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center bg-[#00000099] font-inter"
+      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center font-inter"
     >
+      <Overlay closeWalletsModal={closeWalletsModal} />
       <div className="modal relative min-w-[18rem] rounded-[1rem] bg-[#191F2D] p-[2rem] text-white shadow-lg xl:min-h-[28rem] xl:min-w-[30rem]">
         <button
           onClick={closeWalletsModal}
@@ -60,6 +61,15 @@ const WalletsModal = () => {
         </div>
       </div>
     </motion.div>
+  )
+}
+
+const Overlay = ({ closeWalletsModal }) => {
+  return (
+    <div
+      onClick={closeWalletsModal}
+      className="absolute top-0 left-0 right-0 bottom-0 bg-[#00000099]"
+    />
   )
 }
 
