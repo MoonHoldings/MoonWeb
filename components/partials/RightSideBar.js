@@ -109,7 +109,10 @@ const RightSideBar = () => {
         </div>
 
         <ul className="dashboard-menu text-[1.4rem] ">
-          <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
+          <li
+            onClick={connectWallet}
+            className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+          >
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -118,18 +121,18 @@ const RightSideBar = () => {
               />
               Connect Wallet
             </div>
-            <button
-              onClick={connectWallet}
-              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
-            >
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <img
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
               />
-            </button>
+            </div>
           </li>
-          <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
+          <li
+            onClick={addWalletAddress}
+            className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+          >
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -138,18 +141,15 @@ const RightSideBar = () => {
               />
               Add Wallet Addresses
             </div>
-            <button
-              onClick={addWalletAddress}
-              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
-            >
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <img
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
               />
-            </button>
+            </div>
           </li>
-          <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
+          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -158,15 +158,15 @@ const RightSideBar = () => {
               />
               Add Exchanges
             </div>
-            <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <img
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
               />
-            </button>
+            </div>
           </li>
-          <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:hidden">
+          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:hidden">
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -175,15 +175,15 @@ const RightSideBar = () => {
               />
               Connected Wallets (6)
             </div>
-            <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <img
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/right-bold-chevron.svg"
                 alt="Right Angle Bold Chevron"
               />
-            </button>
+            </div>
           </li>
-          <li className="mb-[1rem] flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:hidden">
+          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:hidden">
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -192,15 +192,15 @@ const RightSideBar = () => {
               />
               Connected Exchanges (3)
             </div>
-            <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <img
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/right-bold-chevron.svg"
                 alt="Right Angle Bold Chevron"
               />
-            </button>
+            </div>
           </li>
-          <li className="flex h-[6.4rem] items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem] xl:hidden">
+          <li className="flex h-[6.4rem] cursor-pointer items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem] xl:hidden">
             <div className="flex w-full items-center text-white">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
