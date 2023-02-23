@@ -16,7 +16,7 @@ const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
 const index = () => {
   const dispatch = useDispatch()
   const { publicKey } = useWallet()
-  const [innerWidth, setInnerWidth] = useState(null)
+  const [innerWidth, setInnerWidth] = useState(0)
 
   const {
     leftSideBarOpen,
@@ -24,6 +24,7 @@ const index = () => {
     walletsModalOpen,
     addWalletModalOpen,
   } = useSelector((state) => state.util)
+  const { collections } = useSelector((state) => state.wallet)
 
   useEffect(() => {
     setInnerWidth(window.innerWidth)
@@ -83,8 +84,11 @@ const index = () => {
             You have <u>20</u> collections containing <u>125</u> NFTs
           </p>
           <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-            {[1, 2, 3, 4, 5].map((card) => (
+            {/* {[1, 2, 3, 4, 5].map((card) => (
               <NFTCard key={card} />
+            ))} */}
+            {collections.map((col, index) => (
+              <NFTCard key={index} collection={col} />
             ))}
           </div>
         </div>

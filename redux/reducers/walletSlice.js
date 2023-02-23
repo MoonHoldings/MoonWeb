@@ -6,27 +6,8 @@ const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 const initialState = {
   addAddressStatus: 'idle',
   wallets: [],
+  collections: [],
 }
-
-export const addAddress = createAsyncThunk(
-  'wallet/addAddress',
-  async (walletAddress) => {
-    try {
-      const response = await axios.get(
-        `${SHYFT_URL}/wallet/collections?network=mainnet-beta&wallet_address=${walletAddress}`,
-        AXIOS_CONFIG_SHYFT_KEY
-      )
-
-      const res = await response.data
-      const resCollections = res.result.collections.map((col) => col)
-
-      // ? Add NFT update_authority to collection & Associate NFTs with wallet
-      console.log('resCollections', resCollections)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-)
 
 const walletSlice = createSlice({
   name: 'wallet',
@@ -39,9 +20,99 @@ const walletSlice = createSlice({
       })
       .addCase(addAddress.fulfilled, (state, action) => {
         state.addAddressStatus = 'successful'
+
+        state.wallets = action.payload.wallets
+        state.collections = action.payload.collections
       })
   },
 })
+
+export const addAddress = createAsyncThunk(
+  'wallet/addAddress',
+  async (walletAddress, { getState }) => {
+    const state = {}
+    let AllState = getState().wallet
+    Object.entries(AllState).forEach((st) => {
+      state[st[0]] = st[1]
+    })
+
+    try {
+      const response = await axios.get(
+        `${SHYFT_URL}/wallet/collections?network=mainnet-beta&wallet_address=${walletAddress}`,
+        AXIOS_CONFIG_SHYFT_KEY
+      )
+
+      const res = await response.data
+      const resCollections = res.result.collections.map((col) => col)
+
+      // ? Add NFT update_authority to collection & Associate NFTs with wallet
+      resCollections.forEach((collection) => {
+        collection.wallet = walletAddress
+        collection.update_authority = collection.nfts[0].update_authority
+        collection.nfts.forEach((nft) => (nft.wallet = walletAddress))
+      })
+
+      if (res.success && resCollections) {
+        if (state.collections.length > 0) {
+          // ? Add any new incoming collections into collections
+          for (let i = 0; i < resCollections.length; i++) {
+            const recordIndex = state.collections.findIndex(
+              (el) => el.name === resCollections[i].name
+            )
+            if (recordIndex !== -1) {
+              for (let x = 0; x < resCollections[i].nfts.length; x++) {
+                const matchedNftIndex = state.collections[
+                  recordIndex
+                ].nfts.findIndex(
+                  (nft) => nft.name === resCollections[i].nfts[x].name
+                )
+
+                if (matchedNftIndex === -1) {
+                  state.collections[recordIndex].nfts.push(
+                    resCollections[i].nfts[x]
+                  )
+                }
+              }
+            } else {
+              state.collections.push(resCollections[i])
+            }
+          }
+        } else {
+          // ? First wallet and collections added
+          state.collections = [...resCollections]
+        }
+      }
+
+      // ? Get collection image & update wallets
+      // TODO refactor fetchURI to Promise.all
+      for (let i = 0; i < state.collections.length; i++) {
+        if (!state.collections[i].image) {
+          const fetchResponse = await axios.get(
+            `${state.collections[0].nfts[0].metadata_uri}`
+          )
+          const fetchRes = fetchResponse.data
+
+          state.collections[i].image = fetchRes.image
+          state.collections[i].description = fetchRes.description
+          state.collections[i].collection = fetchRes.collection
+        }
+
+        // Add collection details to each nft
+        state.collections[i].nfts.forEach((nft) => {
+          nft.collection = state.collections[i].collection ?? {}
+        })
+        const currentWallet = String(state.collections[i].nfts[0].wallet)
+        state.wallets = [...state.wallets, currentWallet]
+      }
+
+      state.wallets = [...new Set(state.wallets)]
+
+      return { wallets: state.wallets, collections: state.collections }
+    } catch (error) {
+      console.error('Error: nft.js > addAddress', error)
+    }
+  }
+)
 
 export const {} = walletSlice.actions
 
