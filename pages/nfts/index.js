@@ -7,7 +7,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { addAddress } from 'redux/reducers/walletSlice'
+import { populateWalletsAndCollections } from 'redux/reducers/walletSlice'
+import decrypt from 'utils/decrypt'
 
 const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
   ssr: false,
@@ -15,7 +16,7 @@ const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
 
 const index = () => {
   const dispatch = useDispatch()
-  const { publicKey } = useWallet()
+  const { wallets } = useWallet()
   const [innerWidth, setInnerWidth] = useState(0)
 
   const {
@@ -24,16 +25,32 @@ const index = () => {
     walletsModalOpen,
     addWalletModalOpen,
   } = useSelector((state) => state.util)
-  const { collections } = useSelector((state) => state.wallet)
+  const { collections, allWallets } = useSelector((state) => state.wallet)
 
   useEffect(() => {
     setInnerWidth(window.innerWidth)
     window.addEventListener('resize', windowResize)
 
-    if (publicKey) {
-      dispatch(addAddress(publicKey.toBase58()))
+    restoreWallet()
+  }, [])
+  //   if (publicKey) {
+  //     dispatch(addAddress(publicKey.toBase58()))
+  //   }
+  // }, [publicKey])
+
+  const restoreWallet = () => {
+    const walletStateDecrypted = localStorage.getItem('walletState')
+    if (walletStateDecrypted && allWallets.length === 0) {
+      const walletState = decrypt(walletStateDecrypted)
+
+      dispatch(
+        populateWalletsAndCollections({
+          allWallets: walletState.allWallets,
+          collections: walletState.collections,
+        })
+      )
     }
-  }, [publicKey])
+  }
 
   const windowResize = () => {
     setInnerWidth(window.innerWidth)
@@ -65,33 +82,35 @@ const index = () => {
         ) : (
           <></>
         )}
-        <div className="welcome-message mt-[10rem] hidden border text-[1.6rem] font-semibold md:order-2 md:mt-[15rem]">
-          <h1 className="text-[2.2rem] font-bold">Welcome to MoonHoldings</h1>
-          <p className="mb-[2rem]">
-            Let’s start by connecting wallets to pull in your NFTs.
-          </p>
-          <p>
-            Please select <span className="text-[#62EAD2]">Connect Wallet</span>
-            , or to connect multiple wallets{' '}
-            <span className="text-[#62EAD2]">Add Wallet Addresses</span>.
-          </p>
-        </div>
-
-        {/* NFT Portfolio */}
-        <div className="nft-portfolio mt-[2rem] text-white md:order-2">
-          <h1 className="text-[2.9rem]">NFT Portfolio</h1>
-          <p className="mb-[4.8rem] text-[1.6rem]">
-            You have <u>20</u> collections containing <u>125</u> NFTs
-          </p>
-          <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-            {/* {[1, 2, 3, 4, 5].map((card) => (
+        {allWallets.length === 0 ? (
+          <div className="welcome-message mt-[10rem] text-[1.6rem] font-semibold md:order-2 md:mt-[15rem]">
+            <h1 className="text-[2.2rem] font-bold">Welcome to MoonHoldings</h1>
+            <p className="mb-[2rem]">
+              Let’s start by connecting wallets to pull in your NFTs.
+            </p>
+            <p>
+              Please select{' '}
+              <span className="text-[#62EAD2]">Connect Wallet</span>, or to
+              connect multiple wallets{' '}
+              <span className="text-[#62EAD2]">Add Wallet Addresses</span>.
+            </p>
+          </div>
+        ) : (
+          <div className="nft-portfolio mt-[2rem] text-white md:order-2">
+            <h1 className="text-[2.9rem]">NFT Portfolio</h1>
+            <p className="mb-[4.8rem] text-[1.6rem]">
+              You have <u>20</u> collections containing <u>125</u> NFTs
+            </p>
+            <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
+              {/* {[1, 2, 3, 4, 5].map((card) => (
               <NFTCard key={card} />
             ))} */}
-            {collections.map((col, index) => (
-              <NFTCard key={index} collection={col} />
-            ))}
+              {collections.map((col, index) => (
+                <NFTCard key={index} collection={col} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   )

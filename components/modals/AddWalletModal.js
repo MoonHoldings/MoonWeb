@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { addAddress } from 'redux/reducers/walletSlice'
@@ -7,13 +7,19 @@ import { addAddress } from 'redux/reducers/walletSlice'
 const AddWalletModal = () => {
   const dispatch = useDispatch()
   const [walletAddress, setWalletAddress] = useState('')
+  const { allWallets } = useSelector((state) => state.wallet)
 
   const closeModal = () => {
     dispatch(changeAddWalletModalOpen(false))
   }
 
   const addWallet = () => {
-    dispatch(addAddress(walletAddress))
+    const record = allWallets.find((wallet) => walletAddress === wallet)
+    if (!record) {
+      dispatch(addAddress(walletAddress))
+    }
+
+    dispatch(changeAddWalletModalOpen(false))
   }
   return (
     <motion.div

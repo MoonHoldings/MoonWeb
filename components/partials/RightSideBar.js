@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
@@ -12,7 +12,9 @@ const RightSideBar = () => {
   const dispatch = useDispatch()
   const { disconnect } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
-  const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
+  // const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
+
+  const { allWallets } = useSelector((state) => state.wallet)
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
@@ -289,7 +291,10 @@ const RightSideBar = () => {
           ))}
         </ul>
 
-        <div className="flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
+        <div
+          onClick={disconnectWallets}
+          className="flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+        >
           <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -298,16 +303,13 @@ const RightSideBar = () => {
             />
             Disconnect Wallets
           </div>
-          <button
-            onClick={disconnectWallets}
-            className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
-          >
+          <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
             <img
               className="h-[0.8rem] w-[0.8rem]"
               src="/images/svgs/+.svg"
               alt="plus sign"
             />
-          </button>
+          </div>
         </div>
       </div>
     </motion.div>
