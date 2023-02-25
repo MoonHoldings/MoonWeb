@@ -82,7 +82,7 @@ const RightSideBar = () => {
         <div className="profile-intro mb-[2.66rem] flex items-center xl:mb-[2rem] xl:justify-between">
           <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black xl:h-[9.1rem] xl:w-[9.1rem]"></div>
           <div className="total-value flex h-[8.6rem] flex-col items-end justify-between">
-            <div className="text-[3.2rem] text-white xl:text-[2.8rem]">
+            {/* <div className="text-[3.2rem] text-white xl:text-[2.8rem]">
               $1,890,792
             </div>
             <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
@@ -92,7 +92,7 @@ const RightSideBar = () => {
                 alt="Growth Graph"
               />
               +89% 1W
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -217,7 +217,7 @@ const RightSideBar = () => {
 
       {/* Connected Exchanges */}
       <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter xl:block">
-        <div className="header mb-[2rem] flex justify-between">
+        {/* <div className="header mb-[2rem] flex justify-between">
           <h1 className="text-[1.4rem]">Connected Exchanges</h1>
           <button
             onClick={seeAllOrLessExchanges}
@@ -225,9 +225,9 @@ const RightSideBar = () => {
           >
             See All
           </button>
-        </div>
+        </div> */}
         {/* All Exchanges */}
-        <ul className="all-exchanges mb-[2rem]">
+        {/* <ul className="all-exchanges mb-[2rem]">
           {allExchanges.map((exchange, index) => (
             <li
               key={index}
@@ -241,8 +241,8 @@ const RightSideBar = () => {
               Coinbase
             </li>
           ))}
-        </ul>
-        <div className="flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
+        </ul> */}
+        {/* <div className="flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
           <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -258,7 +258,7 @@ const RightSideBar = () => {
               alt="plus sign"
             />
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Connected Wallets */}

@@ -41,24 +41,24 @@ const LeftSideBar = () => {
           </div>
         </div>
 
-        <button className="h-full">
+        {/* <button className="h-full">
           <img
             className="h-[2.4rem] w-[2.4rem] xl:h-[2.5rem] xl:w-[2.5rem]"
             src="/images/svgs/theme-btn.svg"
             alt="theme button"
           />
-        </button>
+        </button> */}
       </div>
       {/* Menu Options */}
       <div className="sidebar-menu px-[1.7rem] text-[1.4rem] font-medium xl:px-[1.5rem]">
-        <button className="mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] text-[#666666] xl:mb-[2rem]">
+        {/* <button className="mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] text-[#666666] xl:mb-[2rem]">
           <img
             className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
             src="/images/svgs/dashboard.svg"
             alt="Dashboard"
           />
           Dashboard
-        </button>
+        </button> */}
         <hr className="mb-[1rem] h-[0.2rem] w-full rounded border-0 bg-black xl:mb-[2rem]" />
         <ul className="dashboard-menu">
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
@@ -81,7 +81,7 @@ const LeftSideBar = () => {
               NFTs
             </button>
           </li>
-          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+          {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
               <img
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
@@ -144,13 +144,13 @@ const LeftSideBar = () => {
               />
               Logout
             </button>
-          </li>
+          </li> */}
         </ul>
       </div>
 
       {/* Profile Info  */}
       <div className="profile-info absolute bottom-1 w-full">
-        <div className="mx-[1.7rem] mb-[1.2rem] hidden h-[5.6rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] px-[1.4rem] xl:mx-[1.5rem] xl:flex xl:w-[calc(100%-3rem)] xl:bg-[#342B25] xl:px-[1.6rem]">
+        {/* <div className="mx-[1.7rem] mb-[1.2rem] hidden h-[5.6rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] px-[1.4rem] xl:mx-[1.5rem] xl:flex xl:w-[calc(100%-3rem)] xl:bg-[#342B25] xl:px-[1.6rem]">
           <div className="flex items-center">
             <img
               src="/images/svgs/rank-symbol.svg"
@@ -164,12 +164,12 @@ const LeftSideBar = () => {
           <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center text-[1.6rem] ">
             15
           </div>
-        </div>
+        </div> */}
         <div className="mx-[1.7rem] mb-[1.7rem] flex h-[7.4rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] xl:mx-[1.5rem] xl:w-[calc(100%-3rem)] xl:px-[0.8rem]">
           <div className="flex items-center">
             <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
             <div className="text-[1.4rem] text-white">
-              Consistent Brave Bull
+              {/* Consistent Brave Bull */}
             </div>
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
