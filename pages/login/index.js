@@ -1,21 +1,36 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from 'redux/reducers/authSlice'
+import { useRouter } from 'next/router'
+import { changeLoginType, getUser, login } from 'redux/reducers/authSlice'
 
 const index = () => {
+  const router = useRouter()
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const { user } = useSelector((state) => state.auth)
-  const { loginSuccess } = useSelector((state) => state.auth)
+  const { user, loginSuccess, loginType } = useSelector((state) => state.auth)
+
+  const signupInstead = () => {
+    router.push('/signup')
+  }
 
   const loginUser = () => {
+    dispatch(changeLoginType('local'))
     dispatch(login({ email, password }))
   }
 
+  const twitterAuth = () => {
+    dispatch(changeLoginType('twitter'))
+    window.open(
+      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/twitter`,
+      '_self'
+    )
+  }
+
   const discordAuth = () => {
+    dispatch(changeLoginType('discord'))
     window.open(
       `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
       '_self'
@@ -23,52 +38,81 @@ const index = () => {
   }
 
   useEffect(() => {
-    axios({
-      method: 'GET',
-      url: `http://localhost:9000/api/get-user`,
-      withCredentials: true,
-    }).then((res) => {
-      console.log(res.data)
-    })
-  }, [])
-  // useEffect(() => {
-  //   console.log(user)
-  // }, [loginSuccess])
+    console.log('user', user)
+    console.log('loginType', loginType)
+
+    if (loginType !== 'local') {
+      dispatch(getUser())
+    }
+  }, [loginSuccess, loginType])
 
   return (
-    <div className="flex flex-col items-center pt-[4.6rem]">
-      <h1 className="mt-[4rem] mb-[2rem] text-[3rem] font-bold text-teal-500">
-        Login
-      </h1>
-      <div className="mb-[1rem] bg-gray-800 p-2">
-        <input
-          className="mb-[1rem] block text-[1.6rem]"
-          type="email"
-          placeholder="Enter Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="block text-[1.6rem]"
-          type="password"
-          placeholder="Enter Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          onClick={loginUser}
-          className="m-2 bg-teal-600 p-2 text-[1.6rem]"
+    <div className="flex h-screen flex-col items-center bg-black pt-[4.6rem]">
+      <div className="form z-30 flex flex-col items-center">
+        <h1 className="mt-[4rem] mb-[2rem] text-[6.4rem] font-bold text-[#63ECD2]">
+          Login
+        </h1>
+        <div
+          className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
+border border-[#50545A] py-[1.1rem]"
         >
-          Submit
+          <input
+            className="form-field"
+            type="email"
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            className="form-field"
+            type="password"
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            onClick={loginUser}
+            className="primary-btn-gradient mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] text-[1.8rem] text-black"
+          >
+            Login
+          </button>
+        </div>
+        <div
+          className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
+border border-[#50545A] py-[1.1rem]"
+        >
+          <button
+            onClick={twitterAuth}
+            className="mx-[1.1rem] ml-[1.1rem] mb-[1rem] h-[5rem] w-[25.2rem] rounded-[1rem] bg-[#55ACEE] text-[1.8rem] text-white"
+          >
+            Login with Twitter
+          </button>
+          <button
+            onClick={discordAuth}
+            className="mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] bg-[#5865F2] text-[1.8rem] text-white"
+          >
+            Login with Discord
+          </button>
+        </div>
+        <div className="mb-[1rem] text-[1.6rem]">or</div>
+        <button
+          onClick={signupInstead}
+          className="mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] border bg-black text-[1.8rem] text-white"
+        >
+          Sign Up
         </button>
       </div>
-      <button
-        onClick={discordAuth}
-        className="m-2 block bg-indigo-600 p-2 text-[1.6rem]"
-      >
-        Discord
-      </button>
-      <button className="m-2 block bg-blue-600 p-2 text-[1.6rem]">
-        Twitter
-      </button>
+
+      <div className="flex justify-center">
+        <img
+          src="/images/gifs/moon-holdings-banner-wide.gif"
+          alt=""
+          className="z-{25} fixed bottom-0 hidden w-full max-w-[144rem] md:-bottom-[5rem] md:block md:w-full lg:-bottom-[8rem]"
+        />
+        <img
+          src="/images/gifs/moon-holdings-banner-cropped.gif"
+          alt=""
+          className="z-{25} fixed bottom-0 w-full max-w-[144rem] md:hidden"
+        />
+      </div>
     </div>
   )
 }
