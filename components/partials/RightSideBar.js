@@ -52,8 +52,8 @@ const RightSideBar = () => {
   }
 
   const shrinkText = (text) => {
-    const firstSlice = text.slice(0, 4)
-    const lastSlice = text.slice(-4)
+    const firstSlice = text.slice(0, 3)
+    const lastSlice = text.slice(-3)
     return `${firstSlice}...${lastSlice}`
   }
 
@@ -262,56 +262,60 @@ const RightSideBar = () => {
       </div>
 
       {/* Connected Wallets */}
-      <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter xl:block">
-        <div className="header mb-[2rem] flex justify-between">
-          <h1 className="text-[1.4rem]">Connected Wallets</h1>
-          <button
-            onClick={seeAllOrLessWallets}
-            className="text-[1.4rem] font-bold text-[#61DAEA]"
-          >
-            See All
-          </button>
-        </div>
-
-        {/* All Wallets */}
-        <ul className="all-wallets mb-[2rem] grid grid-cols-2 gap-[1rem]">
-          {allWallets.map((wallet, index) => (
-            <li
-              key={index}
-              onClick={removeWallet(wallet)}
-              className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
+      {allWallets.length !== 0 ? (
+        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter xl:block">
+          <div className="header mb-[2rem] flex justify-between">
+            <h1 className="text-[1.4rem]">Connected Wallets</h1>
+            <button
+              onClick={seeAllOrLessWallets}
+              className="text-[1.4rem] font-bold text-[#61DAEA]"
             >
+              See All
+            </button>
+          </div>
+
+          {/* All Wallets */}
+          <ul className="all-wallets mb-[2rem] grid grid-cols-2 gap-[1rem]">
+            {allWallets.map((wallet, index) => (
+              <li
+                key={index}
+                onClick={removeWallet(wallet)}
+                className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
+              >
+                <img
+                  className="mr-[1rem] h-[2rem] w-[2rem]"
+                  src="/images/svgs/wallet-white.svg"
+                  alt="NFTs"
+                />
+                {shrinkText(`${wallet}`)}
+              </li>
+            ))}
+          </ul>
+
+          <div
+            onClick={disconnectWallets}
+            className="flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+          >
+            <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
                 alt="NFTs"
               />
-              {shrinkText('rodOJIDokxoIO43Jsok8OICocijs')}
-            </li>
-          ))}
-        </ul>
-
-        <div
-          onClick={disconnectWallets}
-          className="flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
-        >
-          <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
-            <img
-              className="mr-[1rem] h-[2rem] w-[2rem]"
-              src="/images/svgs/wallet-white.svg"
-              alt="NFTs"
-            />
-            Disconnect Wallets
-          </div>
-          <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-            <img
-              className="h-[0.8rem] w-[0.8rem]"
-              src="/images/svgs/+.svg"
-              alt="plus sign"
-            />
+              Disconnect Wallets
+            </div>
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+              <img
+                className="h-[0.8rem] w-[0.8rem]"
+                src="/images/svgs/+.svg"
+                alt="plus sign"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        ''
+      )}
     </motion.div>
   )
 }
