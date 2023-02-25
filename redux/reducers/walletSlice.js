@@ -95,9 +95,9 @@ export const addAddress = createAsyncThunk(
 
       // ? Get collection image and unique wallets
       for (let i = 0; i < state.collections.length; i++) {
-        if (!state.collections[i].image) {
+        if (!state.collections[i].image && state.collections[i].nfts) {
           const fetchResponse = await axios.get(
-            `${state.collections[0].nfts[0].metadata_uri}`
+            `${state.collections[i].nfts[0].metadata_uri}`
           )
           const fetchRes = fetchResponse.data
           state.collections[i].image = fetchRes.image
