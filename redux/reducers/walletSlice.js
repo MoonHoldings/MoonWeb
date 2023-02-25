@@ -33,9 +33,8 @@ const walletSlice = createSlice({
       .addCase(addAddress.fulfilled, (state, action) => {
         state.addAddressStatus = 'successful'
 
-        // console.log(action.payload)
-        // state.allWallets = action.payload.allWallets
-        // state.collections = action.payload.collections
+        state.allWallets = action.payload.allWallets
+        state.collections = action.payload.collections
       })
   },
 })
@@ -63,7 +62,6 @@ export const addAddress = createAsyncThunk(
         collection.update_authority = collection.nfts[0].update_authority
         collection.nfts.forEach((nft) => (nft.wallet = walletAddress))
       })
-
       if (res.success && resCollections) {
         if (state.collections.length > 0) {
           //======= ? Add any new incoming collections into collections =======
@@ -71,7 +69,6 @@ export const addAddress = createAsyncThunk(
             const recordIndex = state.collections.findIndex(
               (el) => el.name === resCollections[i].name
             )
-
             if (recordIndex !== -1) {
               for (let x = 0; x < resCollections[i].nfts.length; x++) {
                 const matchedNftIndex = state.collections[
@@ -79,7 +76,6 @@ export const addAddress = createAsyncThunk(
                 ].nfts.findIndex(
                   (nft) => nft.name === resCollections[i].nfts[x].name
                 )
-
                 if (matchedNftIndex === -1) {
                   state.collections = [
                     ...state.collections,
@@ -108,26 +104,26 @@ export const addAddress = createAsyncThunk(
           state.collections[i].description = fetchRes.description
           state.collections[i].collection = fetchRes.collection
         }
-
         // Add collection details to each nft
-        state.collections[i].nfts.forEach((nft) => {
-          nft.collection = state.collections[i].collection ?? {}
-        })
-        const currentWallet = state.collections[i].nfts[0].wallet
+        if (state.collections[i].nfts) {
+          state.collections[i].nfts.forEach((nft) => {
+            if (!nft.collection) nft = { ...nft, collection: {} }
+          })
+        }
+
+        const currentWallet = state.collections[i].wallet
         state.allWallets = [...state.allWallets, currentWallet]
       }
-
       state.allWallets = [...new Set(state.allWallets)]
 
       const walletState = {
         allWallets: state.allWallets,
         collections: state.collections,
       }
-
       const encryptedText = encrypt(walletState)
       localStorage.setItem('walletState', encryptedText)
 
-      return walletState
+      return state
     } catch (error) {
       console.error('Error: nft.js > addAddress', error)
     }
