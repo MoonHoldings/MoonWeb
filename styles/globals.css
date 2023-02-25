@@ -18,6 +18,13 @@
   .primary-btn-gradient {
     background: linear-gradient(#60d6ec, #63eecf);
   }
+  .all-exchanges li:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+  /* .all-exchanges li:not(:last-child),
+  .all-wallets li:not(:last-child) {
+    margin-bottom: 1rem;
+  } */
 }
 
 html,

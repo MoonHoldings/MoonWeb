@@ -1,6 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import Navbar from './Navbar'
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from '@solana/wallet-adapter-react'
+import { clusterApiUrl } from '@solana/web3.js'
+import {
+  GlowWalletAdapter,
+  MathWalletAdapter,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+} from '@solana/wallet-adapter-wallets'
 
 const Layout = ({ children }) => {
   const router = useRouter()
@@ -15,15 +26,31 @@ const Layout = ({ children }) => {
     setInnerWidth(window.innerWidth)
   }
 
+  const wallets = useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new GlowWalletAdapter(),
+      new MathWalletAdapter(),
+    ],
+    []
+  )
+
+  const endpoint = useMemo(() => clusterApiUrl('mainnet-beta'), [])
+
   return (
     <>
-      {innerWidth < 600 &&
-      (router.pathname === '/login' || router.pathname === '/signup') ? (
-        ''
-      ) : (
-        <Navbar />
-      )}
-      <div>{children}</div>
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          {innerWidth < 600 &&
+          (router.pathname === '/login' || router.pathname === '/signup') ? (
+            ''
+          ) : (
+            <Navbar />
+          )}
+          <div>{children}</div>
+        </WalletProvider>
+      </ConnectionProvider>
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { SERVER_URL } from 'app/constants/api'
 import axios from 'axios'
 
 const initialState = {
@@ -11,13 +12,9 @@ const initialState = {
 
 export const signup = createAsyncThunk('auth/signup', async (creds) => {
   try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/register`,
-      creds,
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    const response = await axios.post(`${SERVER_URL}/register`, creds, {
+      headers: { 'Content-Type': 'application/json' },
+    })
 
     return response.data
   } catch (error) {
@@ -30,14 +27,10 @@ export const signup = createAsyncThunk('auth/signup', async (creds) => {
 
 export const login = createAsyncThunk('auth/login', async (creds) => {
   try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/login`,
-      creds,
-      {
-        withCredentials: true,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    const response = await axios.post(`${SERVER_URL}/login`, creds, {
+      withCredentials: true,
+      headers: { 'Content-Type': 'application/json' },
+    })
 
     return response.data
   } catch (error) {
@@ -52,7 +45,7 @@ export const getUser = createAsyncThunk('auth/getUser', async () => {
   try {
     const response = await axios({
       method: 'GET',
-      url: `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/get-user`,
+      url: `${SERVER_URL}/get-user`,
       withCredentials: true,
     })
 

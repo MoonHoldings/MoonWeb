@@ -5,7 +5,7 @@
   "author": "Leon <leon@moonholdings.xyz> (https://twitter.com/leongaban)",
   "contributors": [
     "Leon Gaban",
-    "Abeer Abdul Ahad",
+    "Abdul Ahad",
     "Mitt Mehta",
     "Ajoy Thomas"
   ],
@@ -18,7 +18,13 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
+    "@solana/wallet-adapter-base": "^0.9.20",
+    "@solana/wallet-adapter-react": "^0.15.28",
+    "@solana/wallet-adapter-react-ui": "^0.9.27",
+    "@solana/wallet-adapter-wallets": "^0.19.11",
+    "@solana/web3.js": "^1.73.2",
     "axios": "^1.2.2",
+    "crypto-js": "^4.1.1",
     "framer-motion": "^9.0.0",
     "next": "latest",
     "next-themes": "^0.2.1",
