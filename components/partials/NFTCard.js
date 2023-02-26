@@ -5,7 +5,7 @@ const NFTCard = ({ collection }) => {
     <div className="rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] xl:w-[23.8rem] xl:p-[1.5rem] xl:hover:border-[#62EAD2]">
       <img
         className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
-        src="/images/dummy-img.jpg"
+        src={collection.image}
         alt="NFT picture"
       />
       <div className="details">

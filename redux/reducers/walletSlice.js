@@ -14,15 +14,35 @@ const walletSlice = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
-    populateWallets(state, action) {
-      state.allWallets = action.payload
-    },
-    populateCollections(state, action) {
-      state.collections = action.payload
-    },
     populateWalletsAndCollections(state, action) {
       state.allWallets = action.payload.allWallets
       state.collections = action.payload.collections
+    },
+    removeWallet(state, action) {
+      // Remove all NFTs from Collections associated with wallet
+      for (let i = 0; i < state.collections.length; i++) {
+        if (state.collections[i].nfts) {
+          for (let x = 0; x < state.collections[i].nfts.length; x++) {
+            if (state.collections[i].nfts[x].wallet === action.payload) {
+              state.collections[i].nfts.splice(x, 1)
+              x--
+            }
+          }
+        }
+      }
+
+      // If collection has no NFTS remove it
+      const filteredCollections = state.collections.filter((collection) => {
+        if (collection.nfts && collection.nfts.length > 0) return collection
+      })
+
+      state.collections = filteredCollections
+
+      // Remove Wallet
+      const walletToRemove = state.allWallets.findIndex(
+        (item) => item === action.payload
+      )
+      state.allWallets.splice(walletToRemove, 1)
     },
   },
   extraReducers(builder) {
@@ -95,9 +115,9 @@ export const addAddress = createAsyncThunk(
 
       // ? Get collection image and unique wallets
       for (let i = 0; i < state.collections.length; i++) {
-        if (!state.collections[i].image) {
+        if (!state.collections[i].image && state.collections[i].nfts) {
           const fetchResponse = await axios.get(
-            `${state.collections[0].nfts[0].metadata_uri}`
+            `${state.collections[i].nfts[0].metadata_uri}`
           )
           const fetchRes = fetchResponse.data
           state.collections[i].image = fetchRes.image
@@ -130,10 +150,7 @@ export const addAddress = createAsyncThunk(
   }
 )
 
-export const {
-  populateWallets,
-  populateCollections,
-  populateWalletsAndCollections,
-} = walletSlice.actions
+export const { populateWalletsAndCollections, removeWallet } =
+  walletSlice.actions
 
 export default walletSlice.reducer
