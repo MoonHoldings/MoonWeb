@@ -7,6 +7,7 @@ import {
 } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { removeWallet } from 'redux/reducers/walletSlice'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -43,8 +44,8 @@ const RightSideBar = () => {
     }
   }
 
-  const removeWallet = (wallet) => {
-    //
+  const removeCurrentWallet = (wallet) => {
+    dispatch(removeWallet(wallet))
   }
 
   const leftArrowClick = () => {
@@ -216,8 +217,8 @@ const RightSideBar = () => {
       </div>
 
       {/* Connected Exchanges */}
-      <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter xl:block">
-        {/* <div className="header mb-[2rem] flex justify-between">
+      {/* <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] border bg-[#191C20] p-[1.5rem] font-inter xl:block">
+        <div className="header mb-[2rem] flex justify-between">
           <h1 className="text-[1.4rem]">Connected Exchanges</h1>
           <button
             onClick={seeAllOrLessExchanges}
@@ -226,8 +227,8 @@ const RightSideBar = () => {
             See All
           </button>
         </div> */}
-        {/* All Exchanges */}
-        {/* <ul className="all-exchanges mb-[2rem]">
+      {/* All Exchanges */}
+      {/* <ul className="all-exchanges mb-[2rem]">
           {allExchanges.map((exchange, index) => (
             <li
               key={index}
@@ -241,8 +242,8 @@ const RightSideBar = () => {
               Coinbase
             </li>
           ))}
-        </ul> */}
-        {/* <div className="flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
+        </ul>
+        <div className="flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
           <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
             <img
               className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -258,8 +259,8 @@ const RightSideBar = () => {
               alt="plus sign"
             />
           </button>
-        </div> */}
-      </div>
+        </div>
+      </div> */}
 
       {/* Connected Wallets */}
       {allWallets.length !== 0 ? (
@@ -270,7 +271,7 @@ const RightSideBar = () => {
               onClick={seeAllOrLessWallets}
               className="text-[1.4rem] font-bold text-[#61DAEA]"
             >
-              See All
+              {allWallets.length > 4 ? 'See All' : ''}
             </button>
           </div>
 
@@ -280,7 +281,7 @@ const RightSideBar = () => {
               <li
                 key={index}
                 onClick={removeWallet(wallet)}
-                className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
+                className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
               >
                 <img
                   className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -288,6 +289,14 @@ const RightSideBar = () => {
                   alt="NFTs"
                 />
                 {shrinkText(`${wallet}`)}
+                <button
+                  onClick={() => removeCurrentWallet(wallet)}
+                  className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
+                >
+                  <span className="relative bottom-[0.1rem] font-poppins">
+                    x
+                  </span>
+                </button>
               </li>
             ))}
           </ul>

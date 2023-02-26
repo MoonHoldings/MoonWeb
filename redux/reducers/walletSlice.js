@@ -14,15 +14,35 @@ const walletSlice = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
-    populateWallets(state, action) {
-      state.allWallets = action.payload
-    },
-    populateCollections(state, action) {
-      state.collections = action.payload
-    },
     populateWalletsAndCollections(state, action) {
       state.allWallets = action.payload.allWallets
       state.collections = action.payload.collections
+    },
+    removeWallet(state, action) {
+      // Remove all NFTs from Collections associated with wallet
+      for (let i = 0; i < state.collections.length; i++) {
+        if (state.collections[i].nfts) {
+          for (let x = 0; x < state.collections[i].nfts.length; x++) {
+            if (state.collections[i].nfts[x].wallet === action.payload) {
+              state.collections[i].nfts.splice(x, 1)
+              x--
+            }
+          }
+        }
+      }
+
+      // If collection has no NFTS remove it
+      const filteredCollections = state.collections.filter((collection) => {
+        if (collection.nfts && collection.nfts.length > 0) return collection
+      })
+
+      state.collections = filteredCollections
+
+      // Remove Wallet
+      const walletToRemove = state.allWallets.findIndex(
+        (item) => item === action.payload
+      )
+      state.allWallets.splice(walletToRemove, 1)
     },
   },
   extraReducers(builder) {
@@ -130,10 +150,7 @@ export const addAddress = createAsyncThunk(
   }
 )
 
-export const {
-  populateWallets,
-  populateCollections,
-  populateWalletsAndCollections,
-} = walletSlice.actions
+export const { populateWalletsAndCollections, removeWallet } =
+  walletSlice.actions
 
 export default walletSlice.reducer
