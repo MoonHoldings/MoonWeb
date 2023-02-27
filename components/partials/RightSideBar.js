@@ -44,10 +44,6 @@ const RightSideBar = () => {
     }
   }
 
-  const removeCurrentWallet = (wallet) => {
-    dispatch(removeWallet(wallet))
-  }
-
   const leftArrowClick = () => {
     dispatch(changeRightSideBarOpen(false))
   }
@@ -280,7 +276,6 @@ const RightSideBar = () => {
             {allWallets.map((wallet, index) => (
               <li
                 key={index}
-                onClick={removeWallet(wallet)}
                 className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
               >
                 <img
@@ -290,7 +285,7 @@ const RightSideBar = () => {
                 />
                 {shrinkText(`${wallet}`)}
                 <button
-                  onClick={() => removeCurrentWallet(wallet)}
+                  onClick={() => dispatch(removeWallet(wallet))}
                   className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
                 >
                   <span className="relative bottom-[0.1rem] font-poppins">
