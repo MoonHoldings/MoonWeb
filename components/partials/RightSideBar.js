@@ -35,6 +35,7 @@ const RightSideBar = () => {
       setAllExchanges(allExchanges.slice(0, 3))
     }
   }
+
   const seeAllOrLessWallets = () => {
     const walletNum = allWallets.length
     if (walletNum === 4) {
@@ -276,6 +277,7 @@ const RightSideBar = () => {
             {allWallets.map((wallet, index) => (
               <li
                 key={index}
+                onClick={() => removeWallet(wallet)}
                 className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
               >
                 <img
