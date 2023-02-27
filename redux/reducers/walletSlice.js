@@ -19,6 +19,9 @@ const walletSlice = createSlice({
       state.collections = action.payload.collections
     },
     removeWallet(state, action) {
+      console.log('removeWallet')
+      console.log(' state', state)
+      console.log(' action', action)
       // Remove all NFTs from Collections associated with wallet
       for (let i = 0; i < state.collections.length; i++) {
         if (state.collections[i].nfts) {
