@@ -1,6 +1,5 @@
 import AddWalletModal from 'components/modals/AddWalletModal'
 import LeftSideBar from 'components/partials/LeftSideBar'
-import NFTCard from 'components/partials/NFTCard'
 import RightSideBar from 'components/partials/RightSideBar'
 import { AnimatePresence } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
@@ -9,6 +8,7 @@ import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { populateWalletsAndCollections } from 'redux/reducers/walletSlice'
 import decrypt from 'utils/decrypt'
+import Collections from 'components/partials/Collections'
 
 const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
   ssr: false,
@@ -96,20 +96,7 @@ const index = () => {
             </p>
           </div>
         ) : (
-          <div className="nft-portfolio mt-[2rem] text-white md:order-2">
-            <h1 className="text-[2.9rem]">NFT Portfolio</h1>
-            <p className="mb-[4.8rem] text-[1.6rem]">
-              You have <u>20</u> collections containing <u>125</u> NFTs
-            </p>
-            <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-              {/* {[1, 2, 3, 4, 5].map((card) => (
-              <NFTCard key={card} />
-            ))} */}
-              {collections.map((col, index) => (
-                <NFTCard key={index} collection={col} />
-              ))}
-            </div>
-          </div>
+          <Collections collections={collections} />
         )}
       </div>
     </>

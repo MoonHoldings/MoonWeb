@@ -43,6 +43,13 @@ const walletSlice = createSlice({
         (item) => item === action.payload
       )
       state.allWallets.splice(walletToRemove, 1)
+
+      const walletState = {
+        allWallets: state.allWallets,
+        collections: state.collections,
+      }
+      const encryptedText = encrypt(walletState)
+      localStorage.setItem('walletState', encryptedText)
     },
   },
   extraReducers(builder) {

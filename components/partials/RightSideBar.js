@@ -310,7 +310,7 @@ const RightSideBar = () => {
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <img
-                className="h-[0.8rem] w-[0.8rem]"
+                className="h-[0.8rem] w-[0.8rem] rotate-45"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
               />
