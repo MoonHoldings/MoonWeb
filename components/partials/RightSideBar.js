@@ -57,16 +57,17 @@ const RightSideBar = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 z-[51] h-full w-full xl:static xl:order-3 xl:mb-[1.5rem] xl:h-auto xl:w-[30.8rem]"
+      className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
+      // className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto md:w-[30.8rem]"
       initial={{ x: '101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Desktop View = buttons section */}
-      <div className="main-buttons h-full bg-[rgb(25,28,32)] px-[1.7rem] xl:mb-[1.6rem] xl:rounded-[1.5rem] xl:p-[1.5rem]">
+      <div className="main-buttons h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:rounded-[1.5rem] md:p-[1.5rem]">
         {/* Header */}
-        <div className="mt-[1rem] mb-[2.8rem] h-[4.6rem] xl:hidden">
+        <div className="mt-[1rem] mb-[2.8rem] h-[4.6rem] md:hidden">
           <button onClick={leftArrowClick} className="float-right h-full">
             <img
               className="h-[2.4rem] w-[2.4rem] rotate-180"
@@ -77,8 +78,8 @@ const RightSideBar = () => {
         </div>
 
         {/* Profile Intro */}
-        <div className="profile-intro mb-[2.66rem] flex items-center xl:mb-[2rem] xl:justify-between">
-          <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black xl:h-[9.1rem] xl:w-[9.1rem]"></div>
+        <div className="profile-intro mb-[2.66rem] flex items-center md:mb-[2rem] md:justify-between">
+          <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
           <div className="total-value flex h-[8.6rem] flex-col items-end justify-between">
             {/* <div className="text-[3.2rem] text-white xl:text-[2.8rem]">
               $1,890,792
@@ -111,7 +112,7 @@ const RightSideBar = () => {
         <ul className="dashboard-menu text-[1.4rem] ">
           <li
             onClick={connectWallet}
-            className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+            className="xl-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
@@ -131,7 +132,7 @@ const RightSideBar = () => {
           </li>
           <li
             onClick={addWalletAddress}
-            className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+            className="xl-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
               <img
@@ -166,7 +167,7 @@ const RightSideBar = () => {
               />
             </div>
           </li> */}
-          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:hidden">
+          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] md:hidden">
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -183,7 +184,7 @@ const RightSideBar = () => {
               />
             </div>
           </li>
-          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:hidden">
+          {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] md:hidden">
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -199,8 +200,8 @@ const RightSideBar = () => {
                 alt="Right Angle Bold Chevron"
               />
             </div>
-          </li>
-          <li className="flex h-[6.4rem] cursor-pointer items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem] xl:hidden">
+          </li> */}
+          <li className="flex h-[6.4rem] cursor-pointer items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem] md:hidden">
             <div className="flex w-full items-center text-white">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -261,7 +262,7 @@ const RightSideBar = () => {
 
       {/* Connected Wallets */}
       {allWallets.length !== 0 ? (
-        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter xl:block">
+        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
           <div className="header mb-[2rem] flex justify-between">
             <h1 className="text-[1.4rem]">Connected Wallets</h1>
             <button
