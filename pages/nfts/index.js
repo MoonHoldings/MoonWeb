@@ -62,8 +62,8 @@ const index = () => {
       </AnimatePresence>
       <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:max-w-[144rem] xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
         <AnimatePresence>
-          {leftSideBarOpen === true && innerWidth < 960 ? <LeftSideBar /> : ''}
-          {rightSideBarOpen === true && innerWidth < 960 ? (
+          {leftSideBarOpen === true && innerWidth < 1280 ? <LeftSideBar /> : ''}
+          {rightSideBarOpen === true && innerWidth < 1280 ? (
             <RightSideBar />
           ) : (
             ''
@@ -74,7 +74,7 @@ const index = () => {
           {walletsModalOpen && <WalletsModal />}
         </AnimatePresence>
 
-        {innerWidth > 959 ? (
+        {innerWidth > 1280 ? (
           <>
             <LeftSideBar />
             <RightSideBar />

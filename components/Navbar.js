@@ -20,7 +20,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex h-[4.6rem] items-center justify-between border-b border-gray-800 bg-black px-[2rem] md:hidden">
+    <div className="fixed top-0 left-0 right-0 z-50 flex h-[4.6rem] items-center justify-between border-b border-gray-800 bg-black px-[2rem] xl:hidden">
       <Link
         href="/"
         className="flex items-center"
