@@ -35,6 +35,7 @@ const RightSideBar = () => {
       setAllExchanges(allExchanges.slice(0, 3))
     }
   }
+
   const seeAllOrLessWallets = () => {
     const walletNum = allWallets.length
     if (walletNum === 4) {
@@ -94,7 +95,7 @@ const RightSideBar = () => {
         </div>
 
         {/* Search */}
-        <div className="search mb-[1rem] grid h-[3.766rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem] xl:h-[6.4rem]">
+        {/* <div className="search mb-[1rem] grid h-[3.766rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem] xl:h-[6.4rem]">
           <img
             className="h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/magnifyingglass.svg"
@@ -105,7 +106,7 @@ const RightSideBar = () => {
             type="text"
             placeholder="Search Coins"
           />
-        </div>
+        </div> */}
 
         <ul className="dashboard-menu text-[1.4rem] ">
           <li
@@ -148,7 +149,7 @@ const RightSideBar = () => {
               />
             </div>
           </li>
-          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
+          {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
               <img
                 className="mr-[1rem] h-[2rem] w-[2rem]"
@@ -164,7 +165,7 @@ const RightSideBar = () => {
                 alt="plus sign"
               />
             </div>
-          </li>
+          </li> */}
           <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:hidden">
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
@@ -272,10 +273,13 @@ const RightSideBar = () => {
           </div>
 
           {/* All Wallets */}
-          <ul className="all-wallets mb-[2rem] grid grid-cols-2 gap-[1rem]">
+          {/* Commenting out grid-cols-2, we use this once we have at least 6 wallets */}
+          {/* <ul className="all-wallets mb-[2rem] grid grid-cols-2 gap-[1rem]"> */}
+          <ul className="all-wallets mb-[2rem] grid gap-[1rem]">
             {allWallets.map((wallet, index) => (
               <li
                 key={index}
+                onClick={() => removeWallet(wallet)}
                 className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
               >
                 <img
