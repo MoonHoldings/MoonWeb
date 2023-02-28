@@ -24,9 +24,14 @@ const Navbar = () => {
       <Link
         href="/"
         className="flex items-center"
-        style={{ order: router.pathname === '/nfts' && '2' }}
+        style={{
+          order:
+            (router.pathname === '/nfts' ||
+              router.pathname === '/collection') &&
+            '2',
+        }}
       >
-        {router.pathname === '/nfts' ? (
+        {router.pathname === '/nfts' || router.pathname === '/collection' ? (
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white">
             <img
               className="h-[1.3rem] w-[1.3rem]"
@@ -49,7 +54,12 @@ const Navbar = () => {
 
       <button
         onClick={clickHamburgerMenu}
-        style={{ order: router.pathname === '/nfts' && '1' }}
+        style={{
+          order:
+            (router.pathname === '/nfts' ||
+              router.pathname === '/collection') &&
+            '1',
+        }}
       >
         <img
           className="h-[2rem]"
@@ -58,10 +68,15 @@ const Navbar = () => {
         />
       </button>
 
-      {router.pathname === '/nfts' && (
+      {(router.pathname === '/nfts' || router.pathname === '/collection') && (
         <button
           onClick={clickWallet}
-          style={{ order: router.pathname === '/nfts' && '3' }}
+          style={{
+            order:
+              (router.pathname === '/nfts' ||
+                router.pathname === '/collection') &&
+              '3',
+          }}
         >
           <img
             className="h-[2rem]"

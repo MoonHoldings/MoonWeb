@@ -153,6 +153,8 @@ export const addAddress = createAsyncThunk(
       const encryptedText = encrypt(walletState)
       localStorage.setItem('walletState', encryptedText)
 
+      console.log(state)
+
       return state
     } catch (error) {
       console.error('Error: nft.js > addAddress', error)
@@ -160,7 +162,10 @@ export const addAddress = createAsyncThunk(
   }
 )
 
-export const { populateWalletsAndCollections, removeWallet } =
-  walletSlice.actions
+export const {
+  populateWalletsAndCollections,
+  removeWallet,
+  insertCurrentCollection,
+} = walletSlice.actions
 
 export default walletSlice.reducer
