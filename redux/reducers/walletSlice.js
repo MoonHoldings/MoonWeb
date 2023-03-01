@@ -6,8 +6,10 @@ const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
 const initialState = {
   addAddressStatus: 'idle',
+  addingNftImageStatus: 'idle',
   allWallets: [],
   collections: [],
+  currentCollection: {},
 }
 
 const walletSlice = createSlice({
@@ -19,9 +21,6 @@ const walletSlice = createSlice({
       state.collections = action.payload.collections
     },
     removeWallet(state, action) {
-      console.log('removeWallet')
-      console.log(' state', state)
-      console.log(' action', action)
       // Remove all NFTs from Collections associated with wallet
       for (let i = 0; i < state.collections.length; i++) {
         if (state.collections[i].nfts) {
@@ -54,6 +53,9 @@ const walletSlice = createSlice({
       const encryptedText = encrypt(walletState)
       localStorage.setItem('walletState', encryptedText)
     },
+    changeAddAddressStatus(state, action) {
+      state.addAddressStatus = action.payload
+    },
   },
   extraReducers(builder) {
     builder
@@ -66,6 +68,14 @@ const walletSlice = createSlice({
         state.allWallets = action.payload.allWallets
         state.collections = action.payload.collections
       })
+      .addCase(insertCurrentCollection.pending, (state, action) => {
+        state.addingNftImageStatus = 'loading'
+      })
+      .addCase(insertCurrentCollection.fulfilled, (state, action) => {
+        state.addingNftImageStatus = 'successful'
+
+        state.currentCollection = action.payload
+      })
   },
 })
 
@@ -77,6 +87,7 @@ export const addAddress = createAsyncThunk(
     Object.entries(AllState).forEach((st) => {
       state[st[0]] = st[1]
     })
+    console.log(state)
 
     try {
       const response = await axios.get(
@@ -90,8 +101,15 @@ export const addAddress = createAsyncThunk(
       resCollections.forEach((collection) => {
         collection.wallet = walletAddress
         collection.update_authority = collection.nfts[0].update_authority
-        collection.nfts.forEach((nft) => (nft.wallet = walletAddress))
+
+        if (collection.nfts) {
+          collection.nfts.forEach((nft) => {
+            nft.wallet = walletAddress
+            nft.image = ''
+          })
+        }
       })
+
       if (res.success && resCollections) {
         if (state.collections.length > 0) {
           //======= ? Add any new incoming collections into collections =======
@@ -122,6 +140,7 @@ export const addAddress = createAsyncThunk(
           state.collections = [...resCollections]
         }
       }
+      console.log('state.collections', state.collections)
 
       // ? Get collection image and unique wallets
       for (let i = 0; i < state.collections.length; i++) {
@@ -129,13 +148,12 @@ export const addAddress = createAsyncThunk(
           const fetchResponse = await axios.get(
             `${state.collections[i].nfts[0].metadata_uri}`
           )
+
           const fetchRes = fetchResponse.data
           state.collections[i].image = fetchRes.image
           state.collections[i].description = fetchRes.description
           state.collections[i].collection = fetchRes.collection
-        }
-        // Add collection details to each nft
-        if (state.collections[i].nfts) {
+
           state.collections[i].nfts.forEach((nft) => {
             if (!nft.collection) nft = { ...nft, collection: {} }
           })
@@ -144,6 +162,7 @@ export const addAddress = createAsyncThunk(
         const currentWallet = state.collections[i].wallet
         state.allWallets = [...state.allWallets, currentWallet]
       }
+      console.log('state.collections', state.collections)
       state.allWallets = [...new Set(state.allWallets)]
 
       const walletState = {
@@ -153,8 +172,6 @@ export const addAddress = createAsyncThunk(
       const encryptedText = encrypt(walletState)
       localStorage.setItem('walletState', encryptedText)
 
-      console.log(state)
-
       return state
     } catch (error) {
       console.error('Error: nft.js > addAddress', error)
@@ -162,10 +179,37 @@ export const addAddress = createAsyncThunk(
   }
 )
 
+export const insertCurrentCollection = createAsyncThunk(
+  'wallet/insertCurrentCollection',
+  async (collection) => {
+    let mappedNfts = []
+    let collNfts = collection.nfts
+    try {
+      for (let i = 0; i < collNfts.length; i++) {
+        const response = await axios.get(`${collNfts[i].metadata_uri}`)
+        const res = response.data
+
+        mappedNfts.push({
+          ...collNfts[i],
+          image: res.image,
+        })
+      }
+
+      const finalCollection = { ...collection, nfts: mappedNfts }
+
+      console.log('finalCollection', finalCollection)
+
+      return finalCollection
+    } catch (error) {
+      console.error('Error: collection.js > insertCurrentCollection', error)
+    }
+  }
+)
+
 export const {
   populateWalletsAndCollections,
   removeWallet,
-  insertCurrentCollection,
+  changeAddAddressStatus,
 } = walletSlice.actions
 
 export default walletSlice.reducer

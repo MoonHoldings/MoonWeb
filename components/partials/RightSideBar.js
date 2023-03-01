@@ -112,7 +112,7 @@ const RightSideBar = () => {
         <ul className="dashboard-menu text-[1.4rem] ">
           <li
             onClick={connectWallet}
-            className="xl-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-white">
               <img
@@ -132,7 +132,7 @@ const RightSideBar = () => {
           </li>
           <li
             onClick={addWalletAddress}
-            className="xl-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
               <img

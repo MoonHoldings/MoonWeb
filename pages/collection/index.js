@@ -16,7 +16,7 @@ const index = () => {
       <div className="mt-[2rem] text-white md:order-2">
         <h1 className="text-[2.9rem]">
           <span className="text-[#4C4C4C] underline">NFT Portfolio &gt;</span>{' '}
-          <span>DeGod</span>
+          <span>{currentCollection.name}</span>
         </h1>
         <p className="text-[1.6rem]">
           You have <span>{currentCollection.nft_count}</span>{' '}
