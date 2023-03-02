@@ -64,7 +64,6 @@ const walletSlice = createSlice({
       })
       .addCase(addAddress.fulfilled, (state, action) => {
         state.addAddressStatus = 'successful'
-
         state.allWallets = action.payload.allWallets
         state.collections = action.payload.collections
       })
@@ -73,7 +72,6 @@ const walletSlice = createSlice({
       })
       .addCase(insertCurrentCollection.fulfilled, (state, action) => {
         state.addingNftImageStatus = 'successful'
-
         state.currentCollection = action.payload
       })
   },
@@ -192,6 +190,7 @@ export const insertCurrentCollection = createAsyncThunk(
         mappedNfts.push({
           ...collNfts[i],
           image: res.image,
+          // Add Attributes & Info { name, collection.name }
         })
       }
 
