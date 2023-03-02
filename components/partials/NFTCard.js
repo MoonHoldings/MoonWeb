@@ -13,9 +13,9 @@ const NFT = ({ nft }) => {
           <h1 className="mb-[0.4rem] text-[1.2rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
             {nft.name}
           </h1>
-          <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0">
+          {/* <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0">
             Listed
-          </h2>
+          </h2> */}
         </div>
 
         {/* <div className="xl:flex xl:justify-between">
