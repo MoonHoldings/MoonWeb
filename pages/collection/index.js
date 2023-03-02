@@ -8,6 +8,10 @@ const index = () => {
   const router = useRouter()
   const { currentCollection } = useSelector((state) => state.wallet)
 
+  const handleClick = (url) => {
+    router.push(`/${url}`)
+  }
+
   useEffect(() => {
     // if (currentCollection === {}) router.back()
   }, [])
@@ -15,7 +19,12 @@ const index = () => {
     <SidebarsLayout>
       <div className="mt-[2rem] text-white md:order-2">
         <h1 className="text-[2.9rem]">
-          <span className="text-[#4C4C4C] underline">NFT Portfolio &gt;</span>{' '}
+          <span
+            onClick={() => handleClick('nfts')}
+            className="cursor text-[#4C4C4C] underline"
+          >
+            NFT Portfolio &gt;
+          </span>{' '}
           <span>{currentCollection.name}</span>
         </h1>
         <p className="text-[1.6rem]">
