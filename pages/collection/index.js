@@ -12,6 +12,13 @@ const index = () => {
     router.push(`/${url}`)
   }
 
+  const handleSingleNFTClick = (index) => {
+    console.log('index of NFT', index)
+    // TODO Abeer to fix this
+    router.push(`/collection/nft`)
+    // router.push(`/collection/nft/${index}`)
+  }
+
   useEffect(() => {
     // if (currentCollection === {}) router.back()
   }, [])
@@ -37,7 +44,9 @@ const index = () => {
     <CollectionCard key={card} />
   ))} */}
           {currentCollection.nfts?.map((nft, index) => (
-            <NFTCard key={index} nft={nft} />
+            <span key={index} onClick={() => handleSingleNFTClick(index)}>
+              <NFTCard key={index} nft={nft} />
+            </span>
           ))}
         </div>
       </div>

@@ -36,7 +36,7 @@ const SidebarsLayout = ({ children }) => {
           {leftSideBarOpen === true && innerWidth < 1280 ? <LeftSideBar /> : ''}
           {rightSideBarOpen === true &&
           innerWidth &&
-          (router.pathname !== '/collection/nft') < 1280 ? (
+          (router.pathname !== `/collection/nft/`) < 1280 ? (
             <RightSideBar />
           ) : (
             ''
@@ -50,7 +50,7 @@ const SidebarsLayout = ({ children }) => {
         {innerWidth > 1280 ? (
           <>
             <LeftSideBar />
-            {router.pathname !== '/collection/nft' ? <RightSideBar /> : ''}
+            {router.pathname !== `/collection/nft/` ? <RightSideBar /> : ''}
           </>
         ) : (
           <></>

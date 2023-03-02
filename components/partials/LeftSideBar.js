@@ -15,6 +15,7 @@ const LeftSideBar = () => {
   const handleClick = (url) => {
     router.push(`/${url}`)
   }
+
   // xl:max-h-[calc(100%-1.5rem)]
   return (
     <motion.div
