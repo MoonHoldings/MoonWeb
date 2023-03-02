@@ -58,7 +58,6 @@ const RightSideBar = () => {
   return (
     <motion.div
       className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
-      // className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto md:w-[30.8rem]"
       initial={{ x: '101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '101%' }}
