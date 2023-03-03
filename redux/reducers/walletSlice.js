@@ -7,9 +7,11 @@ const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 const initialState = {
   addAddressStatus: 'idle',
   addingNftImageStatus: 'idle',
+  addingSingleNftStatus: 'idle',
   allWallets: [],
   collections: [],
   currentCollection: {},
+  singleNFT: {},
 }
 
 const walletSlice = createSlice({
@@ -64,7 +66,6 @@ const walletSlice = createSlice({
       })
       .addCase(addAddress.fulfilled, (state, action) => {
         state.addAddressStatus = 'successful'
-
         state.allWallets = action.payload.allWallets
         state.collections = action.payload.collections
       })
@@ -73,8 +74,14 @@ const walletSlice = createSlice({
       })
       .addCase(insertCurrentCollection.fulfilled, (state, action) => {
         state.addingNftImageStatus = 'successful'
-
         state.currentCollection = action.payload
+      })
+      .addCase(insertSingleNFT.pending, (state, action) => {
+        state.addingSingleNftStatus = 'loading'
+      })
+      .addCase(insertSingleNFT.fulfilled, (state, action) => {
+        state.addingSingleNftStatus = 'successful'
+        state.singleNFT = action.payload
       })
   },
 })
@@ -188,10 +195,13 @@ export const insertCurrentCollection = createAsyncThunk(
       for (let i = 0; i < collNfts.length; i++) {
         const response = await axios.get(`${collNfts[i].metadata_uri}`)
         const res = response.data
-
+        console.log('>>> res', res)
         mappedNfts.push({
           ...collNfts[i],
           image: res.image,
+          attributes: res.attributes,
+          collection: res.collection,
+          // Add Attributes & Info { name, collection.name }
         })
       }
 
@@ -202,6 +212,36 @@ export const insertCurrentCollection = createAsyncThunk(
       return finalCollection
     } catch (error) {
       console.error('Error: collection.js > insertCurrentCollection', error)
+    }
+  }
+)
+
+export const insertSingleNFT = createAsyncThunk(
+  'wallet/insertSingleNFT',
+  async (collection) => {
+    let mappedNfts = []
+    let collNfts = collection.nfts
+    try {
+      for (let i = 0; i < collNfts.length; i++) {
+        const response = await axios.get(`${collNfts[i].metadata_uri}`)
+        const res = response.data
+        console.log('>>> res', res)
+        mappedNfts.push({
+          ...collNfts[i],
+          image: res.image,
+          attributes: res.attributes,
+          collection: res.collection,
+          // Add Attributes & Info { name, collection.name }
+        })
+      }
+
+      const singleNFT = { ...collection, nfts: mappedNfts }
+
+      console.log('singleNFT', singleNFT)
+
+      return singleNFT
+    } catch (error) {
+      console.error('Error: collection.js > insertSingleNFT', error)
     }
   }
 )
