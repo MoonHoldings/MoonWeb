@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
-import { addAddress } from 'redux/reducers/walletSlice'
+import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
   const [walletAddress, setWalletAddress] = useState('')
-  const { allWallets } = useSelector((state) => state.wallet)
+  const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
+  const { addWalletModalOpen } = useSelector((state) => state.util)
 
   const closeModal = () => {
     dispatch(changeAddWalletModalOpen(false))
@@ -19,8 +20,20 @@ const AddWalletModal = () => {
       dispatch(addAddress(walletAddress))
     }
 
-    dispatch(changeAddWalletModalOpen(false))
+    if (addAddressStatus === 'successful' && addWalletModalOpen === true) {
+      dispatch(changeAddWalletModalOpen(false))
+    }
+
+    // dispatch(changeAddWalletModalOpen(false))
   }
+
+  useEffect(() => {
+    if (addAddressStatus === 'successful' && addWalletModalOpen === true) {
+      dispatch(changeAddWalletModalOpen(false))
+
+      dispatch(changeAddAddressStatus('idle'))
+    }
+  }, [addAddressStatus])
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
@@ -59,9 +72,24 @@ const AddWalletModal = () => {
 
         <button
           onClick={addWallet}
-          className="h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500]"
+          disabled={addAddressStatus === 'loading' ? 'disabled' : undefined}
+          className="spinner h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500]"
         >
-          Add Wallet
+          {addAddressStatus === 'loading' ? (
+            <>
+              <div
+                className="mr-[1rem] inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                role="status"
+              >
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
+              Processing...
+            </>
+          ) : (
+            <>Add Wallet</>
+          )}
         </button>
       </div>
     </motion.div>

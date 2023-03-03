@@ -1,18 +1,25 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
 import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
 
 const LeftSideBar = () => {
+  const router = useRouter()
   const dispatch = useDispatch()
 
   const leftArrowClick = () => {
     dispatch(changeLeftSideBarOpen(false))
   }
+
+  const handleClick = (url) => {
+    router.push(`/${url}`)
+  }
+
   // xl:max-h-[calc(100%-1.5rem)]
   return (
     <motion.div
-      className="fixed left-0 top-0 z-[51] h-full w-full bg-[#191C20] xl:static xl:order-1 xl:h-[calc(100vh-3rem)] xl:w-[28.8rem] xl:rounded-[2rem]"
+      className="fixed left-0 top-0 z-[51] h-full w-full bg-[#191C20] md:static md:order-1 md:h-[calc(100vh-3rem)] md:w-[28.8rem] md:rounded-[2rem]"
       initial={{ x: '-101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '-101%' }}
@@ -61,7 +68,7 @@ const LeftSideBar = () => {
         </button> */}
         <hr className="mb-[1rem] h-[0.2rem] w-full rounded border-0 bg-black xl:mb-[2rem]" />
         <ul className="dashboard-menu">
-          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+          {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#62EAD2]">
               <img
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
@@ -70,9 +77,12 @@ const LeftSideBar = () => {
               />
               Crypto
             </button>
-          </li>
+          </li> */}
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
-            <button className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
+            <button
+              onClick={() => handleClick('nfts')}
+              className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
+            >
               <img
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/image.svg"
