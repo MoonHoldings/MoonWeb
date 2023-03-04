@@ -8,9 +8,11 @@ import {
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { removeAllWallets, removeWallet } from 'redux/reducers/walletSlice'
+import { useRouter } from 'next/router'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { disconnect } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   // const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
@@ -27,11 +29,19 @@ const RightSideBar = () => {
 
   const removeSingleWallet = (wallet) => {
     dispatch(removeWallet(wallet))
+
+    if (router.pathname !== '/nfts') {
+      router.push('/nfts')
+    }
   }
 
   const disconnectWallets = () => {
     disconnect()
     dispatch(removeAllWallets())
+
+    if (router.pathname !== '/nfts') {
+      router.push('/nfts')
+    }
   }
 
   const seeAllOrLessExchanges = () => {
