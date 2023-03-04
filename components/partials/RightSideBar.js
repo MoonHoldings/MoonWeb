@@ -7,7 +7,7 @@ import {
 } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { removeWallet } from 'redux/reducers/walletSlice'
+import { removeAllWallets, removeWallet } from 'redux/reducers/walletSlice'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -20,11 +20,18 @@ const RightSideBar = () => {
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
   }
+
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
   }
+
+  const removeSingleWallet = (wallet) => {
+    dispatch(removeWallet(wallet))
+  }
+
   const disconnectWallets = () => {
     disconnect()
+    dispatch(removeAllWallets())
   }
 
   const seeAllOrLessExchanges = () => {
@@ -279,7 +286,6 @@ const RightSideBar = () => {
             {allWallets.map((wallet, index) => (
               <li
                 key={index}
-                onClick={() => removeWallet(wallet)}
                 className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
               >
                 <img
@@ -289,7 +295,7 @@ const RightSideBar = () => {
                 />
                 {shrinkText(`${wallet}`)}
                 <button
-                  onClick={() => dispatch(removeWallet(wallet))}
+                  onClick={() => removeSingleWallet(wallet)}
                   className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
                 >
                   <span className="relative bottom-[0.1rem] font-poppins">

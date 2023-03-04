@@ -55,6 +55,14 @@ const walletSlice = createSlice({
       const encryptedText = encrypt(walletState)
       localStorage.setItem('walletState', encryptedText)
     },
+    removeAllWallets(state, action) {
+      state.allWallets = []
+      state.collections = []
+      state.currentCollection = {}
+      state.singleNFT = {}
+
+      localStorage.removeItem('walletState')
+    },
     changeAddAddressStatus(state, action) {
       state.addAddressStatus = action.payload
     },
@@ -250,6 +258,7 @@ export const {
   populateWalletsAndCollections,
   removeWallet,
   changeAddAddressStatus,
+  removeAllWallets,
 } = walletSlice.actions
 
 export default walletSlice.reducer
