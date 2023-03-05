@@ -7,11 +7,8 @@ const nft = () => {
   const router = useRouter()
   // const { pid } = router.query
   // console.log('pid', pid)
-  // TODO temp
-  const attribute = {
-    type: 'background',
-    name: 'red',
-    percentage: '13',
+  const handleClick = (url) => {
+    router.push(`/${url}`)
   }
 
   return (
@@ -25,7 +22,7 @@ const nft = () => {
             NFT Portfolio &gt;
           </span>{' '}
           <span
-            onClick={() => handleClick('nfts')}
+            onClick={() => handleClick('nfts/collection')}
             className="cursor text-[#4C4C4C] underline"
           >
             Collection Name &gt;

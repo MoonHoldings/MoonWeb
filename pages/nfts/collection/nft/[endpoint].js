@@ -5,13 +5,12 @@ import { useSelector } from 'react-redux'
 
 const nft = () => {
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
+  console.log('currentNft', currentNft)
+  console.log('currentCollection', currentCollection)
   // const { endpoint } = router.query
   // console.log('pid', pid)
-  // TODO temp
-  const attribute = {
-    type: 'background',
-    name: 'red',
-    percentage: '13',
+  const handleClick = (url) => {
+    router.push(`/${url}`)
   }
 
   return (
@@ -25,7 +24,7 @@ const nft = () => {
             NFT Portfolio &gt;
           </span>{' '}
           <span
-            onClick={() => handleClick('nfts')}
+            onClick={() => handleClick('nfts/collection')} // TODO < need to dynamically load previous collection
             className="cursor text-[#4C4C4C] underline"
           >
             {currentCollection.name} &gt;
@@ -54,7 +53,10 @@ const nft = () => {
                 <span>{currentCollection.name}</span>
               </div>
             </div>
-            {currentNft.attributes.length > 0 ? (
+            {/* TODO need to reload currentNft */}
+            {currentNft &&
+            currentNft.attributes &&
+            currentNft.attributes.length > 0 ? (
               <h1 className="mb-[2rem] mt-[2rem] text-[2rem]">Attributes</h1>
             ) : (
               ''
