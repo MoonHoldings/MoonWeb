@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
 
-const nft = () => {
+const Nft = () => {
   const router = useRouter()
   // const { pid } = router.query
   // console.log('pid', pid)
@@ -62,4 +62,4 @@ const nft = () => {
   )
 }
 
-export default nft
+export default Nft

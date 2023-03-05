@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-const index = () => {
+const Index = () => {
   const router = useRouter()
   const { currentCollection } = useSelector((state) => state.wallet)
 
@@ -45,4 +45,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index

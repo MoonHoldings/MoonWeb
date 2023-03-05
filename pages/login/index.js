@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLoginType, getUser, login } from 'redux/reducers/authSlice'
 
-const index = () => {
+const Index = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
@@ -117,4 +117,4 @@ border border-[#50545A] py-[1.1rem]"
   )
 }
 
-export default index
+export default Index

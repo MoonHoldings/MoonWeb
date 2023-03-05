@@ -1,9 +1,11 @@
 import React from 'react'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
+import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
 
-const nft = () => {
+const Nft = () => {
+  const router = useRouter()
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
   console.log('currentNft', currentNft)
   console.log('currentCollection', currentCollection)
@@ -73,4 +75,4 @@ const nft = () => {
   )
 }
 
-export default nft
+export default Nft
