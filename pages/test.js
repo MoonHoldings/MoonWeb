@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useSelector } from 'react-redux'
 // import { useTheme } from 'next-themes'
 
-const index = () => {
+const Index = () => {
   // const [mounted, setMounted] = useState(false)
   // const { theme, setTheme } = useTheme()
   const { status } = useSelector((state) => state.auth)
@@ -44,7 +44,7 @@ const index = () => {
   return (
     <div>
       {/* <button onClick={change}>change</button> */}
-      <h1 className="text-3xl font-bold underline text-red-500 dark:text-indigo-500">
+      <h1 className="text-3xl font-bold text-red-500 underline dark:text-indigo-500">
         Hello world!
       </h1>
       <h2>{status}</h2>
@@ -81,4 +81,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index

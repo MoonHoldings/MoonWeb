@@ -64,8 +64,8 @@ const Nft = () => {
               ''
             )}
             <div className="grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-              {currentNft.attributes?.map((attr) => (
-                <Attribute attribute={attr} />
+              {currentNft.attributes?.map((attr, i) => (
+                <Attribute key={i} attribute={attr} />
               ))}
             </div>
           </div>
