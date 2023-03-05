@@ -14,7 +14,7 @@ const CollectionCard = ({ collection }) => {
     if (collection.nfts) dispatch(insertCurrentCollection(collection))
 
     // if (addingNftImageStatus === 'successful') {
-    router.push('/collection')
+    router.push('/nfts/collection')
     // }
   }
   return (

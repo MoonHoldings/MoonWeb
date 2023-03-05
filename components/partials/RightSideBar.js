@@ -7,10 +7,12 @@ import {
 } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { removeWallet } from 'redux/reducers/walletSlice'
+import { removeAllWallets, removeWallet } from 'redux/reducers/walletSlice'
+import { useRouter } from 'next/router'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { disconnect } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   // const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
@@ -20,11 +22,26 @@ const RightSideBar = () => {
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
   }
+
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
   }
+
+  const removeSingleWallet = (wallet) => {
+    dispatch(removeWallet(wallet))
+
+    if (router.pathname !== '/nfts') {
+      router.push('/nfts')
+    }
+  }
+
   const disconnectWallets = () => {
     disconnect()
+    dispatch(removeAllWallets())
+
+    if (router.pathname !== '/nfts') {
+      router.push('/nfts')
+    }
   }
 
   const seeAllOrLessExchanges = () => {
@@ -279,7 +296,6 @@ const RightSideBar = () => {
             {allWallets.map((wallet, index) => (
               <li
                 key={index}
-                onClick={() => removeWallet(wallet)}
                 className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
               >
                 <img
@@ -289,7 +305,7 @@ const RightSideBar = () => {
                 />
                 {shrinkText(`${wallet}`)}
                 <button
-                  onClick={() => dispatch(removeWallet(wallet))}
+                  onClick={() => removeSingleWallet(wallet)}
                   className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
                 >
                   <span className="relative bottom-[0.1rem] font-poppins">
