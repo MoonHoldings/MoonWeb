@@ -16,7 +16,7 @@ import SidebarsLayout from 'components/nft/SidebarsLayout'
 //   ssr: false,
 // }) // fixes hydration
 
-const index = () => {
+const Index = () => {
   const dispatch = useDispatch()
   //   const { wallets } = useWallet()
   //   const [innerWidth, setInnerWidth] = useState(0)
@@ -72,4 +72,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index

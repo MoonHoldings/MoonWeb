@@ -11,6 +11,7 @@ const initialState = {
   allWallets: [],
   collections: [],
   currentCollection: {},
+  currentNft: {},
   singleNFT: {},
 }
 
@@ -21,6 +22,10 @@ const walletSlice = createSlice({
     populateWalletsAndCollections(state, action) {
       state.allWallets = action.payload.allWallets
       state.collections = action.payload.collections
+    },
+    populateCurrentNft(state, action) {
+      state.currentNft = { ...action.payload }
+      console.log(state.currentNft)
     },
     removeWallet(state, action) {
       // Remove all NFTs from Collections associated with wallet
@@ -54,6 +59,14 @@ const walletSlice = createSlice({
       }
       const encryptedText = encrypt(walletState)
       localStorage.setItem('walletState', encryptedText)
+    },
+    removeAllWallets(state, action) {
+      state.allWallets = []
+      state.collections = []
+      state.currentCollection = {}
+      state.singleNFT = {}
+
+      localStorage.removeItem('walletState')
     },
     changeAddAddressStatus(state, action) {
       state.addAddressStatus = action.payload
@@ -250,6 +263,8 @@ export const {
   populateWalletsAndCollections,
   removeWallet,
   changeAddAddressStatus,
+  removeAllWallets,
+  populateCurrentNft,
 } = walletSlice.actions
 
 export default walletSlice.reducer

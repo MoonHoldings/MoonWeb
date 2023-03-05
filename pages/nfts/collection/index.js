@@ -4,19 +4,12 @@ import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-const index = () => {
+const Index = () => {
   const router = useRouter()
   const { currentCollection } = useSelector((state) => state.wallet)
 
   const handleClick = (url) => {
     router.push(`/${url}`)
-  }
-
-  const handleSingleNFTClick = (index) => {
-    console.log('index of NFT', index)
-    // TODO Abeer to fix this
-    router.push(`/collection/nft`)
-    // router.push(`/collection/nft/${index}`)
   }
 
   useEffect(() => {
@@ -44,9 +37,7 @@ const index = () => {
     <CollectionCard key={card} />
   ))} */}
           {currentCollection.nfts?.map((nft, index) => (
-            <span key={index} onClick={() => handleSingleNFTClick(index)}>
-              <NFTCard key={index} nft={nft} />
-            </span>
+            <NFTCard key={index} nft={nft} />
           ))}
         </div>
       </div>
@@ -54,4 +45,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index
