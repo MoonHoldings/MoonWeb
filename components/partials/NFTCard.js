@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router'
 import React from 'react'
+import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import { populateCurrentNft } from 'redux/reducers/walletSlice'
 import endpointMaker from 'utils/endpointMaker'

@@ -1,9 +1,10 @@
 import React from 'react'
+import Image from 'next/image'
 
 const WelcomePage = () => {
   return (
     <div className="z-90 relative h-screen bg-black px-[2rem] pt-[8rem]">
-      <img
+      <Image
         className="absolute left-0 bottom-0 w-screen"
         src="/images/svgs/ufo-graphic.svg"
         alt=""
@@ -17,7 +18,7 @@ const WelcomePage = () => {
         <div>Compete.</div>
       </div>
       <p className="text-[1.6rem]">
-        MoonHolding’s purpose is to make investing engaging, not just for
+        MoonHolding's purpose is to make investing engaging, not just for
         current investors but for newcomers alike. We believe in utilizing
         atomic habits to make portfolio management obvious, attractive, and
         rewarding.

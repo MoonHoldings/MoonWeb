@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Image from 'next/image'
 import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
@@ -52,7 +53,7 @@ const AddWalletModal = () => {
         <div className="top-line mb-[1rem] flex justify-between py-[1rem]">
           <h1 className="text-[1.8rem] font-[700]">Add your Solana wallet</h1>
           <button onClick={closeModal}>
-            <img
+            <Image
               className="h-[2.2rem] w-[2.2rem]"
               src="/images/svgs/cross-btn.svg"
               alt="cross button"
@@ -62,7 +63,7 @@ const AddWalletModal = () => {
 
         {/* Search bar */}
         <div className="search mb-[1rem] grid h-[3.766rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem] xl:h-[6.4rem]">
-          <img
+          <Image
             className="h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/magnifyingglass.svg"
             alt=""
