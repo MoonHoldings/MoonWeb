@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
 import { useRouter } from 'next/router'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import decrypt from 'utils/decrypt'
+import { populateCurrentNft } from 'redux/reducers/walletSlice'
 
 const Nft = () => {
+  const dispatch = useDispatch()
   const router = useRouter()
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
   console.log('currentNft', currentNft)
@@ -13,6 +16,21 @@ const Nft = () => {
   // console.log('pid', pid)
   const handleClick = (url) => {
     router.push(`/${url}`)
+  }
+
+  useEffect(() => {
+    restoreNFT()
+  }, [])
+
+  const restoreNFT = () => {
+    const encryptedText = localStorage.getItem('walletState')
+    const decryptedObj = decrypt(encryptedText)
+
+    if (decryptedObj.currentNft) {
+      dispatch(populateCurrentNft(decryptedObj.currentNft))
+    } else {
+      router.push('/nfts/collection')
+    }
   }
 
   return (
