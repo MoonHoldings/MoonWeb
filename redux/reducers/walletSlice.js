@@ -107,7 +107,6 @@ export const addAddress = createAsyncThunk(
     Object.entries(AllState).forEach((st) => {
       state[st[0]] = st[1]
     })
-    console.log(state)
 
     try {
       const response = await axios.get(
@@ -120,9 +119,9 @@ export const addAddress = createAsyncThunk(
       // ? Add NFT update_authority to collection & Associate NFTs with wallet
       resCollections.forEach((collection) => {
         collection.wallet = walletAddress
-        collection.update_authority = collection.nfts[0].update_authority
 
         if (collection.nfts) {
+          collection.update_authority = collection.nfts[0].update_authority
           collection.nfts.forEach((nft) => {
             nft.wallet = walletAddress
             nft.image = ''
@@ -134,25 +133,34 @@ export const addAddress = createAsyncThunk(
         if (state.collections.length > 0) {
           //======= ? Add any new incoming collections into collections =======
           for (let i = 0; i < resCollections.length; i++) {
+            const thisResColl = resCollections[i]
+
             const recordIndex = state.collections.findIndex(
-              (el) => el.name === resCollections[i].name
+              (coll) => coll.name === thisResColl.name
             )
-            if (recordIndex !== -1) {
-              for (let x = 0; x < resCollections[i].nfts.length; x++) {
-                const matchedNftIndex = state.collections[
-                  recordIndex
-                ].nfts.findIndex(
-                  (nft) => nft.name === resCollections[i].nfts[x].name
+
+            if (recordIndex >= 0) {
+              let newNfts = []
+              let stateNfts = [...state.collections[recordIndex].nfts]
+              let resNfts = [...thisResColl.nfts]
+
+              for (let x = 0; x < resNfts.length; x++) {
+                const matchedIndex = stateNfts.findIndex(
+                  (n) => n.name === resNfts[x].name
                 )
-                if (matchedNftIndex === -1) {
-                  state.collections = [
-                    ...state.collections,
-                    resCollections[i].nfts[x],
-                  ]
+
+                if (matchedIndex === -1) {
+                  newNfts = [...newNfts, resNfts[x]]
                 }
               }
+
+              if (newNfts.length !== 0) {
+                stateNfts = [...stateNfts, ...newNfts]
+              }
+
+              state.collections[recordIndex].nfts = [...stateNfts]
             } else {
-              state.collections = [...state.collections, resCollections[i]]
+              state.collections = [...state.collections, thisResColl]
             }
           }
         } else {
@@ -160,7 +168,6 @@ export const addAddress = createAsyncThunk(
           state.collections = [...resCollections]
         }
       }
-      console.log('state.collections', state.collections)
 
       // ? Get collection image and unique wallets
       for (let i = 0; i < state.collections.length; i++) {
@@ -182,7 +189,7 @@ export const addAddress = createAsyncThunk(
         const currentWallet = state.collections[i].wallet
         state.allWallets = [...state.allWallets, currentWallet]
       }
-      console.log('state.collections', state.collections)
+
       state.allWallets = [...new Set(state.allWallets)]
 
       const walletState = {
