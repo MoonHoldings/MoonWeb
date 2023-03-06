@@ -26,6 +26,11 @@ const AddWalletModal = () => {
 
     // dispatch(changeAddWalletModalOpen(false))
   }
+  const handleWalletAddressInput = (event) => {
+    if (event.key === 'Enter') {
+      addWallet()
+    }
+  }
 
   useEffect(() => {
     if (addAddressStatus === 'successful' && addWalletModalOpen === true) {
@@ -67,6 +72,7 @@ const AddWalletModal = () => {
             type="text"
             placeholder="Wallet Address"
             onChange={(e) => setWalletAddress(e.target.value)}
+            onKeyUp={handleWalletAddressInput}
           />
         </div>
 

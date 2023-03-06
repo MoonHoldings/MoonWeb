@@ -2,9 +2,12 @@ import SidebarsLayout from 'components/nft/SidebarsLayout'
 import NFTCard from 'components/partials/NFTCard'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { populateCurrentCollection } from 'redux/reducers/walletSlice'
+import decrypt from 'utils/decrypt'
 
 const Index = () => {
+  const dispatch = useDispatch()
   const router = useRouter()
   const { currentCollection } = useSelector((state) => state.wallet)
 
@@ -13,8 +16,19 @@ const Index = () => {
   }
 
   useEffect(() => {
-    // if (currentCollection === {}) router.back()
+    restoreCurrentCollection()
   }, [])
+
+  const restoreCurrentCollection = () => {
+    const encryptedText = localStorage.getItem('walletState')
+    const decryptedObj = decrypt(encryptedText)
+
+    if (decryptedObj.currentCollection) {
+      dispatch(populateCurrentCollection(decryptedObj.currentCollection))
+    } else {
+      router.push('/nfts')
+    }
+  }
   return (
     <SidebarsLayout>
       <div className="mt-[2rem] text-white md:order-2">
