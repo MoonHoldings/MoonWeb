@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import Image from 'next/image'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
 import { useRouter } from 'next/router'
@@ -54,7 +55,7 @@ const Nft = () => {
 
         <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] md:grid-cols-2 md:gap-x-[1.3rem] md:gap-y-[1.5rem] xl:grid-cols-2">
           <div className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">
-            <img
+            <Image
               className="mb-[1rem] h-full w-full rounded-[1rem] object-cover xl:mb-[1.5rem]"
               src={currentNft.image}
               alt="NFT picture"

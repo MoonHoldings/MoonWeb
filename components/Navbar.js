@@ -3,6 +3,8 @@ import { MOON_HOLDINGS } from 'app/constants/copy'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import Link from 'next/link'
+import Image from 'next/image'
+
 import {
   changeLeftSideBarOpen,
   changeRightSideBarOpen,
@@ -33,14 +35,14 @@ const Navbar = () => {
       >
         {router.pathname === '/nfts' || router.pathname === '/collection' ? (
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white">
-            <img
+            <Image
               className="h-[1.3rem] w-[1.3rem]"
               src="/images/svgs/moon-holdings-logo-black.svg"
               alt=""
             />
           </div>
         ) : (
-          <img
+          <Image
             className="mr-[0.7rem] h-[2.6rem] w-[2.6rem]"
             src="/images/svgs/moon-holdings-logo-white.svg"
             alt=""
@@ -61,7 +63,7 @@ const Navbar = () => {
             '1',
         }}
       >
-        <img
+        <Image
           className="h-[2rem]"
           src="/images/svgs/hamburger-menu-white.svg"
           alt="Hamburger menu"
@@ -78,7 +80,7 @@ const Navbar = () => {
               '3',
           }}
         >
-          <img
+          <Image
             className="h-[2rem]"
             src="/images/svgs/wallet-white.svg"
             alt="Wallet"

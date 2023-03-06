@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   changeAddWalletModalOpen,
@@ -85,7 +86,7 @@ const RightSideBar = () => {
         {/* Header */}
         <div className="mt-[1rem] mb-[2.8rem] h-[4.6rem] md:hidden">
           <button onClick={leftArrowClick} className="float-right h-full">
-            <img
+            <Image
               className="h-[2.4rem] w-[2.4rem] rotate-180"
               src="/images/svgs/arrow-left.svg"
               alt="arrow left"
@@ -101,7 +102,7 @@ const RightSideBar = () => {
               $1,890,792
             </div>
             <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
-              <img
+              <Image
                 className="mr-[0.6rem] h-[2.4rem] w-[2.4rem]"
                 src="/images/svgs/growth-rate.svg"
                 alt="Growth Graph"
@@ -113,7 +114,7 @@ const RightSideBar = () => {
 
         {/* Search */}
         {/* <div className="search mb-[1rem] grid h-[3.766rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem] xl:h-[6.4rem]">
-          <img
+          <Image
             className="h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/magnifyingglass.svg"
             alt=""
@@ -131,7 +132,7 @@ const RightSideBar = () => {
             className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-white">
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
                 alt="Crypto"
@@ -139,7 +140,7 @@ const RightSideBar = () => {
               Connect Wallet
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <img
+              <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
@@ -151,7 +152,7 @@ const RightSideBar = () => {
             className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
                 alt="NFTs"
@@ -159,7 +160,7 @@ const RightSideBar = () => {
               Add Wallet Address
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <img
+              <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
@@ -168,7 +169,7 @@ const RightSideBar = () => {
           </li>
           {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
                 alt="NFTs"
@@ -176,7 +177,7 @@ const RightSideBar = () => {
               Add Exchanges
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <img
+              <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
@@ -185,7 +186,7 @@ const RightSideBar = () => {
           </li> */}
           <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] md:hidden">
             <div className="flex h-[4.1rem] w-full items-center text-white">
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/net.svg"
                 alt="Dashboard"
@@ -193,7 +194,7 @@ const RightSideBar = () => {
               Connected Wallets (6)
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <img
+              <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/right-bold-chevron.svg"
                 alt="Right Angle Bold Chevron"
@@ -202,7 +203,7 @@ const RightSideBar = () => {
           </li>
           {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] md:hidden">
             <div className="flex h-[4.1rem] w-full items-center text-white">
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/net.svg"
                 alt="Dashboard"
@@ -210,7 +211,7 @@ const RightSideBar = () => {
               Connected Exchanges (3)
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <img
+              <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/right-bold-chevron.svg"
                 alt="Right Angle Bold Chevron"
@@ -219,7 +220,7 @@ const RightSideBar = () => {
           </li> */}
           <li className="flex h-[6.4rem] cursor-pointer items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem] md:hidden">
             <div className="flex w-full items-center text-white">
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/power-off.svg"
                 alt="Dashboard"
@@ -248,7 +249,7 @@ const RightSideBar = () => {
               key={index}
               className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
             >
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/net.svg"
                 alt="NFTs"
@@ -259,7 +260,7 @@ const RightSideBar = () => {
         </ul>
         <div className="flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
           <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
-            <img
+            <Image
               className="mr-[1rem] h-[2rem] w-[2rem]"
               src="/images/svgs/net.svg"
               alt="NFTs"
@@ -267,7 +268,7 @@ const RightSideBar = () => {
             Disconnect Exchanges
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-            <img
+            <Image
               className="h-[0.8rem] w-[0.8rem]"
               src="/images/svgs/+.svg"
               alt="plus sign"
@@ -298,7 +299,7 @@ const RightSideBar = () => {
                 key={index}
                 className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
               >
-                <img
+                <Image
                   className="mr-[1rem] h-[2rem] w-[2rem]"
                   src="/images/svgs/wallet-white.svg"
                   alt="NFTs"
@@ -321,7 +322,7 @@ const RightSideBar = () => {
             className="flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
                 alt="NFTs"
@@ -329,7 +330,7 @@ const RightSideBar = () => {
               Disconnect Wallets
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <img
+              <Image
                 className="h-[0.8rem] w-[0.8rem] rotate-45"
                 src="/images/svgs/+.svg"
                 alt="plus sign"
