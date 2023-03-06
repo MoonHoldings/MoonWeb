@@ -1,5 +1,6 @@
 import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'app/constants/api'
 import axios from 'axios'
+import decrypt from 'utils/decrypt'
 import encrypt from 'utils/encrypt'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
@@ -22,6 +23,9 @@ const walletSlice = createSlice({
     populateWalletsAndCollections(state, action) {
       state.allWallets = action.payload.allWallets
       state.collections = action.payload.collections
+    },
+    populateCurrentCollection(state, action) {
+      state.currentCollection = action.payload
     },
     populateCurrentNft(state, action) {
       state.currentNft = { ...action.payload }
@@ -215,7 +219,7 @@ export const insertCurrentCollection = createAsyncThunk(
       for (let i = 0; i < collNfts.length; i++) {
         const response = await axios.get(`${collNfts[i].metadata_uri}`)
         const res = response.data
-        console.log('>>> res', res)
+
         mappedNfts.push({
           ...collNfts[i],
           image: res.image,
@@ -226,6 +230,12 @@ export const insertCurrentCollection = createAsyncThunk(
       }
 
       const finalCollection = { ...collection, nfts: mappedNfts }
+
+      const encryptedText = localStorage.getItem('walletState')
+      const decrypted = decrypt(encryptedText)
+      const newObj = { ...decrypted, currentCollection: { ...finalCollection } }
+      const encryptedNewObj = encrypt(newObj)
+      localStorage.setItem('walletState', encryptedNewObj)
 
       console.log('finalCollection', finalCollection)
 
@@ -271,6 +281,7 @@ export const {
   removeWallet,
   changeAddAddressStatus,
   removeAllWallets,
+  populateCurrentCollection,
   populateCurrentNft,
 } = walletSlice.actions
 
