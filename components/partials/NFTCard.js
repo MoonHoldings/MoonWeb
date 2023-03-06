@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import { populateCurrentNft } from 'redux/reducers/walletSlice'
@@ -23,7 +22,7 @@ const NFT = ({ nft }) => {
       onClick={nftClick}
       className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] xl:w-[23.8rem] xl:p-[1.5rem] xl:hover:border-[#62EAD2]"
     >
-      <Image
+      <img
         className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
         src={nft.image}
         alt="NFT picture"
@@ -41,7 +40,7 @@ const NFT = ({ nft }) => {
         {/* <div className="xl:flex xl:justify-between">
           <div className="mb-[0.4rem] flex items-center text-[1.2rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
             <div className="">48,200</div>
-            <Image
+            <img
               className="ml-2 inline xl:h-[2rem] xl:w-[2rem]"
               src="/images/svgs/sol-symbol.svg"
               alt="SOL Symbol"

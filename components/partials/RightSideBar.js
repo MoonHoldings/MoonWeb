@@ -89,6 +89,8 @@ const RightSideBar = () => {
             <Image
               className="h-[2.4rem] w-[2.4rem] rotate-180"
               src="/images/svgs/arrow-left.svg"
+              width="25"
+              height="24"
               alt="arrow left"
             />
           </button>
@@ -135,6 +137,8 @@ const RightSideBar = () => {
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
+                width="20"
+                height="20"
                 alt="Crypto"
               />
               Connect Wallet
@@ -143,6 +147,8 @@ const RightSideBar = () => {
               <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
+                width="11"
+                height="11"
                 alt="plus sign"
               />
             </div>
@@ -155,6 +161,8 @@ const RightSideBar = () => {
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
+                width="20"
+                height="20"
                 alt="NFTs"
               />
               Add Wallet Address
@@ -163,6 +171,8 @@ const RightSideBar = () => {
               <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/+.svg"
+                width="11"
+                height="11"
                 alt="plus sign"
               />
             </div>
@@ -189,6 +199,8 @@ const RightSideBar = () => {
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/net.svg"
+                width="20"
+                height="20"
                 alt="Dashboard"
               />
               Connected Wallets (6)
@@ -197,6 +209,8 @@ const RightSideBar = () => {
               <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/right-bold-chevron.svg"
+                width="9"
+                height="10"
                 alt="Right Angle Bold Chevron"
               />
             </div>
@@ -206,6 +220,8 @@ const RightSideBar = () => {
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/net.svg"
+                width="20"
+                height="20"
                 alt="Dashboard"
               />
               Connected Exchanges (3)
@@ -214,6 +230,8 @@ const RightSideBar = () => {
               <Image
                 className="h-[0.8rem] w-[0.8rem]"
                 src="/images/svgs/right-bold-chevron.svg"
+                width="9"
+                height="10"
                 alt="Right Angle Bold Chevron"
               />
             </div>
@@ -223,6 +241,8 @@ const RightSideBar = () => {
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/power-off.svg"
+                width="25"
+                height="25"
                 alt="Dashboard"
               />
               Logout
@@ -271,6 +291,8 @@ const RightSideBar = () => {
             <Image
               className="h-[0.8rem] w-[0.8rem]"
               src="/images/svgs/+.svg"
+              width="11"
+              height="11"
               alt="plus sign"
             />
           </button>
@@ -302,6 +324,8 @@ const RightSideBar = () => {
                 <Image
                   className="mr-[1rem] h-[2rem] w-[2rem]"
                   src="/images/svgs/wallet-white.svg"
+                  width="20"
+                  height="20"
                   alt="NFTs"
                 />
                 {shrinkText(`${wallet}`)}
@@ -325,6 +349,8 @@ const RightSideBar = () => {
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
+                width="20"
+                height="20"
                 alt="NFTs"
               />
               Disconnect Wallets
@@ -333,6 +359,8 @@ const RightSideBar = () => {
               <Image
                 className="h-[0.8rem] w-[0.8rem] rotate-45"
                 src="/images/svgs/+.svg"
+                width="11"
+                height="11"
                 alt="plus sign"
               />
             </div>

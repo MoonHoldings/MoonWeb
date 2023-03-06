@@ -32,6 +32,8 @@ const LeftSideBar = () => {
           <Image
             className="h-[2.5rem] w-[2.5rem]"
             src="/images/svgs/arrow-left.svg"
+            width="25"
+            height="24"
             alt="arrow left"
           />
         </button>
@@ -41,6 +43,8 @@ const LeftSideBar = () => {
             <Image
               className="h-[1.3rem] w-[1.3rem] xl:h-[2.25rem] xl:w-[2.25rem]"
               src="/images/svgs/moon-holdings-logo-black.svg"
+              width="40"
+              height="40"
               alt=""
             />
           </div>
@@ -87,6 +91,8 @@ const LeftSideBar = () => {
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/image.svg"
+                width="25"
+                height="21"
                 alt="NFTs"
               />
               NFTs
@@ -165,6 +171,8 @@ const LeftSideBar = () => {
           <div className="flex items-center">
             <Image
               src="/images/svgs/rank-symbol.svg"
+              width="25"
+              height="25"
               className="mr-[1rem] h-[4rem] w-[4rem]"
               alt="Rank Symbol"
             />
@@ -187,6 +195,8 @@ const LeftSideBar = () => {
             <Image
               className="h-[1.5rem] w-[1.5rem]"
               src="/images/svgs/gear.svg"
+              width="16"
+              height="16"
               alt=""
             />
           </button>

@@ -45,7 +45,7 @@ const Index = () => {
     if (loginType !== 'local') {
       dispatch(getUser())
     }
-  }, [loginSuccess, loginType])
+  }, [dispatch, user, loginSuccess, loginType])
 
   return (
     <div className="flex h-screen flex-col items-center bg-black pt-[4.6rem]">

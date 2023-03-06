@@ -39,12 +39,16 @@ const Navbar = () => {
               className="h-[1.3rem] w-[1.3rem]"
               src="/images/svgs/moon-holdings-logo-black.svg"
               alt=""
+              width="40"
+              height="40"
             />
           </div>
         ) : (
           <Image
             className="mr-[0.7rem] h-[2.6rem] w-[2.6rem]"
             src="/images/svgs/moon-holdings-logo-white.svg"
+            width="40"
+            height="40"
             alt=""
           />
         )}
@@ -67,6 +71,8 @@ const Navbar = () => {
           className="h-[2rem]"
           src="/images/svgs/hamburger-menu-white.svg"
           alt="Hamburger menu"
+          width="29"
+          height="20"
         />
       </button>
 
@@ -83,6 +89,8 @@ const Navbar = () => {
           <Image
             className="h-[2rem]"
             src="/images/svgs/wallet-white.svg"
+            width="20"
+            height="20"
             alt="Wallet"
           />
         </button>

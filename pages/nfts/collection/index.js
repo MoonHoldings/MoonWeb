@@ -17,7 +17,7 @@ const Index = () => {
 
   useEffect(() => {
     restoreCurrentCollection()
-  }, [])
+  }, [dispatch, router])
 
   const restoreCurrentCollection = () => {
     const encryptedText = localStorage.getItem('walletState')
@@ -29,6 +29,7 @@ const Index = () => {
       router.push('/nfts')
     }
   }
+
   return (
     <SidebarsLayout>
       <div className="mt-[2rem] text-white md:order-2">
