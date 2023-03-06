@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLoginType, signup } from 'redux/reducers/authSlice'
@@ -107,12 +108,12 @@ border border-[#50545A] py-[1.1rem]"
       </div>
 
       <div className="flex justify-center">
-        <img
+        <Image
           src="/images/gifs/moon-holdings-banner-wide.gif"
           alt=""
           className="z-{25} fixed bottom-0 hidden w-full max-w-[144rem] md:-bottom-[5rem] md:block md:w-full lg:-bottom-[8rem]"
         />
-        <img
+        <Image
           src="/images/gifs/moon-holdings-banner-cropped.gif"
           alt=""
           className="z-{25} fixed bottom-0 w-full max-w-[144rem] md:hidden"

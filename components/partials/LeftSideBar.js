@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -28,18 +29,22 @@ const LeftSideBar = () => {
       {/* Header */}
       <div className="mt-[1rem] mb-[4.6rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
         <button onClick={leftArrowClick} className="h-full xl:hidden">
-          <img
+          <Image
             className="h-[2.5rem] w-[2.5rem]"
             src="/images/svgs/arrow-left.svg"
+            width="25"
+            height="24"
             alt="arrow left"
           />
         </button>
 
         <div className="flex items-center">
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white xl:h-[4rem] xl:w-[4rem]">
-            <img
+            <Image
               className="h-[1.3rem] w-[1.3rem] xl:h-[2.25rem] xl:w-[2.25rem]"
               src="/images/svgs/moon-holdings-logo-black.svg"
+              width="40"
+              height="40"
               alt=""
             />
           </div>
@@ -49,7 +54,7 @@ const LeftSideBar = () => {
         </div>
 
         {/* <button className="h-full">
-          <img
+          <Image
             className="h-[2.4rem] w-[2.4rem] xl:h-[2.5rem] xl:w-[2.5rem]"
             src="/images/svgs/theme-btn.svg"
             alt="theme button"
@@ -59,7 +64,7 @@ const LeftSideBar = () => {
       {/* Menu Options */}
       <div className="sidebar-menu px-[1.7rem] text-[1.4rem] font-medium xl:px-[1.5rem]">
         {/* <button className="mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] text-[#666666] xl:mb-[2rem]">
-          <img
+          <Image
             className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
             src="/images/svgs/dashboard.svg"
             alt="Dashboard"
@@ -70,7 +75,7 @@ const LeftSideBar = () => {
         <ul className="dashboard-menu">
           {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#62EAD2]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/crypto.svg"
                 alt="Crypto"
@@ -83,9 +88,11 @@ const LeftSideBar = () => {
               onClick={() => handleClick('nfts')}
               className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
             >
-              <img
+              <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/image.svg"
+                width="25"
+                height="21"
                 alt="NFTs"
               />
               NFTs
@@ -93,7 +100,7 @@ const LeftSideBar = () => {
           </li>
           {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/calendar.svg"
                 alt="Dashboard"
@@ -103,7 +110,7 @@ const LeftSideBar = () => {
           </li>
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/ranks.svg"
                 alt="Dashboard"
@@ -114,7 +121,7 @@ const LeftSideBar = () => {
           </li>
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/insights.svg"
                 alt="Insights"
@@ -124,7 +131,7 @@ const LeftSideBar = () => {
           </li>
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/file.svg"
                 alt="Taxes"
@@ -137,7 +144,7 @@ const LeftSideBar = () => {
           </li>
           <li className="mb-[1rem] hidden px-[1.6rem] xl:mb-[2rem] xl:block">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2.5rem] w-[2.5rem]"
                 src="/images/svgs/gear.svg"
                 alt="Taxes"
@@ -147,7 +154,7 @@ const LeftSideBar = () => {
           </li>
           <li className="hidden px-[1.6rem] xl:block">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <img
+              <Image
                 className="mr-[1rem] h-[2.5rem] w-[2.5rem]"
                 src="/images/svgs/exit.svg"
                 alt="Taxes"
@@ -162,8 +169,10 @@ const LeftSideBar = () => {
       <div className="profile-info absolute bottom-1 w-full">
         {/* <div className="mx-[1.7rem] mb-[1.2rem] hidden h-[5.6rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] px-[1.4rem] xl:mx-[1.5rem] xl:flex xl:w-[calc(100%-3rem)] xl:bg-[#342B25] xl:px-[1.6rem]">
           <div className="flex items-center">
-            <img
+            <Image
               src="/images/svgs/rank-symbol.svg"
+              width="25"
+              height="25"
               className="mr-[1rem] h-[4rem] w-[4rem]"
               alt="Rank Symbol"
             />
@@ -183,9 +192,11 @@ const LeftSideBar = () => {
             </div>
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
-            <img
+            <Image
               className="h-[1.5rem] w-[1.5rem]"
               src="/images/svgs/gear.svg"
+              width="16"
+              height="16"
               alt=""
             />
           </button>
