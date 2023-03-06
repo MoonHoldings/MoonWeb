@@ -29,7 +29,12 @@ const walletSlice = createSlice({
     },
     populateCurrentNft(state, action) {
       state.currentNft = { ...action.payload }
-      console.log(state.currentNft)
+
+      const encryptedText = localStorage.getItem('walletState')
+      const decrypted = decrypt(encryptedText)
+      const newObj = { ...decrypted, currentNft: { ...action.payload } }
+      const newEncryptedObj = encrypt(newObj)
+      localStorage.setItem('walletState', newEncryptedObj)
     },
     removeWallet(state, action) {
       // Remove all NFTs from Collections associated with wallet
@@ -266,8 +271,6 @@ export const insertSingleNFT = createAsyncThunk(
       }
 
       const singleNFT = { ...collection, nfts: mappedNfts }
-
-      console.log('singleNFT', singleNFT)
 
       return singleNFT
     } catch (error) {

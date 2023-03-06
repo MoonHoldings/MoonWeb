@@ -23,8 +23,6 @@ const Index = () => {
     const encryptedText = localStorage.getItem('walletState')
     const decryptedObj = decrypt(encryptedText)
 
-    console.log('decryptedObj', decryptedObj)
-
     if (decryptedObj.currentCollection) {
       dispatch(populateCurrentCollection(decryptedObj.currentCollection))
     } else {
