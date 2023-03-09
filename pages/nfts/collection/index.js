@@ -16,19 +16,18 @@ const Index = () => {
   }
 
   useEffect(() => {
+    const restoreCurrentCollection = () => {
+      const encryptedText = localStorage.getItem('walletState')
+      const decryptedObj = decrypt(encryptedText)
+
+      if (decryptedObj.currentCollection) {
+        dispatch(populateCurrentCollection(decryptedObj.currentCollection))
+      } else {
+        router.push('/nfts')
+      }
+    }
     restoreCurrentCollection()
   }, [dispatch, router])
-
-  const restoreCurrentCollection = () => {
-    const encryptedText = localStorage.getItem('walletState')
-    const decryptedObj = decrypt(encryptedText)
-
-    if (decryptedObj.currentCollection) {
-      dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-    } else {
-      router.push('/nfts')
-    }
-  }
 
   return (
     <SidebarsLayout>

@@ -59,8 +59,8 @@ const AddWalletModal = () => {
               className="h-[2.2rem] w-[2.2rem]"
               src="/images/svgs/cross-btn.svg"
               alt="cross button"
-              width={22}
-              height={22}
+              width={20}
+              height={20}
             />
           </button>
         </div>
@@ -70,9 +70,9 @@ const AddWalletModal = () => {
           <Image
             className="h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/magnifyingglass.svg"
-            alt=""
             width={16}
             height={16}
+            alt=""
           />
           <input
             className="border-none bg-transparent outline-none placeholder:text-[#61DAE9]"

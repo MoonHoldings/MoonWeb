@@ -1,37 +1,34 @@
 import React, { useEffect } from 'react'
-import SidebarsLayout from 'components/nft/SidebarsLayout'
-import Attribute from 'components/partials/AttributeBox'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import decrypt from 'utils/decrypt'
+
 import { populateCurrentNft } from 'redux/reducers/walletSlice'
+import SidebarsLayout from 'components/nft/SidebarsLayout'
+import Attribute from 'components/partials/AttributeBox'
 
 const Nft = () => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
-  console.log('currentNft', currentNft)
-  console.log('currentCollection', currentCollection)
-  // const { endpoint } = router.query
-  // console.log('pid', pid)
-  const handleClick = (url) => {
-    router.push(`/${url}`)
-  }
+  // console.log('currentNft', currentNft)
+  // console.log('currentCollection', currentCollection)
+  const handleClick = (url) => router.push(`/${url}`)
 
   useEffect(() => {
-    restoreNFT()
-  }, [])
+    const restoreNFT = () => {
+      const encryptedText = localStorage.getItem('walletState')
+      const decryptedObj = decrypt(encryptedText)
 
-  const restoreNFT = () => {
-    const encryptedText = localStorage.getItem('walletState')
-    const decryptedObj = decrypt(encryptedText)
-
-    if (decryptedObj.currentNft) {
-      dispatch(populateCurrentNft(decryptedObj.currentNft))
-    } else {
-      router.push('/nfts/collection')
+      if (decryptedObj.currentNft) {
+        dispatch(populateCurrentNft(decryptedObj.currentNft))
+      } else {
+        router.push('/nfts/collection')
+      }
     }
-  }
+
+    restoreNFT()
+  }, [dispatch, router])
 
   return (
     <SidebarsLayout>
@@ -57,6 +54,8 @@ const Nft = () => {
             <img
               className="mb-[1rem] h-full w-full rounded-[1rem] object-cover xl:mb-[1.5rem]"
               src={currentNft.image}
+              width="342"
+              height="444"
               alt="NFT picture"
             />
           </div>

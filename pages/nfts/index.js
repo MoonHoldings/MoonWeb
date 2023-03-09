@@ -27,27 +27,29 @@ const Index = () => {
   //     addWalletModalOpen,
   //   } = useSelector((state) => state.util)
   const { collections, allWallets } = useSelector((state) => state.wallet)
+
   useEffect(() => {
     //     setInnerWidth(window.innerWidth)
     //     window.addEventListener('resize', windowResize)
+    const restoreWallet = () => {
+      const walletStateDecrypted = localStorage.getItem('walletState')
+      if (walletStateDecrypted && allWallets.length === 0) {
+        const walletState = decrypt(walletStateDecrypted)
+        dispatch(
+          populateWalletsAndCollections({
+            allWallets: walletState.allWallets,
+            collections: walletState.collections,
+          })
+        )
+      }
+    }
+
     restoreWallet()
-  }, [])
+  }, [allWallets.length, dispatch])
   //   //   if (publicKey) {
   //   //     dispatch(addAddress(publicKey.toBase58()))
   //   //   }
   //   // }, [publicKey])
-  const restoreWallet = () => {
-    const walletStateDecrypted = localStorage.getItem('walletState')
-    if (walletStateDecrypted && allWallets.length === 0) {
-      const walletState = decrypt(walletStateDecrypted)
-      dispatch(
-        populateWalletsAndCollections({
-          allWallets: walletState.allWallets,
-          collections: walletState.collections,
-        })
-      )
-    }
-  }
   //   const windowResize = () => {
   //     setInnerWidth(window.innerWidth)
   //   }
