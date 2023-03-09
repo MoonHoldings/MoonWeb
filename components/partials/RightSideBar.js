@@ -140,6 +140,7 @@ const RightSideBar = () => {
           <ContextProvider>
             <li>
               <WalletMultiButton />
+              <WalletDisconnectButton />
             </li>
           </ContextProvider>
           <li

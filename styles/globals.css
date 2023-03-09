@@ -47,3 +47,28 @@ body {
 .cursor {
   cursor: pointer;
 }
+
+/* Solana wallet adaptor */
+.wallet-adapter-modal-container {
+  position: absolute;
+  top: 0;
+  z-index: 100;
+}
+
+.wallet-adapter-modal-wrapper {
+}
+
+.wallet-adapter-modal-button-close {
+}
+
+.wallet-adapter-modal-title {
+}
+
+.wallet-adapter-modal-list {
+}
+
+.wallet-adapter-button {
+}
+
+.wallet-adapter-button-start-icon {
+}
