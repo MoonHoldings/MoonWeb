@@ -10,7 +10,6 @@ const CollectionCard = ({ collection }) => {
   const { addingNftImageStatus } = useSelector((state) => state.wallet)
 
   const collectionClick = () => {
-    console.log('collection', collection)
     if (collection.nfts) dispatch(insertCurrentCollection(collection))
 
     // if (addingNftImageStatus === 'successful') {
