@@ -1,15 +1,23 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import { motion } from 'framer-motion'
+import { useWallet } from '@solana/wallet-adapter-react'
+import {
+  WalletDisconnectButton,
+  WalletMultiButton,
+} from '@solana/wallet-adapter-react-ui'
+
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
-import { motion } from 'framer-motion'
-import { useWallet } from '@solana/wallet-adapter-react'
+
 import { removeAllWallets, removeWallet } from 'redux/reducers/walletSlice'
-import { useRouter } from 'next/router'
+
+import { ContextProvider } from '../../contexts/ContextProvider'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -129,6 +137,11 @@ const RightSideBar = () => {
         </div> */}
 
         <ul className="dashboard-menu text-[1.4rem] ">
+          <ContextProvider>
+            <li>
+              <WalletMultiButton />
+            </li>
+          </ContextProvider>
           <li
             onClick={connectWallet}
             className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
