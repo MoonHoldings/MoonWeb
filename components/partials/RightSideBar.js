@@ -87,9 +87,9 @@ const RightSideBar = () => {
     return (
       <li
         onClick={publicKey ? disconnect : connectWallet}
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
       >
-        <div className="flex h-[4.1rem] w-full items-center text-white">
+        <div className="flex h-[4.1rem] w-full items-center">
           <Image
             className="mr-[1rem] h-[2rem] w-[2rem]"
             src="/images/svgs/wallet-white.svg"
@@ -177,9 +177,9 @@ const RightSideBar = () => {
           {renderConnectWallet()}
           <li
             onClick={addWalletAddress}
-            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
           >
-            <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
+            <div className="flex h-[4.1rem] w-full items-center">
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
