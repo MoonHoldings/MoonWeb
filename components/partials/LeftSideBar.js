@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
+import { MOON_HOLDINGS } from 'app/constants/copy'
 
 const LeftSideBar = () => {
   const router = useRouter()
@@ -49,7 +50,7 @@ const LeftSideBar = () => {
             />
           </div>
           <div className="text-[1.6rem] font-semibold text-[#A6A6A6] xl:text-[1.4rem] xl:font-medium">
-            MoonHoldings
+            {MOON_HOLDINGS}
           </div>
         </div>
 
