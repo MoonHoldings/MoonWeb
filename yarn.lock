@@ -4798,7 +4798,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^12.2.0":
+"cypress@npm:^12.7.0":
   version: 12.7.0
   resolution: "cypress@npm:12.7.0"
   dependencies:
@@ -8674,7 +8674,7 @@ __metadata:
     axios: ^1.2.2
     babel-plugin-inline-react-svg: ^2.0.1
     crypto-js: ^4.1.1
-    cypress: ^12.2.0
+    cypress: ^12.7.0
     eslint: ^8.30.0
     eslint-config-next: 13.1.0
     eslint-config-prettier: ^8.5.0

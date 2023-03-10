@@ -29,7 +29,11 @@ const LeftSideBar = () => {
     >
       {/* Header */}
       <div className="mt-[1rem] mb-[4.6rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
-        <button onClick={leftArrowClick} className="h-full xl:hidden">
+        <button
+          onClick={leftArrowClick}
+          id="btn-left-sidebar-arrow"
+          className="h-full xl:hidden"
+        >
           <Image
             className="h-[2.5rem] w-[2.5rem]"
             src="/images/svgs/arrow-left.svg"
@@ -86,6 +90,7 @@ const LeftSideBar = () => {
           </li> */}
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button
+              id="btn-nft-portfolio"
               onClick={() => handleClick('nfts')}
               className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
             >

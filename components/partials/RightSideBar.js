@@ -159,7 +159,10 @@ const RightSideBar = () => {
             onClick={addWalletAddress}
             className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
-            <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
+            <div
+              id="btn-add-wallet-address"
+              className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
+            >
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"

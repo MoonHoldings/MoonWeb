@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
-import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
+
+import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
+import { ADD_WALLET } from 'app/constants/copy'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
@@ -84,6 +86,7 @@ const AddWalletModal = () => {
         </div>
 
         <button
+          id="btn-add-wallet"
           onClick={addWallet}
           disabled={addAddressStatus === 'loading' ? 'disabled' : undefined}
           className="spinner h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500]"
@@ -101,7 +104,7 @@ const AddWalletModal = () => {
               Processing...
             </>
           ) : (
-            <>Add Wallet</>
+            <>{ADD_WALLET}</>
           )}
         </button>
       </div>
