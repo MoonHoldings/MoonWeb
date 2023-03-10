@@ -86,7 +86,7 @@ const RightSideBar = () => {
 
     return (
       <li
-        onClick={publicKey ? disconnect : connectWallet}
+        onClick={publicKey ? disconnectWallets : connectWallet}
         className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
       >
         <div className="flex h-[4.1rem] w-full items-center">
@@ -168,13 +168,8 @@ const RightSideBar = () => {
         </div> */}
 
         <ul className="dashboard-menu text-[1.4rem] ">
-          {/* <ContextProvider>
-            <li>
-              <WalletMultiButton />
-              <WalletDisconnectButton />
-            </li>
-          </ContextProvider> */}
           {renderConnectWallet()}
+
           <li
             onClick={addWalletAddress}
             className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
