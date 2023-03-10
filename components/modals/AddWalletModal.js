@@ -41,7 +41,7 @@ const AddWalletModal = () => {
 
       dispatch(changeAddAddressStatus('idle'))
     }
-  }, [addAddressStatus])
+  }, [addWalletModalOpen, addAddressStatus, dispatch])
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
