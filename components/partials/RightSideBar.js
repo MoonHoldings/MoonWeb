@@ -129,7 +129,7 @@ const RightSideBar = () => {
         </div> */}
 
         <ul className="dashboard-menu text-[1.4rem] ">
-          <li
+          {/* <li
             onClick={connectWallet}
             className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
           >
@@ -152,7 +152,7 @@ const RightSideBar = () => {
                 alt="plus sign"
               />
             </div>
-          </li>
+          </li> */}
           <li
             onClick={addWalletAddress}
             className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
