@@ -9,8 +9,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { populateWalletsAndCollections } from 'redux/reducers/walletSlice'
 import decrypt from 'utils/decrypt'
 import Collections from 'components/partials/Collections'
-
 import SidebarsLayout from 'components/nft/SidebarsLayout'
+
+import {
+  ADD_WALLET_ADDRESSES,
+  CONNECT_WALLET,
+  PLEASE_SELECT,
+  START_CONNECTING_WALLETS,
+  WELCOME_MOON_HOLDINGS,
+} from 'app/constants/copy'
 
 // const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
 //   ssr: false,
@@ -57,14 +64,13 @@ const Index = () => {
     <SidebarsLayout>
       {allWallets.length === 0 ? (
         <div className="welcome-message mt-[10rem] text-[1.6rem] font-semibold text-white md:order-2 md:mt-[15rem]">
-          <h1 className="text-[2.2rem] font-bold">Welcome to MoonHoldings</h1>
-          <p className="mb-[2rem]">
-            Let's start by connecting wallets to pull in your NFTs.
-          </p>
+          <h1 className="text-[2.2rem] font-bold">{WELCOME_MOON_HOLDINGS}</h1>
+          <p className="mb-[2rem]">{START_CONNECTING_WALLETS}</p>
           <p>
-            Please select <span className="text-[#62EAD2]">Connect Wallet</span>
-            , or to connect multiple wallets{' '}
-            <span className="text-[#62EAD2]">Add Wallet Addresses</span>.
+            {PLEASE_SELECT}{' '}
+            <span className="text-[#62EAD2]">{CONNECT_WALLET}</span>, or to
+            connect multiple wallets{' '}
+            <span className="text-[#62EAD2]">{ADD_WALLET_ADDRESSES}</span>.
           </p>
         </div>
       ) : (
