@@ -1,10 +1,11 @@
 import React from 'react'
 import CollectionCard from './CollectionCard'
+import { NFT_PORTFOLIO } from 'app/constants/copy'
 
 const Collections = ({ collections }) => {
   return (
     <div className="nft-portfolio mt-[2rem] text-white md:order-2">
-      <h1 className="text-[2.9rem]">NFT Portfolio</h1>
+      <h1 className="text-[2.9rem]">{NFT_PORTFOLIO}</h1>
       <p className="mb-[4.8rem] text-[1.6rem]">
         You have <u>20</u> collections containing <u>125</u> NFTs
       </p>

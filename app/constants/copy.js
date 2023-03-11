@@ -1,1 +1,10 @@
-export const MOON_HOLDINGS = 'Moon Holdings'
+export const MOON_HOLDINGS = 'MoonHoldings'
+export const WELCOME_MOON_HOLDINGS = 'Welcome to MoonHoldings'
+export const START_CONNECTING_WALLETS = `Let's start by connecting wallets to pull in your NFTs.`
+export const PLEASE_SELECT = 'Please select'
+export const CRYPTO_PORTFOLIO = 'Crypto Portfolio'
+export const NFT_PORTFOLIO = 'NFT Portfolio'
+export const ADD_WALLET_ADDRESS = 'Add Wallet Address'
+export const CONNECTED_WALLETS = 'Connected Wallets'
+export const CONNECT_WALLET = 'Connect Wallet'
+export const ADD_WALLET_ADDRESSES = 'Add Wallet Addresses'
