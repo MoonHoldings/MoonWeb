@@ -6,7 +6,7 @@ import { changeWalletsModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 
 const WalletsModal = () => {
-  const { wallets, select } = useWallet()
+  const { wallets, select, publicKey } = useWallet()
   const dispatch = useDispatch()
 
   const walletBtnClick = (walletName) => {
@@ -17,6 +17,8 @@ const WalletsModal = () => {
   const closeWalletsModal = () => {
     dispatch(changeWalletsModalOpen(false))
   }
+
+  const getWalletAddress = () => {}
 
   return (
     <motion.div
@@ -41,23 +43,21 @@ const WalletsModal = () => {
         </button>
         <h1 className="mb-[1rem] text-center text-[2rem]">Wallets</h1>
         <div className="flex flex-col items-center">
-          {wallets
-            .filter((wallet) => wallet.readyState === 'Installed')
-            .map((wallet, index) => (
-              <button
-                key={index}
-                onClick={() => walletBtnClick(wallet.adapter.name)}
-                className="flex w-full justify-center rounded-[0.5rem] bg-[#2F3640] py-[0.8rem] px-[2rem] text-[1.5rem] [&:not(:last-child)]:mb-[1rem]"
-              >
-                <Image
-                  src={wallet.adapter.icon}
-                  alt={wallet.adapter.name}
-                  width={22}
-                  height={22}
-                />
-                <span className="ml-[1rem]">{wallet.adapter.name}</span>
-              </button>
-            ))}
+          {wallets.map((wallet, index) => (
+            <button
+              key={index}
+              onClick={() => walletBtnClick(wallet.adapter.name)}
+              className="flex w-full justify-center rounded-[0.5rem] bg-[#2F3640] py-[0.8rem] px-[2rem] text-[1.5rem] [&:not(:last-child)]:mb-[1rem]"
+            >
+              <Image
+                src={wallet.adapter.icon}
+                alt={wallet.adapter.name}
+                width={22}
+                height={22}
+              />
+              <span className="ml-[1rem]">{wallet.adapter.name}</span>
+            </button>
+          ))}
         </div>
       </div>
     </motion.div>

@@ -174,13 +174,41 @@ export const addAddress = createAsyncThunk(
       // ? Get collection image and unique wallets
       for (let i = 0; i < collections.length; i++) {
         if (!collections[i].image && collections[i].nfts) {
-          const fetchResponse = await axios.get(
-            `${collections[i].nfts[0].metadata_uri}`
-          )
-          const fetchRes = fetchResponse.data
-          collections[i].image = fetchRes.image
-          collections[i].description = fetchRes.description
-          collections[i].collection = fetchRes.collection
+          let skipableNfts = []
+          let fetchRes
+
+          for (let y = 0; y < collections[i].nfts[y]; y++) {
+            try {
+              const fetchResponse = await axios.get(
+                `${collections[i].nfts[y].metadata_uri}`
+              )
+
+              if (!fetchRes) fetchRes = fetchResponse.data
+            } catch (error) {
+              skipableNfts = [...skipableNfts, collections[i].nfts[y]]
+            }
+          }
+          const filteredNfts = collections[i].nfts.filter((nft) => {
+            const doesExist = skipableNfts.some((sn) => sn.name === nft.name)
+
+            return !doesExist
+          })
+
+          collections[i] = {
+            ...collections[i],
+            nfts: [...filteredNfts],
+          }
+
+          if (fetchRes) {
+            collections[i].image = fetchRes.image
+            collections[i].description = fetchRes.description
+            collections[i].collection = fetchRes.collection
+          } else {
+            collections[i].image = ''
+            collections[i].description = ''
+            collections[i].collection = {}
+          }
+
           collections[i].nfts.forEach((nft) => {
             if (!nft.collection) nft = { ...nft, collection: {} }
           })
