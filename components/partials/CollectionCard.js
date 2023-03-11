@@ -17,9 +17,10 @@ const CollectionCard = ({ collection }) => {
     // }
   }
   return (
+    // removed xl:w-[23.8rem] xl:p-[1.5rem]
     <div
       onClick={collectionClick}
-      className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] xl:w-[23.8rem] xl:p-[1.5rem] xl:hover:border-[#62EAD2]"
+      className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2]  xl:hover:border-[#62EAD2]"
     >
       {collection.name === 'unknown' ? (
         <img

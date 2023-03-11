@@ -31,7 +31,9 @@ const SidebarsLayout = ({ children }) => {
       <AnimatePresence>
         {addWalletModalOpen && <AddWalletModal />}
       </AnimatePresence>
-      <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:max-w-[144rem] xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
+
+      {/* removed xl:max-w-[144rem] */}
+      <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid  xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
         <AnimatePresence>
           {leftSideBarOpen === true && innerWidth < 1280 ? <LeftSideBar /> : ''}
           {rightSideBarOpen === true &&
