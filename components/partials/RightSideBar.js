@@ -16,7 +16,7 @@ import { ADD_WALLET_ADDRESS, CONNECTED_WALLETS } from 'app/constants/copy'
 const RightSideBar = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { disconnect } = useWallet()
+  const { disconnect, publicKey } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   // const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
 
@@ -75,6 +75,45 @@ const RightSideBar = () => {
     return `${firstSlice}...${lastSlice}`
   }
 
+  const renderConnectWallet = () => {
+    const parseAddress = (address) => {
+      const _address = address.toBase58()
+
+      return (
+        _address.substring(0, 4) +
+        '...' +
+        _address.substring(_address.length - 4)
+      )
+    }
+
+    return (
+      <li
+        onClick={publicKey ? disconnectWallets : connectWallet}
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+      >
+        <div className="flex h-[4.1rem] w-full items-center">
+          <Image
+            className="mr-[1rem] h-[2rem] w-[2rem]"
+            src="/images/svgs/wallet-white.svg"
+            width="20"
+            height="20"
+            alt="Crypto"
+          />
+          {publicKey ? parseAddress(publicKey) : 'Connect Wallet'}
+        </div>
+        <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+          <Image
+            className="h-[0.8rem] w-[0.8rem] rotate-90"
+            src={publicKey ? '/images/svgs/x.svg' : '/images/svgs/+.svg'}
+            width="12"
+            height="12"
+            alt="plus sign"
+          />
+        </div>
+      </li>
+    )
+  }
+
   return (
     <motion.div
       className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
@@ -131,38 +170,13 @@ const RightSideBar = () => {
         </div> */}
 
         <ul className="dashboard-menu text-[1.4rem] ">
-          <li
-            onClick={connectWallet}
-            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
-          >
-            <div className="flex h-[4.1rem] w-full items-center text-white">
-              <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/wallet-white.svg"
-                width="20"
-                height="20"
-                alt="Crypto"
-              />
-              Connect Wallet
-            </div>
-            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <Image
-                className="h-[0.8rem] w-[0.8rem]"
-                src="/images/svgs/+.svg"
-                width="11"
-                height="11"
-                alt="plus sign"
-              />
-            </div>
-          </li>
+          {renderConnectWallet()}
+
           <li
             onClick={addWalletAddress}
-            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
           >
-            <div
-              id="btn-add-wallet-address"
-              className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
-            >
+            <div className="flex h-[4.1rem] w-full items-center">
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
                 src="/images/svgs/wallet-white.svg"
