@@ -53,12 +53,13 @@ const Navbar = () => {
           />
         )}
 
-        <div className="font-poppins text-[1.6rem] font-bold text-white">
+        <div className="mobile-top-bar font-poppins text-[1.6rem] font-bold text-white">
           {MOON_HOLDINGS}
         </div>
       </Link>
 
       <button
+        id="btn-hamburger"
         onClick={clickHamburgerMenu}
         style={{
           order:
@@ -78,6 +79,7 @@ const Navbar = () => {
 
       {(router.pathname === '/nfts' || router.pathname === '/collection') && (
         <button
+          id="btn-wallet-mobile"
           onClick={clickWallet}
           style={{
             order:

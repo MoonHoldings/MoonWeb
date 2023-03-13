@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
-import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
+
+import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
+import { ADD_WALLET } from 'app/constants/copy'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
@@ -41,7 +43,7 @@ const AddWalletModal = () => {
 
       dispatch(changeAddAddressStatus('idle'))
     }
-  }, [addAddressStatus])
+  }, [addWalletModalOpen, addAddressStatus, dispatch])
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
@@ -70,11 +72,9 @@ const AddWalletModal = () => {
           <Image
             className="h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/magnifyingglass.svg"
-            width="17"
-            height="17"
-            alt=""
             width={16}
             height={16}
+            alt=""
           />
           <input
             className="border-none bg-transparent outline-none placeholder:text-[#61DAE9]"
@@ -86,6 +86,7 @@ const AddWalletModal = () => {
         </div>
 
         <button
+          id="btn-add-wallet"
           onClick={addWallet}
           disabled={addAddressStatus === 'loading' ? 'disabled' : undefined}
           className="spinner h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500]"
@@ -103,7 +104,7 @@ const AddWalletModal = () => {
               Processing...
             </>
           ) : (
-            <>Add Wallet</>
+            <>{ADD_WALLET}</>
           )}
         </button>
       </div>

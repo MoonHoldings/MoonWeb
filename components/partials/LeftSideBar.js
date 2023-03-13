@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
+import { MOON_HOLDINGS } from 'app/constants/copy'
 
 const LeftSideBar = () => {
   const router = useRouter()
@@ -28,12 +29,16 @@ const LeftSideBar = () => {
     >
       {/* Header */}
       <div className="mt-[1rem] mb-[4.6rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
-        <button onClick={leftArrowClick} className="h-full xl:hidden">
+        <button
+          onClick={leftArrowClick}
+          id="btn-left-sidebar-arrow"
+          className="h-full xl:hidden"
+        >
           <Image
             className="h-[2.5rem] w-[2.5rem]"
             src="/images/svgs/arrow-left.svg"
-            width="25"
-            height="24"
+            width={25}
+            height={24}
             alt="arrow left"
           />
         </button>
@@ -43,13 +48,13 @@ const LeftSideBar = () => {
             <Image
               className="h-[1.3rem] w-[1.3rem] xl:h-[2.25rem] xl:w-[2.25rem]"
               src="/images/svgs/moon-holdings-logo-black.svg"
-              width="40"
-              height="40"
+              width={40}
+              height={40}
               alt=""
             />
           </div>
           <div className="text-[1.6rem] font-semibold text-[#A6A6A6] xl:text-[1.4rem] xl:font-medium">
-            MoonHoldings
+            {MOON_HOLDINGS}
           </div>
         </div>
 
@@ -85,14 +90,15 @@ const LeftSideBar = () => {
           </li> */}
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button
+              id="btn-nft-portfolio"
               onClick={() => handleClick('nfts')}
               className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
             >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/image.svg"
-                width="25"
-                height="21"
+                width={25}
+                height={21}
                 alt="NFTs"
               />
               NFTs
@@ -195,8 +201,8 @@ const LeftSideBar = () => {
             <Image
               className="h-[1.5rem] w-[1.5rem]"
               src="/images/svgs/gear.svg"
-              width="16"
-              height="16"
+              width={16}
+              height={16}
               alt=""
             />
           </button>

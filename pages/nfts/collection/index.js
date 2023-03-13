@@ -16,19 +16,18 @@ const Index = () => {
   }
 
   useEffect(() => {
+    const restoreCurrentCollection = () => {
+      const encryptedText = localStorage.getItem('walletState')
+      const decryptedObj = decrypt(encryptedText)
+
+      if (decryptedObj.currentCollection) {
+        dispatch(populateCurrentCollection(decryptedObj.currentCollection))
+      } else {
+        router.push('/nfts')
+      }
+    }
     restoreCurrentCollection()
   }, [dispatch, router])
-
-  const restoreCurrentCollection = () => {
-    const encryptedText = localStorage.getItem('walletState')
-    const decryptedObj = decrypt(encryptedText)
-
-    if (decryptedObj.currentCollection) {
-      dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-    } else {
-      router.push('/nfts')
-    }
-  }
 
   return (
     <SidebarsLayout>
@@ -39,7 +38,7 @@ const Index = () => {
             className="cursor text-[#4C4C4C] underline"
           >
             NFT Portfolio &gt;
-          </span>{' '}
+          </span>
           <span>{currentCollection.name}</span>
         </h1>
         <p className="text-[1.6rem]">

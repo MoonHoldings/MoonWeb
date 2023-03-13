@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import { motion } from 'framer-motion'
+import { useWallet } from '@solana/wallet-adapter-react'
+
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
-import { motion } from 'framer-motion'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { removeAllWallets, removeWallet } from 'redux/reducers/walletSlice'
-import { useRouter } from 'next/router'
+import { ADD_WALLET_ADDRESS, CONNECTED_WALLETS } from 'app/constants/copy'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -182,7 +184,7 @@ const RightSideBar = () => {
                 height="20"
                 alt="NFTs"
               />
-              Add Wallet Address
+              {ADD_WALLET_ADDRESS}
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <Image
@@ -220,7 +222,7 @@ const RightSideBar = () => {
                 height="20"
                 alt="Dashboard"
               />
-              Connected Wallets (6)
+              {CONNECTED_WALLETS} (6)
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <Image
@@ -320,7 +322,7 @@ const RightSideBar = () => {
       {allWallets.length !== 0 ? (
         <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
           <div className="header mb-[2rem] flex justify-between">
-            <h1 className="text-[1.4rem]">Connected Wallets</h1>
+            <h1 className="text-[1.4rem]">{CONNECTED_WALLETS}</h1>
             <button
               onClick={seeAllOrLessWallets}
               className="text-[1.4rem] font-bold text-[#61DAEA]"
