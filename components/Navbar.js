@@ -1,7 +1,7 @@
 import React from 'react'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import { useRouter } from 'next/router'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -14,11 +14,16 @@ const Navbar = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const { leftSideBarOpen, rightSideBarOpen } = useSelector(
+    (state) => state.util
+  )
+
   const clickHamburgerMenu = () => {
-    dispatch(changeLeftSideBarOpen(true))
+    dispatch(changeLeftSideBarOpen(!leftSideBarOpen))
   }
+
   const clickWallet = () => {
-    dispatch(changeRightSideBarOpen(true))
+    dispatch(changeRightSideBarOpen(!rightSideBarOpen))
   }
 
   return (

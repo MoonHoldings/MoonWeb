@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -20,7 +20,7 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   // const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
 
-  const { allWallets } = useSelector((state) => state.wallet)
+  const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
@@ -87,9 +87,11 @@ const RightSideBar = () => {
     }
 
     return (
-      <li
+      <button
+        disabled={addAddressStatus === 'loading'}
         onClick={publicKey ? disconnectWallets : connectWallet}
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+        type="button"
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
       >
         <div className="flex h-[4.1rem] w-full items-center">
           <Image
@@ -110,7 +112,7 @@ const RightSideBar = () => {
             alt="plus sign"
           />
         </div>
-      </li>
+      </button>
     )
   }
 
@@ -362,7 +364,7 @@ const RightSideBar = () => {
 
           <div
             onClick={disconnectWallets}
-            className="flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]"
+            className="xl-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image

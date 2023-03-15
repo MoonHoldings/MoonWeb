@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { PublicKey } from '@solana/web3.js'
 
 import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
@@ -10,6 +11,7 @@ import { ADD_WALLET } from 'app/constants/copy'
 const AddWalletModal = () => {
   const dispatch = useDispatch()
   const [walletAddress, setWalletAddress] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
   const { addWalletModalOpen } = useSelector((state) => state.util)
 
@@ -17,8 +19,25 @@ const AddWalletModal = () => {
     dispatch(changeAddWalletModalOpen(false))
   }
 
+  const isValidSolanaAddress = (address) => {
+    try {
+      let pubkey = new PublicKey(address)
+      let isSolana = PublicKey.isOnCurve(pubkey.toBuffer())
+
+      return isSolana
+    } catch (error) {
+      return false
+    }
+  }
+
   const addWallet = () => {
+    if (!isValidSolanaAddress(walletAddress)) {
+      setErrorMessage('Invalid wallet address')
+      return
+    }
+
     const record = allWallets.find((wallet) => walletAddress === wallet)
+
     if (!record) {
       dispatch(addAddress(walletAddress))
     } else {
@@ -107,6 +126,9 @@ const AddWalletModal = () => {
             <>{ADD_WALLET}</>
           )}
         </button>
+        {errorMessage.length > 0 && (
+          <p className="mt-2 text-[1.5rem]">{errorMessage}</p>
+        )}
       </div>
     </motion.div>
   )
