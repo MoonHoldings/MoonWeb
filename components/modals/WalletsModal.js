@@ -1,22 +1,14 @@
-import React, { useEffect, useCallback } from 'react'
+import React from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 
 import { changeWalletsModalOpen } from 'redux/reducers/utilSlice'
-import { addAddress } from 'redux/reducers/walletSlice'
 
 const WalletsModal = () => {
-  const { wallets, select, publicKey } = useWallet()
-  const { allWallets } = useSelector((state) => state.wallet)
+  const { wallets, select } = useWallet()
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (publicKey) {
-      addWallet()
-    }
-  }, [publicKey, addWallet])
 
   const walletBtnClick = (walletName) => {
     select(walletName)
@@ -26,18 +18,6 @@ const WalletsModal = () => {
   const closeWalletsModal = () => {
     dispatch(changeWalletsModalOpen(false))
   }
-
-  const addWallet = useCallback(() => {
-    if (publicKey) {
-      const record = allWallets.find(
-        (wallet) => publicKey.toBase58() === wallet
-      )
-
-      if (!record) {
-        dispatch(addAddress(publicKey.toBase58()))
-      }
-    }
-  }, [publicKey, dispatch, allWallets])
 
   return (
     <motion.div
