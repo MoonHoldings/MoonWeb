@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -10,17 +10,38 @@ import {
   changeRightSideBarOpen,
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
-import { removeAllWallets, removeWallet } from 'redux/reducers/walletSlice'
+import {
+  addAddress,
+  removeAllWallets,
+  removeWallet,
+} from 'redux/reducers/walletSlice'
 import { ADD_WALLET_ADDRESS, CONNECTED_WALLETS } from 'app/constants/copy'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
   const router = useRouter()
+
   const { disconnect, publicKey } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
-  // const [allWallets, setAllWallets] = useState([1, 2, 3, 4])
-
   const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
+
+  useEffect(() => {
+    if (publicKey) {
+      addWallet()
+    }
+  }, [publicKey, addWallet])
+
+  const addWallet = useCallback(() => {
+    if (publicKey) {
+      const record = allWallets.find(
+        (wallet) => publicKey.toBase58() === wallet
+      )
+
+      if (!record) {
+        dispatch(addAddress(publicKey.toBase58()))
+      }
+    }
+  }, [publicKey, allWallets, dispatch])
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
