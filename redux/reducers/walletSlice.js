@@ -2,6 +2,7 @@ import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'app/constants/api'
 import axios from 'axios'
 import decrypt from 'utils/decrypt'
 import encrypt from 'utils/encrypt'
+import fetchURI from 'utils/fetchURI'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
@@ -174,91 +175,33 @@ export const addAddress = createAsyncThunk(
       // ? Get collection image and unique wallets
       for (let i = 0; i < collections.length; i++) {
         if (!collections[i].image && collections[i].nfts) {
-          // .................
-          let invalidNfts = []
+          //==================================
+          //check which nfts are bad
+          const invalidNfts = await fetchURI(collections[i].nfts)
 
-          const checkNfts = collections[i].nfts.map((nft) => {
-            return fetch(nft.metadata_uri, { method: 'HEAD' })
-              .then((response) => {
-                if (!response.ok) {
-                  invalidNfts = [...invalidNfts, nft]
-                }
-              })
-              .catch((error) => {
-                invalidNfts = [...invalidNfts, nft]
-              })
+          const filteredNfts = collections[i].nfts.filter((nft) => {
+            const doesHave = invalidNfts.some(
+              (n) => n.metadata_uri === nft.metadata_uri
+            )
+            return !doesHave
           })
 
-          Promise.all(checkNfts)
-            .then(() => {
-              console.log('Invalid URLs:', invalidNfts)
+          collections[i] = { ...collections[i], nfts: [...filteredNfts] }
 
-              const filteredNfts = collections[i].nfts.filter((nft) => {
-                const isExisting = invalidNfts.some((i) => i.name === nft.name)
-
-                return !isExisting
-              })
-
-              collections[i] = { ...collections[i], nfts: [...filteredNfts] }
-
-              return axios.get(collections[i].nfts[0].metadata_uri)
-            })
-            .then((fetchResponse) => {
-              const fetchRes = fetchResponse.data
-
-              collections[i].image = fetchRes.image
-              collections[i].description = fetchRes.description
-              collections[i].collection = fetchRes.collection
-              collections[i].nfts.forEach((nft) => {
-                if (!nft.collection) nft = { ...nft, collection: {} }
-              })
-            })
-            .catch((error) => {
-              console.error(error)
-            })
-
-          // .................
-          // let skipableNfts = []
-          // let fetchRes
-
-          // for (let y = 0; y < collections[i].nfts[y]; y++) {
-          //   try {
-          //     const fetchResponse = await axios.get(
-          //       `${collections[i].nfts[y].metadata_uri}`
-          //     )
-
-          //     if (!fetchRes) fetchRes = fetchResponse.data
-          //   } catch (error) {
-          //     skipableNfts = [...skipableNfts, collections[i].nfts[y]]
-          //   }
-          // }
-          // const filteredNfts = collections[i].nfts.filter((nft) => {
-          //   const doesExist = skipableNfts.some((sn) => sn.name === nft.name)
-
-          //   return !doesExist
-          // })
-
-          // collections[i] = {
-          //   ...collections[i],
-          //   nfts: [...filteredNfts],
-          // }
-
-          // if (fetchRes) {
-          //   collections[i].image = fetchRes.image
-          //   collections[i].description = fetchRes.description
-          //   collections[i].collection = fetchRes.collection
-          // } else {
-          //   collections[i].image = ''
-          //   collections[i].description = ''
-          //   collections[i].collection = {}
-          // }
-
-          // collections[i].nfts.forEach((nft) => {
-          //   if (!nft.collection) nft = { ...nft, collection: {} }
-          // })
+          //==================================
+          const fetchResponse = await axios.get(
+            `${filteredNfts[0].metadata_uri}`
+          )
+          const fetchRes = fetchResponse.data
+          collections[i].image = fetchRes.image
+          collections[i].description = fetchRes.description
+          collections[i].collection = fetchRes.collection
+          collections[i].nfts.forEach((nft) => {
+            if (!nft.collection) nft = { ...nft, collection: {} }
+          })
+          const currentWallet = collections[i].wallet
+          allWallets = [...allWallets, currentWallet]
         }
-        const currentWallet = collections[i].wallet
-        allWallets = [...allWallets, currentWallet]
       }
 
       allWallets = [...new Set(allWallets)]
