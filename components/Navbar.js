@@ -32,13 +32,10 @@ const Navbar = () => {
         href="/"
         className="flex items-center"
         style={{
-          order:
-            (router.pathname === '/nfts' ||
-              router.pathname === '/collection') &&
-            '2',
+          order: router.pathname.includes('/nfts') && '2',
         }}
       >
-        {router.pathname === '/nfts' || router.pathname === '/collection' ? (
+        {router.pathname.includes('/nfts') ? (
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white">
             <Image
               className="h-[1.3rem] w-[1.3rem]"
@@ -67,10 +64,7 @@ const Navbar = () => {
         id="btn-hamburger"
         onClick={clickHamburgerMenu}
         style={{
-          order:
-            (router.pathname === '/nfts' ||
-              router.pathname === '/collection') &&
-            '1',
+          order: router.pathname.includes('/nfts') && '1',
         }}
       >
         <Image
@@ -82,15 +76,12 @@ const Navbar = () => {
         />
       </button>
 
-      {(router.pathname === '/nfts' || router.pathname === '/collection') && (
+      {router.pathname.includes('/nfts') && (
         <button
           id="btn-wallet-mobile"
           onClick={clickWallet}
           style={{
-            order:
-              (router.pathname === '/nfts' ||
-                router.pathname === '/collection') &&
-              '3',
+            order: router.pathname.includes('/nfts') && '3',
           }}
         >
           <Image

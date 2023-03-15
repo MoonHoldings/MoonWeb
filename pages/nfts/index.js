@@ -7,6 +7,10 @@ import { useDispatch, useSelector } from 'react-redux'
 // import dynamic from 'next/dynamic'
 // import { useWallet } from '@solana/wallet-adapter-react'
 import { populateWalletsAndCollections } from 'redux/reducers/walletSlice'
+import {
+  changeAddWalletModalOpen,
+  changeWalletsModalOpen,
+} from 'redux/reducers/utilSlice'
 import decrypt from 'utils/decrypt'
 import Collections from 'components/partials/Collections'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
@@ -60,6 +64,14 @@ const Index = () => {
   //   const windowResize = () => {
   //     setInnerWidth(window.innerWidth)
   //   }
+  const addWalletAddress = () => {
+    dispatch(changeAddWalletModalOpen(true))
+  }
+
+  const connectWallet = () => {
+    dispatch(changeWalletsModalOpen(true))
+  }
+
   return (
     <SidebarsLayout>
       {allWallets.length === 0 ? (
@@ -68,9 +80,22 @@ const Index = () => {
           <p className="mb-[2rem]">{START_CONNECTING_WALLETS}</p>
           <p>
             {PLEASE_SELECT}{' '}
-            <span className="text-[#62EAD2]">{CONNECT_WALLET}</span>, or to
-            connect multiple wallets{' '}
-            <span className="text-[#62EAD2]">{ADD_WALLET_ADDRESSES}</span>.
+            <button
+              type="button"
+              onClick={connectWallet}
+              className="text-[#62EAD2]"
+            >
+              {CONNECT_WALLET}
+            </button>
+            , or to connect multiple wallets{' '}
+            <button
+              type="button"
+              className="text-[#62EAD2]"
+              onClick={addWalletAddress}
+            >
+              {ADD_WALLET_ADDRESSES}
+            </button>
+            .
           </p>
         </div>
       ) : (
