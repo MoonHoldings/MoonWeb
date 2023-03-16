@@ -42,7 +42,7 @@ const Nft = () => {
           </div>
           <div
             onClick={() => handleClick('nfts/collection')} // TODO < need to dynamically load previous collection
-            className="cursor text-[2.9rem]"
+            className="cursor mr-4 text-[2.9rem]"
           >
             &gt;
             <span className="ml-4 underline">{currentCollection.name}</span>
