@@ -190,29 +190,26 @@ export const addAddress = createAsyncThunk(
           // Get collection image and unique wallets
           for (let i = currentCollectionsLength; i < collections.length; i++) {
             if (!collections[i].image && collections[i].nfts) {
-              // fetch metadata for each NFT
-              const promises = collections[i].nfts.map(fetchNftMetaData)
-              const metadata = await Promise.all(promises)
+              // fetch metadata for first NFT
+              if (collections[i].nfts.length) {
+                const metadata = await fetchNftMetaData(collections[i].nfts[0])
 
-              // update collection with metadata and image
-              collections[i] = {
-                ...collections[i],
-                nfts: collections[i].nfts.map((nft, index) => ({
-                  ...nft,
-                  image: metadata[index].image || '',
-                  description: metadata[index].description || '',
-                  collection: metadata[index].collection || '',
-                })),
-                image: metadata[0].image || '',
-                description: metadata[0].description || '',
-                collection: metadata[0].collection || '',
+                // update collection with metadata and image
+                collections[i] = {
+                  ...collections[i],
+                  image: metadata.image || '',
+                  description: metadata.description || '',
+                  collection: metadata.collection || '',
+                }
               }
             }
           }
         }
 
         const walletState = {
-          collections,
+          collections: collections.filter(
+            (collection) => collection.image !== ''
+          ),
           allWallets: [...allWallets, walletAddress],
         }
 
@@ -231,7 +228,7 @@ export const addAddress = createAsyncThunk(
 
 export const insertCurrentCollection = createAsyncThunk(
   'wallet/insertCurrentCollection',
-  async (collection) => {
+  async ({ collection, redirect }) => {
     let mappedNfts = []
     let collNfts = collection.nfts
     try {
@@ -256,9 +253,16 @@ export const insertCurrentCollection = createAsyncThunk(
       const encryptedNewObj = encrypt(newObj)
       localStorage.setItem('walletState', encryptedNewObj)
 
+      if (redirect) {
+        redirect()
+      }
+
       return finalCollection
     } catch (error) {
-      console.error('Error: collection.js > insertCurrentCollection', error)
+      console.error(
+        'Error: collection.js > insertCurrentCollection',
+        error.response
+      )
     }
   }
 )
