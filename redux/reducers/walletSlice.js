@@ -1,4 +1,5 @@
 import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'app/constants/api'
+const { Connection, PublicKey } = require('@solana/web3.js')
 import axios from 'axios'
 import decrypt from 'utils/decrypt'
 import encrypt from 'utils/encrypt'
@@ -128,6 +129,14 @@ const parseAddress = (address) => {
   )
 }
 
+const fetchCollectionMetadata = async (address) => {
+  const endpoint = `https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/${address}`
+
+  const res = await axios.get(endpoint)
+
+  return res?.data?.results
+}
+
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
   async (walletAddress, { getState }) => {
@@ -158,11 +167,25 @@ export const addAddress = createAsyncThunk(
             collectionHash[collection.name] = collection
           })
 
-          nfts.forEach((nft) => {
+          for (let i = 0; i < nfts.length; i++) {
+            let nft = nfts[i]
             let collectionName = nft?.collection?.name
+            let image = nft.cached_image_uri
+              ? nft.cached_image_uri
+              : nft.image_uri
 
-            if (nft.collection.address) {
-              collectionName = parseAddress(nft.collection.address)
+            if (nft?.collection?.address) {
+              const collectionMetadata = await fetchCollectionMetadata(
+                nft?.collection?.address
+              )
+
+              if (collectionMetadata?.title) {
+                collectionName = collectionMetadata.title
+              }
+
+              if (collectionMetadata?.properties?.files[0]?.uri) {
+                image = collectionMetadata?.properties?.files[0]?.uri
+              }
             }
 
             if (collectionName === undefined) {
@@ -172,9 +195,7 @@ export const addAddress = createAsyncThunk(
             if (collectionHash[collectionName] === undefined) {
               collectionHash[collectionName] = {
                 name: collectionName,
-                image: nft.cached_image_uri
-                  ? nft.cached_image_uri
-                  : nft.image_uri,
+                image: image,
                 nfts: [{ ...nft, wallet: walletAddress }],
                 wallet: walletAddress,
               }
@@ -190,7 +211,7 @@ export const addAddress = createAsyncThunk(
                 ],
               }
             }
-          })
+          }
 
           walletState = {
             collections: Object.keys(collectionHash).map(
