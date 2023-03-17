@@ -203,8 +203,6 @@ export const addAddress = createAsyncThunk(
             }
           }
 
-          console.log('collectionMetaDataHash', collectionMetaDataHash)
-
           for (let i = 0; i < nfts.length; i++) {
             let nft = nfts[i]
             let collectionName =
@@ -261,8 +259,6 @@ export const addAddress = createAsyncThunk(
             ),
             allWallets: [...allWallets, walletAddress],
           }
-
-          console.log(walletState)
         }
 
         const encryptedText = encrypt(walletState)
