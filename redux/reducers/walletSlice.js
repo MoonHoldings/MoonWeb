@@ -129,12 +129,19 @@ const parseAddress = (address) => {
   )
 }
 
-const fetchCollectionMetadata = async (address) => {
-  const endpoint = `https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/${address}`
+const bulkFetchCollectionMetadata = async (addresses) => {
+  const endpoint = 'https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/'
 
-  const res = await axios.get(endpoint)
+  // Create an array of Promises for fetching metadata for each address
+  const promises = addresses.map(async (address) => {
+    const res = await axios.get(endpoint + address)
+    return res?.data?.results
+  })
 
-  return res?.data?.results
+  // Use Promise.all to fetch metadata for all addresses in parallel
+  const results = await Promise.all(promises)
+
+  return results
 }
 
 export const addAddress = createAsyncThunk(
@@ -167,24 +174,55 @@ export const addAddress = createAsyncThunk(
             collectionHash[collection.name] = collection
           })
 
+          const uniqueCollectionAddressHash = {}
+
+          // Build hash for nfts that has collection address property
           for (let i = 0; i < nfts.length; i++) {
             let nft = nfts[i]
-            let collectionName = nft?.collection?.name
-            let image = nft.cached_image_uri
+
+            if (nft?.collection?.address) {
+              uniqueCollectionAddressHash[nft?.collection?.address] = true
+            }
+          }
+
+          // Fetch metadata of each address
+          const uniqueCollectionAddresses = Object.keys(
+            uniqueCollectionAddressHash
+          ).map((key) => key)
+          const collectionMetaData = await bulkFetchCollectionMetadata(
+            uniqueCollectionAddresses
+          )
+          const collectionMetaDataHash = {}
+
+          // Build hash for each metadata, using the address as key
+          for (let i = 0; i < collectionMetaData.length; i++) {
+            let address = collectionMetaData[i]?.mintAddress
+
+            if (address) {
+              collectionMetaDataHash[address] = collectionMetaData[i]
+            }
+          }
+
+          console.log('collectionMetaDataHash', collectionMetaDataHash)
+
+          for (let i = 0; i < nfts.length; i++) {
+            let nft = nfts[i]
+            let collectionName =
+              nft?.collection?.name || nft?.collection?.address
+            let collectionImage = nft.cached_image_uri
               ? nft.cached_image_uri
               : nft.image_uri
 
             if (nft?.collection?.address) {
-              const collectionMetadata = await fetchCollectionMetadata(
-                nft?.collection?.address
-              )
+              let address = nft?.collection?.address
 
-              if (collectionMetadata?.title) {
-                collectionName = collectionMetadata.title
+              if (collectionMetaDataHash[address]?.title) {
+                collectionName = collectionMetaDataHash[address]?.title
               }
 
-              if (collectionMetadata?.properties?.files[0]?.uri) {
-                image = collectionMetadata?.properties?.files[0]?.uri
+              if (collectionMetaDataHash[address]?.properties?.files[0]?.uri) {
+                collectionImage =
+                  collectionMetaDataHash[address]?.properties?.files[0]?.uri
               }
             }
 
@@ -192,10 +230,14 @@ export const addAddress = createAsyncThunk(
               collectionName = 'unknown'
             }
 
+            if (collectionName.length > 20) {
+              collectionName = parseAddress(collectionName)
+            }
+
             if (collectionHash[collectionName] === undefined) {
               collectionHash[collectionName] = {
                 name: collectionName,
-                image: image,
+                image: collectionImage,
                 nfts: [{ ...nft, wallet: walletAddress }],
                 wallet: walletAddress,
               }
