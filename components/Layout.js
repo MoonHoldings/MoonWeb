@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import Navbar from './Navbar'
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from '@solana/wallet-adapter-react'
+
+// import {
+//   ConnectionProvider,
+//   WalletProvider,
+// } from '@solana/wallet-adapter-react'
 import { clusterApiUrl } from '@solana/web3.js'
 import {
   GlowWalletAdapter,
@@ -12,6 +12,9 @@ import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
+
+import { ContextProvider } from '../contexts/ContextProvider'
+import Navbar from './Navbar'
 
 const Layout = ({ children }) => {
   const router = useRouter()
@@ -40,17 +43,19 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-          {innerWidth < 600 &&
-          (router.pathname === '/login' || router.pathname === '/signup') ? (
-            ''
-          ) : (
-            <Navbar />
-          )}
-          <div>{children}</div>
-        </WalletProvider>
-      </ConnectionProvider>
+      <ContextProvider>
+        {/* <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect> */}
+        {innerWidth < 600 &&
+        (router.pathname === '/login' || router.pathname === '/signup') ? (
+          ''
+        ) : (
+          <Navbar />
+        )}
+        <div>{children}</div>
+        {/* </WalletProvider>
+      </ConnectionProvider> */}
+      </ContextProvider>
     </>
   )
 }

@@ -2,6 +2,7 @@ import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'app/constants/api'
 import axios from 'axios'
 import decrypt from 'utils/decrypt'
 import encrypt from 'utils/encrypt'
+import fetchURI from 'utils/fetchURI'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
@@ -108,109 +109,121 @@ const walletSlice = createSlice({
   },
 })
 
+const fetchNftMetaData = async (nft) => {
+  try {
+    const response = await axios.get(nft.metadata_uri)
+    const { image, description } = response.data
+    return { image, description }
+  } catch (error) {
+    console.error(`Error fetching metadata for NFT ${nft.name}:`, error)
+    return {}
+  }
+}
+
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
   async (walletAddress, { getState }) => {
-    let state = {}
-    let AllState = getState().wallet
-    Object.entries(AllState).forEach((st) => {
-      state[st[0]] = st[1]
-    })
+    const state = getState()
 
-    try {
-      const response = await axios.get(
-        `${SHYFT_URL}/wallet/collections?network=mainnet-beta&wallet_address=${walletAddress}`,
-        AXIOS_CONFIG_SHYFT_KEY
-      )
-      const res = await response.data
-      const resCollections = res.result.collections.map((col) => col)
+    let collections = [...state.wallet.collections]
+    let allWallets = state.wallet.allWallets
 
-      // ? Add NFT update_authority to collection & Associate NFTs with wallet
-      resCollections.forEach((collection) => {
-        collection.wallet = walletAddress
+    // Check if wallet exists already
+    if (!allWallets.includes(walletAddress)) {
+      try {
+        const response = await axios.get(
+          `${SHYFT_URL}/wallet/collections?network=mainnet-beta&wallet_address=${walletAddress}`,
+          AXIOS_CONFIG_SHYFT_KEY
+        )
+        const res = await response.data
+        const resCollections = res.result.collections.map((col) => col)
 
-        if (collection.nfts) {
-          collection.update_authority = collection.nfts[0].update_authority
-          collection.nfts.forEach((nft) => {
-            nft.wallet = walletAddress
-            nft.image = ''
-          })
-        }
-      })
+        // Add NFT update_authority to collection & Associate NFTs with wallet
+        resCollections.forEach((collection) => {
+          collection.wallet = walletAddress
 
-      if (res.success && resCollections) {
-        if (state.collections.length > 0) {
-          //======= ? Add any new incoming collections into collections =======
-          for (let i = 0; i < resCollections.length; i++) {
-            const thisResColl = resCollections[i]
+          if (collection.nfts) {
+            collection.update_authority = collection.nfts[0].update_authority
 
-            const recordIndex = state.collections.findIndex(
-              (coll) => coll.name === thisResColl.name
-            )
+            collection.nfts.forEach((nft) => {
+              nft.wallet = walletAddress
+            })
+          }
+        })
 
-            if (recordIndex >= 0) {
-              let newNfts = []
-              let stateNfts = [...state.collections[recordIndex].nfts]
-              let resNfts = [...thisResColl.nfts]
+        if (res.success && resCollections) {
+          if (collections.length > 0) {
+            // Add any new incoming collections into collections
+            for (let i = 0; i < resCollections.length; i++) {
+              const recordIndex = collections.findIndex(
+                (coll) => coll.name === resCollections[i].name
+              )
 
-              for (let x = 0; x < resNfts.length; x++) {
-                const matchedIndex = stateNfts.findIndex(
-                  (n) => n.name === resNfts[x].name
-                )
+              if (recordIndex >= 0) {
+                let newNfts = []
 
-                if (matchedIndex === -1) {
-                  newNfts = [...newNfts, resNfts[x]]
+                for (let x = 0; x < resCollections[i].nfts.length; x++) {
+                  const matchedIndex = collections[recordIndex].nfts.findIndex(
+                    (n) =>
+                      n.metadata_uri === resCollections[i].nfts[x].metadata_uri
+                  )
+
+                  if (matchedIndex === -1) {
+                    newNfts = [...newNfts, resCollections[i].nfts[x]]
+                  }
                 }
-              }
 
-              if (newNfts.length !== 0) {
-                stateNfts = [...stateNfts, ...newNfts]
+                collections[recordIndex] = {
+                  ...collections[recordIndex],
+                  nfts: [...collections[recordIndex].nfts, ...newNfts],
+                }
+              } else {
+                collections = [...collections, resCollections[i]]
               }
+            }
+          } else {
+            // First wallet and collections added
+            collections = [...resCollections]
+          }
 
-              state.collections[recordIndex].nfts = [...stateNfts]
-            } else {
-              state.collections = [...state.collections, thisResColl]
+          // Get collection image and unique wallets
+          for (let i = 0; i < collections.length; i++) {
+            if (!collections[i].image && collections[i].nfts) {
+              // fetch metadata for each NFT
+              const promises = collections[i].nfts.map(fetchNftMetaData)
+              const metadata = await Promise.all(promises)
+
+              // update collection with metadata and image
+              collections[i] = {
+                ...collections[i],
+                nfts: collections[i].nfts.map((nft, index) => ({
+                  ...nft,
+                  image: metadata[index].image || '',
+                  description: metadata[index].description || '',
+                  collection: metadata[index].collection || '',
+                })),
+                image: metadata[0].image || '',
+                description: metadata[0].description || '',
+                collection: metadata[0].collection || '',
+              }
             }
           }
-        } else {
-          // ? First wallet and collections added
-          state.collections = [...resCollections]
-        }
-      }
-
-      // ? Get collection image and unique wallets
-      for (let i = 0; i < state.collections.length; i++) {
-        if (!state.collections[i].image && state.collections[i].nfts) {
-          const fetchResponse = await axios.get(
-            `${state.collections[i].nfts[0].metadata_uri}`
-          )
-
-          const fetchRes = fetchResponse.data
-          state.collections[i].image = fetchRes.image
-          state.collections[i].description = fetchRes.description
-          state.collections[i].collection = fetchRes.collection
-
-          state.collections[i].nfts.forEach((nft) => {
-            if (!nft.collection) nft = { ...nft, collection: {} }
-          })
         }
 
-        const currentWallet = state.collections[i].wallet
-        state.allWallets = [...state.allWallets, currentWallet]
+        const walletState = {
+          collections,
+          allWallets: [...allWallets, walletAddress],
+        }
+
+        const encryptedText = encrypt(walletState)
+        localStorage.setItem('walletState', encryptedText)
+
+        return walletState
+      } catch (error) {
+        console.error('Error: nft.js > addAddress', error)
       }
-
-      state.allWallets = [...new Set(state.allWallets)]
-
-      const walletState = {
-        allWallets: state.allWallets,
-        collections: state.collections,
-      }
-      const encryptedText = encrypt(walletState)
-      localStorage.setItem('walletState', encryptedText)
-
-      return state
-    } catch (error) {
-      console.error('Error: nft.js > addAddress', error)
+    } else {
+      console.log('Wallet already exists')
     }
   }
 )
@@ -241,8 +254,6 @@ export const insertCurrentCollection = createAsyncThunk(
       const newObj = { ...decrypted, currentCollection: { ...finalCollection } }
       const encryptedNewObj = encrypt(newObj)
       localStorage.setItem('walletState', encryptedNewObj)
-
-      console.log('finalCollection', finalCollection)
 
       return finalCollection
     } catch (error) {

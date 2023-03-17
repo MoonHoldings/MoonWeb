@@ -1,4 +1,5 @@
 import AddWalletModal from 'components/modals/AddWalletModal'
+import LoadingModal from 'components/modals/LoadingModal'
 import WalletsModal from 'components/modals/WalletsModal'
 import LeftSideBar from 'components/partials/LeftSideBar'
 import RightSideBar from 'components/partials/RightSideBar'
@@ -18,6 +19,8 @@ const SidebarsLayout = ({ children }) => {
     addWalletModalOpen,
   } = useSelector((state) => state.util)
 
+  const { addAddressStatus } = useSelector((state) => state.wallet)
+
   useEffect(() => {
     setInnerWidth(window.innerWidth)
     window.addEventListener('resize', windowResize)
@@ -31,7 +34,9 @@ const SidebarsLayout = ({ children }) => {
       <AnimatePresence>
         {addWalletModalOpen && <AddWalletModal />}
       </AnimatePresence>
-      <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:max-w-[144rem] xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
+
+      {/* removed xl:max-w-[144rem] */}
+      <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid  xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
         <AnimatePresence>
           {leftSideBarOpen === true && innerWidth < 1280 ? <LeftSideBar /> : ''}
           {rightSideBarOpen === true &&
@@ -46,6 +51,8 @@ const SidebarsLayout = ({ children }) => {
         <AnimatePresence>
           {walletsModalOpen && <WalletsModal />}
         </AnimatePresence>
+
+        {addAddressStatus === 'loading' && <LoadingModal />}
 
         {innerWidth > 1280 ? (
           <>

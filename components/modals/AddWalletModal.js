@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
-import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
+import { PublicKey } from '@solana/web3.js'
+
+import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
+import { ADD_WALLET } from 'app/constants/copy'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
   const [walletAddress, setWalletAddress] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
   const { addWalletModalOpen } = useSelector((state) => state.util)
 
@@ -15,10 +19,29 @@ const AddWalletModal = () => {
     dispatch(changeAddWalletModalOpen(false))
   }
 
+  const isValidSolanaAddress = (address) => {
+    try {
+      let pubkey = new PublicKey(address)
+      let isSolana = PublicKey.isOnCurve(pubkey.toBuffer())
+
+      return isSolana
+    } catch (error) {
+      return false
+    }
+  }
+
   const addWallet = () => {
+    if (!isValidSolanaAddress(walletAddress)) {
+      setErrorMessage('Invalid wallet address')
+      return
+    }
+
     const record = allWallets.find((wallet) => walletAddress === wallet)
+
     if (!record) {
       dispatch(addAddress(walletAddress))
+    } else {
+      dispatch(changeAddWalletModalOpen(false))
     }
 
     if (addAddressStatus === 'successful' && addWalletModalOpen === true) {
@@ -39,7 +62,7 @@ const AddWalletModal = () => {
 
       dispatch(changeAddAddressStatus('idle'))
     }
-  }, [addAddressStatus])
+  }, [addWalletModalOpen, addAddressStatus, dispatch])
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
@@ -49,7 +72,7 @@ const AddWalletModal = () => {
       className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center p-[1rem] font-inter"
     >
       <Overlay closeModal={closeModal} />
-      <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] drop-shadow-lg">
+      <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] text-white drop-shadow-lg">
         <div className="top-line mb-[1rem] flex justify-between py-[1rem]">
           <h1 className="text-[1.8rem] font-[700]">Add your Solana wallet</h1>
           <button onClick={closeModal}>
@@ -57,6 +80,8 @@ const AddWalletModal = () => {
               className="h-[2.2rem] w-[2.2rem]"
               src="/images/svgs/cross-btn.svg"
               alt="cross button"
+              width={20}
+              height={20}
             />
           </button>
         </div>
@@ -66,6 +91,8 @@ const AddWalletModal = () => {
           <Image
             className="h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/magnifyingglass.svg"
+            width={16}
+            height={16}
             alt=""
           />
           <input
@@ -78,6 +105,7 @@ const AddWalletModal = () => {
         </div>
 
         <button
+          id="btn-add-wallet"
           onClick={addWallet}
           disabled={addAddressStatus === 'loading' ? 'disabled' : undefined}
           className="spinner h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500]"
@@ -95,9 +123,12 @@ const AddWalletModal = () => {
               Processing...
             </>
           ) : (
-            <>Add Wallet</>
+            <>{ADD_WALLET}</>
           )}
         </button>
+        {errorMessage.length > 0 && (
+          <p className="mt-2 text-[1.5rem]">{errorMessage}</p>
+        )}
       </div>
     </motion.div>
   )
