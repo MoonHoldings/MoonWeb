@@ -13,20 +13,20 @@ const LoadingModal = () => {
       transition={{ duration: 0.5, type: 'spring' }}
       className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center bg-[#00000099] font-inter"
     >
-      <div class="relative block items-center rounded-lg border border-gray-100 bg-white p-6 shadow-md dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700">
-        <h5 class="mb-2 text-3xl font-bold tracking-tight text-gray-900 opacity-20 dark:text-white">
+      <div className="relative block items-center rounded-lg border border-gray-100 bg-white p-6 shadow-md dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700">
+        <h5 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 opacity-20 dark:text-white">
           Wallet Assets are loading...
         </h5>
-        <p class="text-xl font-normal text-gray-700 opacity-20 dark:text-gray-400">
+        <p className="text-xl font-normal text-gray-700 opacity-20 dark:text-gray-400">
           {publicKey?.toBase58()}
         </p>
         <div
           role="status"
-          class="absolute top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
           <svg
             aria-hidden="true"
-            class="mr-2 h-12 w-12 animate-spin fill-teal-400 text-gray-200 dark:text-gray-600"
+            className="mr-2 h-12 w-12 animate-spin fill-teal-400 text-gray-200 dark:text-gray-600"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ const LoadingModal = () => {
               fill="currentFill"
             />
           </svg>
-          <span class="sr-only">Wallet Assets are loading...</span>
+          <span className="sr-only">Wallet Assets are loading...</span>
         </div>
       </div>
     </motion.div>

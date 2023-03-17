@@ -175,24 +175,31 @@ export const addAddress = createAsyncThunk(
       // ? Get collection image and unique wallets
       for (let i = 0; i < collections.length; i++) {
         if (!collections[i].image && collections[i].nfts) {
-          //==================================
-          //check which nfts are bad
-          const invalidNfts = await fetchURI(collections[i].nfts)
+          const invalidNFTs = await fetchURI(collections[i].nfts)
 
-          const filteredNfts = collections[i].nfts.filter((nft) => {
-            const doesHave = invalidNfts.some(
-              (n) => n.metadata_uri === nft.metadata_uri
-            )
+          if (invalidNFTs.length === collections[i].nfts.length) continue
+
+          //==================================
+          const filteredNFTs = collections[i].nfts.filter((nft) => {
+            const doesHave = invalidNFTs.some((n) => n.name === nft.name)
+
             return !doesHave
           })
 
-          collections[i] = { ...collections[i], nfts: [...filteredNfts] }
+          collections[i] = { ...collections[i], nfts: [...filteredNFTs] }
+
+          if (collections[i].nfts[0].metadata_uri === undefined) {
+            console.log(
+              `Collection ${collections[i].name} >> ${collections[i]}`
+            )
+          }
 
           //==================================
           const fetchResponse = await axios.get(
-            `${filteredNfts[0].metadata_uri}`
+            `${collections[i].nfts[0].metadata_uri}`
           )
           const fetchRes = fetchResponse.data
+
           collections[i].image = fetchRes.image
           collections[i].description = fetchRes.description
           collections[i].collection = fetchRes.collection
