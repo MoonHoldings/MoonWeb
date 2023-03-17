@@ -120,6 +120,14 @@ const fetchNftMetaData = async (nft) => {
   }
 }
 
+const parseAddress = (address) => {
+  const _address = address
+
+  return (
+    _address.substring(0, 4) + '...' + _address.substring(_address.length - 4)
+  )
+}
+
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
   async (walletAddress, { getState }) => {
@@ -152,6 +160,10 @@ export const addAddress = createAsyncThunk(
 
           nfts.forEach((nft) => {
             let collectionName = nft?.collection?.name
+
+            if (nft.collection.address) {
+              collectionName = parseAddress(nft.collection.address)
+            }
 
             if (collectionName === undefined) {
               collectionName = 'unknown'
