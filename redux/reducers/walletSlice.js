@@ -127,6 +127,7 @@ export const addAddress = createAsyncThunk(
 
     let collections = [...state.wallet.collections]
     let allWallets = state.wallet.allWallets
+    const currentCollectionsLength = collections.length
 
     // Check if wallet exists already
     if (!allWallets.includes(walletAddress)) {
@@ -187,7 +188,7 @@ export const addAddress = createAsyncThunk(
           }
 
           // Get collection image and unique wallets
-          for (let i = 0; i < collections.length; i++) {
+          for (let i = currentCollectionsLength; i < collections.length; i++) {
             if (!collections[i].image && collections[i].nfts) {
               // fetch metadata for each NFT
               const promises = collections[i].nfts.map(fetchNftMetaData)
