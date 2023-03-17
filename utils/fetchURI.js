@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+let fetchRes = null
+
 export default async (nfts) => {
   const invalidNFTs = []
 
@@ -8,7 +10,7 @@ export default async (nfts) => {
     if (invalidNFT) invalidNFTs.push(invalidNFT)
   }
 
-  return invalidNFTs
+  return { invalidNFTs, fetchRes }
 }
 
 // Function to check if a URL is valid
@@ -17,6 +19,7 @@ async function checkNFTValidity(nft) {
     const response = await axios.get(nft.metadata_uri)
     const data = response.data
     // Do something with the data
+    if (fetchRes === null) fetchRes = data
   } catch (error) {
     return nft
   }

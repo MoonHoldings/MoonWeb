@@ -172,14 +172,22 @@ export const addAddress = createAsyncThunk(
         }
       }
 
+      console.log('collections', collections)
+
       // ? Get collection image and unique wallets
+      let removableCollections = []
       for (let i = 0; i < collections.length; i++) {
         if (!collections[i].image && collections[i].nfts) {
-          const invalidNFTs = await fetchURI(collections[i].nfts)
+          const { invalidNFTs, fetchRes } = await fetchURI(collections[i].nfts)
 
-          if (invalidNFTs.length === collections[i].nfts.length) continue
+          console.log('index >>', i)
 
-          //==================================
+          if (invalidNFTs.length === collections[i].nfts.length) {
+            removableCollections.push(collections[i])
+
+            continue
+          }
+
           const filteredNFTs = collections[i].nfts.filter((nft) => {
             const doesHave = invalidNFTs.some((n) => n.name === nft.name)
 
@@ -188,28 +196,25 @@ export const addAddress = createAsyncThunk(
 
           collections[i] = { ...collections[i], nfts: [...filteredNFTs] }
 
-          if (collections[i].nfts[0].metadata_uri === undefined) {
-            console.log(
-              `Collection ${collections[i].name} >> ${collections[i]}`
-            )
-          }
-
-          //==================================
-          const fetchResponse = await axios.get(
-            `${collections[i].nfts[0].metadata_uri}`
-          )
-          const fetchRes = fetchResponse.data
-
-          collections[i].image = fetchRes.image
-          collections[i].description = fetchRes.description
-          collections[i].collection = fetchRes.collection
+          collections[i].image = fetchRes.image || ''
+          collections[i].description = fetchRes.description || ''
+          collections[i].collection = fetchRes.collection || {}
           collections[i].nfts.forEach((nft) => {
             if (!nft.collection) nft = { ...nft, collection: {} }
           })
+
           const currentWallet = collections[i].wallet
           allWallets = [...allWallets, currentWallet]
         }
       }
+
+      collections = collections.filter((coll) => {
+        const doesMatch = removableCollections.some(
+          (rCol) => rCol.name === coll.name
+        )
+
+        return !doesMatch
+      })
 
       allWallets = [...new Set(allWallets)]
 
