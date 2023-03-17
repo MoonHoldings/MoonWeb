@@ -12,7 +12,12 @@ module.exports = {
       poppins: ['Poppins', ...defaultTheme.fontFamily.sans],
       inter: ['Inter', ...defaultTheme.fontFamily.sans],
     },
-    extend: {},
+    extend: {
+      screens: {
+        '3xl': '1920px',
+        '4xl': '2560px',
+      },
+    },
   },
   plugins: [],
 }

@@ -32,22 +32,26 @@ const Nft = () => {
 
   return (
     <SidebarsLayout>
-      <div className="md:order-2">
-        <h1 className="text-[2.9rem]">
-          <span
+      <div className="mt-[2rem] md:order-2">
+        <div className="flex items-center">
+          <div
             onClick={() => handleClick('nfts')}
-            className="cursor text-[#4C4C4C] underline"
+            className="cursor mr-4 text-[2rem] underline"
           >
-            NFT Portfolio &gt;
-          </span>{' '}
-          <span
+            NFT Portfolio
+          </div>
+          <div
             onClick={() => handleClick('nfts/collection')} // TODO < need to dynamically load previous collection
-            className="cursor text-[#4C4C4C] underline"
+            className="cursor mr-4 text-[2.9rem]"
           >
-            {currentCollection.name} &gt;
-          </span>{' '}
-          <span>{currentNft.name}</span>
-        </h1>
+            &gt;
+            <span className="ml-4 underline">{currentCollection.name}</span>
+          </div>
+          <div className="text-[2.9rem]">
+            &gt;
+            <span className="ml-4">{currentNft.name}</span>
+          </div>
+        </div>
 
         <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] md:grid-cols-2 md:gap-x-[1.3rem] md:gap-y-[1.5rem] xl:grid-cols-2">
           <div className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">

@@ -2,6 +2,7 @@ import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'app/constants/api'
 import axios from 'axios'
 import decrypt from 'utils/decrypt'
 import encrypt from 'utils/encrypt'
+import fetchURI from 'utils/fetchURI'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
@@ -108,100 +109,121 @@ const walletSlice = createSlice({
   },
 })
 
+const fetchNftMetaData = async (nft) => {
+  try {
+    const response = await axios.get(nft.metadata_uri)
+    const { image, description } = response.data
+    return { image, description }
+  } catch (error) {
+    console.error(`Error fetching metadata for NFT ${nft.name}:`, error)
+    return {}
+  }
+}
+
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
   async (walletAddress, { getState }) => {
     const state = getState()
-    const getCollections = (state) => state.wallet.collections
-    const getWallets = (state) => state.wallet.allWallets
-    let collections = [...getCollections(state)]
-    let allWallets = [...getWallets(state)]
 
-    try {
-      const response = await axios.get(
-        `${SHYFT_URL}/wallet/collections?network=mainnet-beta&wallet_address=${walletAddress}`,
-        AXIOS_CONFIG_SHYFT_KEY
-      )
-      const res = await response.data
-      const resCollections = res.result.collections.map((col) => col)
+    let collections = [...state.wallet.collections]
+    let allWallets = state.wallet.allWallets
 
-      // ? Add NFT update_authority to collection & Associate NFTs with wallet
-      resCollections.forEach((collection) => {
-        collection.wallet = walletAddress
-        if (collection.nfts) {
-          collection.update_authority = collection.nfts[0].update_authority
-          collection.nfts.forEach((nft) => {
-            nft.wallet = walletAddress
-            nft.image = ''
-          })
-        }
-      })
+    // Check if wallet exists already
+    if (!allWallets.includes(walletAddress)) {
+      try {
+        const response = await axios.get(
+          `${SHYFT_URL}/wallet/collections?network=mainnet-beta&wallet_address=${walletAddress}`,
+          AXIOS_CONFIG_SHYFT_KEY
+        )
+        const res = await response.data
+        const resCollections = res.result.collections.map((col) => col)
 
-      if (res.success && resCollections) {
-        if (collections.length > 0) {
-          //======= ? Add any new incoming collections into collections =======
-          for (let i = 0; i < resCollections.length; i++) {
-            const recordIndex = collections.findIndex(
-              (coll) => coll.name === resCollections[i].name
-            )
+        // Add NFT update_authority to collection & Associate NFTs with wallet
+        resCollections.forEach((collection) => {
+          collection.wallet = walletAddress
 
-            if (recordIndex >= 0) {
-              let newNfts = []
-              for (let x = 0; x < resCollections[i].nfts.length; x++) {
-                const matchedIndex = collections[recordIndex].nfts.findIndex(
-                  (n) => n.name === resCollections[i].nfts[x].name
-                )
+          if (collection.nfts) {
+            collection.update_authority = collection.nfts[0].update_authority
 
-                if (matchedIndex === -1) {
-                  newNfts = [...newNfts, resCollections[i].nfts[x]]
+            collection.nfts.forEach((nft) => {
+              nft.wallet = walletAddress
+            })
+          }
+        })
+
+        if (res.success && resCollections) {
+          if (collections.length > 0) {
+            // Add any new incoming collections into collections
+            for (let i = 0; i < resCollections.length; i++) {
+              const recordIndex = collections.findIndex(
+                (coll) => coll.name === resCollections[i].name
+              )
+
+              if (recordIndex >= 0) {
+                let newNfts = []
+
+                for (let x = 0; x < resCollections[i].nfts.length; x++) {
+                  const matchedIndex = collections[recordIndex].nfts.findIndex(
+                    (n) =>
+                      n.metadata_uri === resCollections[i].nfts[x].metadata_uri
+                  )
+
+                  if (matchedIndex === -1) {
+                    newNfts = [...newNfts, resCollections[i].nfts[x]]
+                  }
                 }
-              }
 
-              collections[recordIndex] = {
-                ...collections[recordIndex],
-                nfts: [...collections[recordIndex].nfts, ...newNfts],
+                collections[recordIndex] = {
+                  ...collections[recordIndex],
+                  nfts: [...collections[recordIndex].nfts, ...newNfts],
+                }
+              } else {
+                collections = [...collections, resCollections[i]]
               }
-            } else {
-              collections = [...collections, resCollections[i]]
+            }
+          } else {
+            // First wallet and collections added
+            collections = [...resCollections]
+          }
+
+          // Get collection image and unique wallets
+          for (let i = 0; i < collections.length; i++) {
+            if (!collections[i].image && collections[i].nfts) {
+              // fetch metadata for each NFT
+              const promises = collections[i].nfts.map(fetchNftMetaData)
+              const metadata = await Promise.all(promises)
+
+              // update collection with metadata and image
+              collections[i] = {
+                ...collections[i],
+                nfts: collections[i].nfts.map((nft, index) => ({
+                  ...nft,
+                  image: metadata[index].image || '',
+                  description: metadata[index].description || '',
+                  collection: metadata[index].collection || '',
+                })),
+                image: metadata[0].image || '',
+                description: metadata[0].description || '',
+                collection: metadata[0].collection || '',
+              }
             }
           }
-        } else {
-          // ? First wallet and collections added
-          collections = [...resCollections]
         }
-      }
 
-      // ? Get collection image and unique wallets
-      for (let i = 0; i < collections.length; i++) {
-        if (!collections[i].image && collections[i].nfts) {
-          const fetchResponse = await axios.get(
-            `${collections[i].nfts[0].metadata_uri}`
-          )
-          const fetchRes = fetchResponse.data
-          collections[i].image = fetchRes.image
-          collections[i].description = fetchRes.description
-          collections[i].collection = fetchRes.collection
-          collections[i].nfts.forEach((nft) => {
-            if (!nft.collection) nft = { ...nft, collection: {} }
-          })
+        const walletState = {
+          collections,
+          allWallets: [...allWallets, walletAddress],
         }
-        const currentWallet = collections[i].wallet
-        allWallets = [...allWallets, currentWallet]
+
+        const encryptedText = encrypt(walletState)
+        localStorage.setItem('walletState', encryptedText)
+
+        return walletState
+      } catch (error) {
+        console.error('Error: nft.js > addAddress', error)
       }
-
-      allWallets = [...new Set(allWallets)]
-
-      const walletState = {
-        allWallets: allWallets,
-        collections: collections,
-      }
-
-      const encryptedText = encrypt(walletState)
-      localStorage.setItem('walletState', encryptedText)
-
-      return walletState
-    } catch (error) {
-      console.error('Error: nft.js > addAddress', error)
+    } else {
+      console.log('Wallet already exists')
     }
   }
 )
