@@ -3,31 +3,50 @@ import NFTCard from 'components/partials/NFTCard'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { populateCurrentCollection } from 'redux/reducers/walletSlice'
+import {
+  populateCurrentCollection,
+  populateWalletsAndCollections,
+} from 'redux/reducers/walletSlice'
 import decrypt from 'utils/decrypt'
 
 const Index = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { currentCollection } = useSelector((state) => state.wallet)
+  const { currentCollection, allWallets } = useSelector((state) => state.wallet)
 
   const handleClick = (url) => {
     router.push(`/${url}`)
   }
 
-  useEffect(() => {
-    const restoreCurrentCollection = () => {
-      const encryptedText = localStorage.getItem('walletState')
-      const decryptedObj = decrypt(encryptedText)
+  const restoreCurrentCollection = () => {
+    const encryptedText = localStorage.getItem('walletState')
+    const decryptedObj = decrypt(encryptedText)
 
-      if (decryptedObj.currentCollection) {
-        dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-      } else {
-        router.push('/nfts')
-      }
+    if (decryptedObj.currentCollection) {
+      dispatch(populateCurrentCollection(decryptedObj.currentCollection))
+    } else {
+      router.push('/nfts')
     }
+  }
+
+  const restoreWallet = () => {
+    const walletStateDecrypted = localStorage.getItem('walletState')
+    if (walletStateDecrypted && allWallets.length === 0) {
+      const walletState = decrypt(walletStateDecrypted)
+      dispatch(
+        populateWalletsAndCollections({
+          allWallets: walletState.allWallets,
+          collections: walletState.collections,
+        })
+      )
+    }
+  }
+
+  useEffect(() => {
     restoreCurrentCollection()
-  }, [dispatch, router])
+
+    if (router.pathname.includes('collection')) restoreWallet()
+  }, [])
 
   return (
     <SidebarsLayout>

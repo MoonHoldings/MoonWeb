@@ -127,6 +127,89 @@ export const addAddress = createAsyncThunk(
 
     let collections = [...state.wallet.collections]
     let allWallets = state.wallet.allWallets
+
+    let walletState = {
+      collections: collections,
+      allWallets: allWallets,
+    }
+
+    // Check if wallet exists already
+    if (!allWallets.includes(walletAddress)) {
+      try {
+        const response = await axios.get(
+          `${SHYFT_URL}/nft/read_all?network=mainnet-beta&address=${walletAddress}`,
+          AXIOS_CONFIG_SHYFT_KEY
+        )
+        const res = response.data
+
+        if (res.success && res.result.length) {
+          const collectionHash = {}
+          const nfts = res.result
+
+          collections.forEach((collection) => {
+            collectionHash[collection.name] = collection
+          })
+
+          nfts.forEach((nft) => {
+            let collectionName = nft?.collection?.name
+
+            if (collectionName === undefined) {
+              collectionName = 'unknown'
+            }
+
+            if (collectionHash[collectionName] === undefined) {
+              collectionHash[collectionName] = {
+                name: collectionName,
+                image: nft.cached_image_uri
+                  ? nft.cached_image_uri
+                  : nft.image_uri,
+                nfts: [{ ...nft, wallet: walletAddress }],
+                wallet: walletAddress,
+              }
+            } else {
+              collectionHash[collectionName] = {
+                ...collectionHash[collectionName],
+                nfts: [
+                  ...collectionHash[collectionName].nfts,
+                  {
+                    ...nft,
+                    wallet: walletAddress,
+                  },
+                ],
+              }
+            }
+          })
+
+          walletState = {
+            collections: Object.keys(collectionHash).map(
+              (key) => collectionHash[key]
+            ),
+            allWallets: [...allWallets, walletAddress],
+          }
+
+          console.log(walletState)
+        }
+
+        const encryptedText = encrypt(walletState)
+        localStorage.setItem('walletState', encryptedText)
+
+        return walletState
+      } catch (error) {
+        console.error('Error: nft.js > addAddress', error)
+      }
+    } else {
+      console.log('Wallet already exists')
+    }
+  }
+)
+
+export const addAddress2 = createAsyncThunk(
+  'wallet/addAddress',
+  async (walletAddress, { getState }) => {
+    const state = getState()
+
+    let collections = [...state.wallet.collections]
+    let allWallets = state.wallet.allWallets
     const currentCollectionsLength = collections.length
 
     // Check if wallet exists already
@@ -229,35 +312,19 @@ export const addAddress = createAsyncThunk(
 export const insertCurrentCollection = createAsyncThunk(
   'wallet/insertCurrentCollection',
   async ({ collection, redirect }) => {
-    let mappedNfts = []
-    let collNfts = collection.nfts
     try {
-      for (let i = 0; i < collNfts.length; i++) {
-        const response = await axios.get(`${collNfts[i].metadata_uri}`)
-        const res = response.data
-
-        mappedNfts.push({
-          ...collNfts[i],
-          image: res.image,
-          attributes: res.attributes,
-          collection: res.collection,
-          // Add Attributes & Info { name, collection.name }
-        })
-      }
-
-      const finalCollection = { ...collection, nfts: mappedNfts }
-
       const encryptedText = localStorage.getItem('walletState')
       const decrypted = decrypt(encryptedText)
-      const newObj = { ...decrypted, currentCollection: { ...finalCollection } }
+      const newObj = { ...decrypted, currentCollection: { ...collection } }
       const encryptedNewObj = encrypt(newObj)
+
       localStorage.setItem('walletState', encryptedNewObj)
 
       if (redirect) {
         redirect()
       }
 
-      return finalCollection
+      return collection
     } catch (error) {
       console.error(
         'Error: collection.js > insertCurrentCollection',

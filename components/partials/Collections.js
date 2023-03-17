@@ -4,7 +4,7 @@ import { NFT_PORTFOLIO } from 'app/constants/copy'
 
 const Collections = ({ collections }) => {
   const totalNftCount = collections.reduce(
-    (total, col) => total + col.nfts.length,
+    (total, col) => total + col.nfts?.length,
     0
   )
   return (

@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Attribute = ({ attribute }) => {
-  console.log('attribute', attribute)
   return (
     <div className="rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">
       <div className="upper">{attribute.trait_type}</div>

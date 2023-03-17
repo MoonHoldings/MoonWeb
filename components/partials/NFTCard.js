@@ -8,6 +8,8 @@ const NFT = ({ nft }) => {
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const image = nft.cached_image_uri ? nft.cached_image_uri : nft.image_uri
+
   const nftClick = () => {
     dispatch(populateCurrentNft(nft))
 
@@ -17,6 +19,7 @@ const NFT = ({ nft }) => {
       `/nfts/collection/nft/${nft.update_authority}`
     )
   }
+
   return (
     <div
       onClick={nftClick}
@@ -24,7 +27,7 @@ const NFT = ({ nft }) => {
     >
       <img
         className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
-        src={nft.image}
+        src={image}
         alt="NFT picture"
       />
       <div className="details">
