@@ -68,6 +68,11 @@ const RightSideBar = () => {
     }
   }
 
+  const disconnectCurrentWallet = () => {
+    removeSingleWallet(publicKey.toBase58())
+    disconnect()
+  }
+
   const seeAllOrLessExchanges = () => {
     const exchangeNum = allExchanges.length
     if (exchangeNum === 3) {
@@ -110,7 +115,7 @@ const RightSideBar = () => {
     return (
       <button
         disabled={addAddressStatus === 'loading'}
-        onClick={publicKey ? disconnectWallets : connectWallet}
+        onClick={publicKey ? disconnectCurrentWallet : connectWallet}
         type="button"
         className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
       >

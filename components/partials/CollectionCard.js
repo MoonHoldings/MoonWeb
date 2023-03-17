@@ -44,9 +44,9 @@ const CollectionCard = ({ collection }) => {
             {collection.name}
           </h1>
           <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0 xl:text-[1.2rem]">
-            {collection.nft_count === 1
-              ? collection.nft_count + ' ITEM'
-              : collection.nft_count + ' ITEMS'}
+            {collection.nfts.length === 1
+              ? collection.nfts.length + ' ITEM'
+              : collection.nfts.length + ' ITEMS'}
           </h2>
         </div>
 
