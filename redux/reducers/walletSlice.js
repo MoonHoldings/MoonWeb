@@ -214,6 +214,8 @@ export const addAddress = createAsyncThunk(
             if (nft?.collection?.address) {
               let address = nft?.collection?.address
 
+              if (collectionMetaDataHash[address] === undefined) continue
+
               if (collectionMetaDataHash[address]?.title) {
                 collectionName = collectionMetaDataHash[address]?.title
               }
