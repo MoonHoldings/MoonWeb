@@ -11,8 +11,13 @@ const Nft = () => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
-  // console.log('currentNft', currentNft)
-  // console.log('currentCollection', currentCollection)
+
+  const image = currentNft.cached_image_uri
+    ? currentNft.cached_image_uri
+    : currentNft.image_uri
+
+  const name = currentNft.name?.length ? currentNft.name : currentNft.symbol
+
   const handleClick = (url) => router.push(`/${url}`)
 
   useEffect(() => {
@@ -49,7 +54,7 @@ const Nft = () => {
           </div>
           <div className="text-[2.9rem]">
             &gt;
-            <span className="ml-4">{currentNft.name}</span>
+            <span className="ml-4">{name}</span>
           </div>
         </div>
 
@@ -57,7 +62,7 @@ const Nft = () => {
           <div className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">
             <img
               className="mb-[1rem] h-full w-full rounded-[1rem] object-cover xl:mb-[1.5rem]"
-              src={currentNft.image}
+              src={image}
               width="342"
               height="444"
               alt="NFT picture"
@@ -69,7 +74,7 @@ const Nft = () => {
             <div className="flex flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-[1.5rem] text-white md:grid-cols-2">
               <div className="mb-[2rem] flex flex-row justify-between">
                 <span>NFT Name</span>
-                <span>{currentNft.name}</span>
+                <span>{name}</span>
               </div>
               <div className="flex flex-row justify-between">
                 <span>Collection</span>
@@ -77,15 +82,11 @@ const Nft = () => {
               </div>
             </div>
             {/* TODO need to reload currentNft */}
-            {currentNft &&
-            currentNft.attributes &&
-            currentNft.attributes.length > 0 ? (
+            {currentNft?.attributes_array?.length > 0 && (
               <h1 className="mb-[2rem] mt-[2rem] text-[2rem]">Attributes</h1>
-            ) : (
-              ''
             )}
             <div className="grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-              {currentNft.attributes?.map((attr, i) => (
+              {currentNft.attributes_array?.map((attr, i) => (
                 <Attribute key={i} attribute={attr} />
               ))}
             </div>

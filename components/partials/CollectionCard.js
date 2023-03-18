@@ -7,14 +7,13 @@ const CollectionCard = ({ collection }) => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const { addingNftImageStatus } = useSelector((state) => state.wallet)
-
   const collectionClick = () => {
-    if (collection.nfts) dispatch(insertCurrentCollection(collection))
+    const redirect = () => {
+      router.push('/nfts/collection')
+    }
 
-    // if (addingNftImageStatus === 'successful') {
-    router.push('/nfts/collection')
-    // }
+    if (collection.nfts)
+      dispatch(insertCurrentCollection({ collection, redirect }))
   }
   return (
     // removed xl:w-[23.8rem] xl:p-[1.5rem]
