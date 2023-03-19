@@ -223,7 +223,7 @@ export const addAddress = createAsyncThunk(
               }
 
               if (collectionMetaDataHash[address]?.image_uri) {
-                collectionImage = ccollectionMetaDataHash[address]?.image_uri
+                collectionImage = collectionMetaDataHash[address]?.image_uri
               }
             }
 
