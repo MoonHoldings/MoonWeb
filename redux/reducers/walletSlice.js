@@ -130,16 +130,18 @@ const parseAddress = (address) => {
 }
 
 const bulkFetchCollectionMetadata = async (addresses) => {
-  const endpoint = 'https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/'
+  const endpoint =
+    'https://api.shyft.to/sol/v1/nft/read?network=mainnet-beta&token_address='
 
   // Create an array of Promises for fetching metadata for each address
   const promises = addresses.map(async (address) => {
-    const res = await axios.get(endpoint + address)
-    return res?.data?.results
+    const res = await axios.get(endpoint + address, AXIOS_CONFIG_SHYFT_KEY)
+
+    return res?.data?.result
   })
 
-  // Use Promise.all to fetch metadata for all addresses in parallel
-  const results = await Promise.all(promises)
+  // Use Promise.allSettled to fetch metadata for all addresses in parallel regardless if any fail
+  const results = await Promise.allSettled(promises)
 
   return results
 }
@@ -196,10 +198,10 @@ export const addAddress = createAsyncThunk(
 
           // Build hash for each metadata, using the address as key
           for (let i = 0; i < collectionMetaData.length; i++) {
-            let address = collectionMetaData[i]?.mintAddress
+            let address = collectionMetaData[i]?.value?.mint
 
             if (address) {
-              collectionMetaDataHash[address] = collectionMetaData[i]
+              collectionMetaDataHash[address] = collectionMetaData[i]?.value
             }
           }
 
@@ -216,22 +218,17 @@ export const addAddress = createAsyncThunk(
 
               if (collectionMetaDataHash[address] === undefined) continue
 
-              if (collectionMetaDataHash[address]?.title) {
-                collectionName = collectionMetaDataHash[address]?.title
+              if (collectionMetaDataHash[address]?.name) {
+                collectionName = collectionMetaDataHash[address]?.name
               }
 
-              if (collectionMetaDataHash[address]?.properties?.files[0]?.uri) {
-                collectionImage =
-                  collectionMetaDataHash[address]?.properties?.files[0]?.uri
+              if (collectionMetaDataHash[address]?.image_uri) {
+                collectionImage = collectionMetaDataHash[address]?.image_uri
               }
             }
 
             if (collectionName === undefined) {
               collectionName = 'unknown'
-            }
-
-            if (collectionName.length > 20) {
-              collectionName = parseAddress(collectionName)
             }
 
             if (collectionHash[collectionName] === undefined) {

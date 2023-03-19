@@ -8,7 +8,7 @@ const NFT = ({ nft }) => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const image = nft.cached_image_uri ? nft.cached_image_uri : nft.image_uri
+  const image = nft.image_uri
 
   const nftClick = () => {
     dispatch(populateCurrentNft(nft))
