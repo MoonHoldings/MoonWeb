@@ -140,7 +140,7 @@ const bulkFetchCollectionMetadata = async (addresses) => {
     return res?.data?.result
   })
 
-  // Use Promise.all to fetch metadata for all addresses in parallel
+  // Use Promise.allSettled to fetch metadata for all addresses in parallel regardless if any fail
   const results = await Promise.allSettled(promises)
 
   return results
