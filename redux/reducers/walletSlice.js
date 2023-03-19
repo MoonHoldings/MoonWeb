@@ -222,14 +222,8 @@ export const addAddress = createAsyncThunk(
                 collectionName = collectionMetaDataHash[address]?.name
               }
 
-              if (
-                collectionMetaDataHash[address]?.image_uri ||
-                collectionMetaDataHash[address]?.cached_image_uri
-              ) {
-                collectionImage = collectionMetaDataHash[address]
-                  ?.cached_image_uri
-                  ? collectionMetaDataHash[address]?.cached_image_uri
-                  : collectionMetaDataHash[address]?.image_uri
+              if (collectionMetaDataHash[address]?.image_uri) {
+                collectionImage = ccollectionMetaDataHash[address]?.image_uri
               }
             }
 

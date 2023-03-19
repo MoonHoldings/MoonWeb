@@ -12,9 +12,7 @@ const Nft = () => {
   const router = useRouter()
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
 
-  const image = currentNft.cached_image_uri
-    ? currentNft.cached_image_uri
-    : currentNft.image_uri
+  const image = currentNft.image_uri
 
   const name = currentNft.name?.length ? currentNft.name : currentNft.symbol
 
