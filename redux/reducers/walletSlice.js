@@ -191,7 +191,6 @@ export const addAddress = createAsyncThunk(
           const uniqueCollectionAddresses = Object.keys(
             uniqueCollectionAddressHash
           ).map((key) => key)
-          console.log('uniqueCollectionAddresses', uniqueCollectionAddresses)
           const collectionMetaData = await bulkFetchCollectionMetadata(
             uniqueCollectionAddresses
           )
@@ -199,10 +198,10 @@ export const addAddress = createAsyncThunk(
 
           // Build hash for each metadata, using the address as key
           for (let i = 0; i < collectionMetaData.length; i++) {
-            let address = collectionMetaData[i]?.mint
+            let address = collectionMetaData[i]?.value?.mint
 
             if (address) {
-              collectionMetaDataHash[address] = collectionMetaData[i]
+              collectionMetaDataHash[address] = collectionMetaData[i]?.value
             }
           }
 
@@ -236,10 +235,6 @@ export const addAddress = createAsyncThunk(
 
             if (collectionName === undefined) {
               collectionName = 'unknown'
-            }
-
-            if (collectionName.length > 20) {
-              collectionName = parseAddress(collectionName)
             }
 
             if (collectionHash[collectionName] === undefined) {
