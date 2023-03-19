@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import React from 'react'
+import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { insertCurrentCollection } from 'redux/reducers/walletSlice'
 
@@ -22,18 +23,24 @@ const CollectionCard = ({ collection }) => {
       className="cursor flex min-h-min flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2]  xl:hover:border-[#62EAD2]"
     >
       {collection.name === 'unknown' ? (
-        <img
+        <Image
           // className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
           className="mb-[1rem] h-4/5 w-full rounded-[1rem] object-cover p-1 xl:mb-[1.5rem]"
           src="/images/unknown-collections.png"
           alt="NFT picture"
+          width={0}
+          height={0}
+          unoptimized
         />
       ) : (
-        <img
+        <Image
           // className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
           className="mb-[1.5rem] h-4/5 w-full rounded-[1rem] object-cover p-1"
           src={collection.image}
           alt="NFT picture"
+          width={0}
+          height={0}
+          unoptimized
         />
       )}
 
