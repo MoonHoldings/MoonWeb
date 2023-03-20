@@ -102,16 +102,6 @@ const RightSideBar = () => {
   }
 
   const renderConnectWallet = () => {
-    const parseAddress = (address) => {
-      const _address = address.toBase58()
-
-      return (
-        _address.substring(0, 4) +
-        '...' +
-        _address.substring(_address.length - 4)
-      )
-    }
-
     return (
       <button
         disabled={addAddressStatus === 'loading'}
@@ -127,7 +117,7 @@ const RightSideBar = () => {
             height="20"
             alt="Crypto"
           />
-          {publicKey ? parseAddress(publicKey) : 'Connect Wallet'}
+          {publicKey ? shrinkText(publicKey.toBase58()) : 'Connect Wallet'}
         </div>
         <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
@@ -377,7 +367,11 @@ const RightSideBar = () => {
                 />
                 {shrinkText(`${wallet}`)}
                 <button
-                  onClick={() => removeSingleWallet(wallet)}
+                  onClick={
+                    wallet === publicKey?.toBase58()
+                      ? disconnectCurrentWallet
+                      : () => removeSingleWallet(wallet)
+                  }
                   className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
                 >
                   <span className="relative bottom-[0.1rem] font-poppins">

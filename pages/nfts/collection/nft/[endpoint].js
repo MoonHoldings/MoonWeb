@@ -4,17 +4,22 @@ import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import decrypt from 'utils/decrypt'
 
-import { populateCurrentNft } from 'redux/reducers/walletSlice'
+import {
+  populateCurrentNft,
+  populateCurrentCollection,
+  populateWalletsAndCollections,
+} from 'redux/reducers/walletSlice'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
 
 const Nft = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { currentNft, currentCollection } = useSelector((state) => state.wallet)
+  const { currentNft, currentCollection, allWallets } = useSelector(
+    (state) => state.wallet
+  )
 
   const image = currentNft.image_uri
-
   const name = currentNft.name?.length ? currentNft.name : currentNft.symbol
 
   const handleClick = (url) => router.push(`/${url}`)
@@ -31,6 +36,32 @@ const Nft = () => {
       }
     }
 
+    const restoreCurrentCollection = () => {
+      const encryptedText = localStorage.getItem('walletState')
+      const decryptedObj = decrypt(encryptedText)
+
+      if (decryptedObj.currentCollection) {
+        dispatch(populateCurrentCollection(decryptedObj.currentCollection))
+      } else {
+        router.push('/nfts')
+      }
+    }
+
+    const restoreWallet = () => {
+      const walletStateDecrypted = localStorage.getItem('walletState')
+      if (walletStateDecrypted && allWallets.length === 0) {
+        const walletState = decrypt(walletStateDecrypted)
+        dispatch(
+          populateWalletsAndCollections({
+            allWallets: walletState.allWallets,
+            collections: walletState.collections,
+          })
+        )
+      }
+    }
+
+    restoreCurrentCollection()
+    restoreWallet()
     restoreNFT()
   }, [dispatch, router])
 
@@ -76,7 +107,7 @@ const Nft = () => {
                 <span>{name}</span>
               </div>
               <div className="flex flex-row justify-between">
-                <span>Collection</span>
+                <span className="mr-16">Collection</span>
                 <span>{currentCollection.name}</span>
               </div>
             </div>
