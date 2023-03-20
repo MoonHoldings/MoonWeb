@@ -34,7 +34,7 @@ const NFT = ({ nft, floorPrice }) => {
   return (
     <div
       onClick={nftClick}
-      className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] xl:max-w-[23.8rem] xl:p-[1.5rem] xl:hover:border-[#62EAD2]"
+      className="cursor flex min-h-min flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] xl:hover:border-[#62EAD2]"
     >
       <Image
         className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
