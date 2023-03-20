@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import decrypt from 'utils/decrypt'
@@ -36,7 +37,7 @@ const Nft = () => {
   return (
     <SidebarsLayout>
       <div className="mt-[2rem] md:order-2">
-        <div className="flex items-center">
+        <div className="flex items-center px-[1rem] text-center">
           <div
             onClick={() => handleClick('nfts')}
             className="cursor mr-4 text-[2rem] underline"
@@ -45,12 +46,12 @@ const Nft = () => {
           </div>
           <div
             onClick={() => handleClick('nfts/collection')} // TODO < need to dynamically load previous collection
-            className="cursor mr-4 text-[2.9rem]"
+            className="cursor mr-4 flex items-center text-[2rem]"
           >
             &gt;
-            <span className="ml-4 underline">{currentCollection.name}</span>
+            <span className="ml-4  underline">{currentCollection.name}</span>
           </div>
-          <div className="text-[2.9rem]">
+          <div className="flex items-center text-[2.9rem]">
             &gt;
             <span className="ml-4">{name}</span>
           </div>
@@ -58,7 +59,7 @@ const Nft = () => {
 
         <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] md:grid-cols-2 md:gap-x-[1.3rem] md:gap-y-[1.5rem] xl:grid-cols-2">
           <div className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">
-            <img
+            <Image
               className="mb-[1rem] h-full w-full rounded-[1rem] object-cover xl:mb-[1.5rem]"
               src={image}
               width="342"

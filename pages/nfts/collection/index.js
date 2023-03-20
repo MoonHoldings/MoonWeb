@@ -51,26 +51,23 @@ const Index = () => {
   return (
     <SidebarsLayout>
       <div className="mt-[2rem] text-white md:order-2">
-        <div className="flex items-center">
+        <div className="flex items-center text-center">
           <div
             onClick={() => handleClick('nfts')}
             className="cursor mr-4 text-[2rem] underline"
           >
             NFT Portfolio
           </div>
-          <div className="text-[2.9rem]">
+          <div className="flex items-center text-[2.2rem] md:text-[2.9rem]">
             &gt;
             <span className="ml-4">{currentCollection.name}</span>
           </div>
         </div>
         <p className="text-[1.6rem]">
-          You have <span>{currentCollection.nft_count}</span>{' '}
+          You have <span>{currentCollection.nfts.length}</span>{' '}
           {currentCollection.name} NFTs
         </p>
-        <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-          {/* {[1, 2, 3, 4, 5].map((card) => (
-    <CollectionCard key={card} />
-  ))} */}
+        <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] py-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
           {currentCollection.nfts?.map((nft, index) => (
             <NFTCard key={index} nft={nft} />
           ))}

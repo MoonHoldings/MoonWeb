@@ -26,6 +26,10 @@ const walletSlice = createSlice({
       state.allWallets = action.payload.allWallets
       state.collections = action.payload.collections
     },
+    updateCollectionFloorPrice(state, action) {
+      const { index, floorPrice } = action.payload
+      state.collections[index] = { ...state.collections[index], floorPrice }
+    },
     populateCurrentCollection(state, action) {
       state.currentCollection = action.payload
     },
@@ -434,6 +438,7 @@ export const insertSingleNFT = createAsyncThunk(
 
 export const {
   populateWalletsAndCollections,
+  updateCollectionFloorPrice,
   removeWallet,
   changeAddAddressStatus,
   removeAllWallets,
