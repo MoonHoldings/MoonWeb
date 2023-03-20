@@ -36,7 +36,7 @@ const Nft = () => {
 
   return (
     <SidebarsLayout>
-      <div className="mt-[2rem] md:order-2">
+      <div className="py-[2rem] md:order-2">
         <div className="flex items-center px-[1rem] text-center">
           <div
             onClick={() => handleClick('nfts')}
@@ -57,8 +57,8 @@ const Nft = () => {
           </div>
         </div>
 
-        <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] md:grid-cols-2 md:gap-x-[1.3rem] md:gap-y-[1.5rem] xl:grid-cols-2">
-          <div className="cursor rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">
+        <div className="nft-cards mt-[2rem] flex flex-col sm:flex-row">
+          <div className="cursor mb-[2rem] flex w-[280px] rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">
             <Image
               className="mb-[1rem] h-full w-full rounded-[1rem] object-cover xl:mb-[1.5rem]"
               src={image}
@@ -68,8 +68,8 @@ const Nft = () => {
             />
           </div>
 
-          <div>
-            <h1 className="mb-[2rem] text-[2rem]">NFT Details</h1>
+          <div className="ml-0 sm:ml-8">
+            <h1 className="mb-[2rem] text-[1.9rem]">NFT Details</h1>
             <div className="flex flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-[1.5rem] text-white md:grid-cols-2">
               <div className="mb-[2rem] flex flex-row justify-between">
                 <span>NFT Name</span>

@@ -64,10 +64,10 @@ const Index = () => {
           </div>
         </div>
         <p className="text-[1.6rem]">
-          You have <span>{currentCollection.nfts.length}</span>{' '}
+          You have <span>{currentCollection?.nfts?.length}</span>{' '}
           {currentCollection.name} NFTs
         </p>
-        <div className="nft-cards grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] py-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
+        <div className="h grid grid-cols-2 gap-6 py-[2rem] xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-6 4xl:grid-cols-8">
           {currentCollection.nfts?.map((nft, index) => (
             <NFTCard key={index} nft={nft} />
           ))}

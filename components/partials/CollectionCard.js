@@ -108,7 +108,7 @@ const CollectionCard = ({ collection, index }) => {
 
       <div className="details">
         <div className="xl:mb-[1.2rem] xl:flex xl:justify-between">
-          <h1 className="mb-[0.4rem] text-[1.2rem] font-bold leading-[1.5rem] sm:text-[2rem] xl:mb-0 xl:text-[1.25rem] 2xl:text-[1.5rem]">
+          <h1 className="mb-[0.4rem] mr-12 text-[1.2rem] font-bold leading-[1.5rem] sm:text-[2rem] xl:mb-0 xl:text-[1.25rem] 2xl:text-[1.5rem]">
             {collection.name}
           </h1>
           <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0 xl:text-[1.2rem]">
