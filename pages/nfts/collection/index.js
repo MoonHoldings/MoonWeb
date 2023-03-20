@@ -69,7 +69,11 @@ const Index = () => {
         </p>
         <div className="h grid grid-cols-2 gap-6 py-[2rem] xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-6 4xl:grid-cols-8">
           {currentCollection.nfts?.map((nft, index) => (
-            <NFTCard key={index} nft={nft} />
+            <NFTCard
+              key={index}
+              floorPrice={currentCollection.floorPrice}
+              nft={nft}
+            />
           ))}
         </div>
       </div>

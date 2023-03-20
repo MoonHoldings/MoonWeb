@@ -23,26 +23,14 @@ const CollectionCard = ({ collection, index }) => {
   }, [])
 
   const fetchFloorPrice = async () => {
-    try {
-      setFetchingFloorPrice(true)
+    if (!collection.floorPrice) {
+      try {
+        setFetchingFloorPrice(true)
 
-      const { data: nameSearch } = await axios.post(
-        `${HELLO_MOON_URL}/nft/collection/name`,
-        {
-          collectionName: collection.name,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${HELLO_MOON_KEY}`,
-          },
-        }
-      )
-
-      if (nameSearch?.data?.length === 1) {
-        const { data: floorPrice } = await axios.post(
-          `${HELLO_MOON_URL}/nft/collection/floorprice`,
+        const { data: nameSearch } = await axios.post(
+          `${HELLO_MOON_URL}/nft/collection/name`,
           {
-            helloMoonCollectionId: nameSearch.data[0].helloMoonCollectionId,
+            collectionName: collection.name,
           },
           {
             headers: {
@@ -51,19 +39,33 @@ const CollectionCard = ({ collection, index }) => {
           }
         )
 
-        if (floorPrice?.data?.length) {
-          dispatch(
-            updateCollectionFloorPrice({
-              index,
-              floorPrice: floorPrice?.data[0],
-            })
+        if (nameSearch?.data?.length === 1) {
+          const { data: floorPrice } = await axios.post(
+            `${HELLO_MOON_URL}/nft/collection/floorprice`,
+            {
+              helloMoonCollectionId: nameSearch.data[0].helloMoonCollectionId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${HELLO_MOON_KEY}`,
+              },
+            }
           )
-        }
-      }
 
-      setFetchingFloorPrice(false)
-    } catch (err) {
-      console.log(err)
+          if (floorPrice?.data?.length) {
+            dispatch(
+              updateCollectionFloorPrice({
+                index,
+                floorPrice: floorPrice?.data[0],
+              })
+            )
+          }
+        }
+
+        setFetchingFloorPrice(false)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
@@ -166,7 +168,7 @@ const CollectionCard = ({ collection, index }) => {
         </div>
         {collection.floorPrice && (
           <div className="items-center xl:flex xl:justify-between">
-            <div className="mb-[0.4rem] flex items-center text-[1.2rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
+            <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
               {renderFloorPrice()}
             </div>
             {/* <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">

@@ -3,9 +3,11 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import { populateCurrentNft } from 'redux/reducers/walletSlice'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+
 import endpointMaker from 'utils/endpointMaker'
 
-const NFT = ({ nft }) => {
+const NFT = ({ nft, floorPrice }) => {
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -22,6 +24,12 @@ const NFT = ({ nft }) => {
   }
 
   const fetchListingDetails = () => {}
+
+  const formatFloorPrice = () => {
+    return (
+      parseFloat(floorPrice.floorPriceLamports) / LAMPORTS_PER_SOL
+    ).toLocaleString()
+  }
 
   return (
     <div
@@ -49,17 +57,19 @@ const NFT = ({ nft }) => {
         </div>
 
         <div className="items-center xl:flex xl:justify-between">
-          <div className="mb-[0.4rem] flex items-center text-[1.2rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
-            <div className="">48,200</div>
-            <Image
-              className="ml-2 inline xl:h-[2rem] xl:w-[2rem]"
-              src="/images/svgs/sol-symbol.svg"
-              alt="SOL Symbol"
-              width={0}
-              height={0}
-              unoptimized
-            />
-          </div>
+          {floorPrice && (
+            <div className="mb-[0.4rem] flex items-center text-[1.2rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
+              <div className="">{formatFloorPrice()}</div>
+              <Image
+                className="ml-2 inline xl:h-[2rem] xl:w-[2rem]"
+                src="/images/svgs/sol-symbol.svg"
+                alt="SOL Symbol"
+                width={0}
+                height={0}
+                unoptimized
+              />
+            </div>
+          )}
           {/* <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">
             $482,000
           </div> */}
