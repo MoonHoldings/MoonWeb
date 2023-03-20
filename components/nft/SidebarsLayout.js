@@ -19,7 +19,7 @@ const SidebarsLayout = ({ children }) => {
     addWalletModalOpen,
   } = useSelector((state) => state.util)
 
-  const { addAddressStatus, addingNftImageStatus } = useSelector(
+  const { addAddressStatus, fetchingNftDataStatus } = useSelector(
     (state) => state.wallet
   )
 
@@ -55,7 +55,7 @@ const SidebarsLayout = ({ children }) => {
         </AnimatePresence>
 
         {(addAddressStatus === 'loading' ||
-          addingNftImageStatus === 'loading') && <LoadingModal />}
+          fetchingNftDataStatus === 'loading') && <LoadingModal />}
 
         {innerWidth > 1280 ? (
           <>

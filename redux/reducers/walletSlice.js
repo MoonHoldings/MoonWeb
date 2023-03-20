@@ -9,7 +9,7 @@ const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
 const initialState = {
   addAddressStatus: 'idle',
-  addingNftImageStatus: 'idle',
+  fetchingNftDataStatus: 'idle',
   addingSingleNftStatus: 'idle',
   allWallets: [],
   collections: [],
@@ -98,10 +98,10 @@ const walletSlice = createSlice({
         state.collections = action.payload.collections
       })
       .addCase(insertCurrentCollection.pending, (state, action) => {
-        state.addingNftImageStatus = 'loading'
+        state.fetchingNftDataStatus = 'loading'
       })
       .addCase(insertCurrentCollection.fulfilled, (state, action) => {
-        state.addingNftImageStatus = 'successful'
+        state.fetchingNftDataStatus = 'successful'
         state.currentCollection = action.payload
       })
       .addCase(insertSingleNFT.pending, (state, action) => {
@@ -389,6 +389,9 @@ export const insertCurrentCollection = createAsyncThunk(
     try {
       const encryptedText = localStorage.getItem('walletState')
       const decrypted = decrypt(encryptedText)
+
+      // Fetch listing data of nfts
+
       const newObj = { ...decrypted, currentCollection: { ...collection } }
       const encryptedNewObj = encrypt(newObj)
 

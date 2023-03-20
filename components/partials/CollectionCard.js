@@ -90,7 +90,7 @@ const CollectionCard = ({ collection, index }) => {
     if (fetchingFloorPrice) {
       return (
         <svg
-          class="-ml-1 mr-3 h-9 w-9 animate-spin text-white"
+          className="-ml-1 mr-3 h-9 w-9 animate-spin text-white"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -101,7 +101,7 @@ const CollectionCard = ({ collection, index }) => {
             cy="12"
             r="10"
             stroke="currentColor"
-            stroke-width="4"
+            strokeWidth="4"
           ></circle>
           <path
             class="opacity-75"
@@ -160,13 +160,15 @@ const CollectionCard = ({ collection, index }) => {
           <h1 className="mb-[0.4rem] mr-12 text-[1.2rem] font-bold leading-[1.5rem] sm:text-[2rem] xl:mb-0 xl:text-[1.25rem] 2xl:text-[1.5rem]">
             {collection.name}
           </h1>
-          <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0 xl:text-[1.2rem]">
-            {collection.nfts.length === 1
-              ? collection.nfts.length + ' ITEM'
-              : collection.nfts.length + ' ITEMS'}
-          </h2>
+          {collection.nfts && (
+            <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0 xl:text-[1.2rem]">
+              {collection.nfts.length === 1
+                ? collection.nfts.length + ' ITEM'
+                : collection.nfts.length + ' ITEMS'}
+            </h2>
+          )}
         </div>
-        {collection.floorPrice && (
+        {collection.floorPrice && collection.nfts && (
           <div className="items-center xl:flex xl:justify-between">
             <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
               {renderFloorPrice()}
