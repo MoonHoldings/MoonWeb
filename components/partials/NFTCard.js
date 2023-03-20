@@ -46,10 +46,12 @@ const NFT = ({ nft, floorPrice }) => {
       />
       <div className="details">
         <div className="xl:mb-[1.2rem] xl:flex xl:justify-between">
-          {nft.name && (
+          {nft.name ? (
             <h1 className="mb-[0.4rem] text-[1.2rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
               {nft.name}
             </h1>
+          ) : (
+            <div className="mb-[0.4rem]" />
           )}
           {/* <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0">
             Listed
@@ -61,7 +63,7 @@ const NFT = ({ nft, floorPrice }) => {
             <div className="mb-[0.4rem] flex items-center text-[1.2rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
               <div className="">{formatFloorPrice()}</div>
               <Image
-                className="ml-2 inline xl:h-[2rem] xl:w-[2rem]"
+                className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
                 src="/images/svgs/sol-symbol.svg"
                 alt="SOL Symbol"
                 width={0}

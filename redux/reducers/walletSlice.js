@@ -152,7 +152,7 @@ const bulkFetchCollectionMetadata = async (addresses) => {
 
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
-  async (walletAddress, { getState }) => {
+  async ({ walletAddress, callback }, { getState }) => {
     const state = getState()
 
     let collections = [...state.wallet.collections]
@@ -266,6 +266,10 @@ export const addAddress = createAsyncThunk(
 
         const encryptedText = encrypt(walletState)
         localStorage.setItem('walletState', encryptedText)
+
+        if (callback) {
+          callback()
+        }
 
         return walletState
       } catch (error) {

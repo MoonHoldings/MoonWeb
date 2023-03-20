@@ -38,7 +38,7 @@ const RightSideBar = () => {
       )
 
       if (!record) {
-        dispatch(addAddress(publicKey.toBase58()))
+        dispatch(addAddress({ walletAddress: publicKey.toBase58() }))
       }
     }
   }, [publicKey, allWallets, dispatch])
@@ -190,9 +190,10 @@ const RightSideBar = () => {
         <ul className="dashboard-menu text-[1.4rem] ">
           {renderConnectWallet()}
 
-          <li
+          <button
+            type="button"
             onClick={addWalletAddress}
-            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
           >
             <div className="flex h-[4.1rem] w-full items-center">
               <Image
@@ -213,7 +214,7 @@ const RightSideBar = () => {
                 alt="plus sign"
               />
             </div>
-          </li>
+          </button>
           {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
               <Image
