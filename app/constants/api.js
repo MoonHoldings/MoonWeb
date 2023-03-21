@@ -10,4 +10,9 @@ export const AXIOS_CONFIG_SHYFT_KEY = {
     'x-api-key': SHYFT_KEY,
   },
 }
+export const AXIOS_CONFIG_HELLO_MOON_KEY = {
+  headers: {
+    Authorization: `Bearer ${HELLO_MOON_KEY}`,
+  },
+}
 export const CRYPTO_SECRET = process.env.NEXT_PUBLIC_CRYPTO_SECRET

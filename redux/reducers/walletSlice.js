@@ -1,4 +1,9 @@
-import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'app/constants/api'
+import {
+  AXIOS_CONFIG_SHYFT_KEY,
+  AXIOS_CONFIG_HELLO_MOON_KEY,
+  HELLO_MOON_URL,
+  SHYFT_URL,
+} from 'app/constants/api'
 const { Connection, PublicKey } = require('@solana/web3.js')
 import axios from 'axios'
 import decrypt from 'utils/decrypt'
@@ -150,6 +155,18 @@ const bulkFetchCollectionMetadata = async (addresses) => {
   return results
 }
 
+const fetchHelloMoonCollectionIds = async (addresses) => {
+  const { data: collectionIdResponse } = await axios.post(
+    `${HELLO_MOON_URL}/nft/collection/mints`,
+    {
+      nftMint: addresses,
+    },
+    AXIOS_CONFIG_HELLO_MOON_KEY
+  )
+
+  return collectionIdResponse
+}
+
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
   async ({ walletAddress, callback }, { getState }) => {
@@ -177,7 +194,7 @@ export const addAddress = createAsyncThunk(
           const nfts = res.result
 
           collections.forEach((collection) => {
-            collectionHash[collection.name] = collection
+            collectionHash[collection?.name] = collection
           })
 
           const uniqueCollectionAddressHash = {}
@@ -217,9 +234,9 @@ export const addAddress = createAsyncThunk(
               ? nft.cached_image_uri
               : nft.image_uri
 
-            if (nft?.collection?.address) {
-              let address = nft?.collection?.address
+            let address = nft?.collection?.address
 
+            if (address) {
               if (collectionMetaDataHash[address] === undefined) continue
 
               if (collectionMetaDataHash[address]?.name) {
@@ -241,6 +258,7 @@ export const addAddress = createAsyncThunk(
                 image: collectionImage,
                 nfts: [{ ...nft, wallet: walletAddress }],
                 wallet: walletAddress,
+                address,
               }
             } else {
               collectionHash[collectionName] = {
@@ -256,10 +274,49 @@ export const addAddress = createAsyncThunk(
             }
           }
 
+          // This contains the old and newly added collections
+          const updatedCollections = Object.keys(collectionHash).map(
+            (key) => collectionHash[key]
+          )
+
+          // Get newly added collections
+          const newCollections = updatedCollections.filter(
+            (collection) =>
+              collection.helloMoonCollectionId === undefined &&
+              collection.name !== 'unknown'
+          )
+          // For each collection, get the address of the first nft in the array
+          const newNftMoonIds = newCollections.map(
+            (collection) => collection.nfts[0].mint
+          )
+
+          // Fetch the helloMoonCollectionId for each nft per collection
+          const { data: newHelloMoonCollectionIds } =
+            await fetchHelloMoonCollectionIds(newNftMoonIds)
+
+          for (let i = 0; i < newHelloMoonCollectionIds?.length; i++) {
+            const helloMoonIdMap = newHelloMoonCollectionIds[i]
+            const collectionIndex = updatedCollections.findIndex(
+              (collection) =>
+                collection.nfts.find(
+                  (nft) => nft.mint === helloMoonIdMap.nftMint
+                ) !== undefined
+            )
+
+            console.log('collection found!', collectionIndex)
+
+            if (collectionIndex > -1) {
+              // Update the helloMoonCollectionId of each collection
+              // This will be used for HelloMoon API integration
+              updatedCollections[collectionIndex] = {
+                ...updatedCollections[collectionIndex],
+                helloMoonCollectionId: helloMoonIdMap.helloMoonCollectionId,
+              }
+            }
+          }
+
           walletState = {
-            collections: Object.keys(collectionHash).map(
-              (key) => collectionHash[key]
-            ),
+            collections: updatedCollections,
             allWallets: [...allWallets, walletAddress],
           }
         }
@@ -394,7 +451,7 @@ export const insertCurrentCollection = createAsyncThunk(
       const encryptedText = localStorage.getItem('walletState')
       const decrypted = decrypt(encryptedText)
 
-      // Fetch listing data of nfts
+      // TODO: Fetch listing data of nfts
 
       const newObj = { ...decrypted, currentCollection: { ...collection } }
       const encryptedNewObj = encrypt(newObj)

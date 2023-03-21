@@ -10,7 +10,7 @@ import {
   updateCollectionFloorPrice,
 } from 'redux/reducers/walletSlice'
 
-import { HELLO_MOON_KEY, HELLO_MOON_URL } from 'app/constants/api'
+import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
@@ -18,38 +18,26 @@ const CollectionCard = ({ collection, index }) => {
 
   const [fetchingFloorPrice, setFetchingFloorPrice] = useState(false)
 
+  console.log('currentCollection', collection)
+
   useEffect(() => {
     fetchFloorPrice()
   }, [])
 
   const fetchFloorPrice = async () => {
-    if (!collection.floorPrice) {
+    if (!collection.floorPrice && collection.name !== 'unknown') {
       try {
         setFetchingFloorPrice(true)
 
-        const { data: nameSearch } = await axios.post(
-          `${HELLO_MOON_URL}/nft/collection/name`,
-          {
-            collectionName: collection.name,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${HELLO_MOON_KEY}`,
-            },
-          }
-        )
+        let collecionId = collection.helloMoonCollectionId
 
-        if (nameSearch?.data?.length === 1) {
+        if (collecionId) {
           const { data: floorPrice } = await axios.post(
             `${HELLO_MOON_URL}/nft/collection/floorprice`,
             {
-              helloMoonCollectionId: nameSearch.data[0].helloMoonCollectionId,
+              helloMoonCollectionId: collecionId,
             },
-            {
-              headers: {
-                Authorization: `Bearer ${HELLO_MOON_KEY}`,
-              },
-            }
+            AXIOS_CONFIG_HELLO_MOON_KEY
           )
 
           if (floorPrice?.data?.length) {
