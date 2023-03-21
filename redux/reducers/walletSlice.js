@@ -303,8 +303,6 @@ export const addAddress = createAsyncThunk(
                 ) !== undefined
             )
 
-            console.log('collection found!', collectionIndex)
-
             if (collectionIndex > -1) {
               // Update the helloMoonCollectionId of each collection
               // This will be used for HelloMoon API integration

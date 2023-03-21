@@ -18,8 +18,6 @@ const CollectionCard = ({ collection, index }) => {
 
   const [fetchingFloorPrice, setFetchingFloorPrice] = useState(false)
 
-  console.log('currentCollection', collection)
-
   useEffect(() => {
     fetchFloorPrice()
   }, [])
