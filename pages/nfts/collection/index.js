@@ -68,9 +68,6 @@ const Index = () => {
           {currentCollection.name} NFTs
         </p>
         <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-          {/* {[1, 2, 3, 4, 5].map((card) => (
-    <CollectionCard key={card} />
-  ))} */}
           {currentCollection.nfts?.map((nft, index) => (
             <NFTCard key={index} nft={nft} />
           ))}

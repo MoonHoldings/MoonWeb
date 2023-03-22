@@ -350,7 +350,7 @@ const RightSideBar = () => {
       {allWallets.length !== 0 ? (
         <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
           <div className="header mb-[2rem] flex justify-between">
-            <h1 className="text-[1.4rem]">{CONNECTED_WALLETS}</h1>
+            <h1 className="text-[1.4rem] text-white">{CONNECTED_WALLETS}</h1>
             <button
               onClick={seeAllOrLessWallets}
               className="text-[1.4rem] font-bold text-[#61DAEA]"
