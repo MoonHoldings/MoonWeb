@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// import dynamic from 'next/dynamic'
-// import { useWallet } from '@solana/wallet-adapter-react'
-import {
-  populateWalletsAndCollections,
-  refreshFloorPrices,
-} from 'redux/reducers/walletSlice'
+
 import {
   changeAddWalletModalOpen,
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
-import { wrapper } from 'redux/store'
 
 import Collections from 'components/partials/Collections'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
@@ -67,13 +61,5 @@ const Index = () => {
     </SidebarsLayout>
   )
 }
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req, res, ...etc }) => {
-      // store.dispatch(refreshFloorPrices())
-      console.log('HAHAHAH', store.getState())
-    }
-)
 
 export default Index

@@ -1,23 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useDispatch, useSelector } from 'react-redux'
-import decrypt from 'utils/decrypt'
+import { useSelector } from 'react-redux'
 
-import {
-  populateCurrentNft,
-  populateCurrentCollection,
-  populateWalletsAndCollections,
-} from 'redux/reducers/walletSlice'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
 
 const Nft = () => {
-  const dispatch = useDispatch()
   const router = useRouter()
-  const { currentNft, currentCollection, allWallets } = useSelector(
-    (state) => state.wallet
-  )
+  const { currentNft, currentCollection } = useSelector((state) => state.wallet)
 
   const image = currentNft.image_uri
   const name = currentNft.name?.length ? currentNft.name : currentNft.symbol
