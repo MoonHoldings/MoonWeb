@@ -287,7 +287,7 @@ export const addAddress = createAsyncThunk(
           )
           // For each collection, get the address of the first nft in the array
           const newNftMoonIds = newCollections.map(
-            (collection) => collection.nfts[0].mint
+            (collection) => collection?.nfts[0]?.mint
           )
 
           // Fetch the helloMoonCollectionId for each nft per collection

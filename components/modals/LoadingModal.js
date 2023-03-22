@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 
 const LoadingModal = () => {
+  const [loadingMessage, setLoadingMessage] = useState(
+    'Wallet Assets Loading...'
+  )
   const { publicKey } = useWallet()
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadingMessage('Code running through the blockchain...')
+
+      setTimeout(() => {
+        setLoadingMessage('Jpegs are teleporting in... ')
+      }, 3000)
+    }, 3000)
+  }, [])
 
   return (
     <motion.div
@@ -15,7 +28,7 @@ const LoadingModal = () => {
     >
       <div className="relative block items-center rounded-lg border border-gray-100 bg-white p-6 shadow-md dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700">
         <h5 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 opacity-20 dark:text-white">
-          Wallet Assets are loading...
+          {loadingMessage}
         </h5>
         <p className="text-xl font-normal text-gray-700 opacity-20 dark:text-gray-400">
           {publicKey?.toBase58()}
@@ -40,7 +53,6 @@ const LoadingModal = () => {
               fill="currentFill"
             />
           </svg>
-          <span className="sr-only">Wallet Assets are loading...</span>
         </div>
       </div>
     </motion.div>
