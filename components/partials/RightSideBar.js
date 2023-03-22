@@ -15,6 +15,7 @@ import {
   removeAllWallets,
   removeWallet,
   refreshWallets,
+  refreshFloorPrices,
 } from 'redux/reducers/walletSlice'
 import { ADD_WALLET_ADDRESS, CONNECTED_WALLETS } from 'app/constants/copy'
 
@@ -133,6 +134,11 @@ const RightSideBar = () => {
     )
   }
 
+  const refreshWalletsAndFloorPrice = async () => {
+    await dispatch(refreshWallets())
+    dispatch(refreshFloorPrices())
+  }
+
   return (
     <motion.div
       className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
@@ -219,7 +225,7 @@ const RightSideBar = () => {
 
           <button
             type="button"
-            onClick={() => dispatch(refreshWallets())}
+            onClick={refreshWalletsAndFloorPrice}
             className="xl-[1rem] mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
           >
             <div className="flex h-[4.1rem] w-full items-center justify-center">

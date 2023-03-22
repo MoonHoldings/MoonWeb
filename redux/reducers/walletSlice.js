@@ -229,7 +229,7 @@ export const refreshFloorPrices = createAsyncThunk(
 
 export const refreshWallets = createAsyncThunk(
   'wallet/refreshWallets',
-  async (_, { dispatch, getState }) => {
+  async (_, { getState }) => {
     const state = getState()
 
     let collections = [...state.wallet.collections]
