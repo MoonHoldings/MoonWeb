@@ -57,13 +57,11 @@ const CollectionCard = ({ collection, index }) => {
     ).toLocaleString()
   }
 
-  const collectionClick = () => {
-    const redirect = () => {
+  const collectionClick = async () => {
+    if (collection.nfts) {
+      await dispatch(insertCurrentCollection({ collection }))
       router.push('/nfts/collection')
     }
-
-    if (collection.nfts)
-      dispatch(insertCurrentCollection({ collection, redirect }))
   }
 
   const renderFloorPrice = () => {

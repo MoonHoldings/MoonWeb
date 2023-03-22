@@ -609,13 +609,9 @@ export const addAddress2 = createAsyncThunk(
 
 export const insertCurrentCollection = createAsyncThunk(
   'wallet/insertCurrentCollection',
-  async ({ collection, redirect }) => {
+  async ({ collection }) => {
     try {
       // TODO: Fetch listing data of nfts
-
-      if (redirect) {
-        redirect()
-      }
 
       return collection
     } catch (error) {

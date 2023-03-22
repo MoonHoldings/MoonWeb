@@ -16,10 +16,9 @@ const NFT = ({ nft, floorPrice }) => {
   const nftClick = () => {
     dispatch(populateCurrentNft(nft))
 
-    // const endpoint = endpointMaker(nft.name)
     router.push(
       '/nfts/collection/nft/[endpoint]',
-      `/nfts/collection/nft/${nft.update_authority}`
+      `/nfts/collection/nft/${nft.mint}`
     )
   }
 
