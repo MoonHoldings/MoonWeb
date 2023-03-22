@@ -17,7 +17,7 @@ const CollectionCard = ({ collection, index }) => {
   const router = useRouter()
 
   useEffect(() => {
-    fetchFloorPrice()
+    // fetchFloorPrice()
   }, [])
 
   const fetchFloorPrice = async () => {

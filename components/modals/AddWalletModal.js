@@ -8,7 +8,11 @@ import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
 } from 'redux/reducers/utilSlice'
-import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
+import {
+  addAddress,
+  changeAddAddressStatus,
+  refreshFloorPrices,
+} from 'redux/reducers/walletSlice'
 import { ADD_WALLET } from 'app/constants/copy'
 
 const AddWalletModal = () => {
@@ -33,7 +37,7 @@ const AddWalletModal = () => {
     }
   }
 
-  const addWallet = () => {
+  const addWallet = async () => {
     if (!isValidSolanaAddress(walletAddress)) {
       setErrorMessage('Invalid wallet address')
       return
@@ -42,12 +46,14 @@ const AddWalletModal = () => {
     const record = allWallets.find((wallet) => walletAddress === wallet)
 
     if (!record) {
-      dispatch(
+      await dispatch(
         addAddress({
           walletAddress,
           callback: () => dispatch(changeRightSideBarOpen(false)),
         })
       )
+
+      dispatch(refreshFloorPrices())
     } else {
       dispatch(changeAddWalletModalOpen(false))
     }
