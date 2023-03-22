@@ -23,8 +23,6 @@ const NFT = ({ nft, floorPrice }) => {
     )
   }
 
-  const fetchListingDetails = () => {}
-
   const formatFloorPrice = () => {
     return (
       parseFloat(floorPrice.floorPriceLamports) / LAMPORTS_PER_SOL
@@ -58,7 +56,7 @@ const NFT = ({ nft, floorPrice }) => {
           </h2> */}
         </div>
 
-        <div className="items-center xl:flex xl:justify-between">
+        {/* <div className="items-center xl:flex xl:justify-between">
           {floorPrice && (
             <div className="mb-[0.4rem] flex items-center text-[1.2rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
               <div className="">{formatFloorPrice()}</div>
@@ -71,11 +69,11 @@ const NFT = ({ nft, floorPrice }) => {
                 unoptimized
               />
             </div>
-          )}
-          {/* <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">
+          )} 
+         <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">
             $482,000
-          </div> */}
-        </div>
+          </div> 
+        </div> */}
       </div>
     </div>
   )
