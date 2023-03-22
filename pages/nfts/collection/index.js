@@ -21,36 +21,6 @@ const Index = () => {
     router.push(`/${url}`)
   }
 
-  const restoreCurrentCollection = () => {
-    const encryptedText = localStorage.getItem('walletState')
-    const decryptedObj = decrypt(encryptedText)
-
-    if (decryptedObj.currentCollection) {
-      dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-    } else {
-      router.push('/nfts')
-    }
-  }
-
-  const restoreWallet = () => {
-    const walletStateDecrypted = localStorage.getItem('walletState')
-    if (walletStateDecrypted && allWallets.length === 0) {
-      const walletState = decrypt(walletStateDecrypted)
-      dispatch(
-        populateWalletsAndCollections({
-          allWallets: walletState.allWallets,
-          collections: walletState.collections,
-        })
-      )
-    }
-  }
-
-  useEffect(() => {
-    restoreCurrentCollection()
-
-    if (router.pathname.includes('collection')) restoreWallet()
-  }, [])
-
   const formatFloorPrice = () => {
     return (
       parseFloat(currentCollection.floorPrice.floorPriceLamports) /

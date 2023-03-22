@@ -42,12 +42,6 @@ const walletSlice = createSlice({
     },
     populateCurrentNft(state, action) {
       state.currentNft = { ...action.payload }
-
-      const encryptedText = localStorage.getItem('walletState')
-      const decrypted = decrypt(encryptedText)
-      const newObj = { ...decrypted, currentNft: { ...action.payload } }
-      const newEncryptedObj = encrypt(newObj)
-      localStorage.setItem('walletState', newEncryptedObj)
     },
     removeWallet(state, action) {
       // Remove all NFTs from Collections associated with wallet
@@ -74,21 +68,12 @@ const walletSlice = createSlice({
         (item) => item === action.payload
       )
       state.allWallets.splice(walletToRemove, 1)
-
-      const walletState = {
-        allWallets: state.allWallets,
-        collections: state.collections,
-      }
-      const encryptedText = encrypt(walletState)
-      localStorage.setItem('walletState', encryptedText)
     },
     removeAllWallets(state, action) {
       state.allWallets = []
       state.collections = []
       state.currentCollection = {}
       state.singleNFT = {}
-
-      localStorage.removeItem('walletState')
     },
     changeAddAddressStatus(state, action) {
       state.addAddressStatus = action.payload
@@ -505,9 +490,6 @@ export const addAddress = createAsyncThunk(
           }
         }
 
-        const encryptedText = encrypt(walletState)
-        localStorage.setItem('walletState', encryptedText)
-
         if (callback) {
           callback()
         }
@@ -615,9 +597,6 @@ export const addAddress2 = createAsyncThunk(
           allWallets: [...allWallets, walletAddress],
         }
 
-        const encryptedText = encrypt(walletState)
-        localStorage.setItem('walletState', encryptedText)
-
         return walletState
       } catch (error) {
         console.error('Error: nft.js > addAddress', error)
@@ -632,15 +611,7 @@ export const insertCurrentCollection = createAsyncThunk(
   'wallet/insertCurrentCollection',
   async ({ collection, redirect }) => {
     try {
-      const encryptedText = localStorage.getItem('walletState')
-      const decrypted = decrypt(encryptedText)
-
       // TODO: Fetch listing data of nfts
-
-      const newObj = { ...decrypted, currentCollection: { ...collection } }
-      const encryptedNewObj = encrypt(newObj)
-
-      localStorage.setItem('walletState', encryptedNewObj)
 
       if (redirect) {
         redirect()

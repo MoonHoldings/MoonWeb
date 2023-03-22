@@ -24,47 +24,6 @@ const Nft = () => {
 
   const handleClick = (url) => router.push(`/${url}`)
 
-  useEffect(() => {
-    const restoreNFT = () => {
-      const encryptedText = localStorage.getItem('walletState')
-      const decryptedObj = decrypt(encryptedText)
-
-      if (decryptedObj.currentNft) {
-        dispatch(populateCurrentNft(decryptedObj.currentNft))
-      } else {
-        router.push('/nfts/collection')
-      }
-    }
-
-    const restoreCurrentCollection = () => {
-      const encryptedText = localStorage.getItem('walletState')
-      const decryptedObj = decrypt(encryptedText)
-
-      if (decryptedObj.currentCollection) {
-        dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-      } else {
-        router.push('/nfts')
-      }
-    }
-
-    const restoreWallet = () => {
-      const walletStateDecrypted = localStorage.getItem('walletState')
-      if (walletStateDecrypted && allWallets.length === 0) {
-        const walletState = decrypt(walletStateDecrypted)
-        dispatch(
-          populateWalletsAndCollections({
-            allWallets: walletState.allWallets,
-            collections: walletState.collections,
-          })
-        )
-      }
-    }
-
-    restoreCurrentCollection()
-    restoreWallet()
-    restoreNFT()
-  }, [dispatch, router])
-
   return (
     <SidebarsLayout>
       <div className="py-[2rem] md:order-2">
