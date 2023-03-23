@@ -14,6 +14,7 @@ const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
 const initialState = {
   addAddressStatus: 'idle',
+  currentAddAddress: null,
   refreshWalletsStatus: 'idle',
   refreshFloorPriceStatus: 'idle',
   fetchingNftDataStatus: 'idle',
@@ -77,6 +78,9 @@ const walletSlice = createSlice({
     },
     changeAddAddressStatus(state, action) {
       state.addAddressStatus = action.payload
+    },
+    changeCurrentAddAddress(state, action) {
+      state.currentAddAddress = action.payload
     },
   },
   extraReducers(builder) {
@@ -337,7 +341,9 @@ export const refreshWallets = createAsyncThunk(
 
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
-  async ({ walletAddress, callback }, { getState }) => {
+  async ({ walletAddress, callback }, { getState, dispatch }) => {
+    dispatch(changeCurrentAddAddress(walletAddress))
+
     const state = getState()
 
     let collections = [...state.wallet.collections]
@@ -656,6 +662,7 @@ export const {
   updateCollectionFloorPrice,
   removeWallet,
   changeAddAddressStatus,
+  changeCurrentAddAddress,
   removeAllWallets,
   populateCurrentCollection,
   populateCurrentNft,

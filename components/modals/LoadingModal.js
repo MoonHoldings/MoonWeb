@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 
 const LoadingModal = () => {
+  const { currentAddAddress } = useSelector((state) => state.wallet)
+
   const [loadingMessage, setLoadingMessage] = useState(
     'Wallet Assets Loading...'
   )
@@ -31,7 +34,7 @@ const LoadingModal = () => {
           {loadingMessage}
         </h5>
         <p className="text-xl font-normal text-gray-700 opacity-20 dark:text-gray-400">
-          {publicKey?.toBase58()}
+          {currentAddAddress}
         </p>
         <div
           role="status"
