@@ -4,7 +4,10 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { PublicKey } from '@solana/web3.js'
 
-import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
+import {
+  changeAddWalletModalOpen,
+  changeRightSideBarOpen,
+} from 'redux/reducers/utilSlice'
 import { addAddress, changeAddAddressStatus } from 'redux/reducers/walletSlice'
 import { ADD_WALLET } from 'app/constants/copy'
 
@@ -39,7 +42,12 @@ const AddWalletModal = () => {
     const record = allWallets.find((wallet) => walletAddress === wallet)
 
     if (!record) {
-      dispatch(addAddress(walletAddress))
+      dispatch(
+        addAddress({
+          walletAddress,
+          callback: () => dispatch(changeRightSideBarOpen(false)),
+        })
+      )
     } else {
       dispatch(changeAddWalletModalOpen(false))
     }
@@ -59,10 +67,10 @@ const AddWalletModal = () => {
   useEffect(() => {
     if (addAddressStatus === 'successful' && addWalletModalOpen === true) {
       dispatch(changeAddWalletModalOpen(false))
-
       dispatch(changeAddAddressStatus('idle'))
     }
   }, [addWalletModalOpen, addAddressStatus, dispatch])
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}

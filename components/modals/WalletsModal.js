@@ -4,7 +4,10 @@ import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 
-import { changeWalletsModalOpen } from 'redux/reducers/utilSlice'
+import {
+  changeWalletsModalOpen,
+  changeRightSideBarOpen,
+} from 'redux/reducers/utilSlice'
 
 const WalletsModal = () => {
   const { wallets, select } = useWallet()
@@ -13,6 +16,7 @@ const WalletsModal = () => {
   const walletBtnClick = (walletName) => {
     select(walletName)
     dispatch(changeWalletsModalOpen(false))
+    dispatch(changeRightSideBarOpen(false))
   }
 
   const closeWalletsModal = () => {

@@ -14,6 +14,8 @@ import {
   addAddress,
   removeAllWallets,
   removeWallet,
+  refreshWallets,
+  refreshFloorPrices,
 } from 'redux/reducers/walletSlice'
 import { ADD_WALLET_ADDRESS, CONNECTED_WALLETS } from 'app/constants/copy'
 
@@ -38,7 +40,7 @@ const RightSideBar = () => {
       )
 
       if (!record) {
-        dispatch(addAddress(publicKey.toBase58()))
+        dispatch(addAddress({ walletAddress: publicKey.toBase58() }))
       }
     }
   }, [publicKey, allWallets, dispatch])
@@ -102,16 +104,6 @@ const RightSideBar = () => {
   }
 
   const renderConnectWallet = () => {
-    const parseAddress = (address) => {
-      const _address = address.toBase58()
-
-      return (
-        _address.substring(0, 4) +
-        '...' +
-        _address.substring(_address.length - 4)
-      )
-    }
-
     return (
       <button
         disabled={addAddressStatus === 'loading'}
@@ -127,7 +119,7 @@ const RightSideBar = () => {
             height="20"
             alt="Crypto"
           />
-          {publicKey ? parseAddress(publicKey) : 'Connect Wallet'}
+          {publicKey ? shrinkText(publicKey.toBase58()) : 'Connect Wallet'}
         </div>
         <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
@@ -140,6 +132,11 @@ const RightSideBar = () => {
         </div>
       </button>
     )
+  }
+
+  const refreshWalletsAndFloorPrice = async () => {
+    await dispatch(refreshWallets())
+    dispatch(refreshFloorPrices())
   }
 
   return (
@@ -200,9 +197,10 @@ const RightSideBar = () => {
         <ul className="dashboard-menu text-[1.4rem] ">
           {renderConnectWallet()}
 
-          <li
+          <button
+            type="button"
             onClick={addWalletAddress}
-            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
           >
             <div className="flex h-[4.1rem] w-full items-center">
               <Image
@@ -223,7 +221,18 @@ const RightSideBar = () => {
                 alt="plus sign"
               />
             </div>
-          </li>
+          </button>
+
+          <button
+            type="button"
+            onClick={refreshWalletsAndFloorPrice}
+            className="xl-[1rem] mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+          >
+            <div className="flex h-[4.1rem] w-full items-center justify-center">
+              <p className="mr-4 text-[1.9rem]">↻</p>
+              Refresh Wallets
+            </div>
+          </button>
           {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
             <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
               <Image
@@ -377,7 +386,11 @@ const RightSideBar = () => {
                 />
                 {shrinkText(`${wallet}`)}
                 <button
-                  onClick={() => removeSingleWallet(wallet)}
+                  onClick={
+                    wallet === publicKey?.toBase58()
+                      ? disconnectCurrentWallet
+                      : () => removeSingleWallet(wallet)
+                  }
                   className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
                 >
                   <span className="relative bottom-[0.1rem] font-poppins">
