@@ -4,16 +4,14 @@ import {
   HELLO_MOON_URL,
   SHYFT_URL,
 } from 'app/constants/api'
-const { Connection, PublicKey } = require('@solana/web3.js')
+
 import axios from 'axios'
-import decrypt from 'utils/decrypt'
-import encrypt from 'utils/encrypt'
-import fetchURI from 'utils/fetchURI'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
 const initialState = {
   addAddressStatus: 'idle',
+  currentAddAddress: null,
   refreshWalletsStatus: 'idle',
   refreshFloorPriceStatus: 'idle',
   fetchingNftDataStatus: 'idle',
@@ -42,12 +40,6 @@ const walletSlice = createSlice({
     },
     populateCurrentNft(state, action) {
       state.currentNft = { ...action.payload }
-
-      const encryptedText = localStorage.getItem('walletState')
-      const decrypted = decrypt(encryptedText)
-      const newObj = { ...decrypted, currentNft: { ...action.payload } }
-      const newEncryptedObj = encrypt(newObj)
-      localStorage.setItem('walletState', newEncryptedObj)
     },
     removeWallet(state, action) {
       // Remove all NFTs from Collections associated with wallet
@@ -74,24 +66,18 @@ const walletSlice = createSlice({
         (item) => item === action.payload
       )
       state.allWallets.splice(walletToRemove, 1)
-
-      const walletState = {
-        allWallets: state.allWallets,
-        collections: state.collections,
-      }
-      const encryptedText = encrypt(walletState)
-      localStorage.setItem('walletState', encryptedText)
     },
     removeAllWallets(state, action) {
       state.allWallets = []
       state.collections = []
       state.currentCollection = {}
       state.singleNFT = {}
-
-      localStorage.removeItem('walletState')
     },
     changeAddAddressStatus(state, action) {
       state.addAddressStatus = action.payload
+    },
+    changeCurrentAddAddress(state, action) {
+      state.currentAddAddress = action.payload
     },
   },
   extraReducers(builder) {
@@ -352,7 +338,9 @@ export const refreshWallets = createAsyncThunk(
 
 export const addAddress = createAsyncThunk(
   'wallet/addAddress',
-  async ({ walletAddress, callback }, { getState }) => {
+  async ({ walletAddress, callback }, { getState, dispatch }) => {
+    dispatch(changeCurrentAddAddress(walletAddress))
+
     const state = getState()
 
     let collections = [...state.wallet.collections]
@@ -505,9 +493,6 @@ export const addAddress = createAsyncThunk(
           }
         }
 
-        const encryptedText = encrypt(walletState)
-        localStorage.setItem('walletState', encryptedText)
-
         if (callback) {
           callback()
         }
@@ -615,9 +600,6 @@ export const addAddress2 = createAsyncThunk(
           allWallets: [...allWallets, walletAddress],
         }
 
-        const encryptedText = encrypt(walletState)
-        localStorage.setItem('walletState', encryptedText)
-
         return walletState
       } catch (error) {
         console.error('Error: nft.js > addAddress', error)
@@ -630,21 +612,9 @@ export const addAddress2 = createAsyncThunk(
 
 export const insertCurrentCollection = createAsyncThunk(
   'wallet/insertCurrentCollection',
-  async ({ collection, redirect }) => {
+  async ({ collection }) => {
     try {
-      const encryptedText = localStorage.getItem('walletState')
-      const decrypted = decrypt(encryptedText)
-
       // TODO: Fetch listing data of nfts
-
-      const newObj = { ...decrypted, currentCollection: { ...collection } }
-      const encryptedNewObj = encrypt(newObj)
-
-      localStorage.setItem('walletState', encryptedNewObj)
-
-      if (redirect) {
-        redirect()
-      }
 
       return collection
     } catch (error) {
@@ -689,6 +659,7 @@ export const {
   updateCollectionFloorPrice,
   removeWallet,
   changeAddAddressStatus,
+  changeCurrentAddAddress,
   removeAllWallets,
   populateCurrentCollection,
   populateCurrentNft,

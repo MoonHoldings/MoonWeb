@@ -1,17 +1,11 @@
-// import AddWalletModal from 'components/modals/AddWalletModal'
-// import LeftSideBar from 'components/partials/LeftSideBar'
-// import RightSideBar from 'components/partials/RightSideBar'
-// import { AnimatePresence } from 'framer-motion'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// import dynamic from 'next/dynamic'
-// import { useWallet } from '@solana/wallet-adapter-react'
-import { populateWalletsAndCollections } from 'redux/reducers/walletSlice'
+
 import {
   changeAddWalletModalOpen,
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
-import decrypt from 'utils/decrypt'
+
 import Collections from 'components/partials/Collections'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 
@@ -23,47 +17,10 @@ import {
   WELCOME_MOON_HOLDINGS,
 } from 'app/constants/copy'
 
-// const WalletsModal = dynamic(() => import('components/modals/WalletsModal'), {
-//   ssr: false,
-// }) // fixes hydration
-
 const Index = () => {
   const dispatch = useDispatch()
-  //   const { wallets } = useWallet()
-  //   const [innerWidth, setInnerWidth] = useState(0)
-  //   const {
-  //     leftSideBarOpen,
-  //     rightSideBarOpen,
-  //     walletsModalOpen,
-  //     addWalletModalOpen,
-  //   } = useSelector((state) => state.util)
   const { collections, allWallets } = useSelector((state) => state.wallet)
 
-  useEffect(() => {
-    //     setInnerWidth(window.innerWidth)
-    //     window.addEventListener('resize', windowResize)
-    const restoreWallet = () => {
-      const walletStateDecrypted = localStorage.getItem('walletState')
-      if (walletStateDecrypted && allWallets.length === 0) {
-        const walletState = decrypt(walletStateDecrypted)
-        dispatch(
-          populateWalletsAndCollections({
-            allWallets: walletState.allWallets,
-            collections: walletState.collections,
-          })
-        )
-      }
-    }
-
-    restoreWallet()
-  }, [allWallets.length, dispatch])
-  //   //   if (publicKey) {
-  //   //     dispatch(addAddress(publicKey.toBase58()))
-  //   //   }
-  //   // }, [publicKey])
-  //   const windowResize = () => {
-  //     setInnerWidth(window.innerWidth)
-  //   }
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
   }

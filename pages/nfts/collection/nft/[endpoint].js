@@ -1,74 +1,24 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useDispatch, useSelector } from 'react-redux'
-import decrypt from 'utils/decrypt'
+import { useSelector } from 'react-redux'
 
-import {
-  populateCurrentNft,
-  populateCurrentCollection,
-  populateWalletsAndCollections,
-} from 'redux/reducers/walletSlice'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
 
 const Nft = () => {
-  const dispatch = useDispatch()
   const router = useRouter()
-  const { currentNft, currentCollection, allWallets } = useSelector(
-    (state) => state.wallet
-  )
+  const { currentNft, currentCollection } = useSelector((state) => state.wallet)
 
   const image = currentNft.image_uri
   const name = currentNft.name?.length ? currentNft.name : currentNft.symbol
 
   const handleClick = (url) => router.push(`/${url}`)
 
-  useEffect(() => {
-    const restoreNFT = () => {
-      const encryptedText = localStorage.getItem('walletState')
-      const decryptedObj = decrypt(encryptedText)
-
-      if (decryptedObj.currentNft) {
-        dispatch(populateCurrentNft(decryptedObj.currentNft))
-      } else {
-        router.push('/nfts/collection')
-      }
-    }
-
-    const restoreCurrentCollection = () => {
-      const encryptedText = localStorage.getItem('walletState')
-      const decryptedObj = decrypt(encryptedText)
-
-      if (decryptedObj.currentCollection) {
-        dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-      } else {
-        router.push('/nfts')
-      }
-    }
-
-    const restoreWallet = () => {
-      const walletStateDecrypted = localStorage.getItem('walletState')
-      if (walletStateDecrypted && allWallets.length === 0) {
-        const walletState = decrypt(walletStateDecrypted)
-        dispatch(
-          populateWalletsAndCollections({
-            allWallets: walletState.allWallets,
-            collections: walletState.collections,
-          })
-        )
-      }
-    }
-
-    restoreCurrentCollection()
-    restoreWallet()
-    restoreNFT()
-  }, [dispatch, router])
-
   return (
     <SidebarsLayout>
       <div className="py-[2rem] md:order-2">
-        <div className="flex items-center px-[1rem] text-center">
+        <div className="flex items-center text-center">
           <div
             onClick={() => handleClick('nfts')}
             className="cursor mr-4 text-[2rem] underline"

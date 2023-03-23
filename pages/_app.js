@@ -1,19 +1,20 @@
 import '../styles/globals.css'
+import { PersistGate } from 'redux-persist/integration/react'
 import { ThemeProvider } from 'next-themes'
-import { Provider } from 'react-redux'
-import store from '../redux/store'
+import { useStore } from 'react-redux'
+import { wrapper } from '../redux/store'
 import Layout from 'components/Layout'
 
-function MyApp({ Component, pageProps }) {
+export default wrapper.withRedux(({ Component, pageProps }) => {
+  const store = useStore()
+
   return (
-    <ThemeProvider enableSystem={true} attribute="class">
-      <Provider store={store}>
+    <PersistGate persistor={store.__persistor}>
+      <ThemeProvider enableSystem={true} attribute="class">
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </Provider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </PersistGate>
   )
-}
-
-export default MyApp
+})

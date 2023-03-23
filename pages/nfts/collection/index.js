@@ -1,55 +1,19 @@
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import NFTCard from 'components/partials/NFTCard'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React from 'react'
 import Image from 'next/image'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  populateCurrentCollection,
-  populateWalletsAndCollections,
-} from 'redux/reducers/walletSlice'
+import { useSelector } from 'react-redux'
+
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
-import decrypt from 'utils/decrypt'
-
 const Index = () => {
-  const dispatch = useDispatch()
   const router = useRouter()
-  const { currentCollection, allWallets } = useSelector((state) => state.wallet)
+  const { currentCollection } = useSelector((state) => state.wallet)
 
   const handleClick = (url) => {
     router.push(`/${url}`)
   }
-
-  const restoreCurrentCollection = () => {
-    const encryptedText = localStorage.getItem('walletState')
-    const decryptedObj = decrypt(encryptedText)
-
-    if (decryptedObj.currentCollection) {
-      dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-    } else {
-      router.push('/nfts')
-    }
-  }
-
-  const restoreWallet = () => {
-    const walletStateDecrypted = localStorage.getItem('walletState')
-    if (walletStateDecrypted && allWallets.length === 0) {
-      const walletState = decrypt(walletStateDecrypted)
-      dispatch(
-        populateWalletsAndCollections({
-          allWallets: walletState.allWallets,
-          collections: walletState.collections,
-        })
-      )
-    }
-  }
-
-  useEffect(() => {
-    restoreCurrentCollection()
-
-    if (router.pathname.includes('collection')) restoreWallet()
-  }, [])
 
   const formatFloorPrice = () => {
     return (

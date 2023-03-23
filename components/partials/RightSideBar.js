@@ -33,14 +33,15 @@ const RightSideBar = () => {
     }
   }, [publicKey, addWallet])
 
-  const addWallet = useCallback(() => {
+  const addWallet = useCallback(async () => {
     if (publicKey) {
       const record = allWallets.find(
         (wallet) => publicKey.toBase58() === wallet
       )
 
       if (!record) {
-        dispatch(addAddress({ walletAddress: publicKey.toBase58() }))
+        await dispatch(addAddress({ walletAddress: publicKey.toBase58() }))
+        dispatch(refreshFloorPrices())
       }
     }
   }, [publicKey, allWallets, dispatch])
