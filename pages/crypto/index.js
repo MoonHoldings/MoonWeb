@@ -2,7 +2,6 @@ import React from 'react'
 import { CRYPTO_PORTFOLIO } from 'app/constants/copy'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import CryptoSquare from 'components/partials/CryptoSquare'
-import { color } from 'framer-motion'
 
 const index = () => {
   const dummyCryptos = [
@@ -68,8 +67,6 @@ const index = () => {
     },
   ]
 
-  // const totalValue = dummyCryptos.sort()
-
   const pct = (holding, price) => {
     let valueSum = 0
     dummyCryptos.forEach((crypto) => {
@@ -90,7 +87,7 @@ const index = () => {
             .map((crypto, index) => (
               <div
                 key={index}
-                className="flex h-[4.8rem] items-center"
+                className="flex h-[5.5rem] flex-col items-center justify-center"
                 style={{
                   background: crypto.colors.background[0],
                   color: crypto.colors.text,
@@ -105,9 +102,18 @@ const index = () => {
                   borderBottomLeftRadius: index === 0 && '0.5rem',
                 }}
               >
-                <span className="ml-[1rem] text-[1.4rem]">
+                <div className="text-center text-[1.4rem] font-[600]">
+                  <span>
+                    {pct(crypto.holding, crypto.price) > 8 &&
+                      Math.round(pct(crypto.holding, crypto.price))}
+                  </span>
+                  <span className="font-[300]">
+                    {pct(crypto.holding, crypto.price) > 8 && '%'}
+                  </span>
+                </div>
+                <div className="text-[1.4rem] font-[300] leading-[1.4rem]">
                   {pct(crypto.holding, crypto.price) > 8 && crypto.id}
-                </span>
+                </div>
               </div>
             ))}
         </div>
