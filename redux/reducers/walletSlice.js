@@ -4,11 +4,8 @@ import {
   HELLO_MOON_URL,
   SHYFT_URL,
 } from 'app/constants/api'
-const { Connection, PublicKey } = require('@solana/web3.js')
+
 import axios from 'axios'
-import decrypt from 'utils/decrypt'
-import encrypt from 'utils/encrypt'
-import fetchURI from 'utils/fetchURI'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
