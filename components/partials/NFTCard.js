@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import { populateCurrentNft } from 'redux/reducers/walletSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import LazyLoad from 'react-lazy-load'
 
 import endpointMaker from 'utils/endpointMaker'
 
@@ -33,14 +34,17 @@ const NFT = ({ nft, floorPrice }) => {
       onClick={nftClick}
       className="cursor flex min-h-min flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] xl:hover:border-[#62EAD2]"
     >
-      <Image
-        className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
-        src={image}
-        alt="NFT picture"
-        width={0}
-        height={0}
-        unoptimized
-      />
+      <LazyLoad threshold={0.95}>
+        <Image
+          className="mb-[1rem] h-[14.75rem] w-full rounded-[1rem] object-cover xl:mb-[1.5rem] xl:h-[20.08rem]"
+          src={image}
+          alt="NFT picture"
+          width={0}
+          height={0}
+          unoptimized
+        />
+      </LazyLoad>
+
       <div className="details">
         <div className="xl:mb-[1.2rem] xl:flex xl:justify-between">
           {nft.name ? (

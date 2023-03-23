@@ -18,7 +18,7 @@ const Nft = () => {
   return (
     <SidebarsLayout>
       <div className="py-[2rem] md:order-2">
-        <div className="flex items-center px-[1rem] text-center">
+        <div className="flex items-center text-center">
           <div
             onClick={() => handleClick('nfts')}
             className="cursor mr-4 text-[2rem] underline"
