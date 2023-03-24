@@ -39,7 +39,7 @@ const index = () => {
     {
       name: 'Tether',
       id: 'USDT',
-      holding: 7000,
+      holding: 27000,
       price: 1,
       colors: {
         text: '#fff',
