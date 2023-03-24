@@ -34,7 +34,8 @@
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-redux": "^8.0.5"
+    "react-redux": "^8.0.5",
+    "react-tippy": "^1.4.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
