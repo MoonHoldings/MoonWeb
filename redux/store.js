@@ -28,7 +28,7 @@ const makeStore = () => {
 
     const persistConfig = {
       key: 'root',
-      whitelist: ['auth', 'util', 'wallet'],
+      whitelist: ['auth', 'util', 'wallet', 'crypto'],
       storage,
     }
 
