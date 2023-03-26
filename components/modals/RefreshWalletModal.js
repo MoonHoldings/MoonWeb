@@ -1,7 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
+import { changeRefreshWalletsStatus } from 'redux/reducers/walletSlice'
 
 const RefreshWalletModal = () => {
+  const dispatch = useDispatch()
+  const { refreshWalletsStatus } = useSelector((state) => state.wallet)
+
+  useEffect(() => {
+    if (refreshWalletsStatus) {
+      setTimeout(() => {
+        dispatch(changeRefreshWalletsStatus(false))
+      }, 60000)
+    }
+  }, [refreshWalletsStatus, dispatch])
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.3 }}
