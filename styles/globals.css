@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('../components/partials/CollectionCard.css');
+
 @layer components {
   .form-field {
     @apply mb-[1rem] block h-[4.8rem] w-[25rem] rounded-[1rem] border border-[#60D7EC] bg-white px-[2rem] text-[1.6rem] text-black placeholder:text-[#333333];

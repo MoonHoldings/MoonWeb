@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
@@ -17,6 +17,8 @@ const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { solUsdPrice } = useSelector((state) => state.crypto)
+  const solPriceRef = useRef(null)
+  const [lastPriceText, setLastPriceText] = useState('')
 
   const shouldRenderFloorPrice =
     collection.floorPrice &&
@@ -24,8 +26,18 @@ const CollectionCard = ({ collection, index }) => {
     collection.nfts
 
   useEffect(() => {
-    // fetchFloorPrice()
-  }, [])
+    if (shouldRenderFloorPrice) {
+      setLastPriceText(formatFloorPriceUSD())
+
+      if (solPriceRef.current && lastPriceText !== formatFloorPriceUSD()) {
+        solPriceRef.current.classList.add('price-blink')
+
+        setTimeout(() => {
+          solPriceRef?.current?.classList?.remove('price-blink')
+        }, 1000)
+      }
+    }
+  }, [solUsdPrice])
 
   const fetchFloorPrice = async () => {
     if (!collection.floorPrice && collection.name !== 'unknown') {
@@ -143,7 +155,10 @@ const CollectionCard = ({ collection, index }) => {
               {renderFloorPrice()}
             </div>
             {solUsdPrice && (
-              <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">
+              <div
+                className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
+                ref={solPriceRef}
+              >
                 ${formatFloorPriceUSD()}
               </div>
             )}
