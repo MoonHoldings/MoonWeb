@@ -16,6 +16,11 @@ const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const shouldRenderFloorPrice =
+    collection.floorPrice &&
+    collection.floorPrice.floorPriceLamports > 0 &&
+    collection.nfts
+
   useEffect(() => {
     // fetchFloorPrice()
   }, [])
@@ -121,7 +126,7 @@ const CollectionCard = ({ collection, index }) => {
             </h2>
           )}
         </div>
-        {collection.floorPrice && collection.nfts && (
+        {shouldRenderFloorPrice && (
           <div className="items-center xl:flex xl:justify-between">
             <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
               {renderFloorPrice()}

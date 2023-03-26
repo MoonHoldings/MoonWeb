@@ -278,7 +278,9 @@ export const refreshWallets = createAsyncThunk(
         let collectionImage = nft.image_uri
 
         let address = nft?.collection?.address
-        let oldCollection = oldCollections.find((c) => c.address === address)
+        let oldCollection = oldCollections.find((c) =>
+          c.nfts.find((oldNft) => oldNft.mint === nft.mint)
+        )
 
         if (!oldCollection) {
           if (address) {
