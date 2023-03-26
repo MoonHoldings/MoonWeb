@@ -1,4 +1,4 @@
-// Helper function to formatamount to decimal format with commas for thousands (Ex. 2,000.00)
+// Helper function to format amount to decimal format with commas for thousands (Ex. 2,000.00)
 const toCurrencyFormat = (value) => {
   return Number.isInteger(value) || !Number.isNaN(Number(value))
     ? value
