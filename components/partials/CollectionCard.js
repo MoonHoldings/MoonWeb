@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import axios from 'axios'
@@ -11,10 +11,12 @@ import {
 } from 'redux/reducers/walletSlice'
 
 import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
   const router = useRouter()
+  const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const shouldRenderFloorPrice =
     collection.floorPrice &&
@@ -55,11 +57,20 @@ const CollectionCard = ({ collection, index }) => {
   }
 
   const formatFloorPrice = () => {
-    return (
+    return toCurrencyFormat(
       (parseFloat(collection.floorPrice.floorPriceLamports) /
         LAMPORTS_PER_SOL) *
-      collection.nfts.length
-    ).toLocaleString()
+        collection.nfts.length
+    )
+  }
+
+  const formatFloorPriceUSD = () => {
+    return toCurrencyFormat(
+      (parseFloat(collection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        collection.nfts.length *
+        solUsdPrice
+    )
   }
 
   const collectionClick = async () => {
@@ -131,9 +142,11 @@ const CollectionCard = ({ collection, index }) => {
             <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
               {renderFloorPrice()}
             </div>
-            {/* <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">
-            $482,000
-          </div> */}
+            {solUsdPrice && (
+              <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">
+                ${formatFloorPriceUSD()}
+              </div>
+            )}
           </div>
         )}
       </div>

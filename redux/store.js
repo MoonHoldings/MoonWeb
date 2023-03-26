@@ -1,14 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
-import { createWrapper, HYDRATE } from 'next-redux-wrapper'
-import authReducer from './reducers/authSlice'
+import { createWrapper } from 'next-redux-wrapper'
+
+import authSlice from './reducers/authSlice'
 import utilSlice from './reducers/utilSlice'
 import walletSlice from './reducers/walletSlice'
+import cryptoSlice from './reducers/cryptoSlice'
 
 const reducer = combineReducers({
-  auth: authReducer,
+  auth: authSlice,
   util: utilSlice,
   wallet: walletSlice,
+  crypto: cryptoSlice,
 })
 
 const makeConfiguredStore = (reducer) => configureStore({ reducer })
