@@ -6,8 +6,6 @@ import { populateCurrentNft } from 'redux/reducers/walletSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import LazyLoad from 'react-lazy-load'
 
-import endpointMaker from 'utils/endpointMaker'
-
 const NFT = ({ nft, floorPrice }) => {
   const dispatch = useDispatch()
   const router = useRouter()

@@ -218,7 +218,7 @@ export const refreshWallets = createAsyncThunk(
   async (_, { getState }) => {
     const state = getState()
 
-    let collections = [...state.wallet.collections]
+    const oldCollections = state.wallet.collections
     let allWallets = state.wallet.allWallets
 
     // Fetch all nfts of a wallet
@@ -231,13 +231,9 @@ export const refreshWallets = createAsyncThunk(
       return res?.data?.result
     })
     const allNfts = await Promise.allSettled(allNftPromises)
+
+    // Latest nfts
     const flattenedNfts = [].concat(...allNfts.map((obj) => obj.value))
-    const collectionHash = {}
-
-    collections.forEach((collection) => {
-      collectionHash[collection?.name] = collection
-    })
-
     const uniqueCollectionAddressHash = {}
 
     // Build hash for nfts that has collection address property
@@ -251,11 +247,13 @@ export const refreshWallets = createAsyncThunk(
 
     // Fetch metadata of each new collection address
     const uniqueCollectionAddresses = Object.keys(uniqueCollectionAddressHash)
+      .map((key) => key)
       .filter(
         (address) =>
-          collections.find((c) => c.address === address) === undefined
+          oldCollections.find(
+            (oldCollection) => oldCollection.address === address
+          ) === undefined
       )
-      .map((key) => key)
     const collectionMetaData = await bulkFetchCollectionMetadata(
       uniqueCollectionAddresses
     )
@@ -270,32 +268,34 @@ export const refreshWallets = createAsyncThunk(
       }
     }
 
-    const flattenedCurrentNfts = [].concat(...collections.map((c) => c.nfts))
-    const newNfts = flattenedNfts.filter(
-      (nft) =>
-        flattenedCurrentNfts.find(
-          (currentNft) => currentNft.mint === nft.mint
-        ) === undefined
-    )
+    const collectionHash = {}
 
     try {
-      for (let i = 0; i < newNfts.length; i++) {
-        let nft = newNfts[i]
+      for (let i = 0; i < flattenedNfts.length; i++) {
+        let nft = flattenedNfts[i]
         let collectionName = nft?.collection?.name || nft?.collection?.address
         let collectionImage = nft.image_uri
 
         let address = nft?.collection?.address
+        let oldCollection = oldCollections.find((c) =>
+          c.nfts.find((oldNft) => oldNft.mint === nft.mint)
+        )
 
-        if (address) {
-          if (collectionMetaDataHash[address] === undefined) continue
+        if (!oldCollection) {
+          if (address) {
+            if (collectionMetaDataHash[address] === undefined) continue
 
-          if (collectionMetaDataHash[address]?.name) {
-            collectionName = collectionMetaDataHash[address]?.name
+            if (collectionMetaDataHash[address]?.name) {
+              collectionName = collectionMetaDataHash[address]?.name
+            }
+
+            if (collectionMetaDataHash[address]?.image_uri) {
+              collectionImage = collectionMetaDataHash[address]?.image_uri
+            }
           }
-
-          if (collectionMetaDataHash[address]?.image_uri) {
-            collectionImage = collectionMetaDataHash[address]?.image_uri
-          }
+        } else {
+          collectionName = oldCollection.name
+          collectionImage = oldCollection.image
         }
 
         if (collectionName === undefined) {
@@ -310,6 +310,8 @@ export const refreshWallets = createAsyncThunk(
             nfts: [{ ...nft, wallet: nft.owner }],
             wallet: nft.owner,
             address,
+            helloMoonCollectionId: oldCollection?.helloMoonCollectionId,
+            floorPrice: oldCollection?.floorPrice,
           }
         } else {
           collectionHash[collectionName] = {
@@ -328,11 +330,45 @@ export const refreshWallets = createAsyncThunk(
       console.log(e)
     }
 
-    const newCollections = Object.keys(collectionHash).map(
+    // This contains the old and newly added collections
+    const latestCollections = Object.keys(collectionHash).map(
       (key) => collectionHash[key]
     )
 
-    return newCollections
+    // Get newly added collections
+    const newCollections = latestCollections.filter(
+      (collection) =>
+        collection.helloMoonCollectionId === undefined &&
+        collection.name !== 'unknown'
+    )
+    // For each collection, get the address of the first nft in the array
+    const newNftMoonIds = newCollections.map(
+      (collection) => collection?.nfts[0]?.mint
+    )
+
+    // Fetch the helloMoonCollectionId for each nft per collection
+    const { data: newHelloMoonCollectionIds } =
+      await fetchHelloMoonCollectionIds(newNftMoonIds)
+
+    for (let i = 0; i < newHelloMoonCollectionIds?.length; i++) {
+      const helloMoonIdMap = newHelloMoonCollectionIds[i]
+      const collectionIndex = latestCollections.findIndex(
+        (collection) =>
+          collection.nfts.find((nft) => nft.mint === helloMoonIdMap.nftMint) !==
+          undefined
+      )
+
+      if (collectionIndex > -1) {
+        // Update the helloMoonCollectionId of each collection
+        // This will be used for HelloMoon API integration
+        latestCollections[collectionIndex] = {
+          ...latestCollections[collectionIndex],
+          helloMoonCollectionId: helloMoonIdMap.helloMoonCollectionId,
+        }
+      }
+    }
+
+    return latestCollections
   }
 )
 
