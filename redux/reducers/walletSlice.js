@@ -213,7 +213,6 @@ export const refreshFloorPrices = createAsyncThunk(
   }
 )
 
-// TODO: Remove nfts that are not in the response
 export const refreshWallets = createAsyncThunk(
   'wallet/refreshWallets',
   async (_, { getState }) => {
