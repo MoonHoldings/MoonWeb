@@ -11,5 +11,5 @@
 }
 
 .price-blink {
-  animation: price-blink 1s infinite;
+  animation: price-blink 0.5s infinite;
 }
