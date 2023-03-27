@@ -79,6 +79,12 @@ const walletSlice = createSlice({
     changeCurrentAddAddress(state, action) {
       state.currentAddAddress = action.payload
     },
+    changeRefreshWalletsStatus(state, action) {
+      state.refreshWalletsStatus = action.payload
+    },
+    changeRefreshFloorPriceStatus(state, action) {
+      state.refreshFloorPriceStatus = action.payload
+    },
   },
   extraReducers(builder) {
     builder
@@ -696,6 +702,8 @@ export const {
   removeWallet,
   changeAddAddressStatus,
   changeCurrentAddAddress,
+  changeRefreshWalletsStatus,
+  changeRefreshFloorPriceStatus,
   removeAllWallets,
   populateCurrentCollection,
   populateCurrentNft,
