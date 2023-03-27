@@ -43,7 +43,7 @@ const LeftSideBar = () => {
           />
         </button>
 
-        <div className="flex items-center sm:hidden">
+        <div className="block flex items-center md:hidden lg:block lg:flex">
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white xl:h-[4rem] xl:w-[4rem]">
             <Image
               className="h-[1.3rem] w-[1.3rem] xl:h-[2.25rem] xl:w-[2.25rem]"

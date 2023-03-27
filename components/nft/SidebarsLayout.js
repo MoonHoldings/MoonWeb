@@ -1,5 +1,7 @@
 import AddWalletModal from 'components/modals/AddWalletModal'
 import LoadingModal from 'components/modals/LoadingModal'
+import RefreshWalletModal from 'components/modals/RefreshWalletModal'
+import RefreshFloorPriceModal from 'components/modals/RefreshFloorPriceModal'
 import WalletsModal from 'components/modals/WalletsModal'
 import LeftSideBar from 'components/partials/LeftSideBar'
 import RightSideBar from 'components/partials/RightSideBar'
@@ -19,9 +21,12 @@ const SidebarsLayout = ({ children }) => {
     addWalletModalOpen,
   } = useSelector((state) => state.util)
 
-  const { addAddressStatus, addingNftImageStatus } = useSelector(
-    (state) => state.wallet
-  )
+  const {
+    addAddressStatus,
+    fetchingNftDataStatus,
+    refreshFloorPriceStatus,
+    refreshWalletsStatus,
+  } = useSelector((state) => state.wallet)
 
   useEffect(() => {
     setInnerWidth(window.innerWidth)
@@ -55,7 +60,10 @@ const SidebarsLayout = ({ children }) => {
         </AnimatePresence>
 
         {(addAddressStatus === 'loading' ||
-          addingNftImageStatus === 'loading') && <LoadingModal />}
+          fetchingNftDataStatus === 'loading') && <LoadingModal />}
+
+        {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
+        {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
 
         {innerWidth > 1280 ? (
           <>
