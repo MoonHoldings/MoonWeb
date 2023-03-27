@@ -85,7 +85,7 @@ const index = () => {
               />
             ))}
         </div>
-        <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
+        <div className="h grid grid-cols-2 gap-6 py-[2rem] xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-6 4xl:grid-cols-8">
           {dummyCryptos
             .sort((a, b) => b.holding * b.price - a.holding * a.price)
             .map((crypto, index) => (
