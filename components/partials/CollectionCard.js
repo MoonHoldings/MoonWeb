@@ -12,32 +12,17 @@ import {
 
 import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
+import TextBlink from './TextBlink'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { solUsdPrice } = useSelector((state) => state.crypto)
-  const solPriceRef = useRef(null)
-  const [lastPriceText, setLastPriceText] = useState('')
 
   const shouldRenderFloorPrice =
     collection.floorPrice &&
     collection.floorPrice.floorPriceLamports > 0 &&
     collection.nfts
-
-  useEffect(() => {
-    if (shouldRenderFloorPrice) {
-      setLastPriceText(formatFloorPriceUSD())
-
-      if (solPriceRef.current && lastPriceText !== formatFloorPriceUSD()) {
-        solPriceRef.current.classList.add('price-blink')
-
-        setTimeout(() => {
-          solPriceRef?.current?.classList?.remove('price-blink')
-        }, 1000)
-      }
-    }
-  }, [solUsdPrice])
 
   const fetchFloorPrice = async () => {
     if (!collection.floorPrice && collection.name !== 'unknown') {
@@ -77,12 +62,12 @@ const CollectionCard = ({ collection, index }) => {
   }
 
   const formatFloorPriceUSD = () => {
-    return toCurrencyFormat(
+    return `$${toCurrencyFormat(
       (parseFloat(collection.floorPrice.floorPriceLamports) /
         LAMPORTS_PER_SOL) *
         collection.nfts.length *
         solUsdPrice
-    )
+    )}`
   }
 
   const collectionClick = async () => {
@@ -155,12 +140,10 @@ const CollectionCard = ({ collection, index }) => {
               {renderFloorPrice()}
             </div>
             {solUsdPrice && (
-              <div
+              <TextBlink
+                text={formatFloorPriceUSD()}
                 className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
-                ref={solPriceRef}
-              >
-                ${formatFloorPriceUSD()}
-              </div>
+              />
             )}
           </div>
         )}

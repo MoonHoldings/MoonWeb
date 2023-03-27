@@ -2,18 +2,37 @@ import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import Attribute from 'components/partials/AttributeBox'
 
+import toCurrencyFormat from 'utils/toCurrencyFormat'
+
 const Nft = () => {
   const router = useRouter()
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
+  const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const image = currentNft.image_uri
   const name = currentNft.name?.length ? currentNft.name : currentNft.symbol
 
   const handleClick = (url) => router.push(`/${url}`)
+
+  const formatFloorPrice = () => {
+    return toCurrencyFormat(
+      parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL
+    )
+  }
+
+  const formatFloorPriceUsd = () => {
+    return `$${toCurrencyFormat(
+      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        solUsdPrice
+    )}`
+  }
 
   return (
     <SidebarsLayout>
@@ -52,13 +71,28 @@ const Nft = () => {
           <div className="ml-0 sm:ml-8">
             <h1 className="mb-[2rem] text-[1.9rem]">NFT Details</h1>
             <div className="flex flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-[1.5rem] text-white md:grid-cols-2">
-              <div className="mb-[2rem] flex flex-row justify-between">
+              <div className="flex flex-row justify-between">
                 <span>NFT Name</span>
                 <span>{name}</span>
               </div>
-              <div className="flex flex-row justify-between">
+              <div className="mt-[2rem] flex flex-row justify-between">
                 <span className="mr-16">Collection</span>
                 <span>{currentCollection.name}</span>
+              </div>
+              <div className="mt-[2rem] flex flex-row justify-between">
+                <span className="mr-16">Floor Price</span>
+                <span className="flex items-center">
+                  {formatFloorPrice()}{' '}
+                  <Image
+                    className="ml-2 mr-4 inline h-[1.5rem] w-[1.5rem] xl:h-[1.8rem] xl:w-[1.8rem]"
+                    src="/images/svgs/sol-symbol.svg"
+                    alt="SOL Symbol"
+                    width={0}
+                    height={0}
+                    unoptimized
+                  />
+                  {formatFloorPriceUsd()}
+                </span>
               </div>
             </div>
             {/* TODO need to reload currentNft */}
