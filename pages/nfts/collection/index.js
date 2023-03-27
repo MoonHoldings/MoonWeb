@@ -6,20 +6,31 @@ import Image from 'next/image'
 import { useSelector } from 'react-redux'
 
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
+import TextBlink from 'components/partials/TextBlink'
 
 const Index = () => {
   const router = useRouter()
   const { currentCollection } = useSelector((state) => state.wallet)
+  const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const handleClick = (url) => {
     router.push(`/${url}`)
   }
 
   const formatFloorPrice = () => {
-    return (
+    return toCurrencyFormat(
       parseFloat(currentCollection.floorPrice.floorPriceLamports) /
-      LAMPORTS_PER_SOL
-    ).toLocaleString()
+        LAMPORTS_PER_SOL
+    )
+  }
+
+  const formatFloorPriceUsd = () => {
+    return `$${toCurrencyFormat(
+      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        solUsdPrice
+    )}`
   }
 
   return (
@@ -43,7 +54,7 @@ const Index = () => {
         </p>
         {currentCollection.floorPrice && (
           <div className="mt-8 flex items-center">
-            <p className="bold  text-[2rem]">
+            <p className="bold text-[2rem]">
               Floor Price: {formatFloorPrice()}
             </p>
             <Image
@@ -53,6 +64,10 @@ const Index = () => {
               width={0}
               height={0}
               unoptimized
+            />
+            <TextBlink
+              className="bold ml-4 text-[2rem]"
+              text={formatFloorPriceUsd()}
             />
           </div>
         )}
