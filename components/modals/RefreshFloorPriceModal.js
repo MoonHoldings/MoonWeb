@@ -1,19 +1,17 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { changeRefreshFloorPriceStatus } from 'redux/reducers/walletSlice'
+import useModalTimeout from 'hooks/useModalTimeout'
 
 const RefreshFloorPriceModal = () => {
-  const dispatch = useDispatch()
   const { refreshFloorPriceStatus } = useSelector((state) => state.wallet)
 
-  useEffect(() => {
-    if (refreshFloorPriceStatus) {
-      setTimeout(() => {
-        dispatch(changeRefreshFloorPriceStatus(false))
-      }, 60000)
-    }
-  }, [refreshFloorPriceStatus, dispatch])
+  useModalTimeout({
+    modalStatus: refreshFloorPriceStatus,
+    setModalState: changeRefreshFloorPriceStatus,
+    timeout: 60000,
+  })
 
   return (
     <motion.div

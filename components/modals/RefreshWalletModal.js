@@ -1,19 +1,17 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { changeRefreshWalletsStatus } from 'redux/reducers/walletSlice'
+import useModalTimeout from 'hooks/useModalTimeout'
 
 const RefreshWalletModal = () => {
-  const dispatch = useDispatch()
   const { refreshWalletsStatus } = useSelector((state) => state.wallet)
 
-  useEffect(() => {
-    if (refreshWalletsStatus) {
-      setTimeout(() => {
-        dispatch(changeRefreshWalletsStatus(false))
-      }, 60000)
-    }
-  }, [refreshWalletsStatus, dispatch])
+  useModalTimeout({
+    modalStatus: refreshWalletsStatus,
+    setModalState: changeRefreshWalletsStatus,
+    timeout: 60000,
+  })
 
   return (
     <motion.div
