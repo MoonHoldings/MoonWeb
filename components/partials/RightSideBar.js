@@ -25,6 +25,8 @@ const RightSideBar = () => {
 
   const { disconnect, publicKey } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
+  const [currentMenu, setCurrentMenu] = useState('home')
+  const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
   const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
 
   useEffect(() => {
@@ -32,6 +34,24 @@ const RightSideBar = () => {
       addWallet()
     }
   }, [publicKey, addWallet])
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isMobile && currentMenu !== 'home') {
+      setCurrentMenu('home')
+    }
+  }, [isMobile, currentMenu])
 
   const addWallet = useCallback(async () => {
     if (publicKey) {
@@ -104,6 +124,11 @@ const RightSideBar = () => {
     return `${firstSlice}...${lastSlice}`
   }
 
+  const refreshWalletsAndFloorPrice = async () => {
+    await dispatch(refreshWallets())
+    dispatch(refreshFloorPrices())
+  }
+
   const renderConnectWallet = () => {
     return (
       <button
@@ -135,9 +160,221 @@ const RightSideBar = () => {
     )
   }
 
-  const refreshWalletsAndFloorPrice = async () => {
-    await dispatch(refreshWallets())
-    dispatch(refreshFloorPrices())
+  const renderAddAddress = () => {
+    return (
+      <button
+        type="button"
+        onClick={addWalletAddress}
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+      >
+        <div className="flex h-[4.1rem] w-full items-center">
+          <Image
+            className="mr-[1rem] h-[2rem] w-[2rem]"
+            src="/images/svgs/wallet-white.svg"
+            width="20"
+            height="20"
+            alt="NFTs"
+          />
+          {ADD_WALLET_ADDRESS}
+        </div>
+        <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+          <Image
+            className="h-[0.8rem] w-[0.8rem]"
+            src="/images/svgs/+.svg"
+            width="11"
+            height="11"
+            alt="plus sign"
+          />
+        </div>
+      </button>
+    )
+  }
+
+  const renderRefreshWallet = () => {
+    return (
+      <button
+        type="button"
+        onClick={refreshWalletsAndFloorPrice}
+        className="xl-[1rem] mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+      >
+        <div className="flex h-[4.1rem] w-full items-center justify-center">
+          <p className="mr-4 text-[1.9rem]">↻</p>
+          Refresh Wallets
+        </div>
+      </button>
+    )
+  }
+
+  const renderConnectedWalletsMobile = () => {
+    return (
+      <button
+        type="button"
+        onClick={() => setCurrentMenu('connectedWallets')}
+        className="mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] hover:border-teal-400 hover:text-teal-400 md:hidden"
+      >
+        <div className="flex h-[4.1rem] w-full items-center text-white">
+          <Image
+            className="mr-[1rem] h-[2rem] w-[2rem]"
+            src="/images/svgs/net.svg"
+            width="20"
+            height="20"
+            alt="Dashboard"
+          />
+          {CONNECTED_WALLETS} ({allWallets?.length})
+        </div>
+        <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+          <Image
+            className="h-[0.8rem] w-[0.8rem]"
+            src="/images/svgs/right-bold-chevron.svg"
+            width="9"
+            height="10"
+            alt="Right Angle Bold Chevron"
+          />
+        </div>
+      </button>
+    )
+  }
+
+  const renderLogoutMobile = () => {
+    return (
+      <li className="flex h-[6.4rem] cursor-pointer items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem] md:hidden">
+        <div className="flex w-full items-center text-white">
+          <Image
+            className="mr-[1rem] h-[2rem] w-[2rem]"
+            src="/images/svgs/power-off.svg"
+            width="25"
+            height="25"
+            alt="Dashboard"
+          />
+          Logout
+        </div>
+      </li>
+    )
+  }
+
+  const MENUS = {
+    home: (
+      <>
+        <div className="h-[4.6rem] py-[2.8rem] md:hidden">
+          <button onClick={leftArrowClick} className="float-right h-full">
+            <Image
+              className="h-[2.4rem] w-[2.4rem] rotate-180"
+              src="/images/svgs/arrow-left.svg"
+              width="25"
+              height="24"
+              alt="arrow left"
+            />
+          </button>
+        </div>
+        <div className="profile-intro mb-[2.66rem] flex items-center md:mb-[2rem] md:justify-between">
+          <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
+          {/* <div className="total-value flex h-[8.6rem] flex-col items-end justify-between">
+            <div className="text-[3.2rem] text-white xl:text-[2.8rem]">
+              $1,890,792
+            </div>
+            <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
+              <Image
+                className="mr-[0.6rem] h-[2.4rem] w-[2.4rem]"
+                src="/images/svgs/growth-rate.svg"
+                alt="Growth Graph"
+              />
+              +89% 1W
+            </div> 
+          </div>*/}
+        </div>
+        <ul className="dashboard-menu text-[1.4rem]">
+          {renderConnectWallet()}
+          {renderAddAddress()}
+          {renderRefreshWallet()}
+          {renderConnectedWalletsMobile()}
+          {renderLogoutMobile()}
+        </ul>
+      </>
+    ),
+    connectedWallets: (
+      <motion.div
+        className="h-full"
+        initial={{ x: '100%' }}
+        animate={{ x: '0%' }}
+        exit={{ x: '100%' }}
+        transition={{ duration: 0.6, type: 'spring' }}
+      >
+        <div className="flex h-full flex-col justify-between py-[2.8rem] md:hidden">
+          <div>
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setCurrentMenu('home')}
+                className="float-left h-full"
+              >
+                <Image
+                  className="h-[2.4rem] w-[2.4rem]"
+                  src="/images/svgs/arrow-left.svg"
+                  width="25"
+                  height="24"
+                  alt="arrow left"
+                />
+              </button>
+              <div className="text-[1.6rem]">Connected Wallets</div>
+              <div />
+            </div>
+            <ul className="all-wallets mb-[2rem] mt-10 grid gap-[1rem]">
+              {allWallets.map((wallet, index) => (
+                <li
+                  key={index}
+                  className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
+                >
+                  <Image
+                    className="mr-[1rem] h-[2rem] w-[2rem]"
+                    src="/images/svgs/wallet-white.svg"
+                    width="20"
+                    height="20"
+                    alt="NFTs"
+                  />
+                  {shrinkText(`${wallet}`)}
+                  <button
+                    onClick={
+                      wallet === publicKey?.toBase58()
+                        ? disconnectCurrentWallet
+                        : () => removeSingleWallet(wallet)
+                    }
+                    className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
+                  >
+                    <span className="relative bottom-[0.1rem] font-poppins">
+                      x
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button
+            type="button"
+            onClick={disconnectWallets}
+            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+          >
+            <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+              <Image
+                className="mr-[1rem] h-[2rem] w-[2rem]"
+                src="/images/svgs/wallet-white.svg"
+                width="20"
+                height="20"
+                alt="NFTs"
+              />
+              Disconnect Wallets
+            </div>
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+              <Image
+                className="h-[0.8rem] w-[0.8rem] rotate-45"
+                src="/images/svgs/+.svg"
+                width="11"
+                height="11"
+                alt="plus sign"
+              />
+            </div>
+          </button>
+        </div>
+      </motion.div>
+    ),
   }
 
   return (
@@ -149,163 +386,8 @@ const RightSideBar = () => {
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Desktop View = buttons section */}
-      <div className="main-buttons h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:rounded-[1.5rem] md:p-[1.5rem]">
-        {/* Header */}
-        <div className="mt-[1rem] mb-[2.8rem] h-[4.6rem] md:hidden">
-          <button onClick={leftArrowClick} className="float-right h-full">
-            <Image
-              className="h-[2.4rem] w-[2.4rem] rotate-180"
-              src="/images/svgs/arrow-left.svg"
-              width="25"
-              height="24"
-              alt="arrow left"
-            />
-          </button>
-        </div>
-
-        {/* Profile Intro */}
-        <div className="profile-intro mb-[2.66rem] flex items-center md:mb-[2rem] md:justify-between">
-          <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
-          <div className="total-value flex h-[8.6rem] flex-col items-end justify-between">
-            {/* <div className="text-[3.2rem] text-white xl:text-[2.8rem]">
-              $1,890,792
-            </div>
-            <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
-              <Image
-                className="mr-[0.6rem] h-[2.4rem] w-[2.4rem]"
-                src="/images/svgs/growth-rate.svg"
-                alt="Growth Graph"
-              />
-              +89% 1W
-            </div> */}
-          </div>
-        </div>
-
-        {/* Search */}
-        {/* <div className="search mb-[1rem] grid h-[3.766rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem] xl:h-[6.4rem]">
-          <Image
-            className="h-[1.6rem] w-[1.6rem]"
-            src="/images/svgs/magnifyingglass.svg"
-            alt=""
-          />
-          <input
-            className="border-none bg-transparent outline-none placeholder:text-[#61DAE9]"
-            type="text"
-            placeholder="Search Coins"
-          />
-        </div> */}
-
-        <ul className="dashboard-menu text-[1.4rem] ">
-          {renderConnectWallet()}
-
-          <button
-            type="button"
-            onClick={addWalletAddress}
-            className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
-          >
-            <div className="flex h-[4.1rem] w-full items-center">
-              <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/wallet-white.svg"
-                width="20"
-                height="20"
-                alt="NFTs"
-              />
-              {ADD_WALLET_ADDRESS}
-            </div>
-            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <Image
-                className="h-[0.8rem] w-[0.8rem]"
-                src="/images/svgs/+.svg"
-                width="11"
-                height="11"
-                alt="plus sign"
-              />
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={refreshWalletsAndFloorPrice}
-            className="xl-[1rem] mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
-          >
-            <div className="flex h-[4.1rem] w-full items-center justify-center">
-              <p className="mr-4 text-[1.9rem]">↻</p>
-              Refresh Wallets
-            </div>
-          </button>
-          {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] xl:mb-0">
-            <div className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]">
-              <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/wallet-white.svg"
-                alt="NFTs"
-              />
-              Add Exchanges
-            </div>
-            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <Image
-                className="h-[0.8rem] w-[0.8rem]"
-                src="/images/svgs/+.svg"
-                alt="plus sign"
-              />
-            </div>
-          </li> */}
-          <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] md:hidden">
-            <div className="flex h-[4.1rem] w-full items-center text-white">
-              <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/net.svg"
-                width="20"
-                height="20"
-                alt="Dashboard"
-              />
-              {CONNECTED_WALLETS} (6)
-            </div>
-            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <Image
-                className="h-[0.8rem] w-[0.8rem]"
-                src="/images/svgs/right-bold-chevron.svg"
-                width="9"
-                height="10"
-                alt="Right Angle Bold Chevron"
-              />
-            </div>
-          </li>
-          {/* <li className="mb-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] md:hidden">
-            <div className="flex h-[4.1rem] w-full items-center text-white">
-              <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/net.svg"
-                width="20"
-                height="20"
-                alt="Dashboard"
-              />
-              Connected Exchanges (3)
-            </div>
-            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <Image
-                className="h-[0.8rem] w-[0.8rem]"
-                src="/images/svgs/right-bold-chevron.svg"
-                width="9"
-                height="10"
-                alt="Right Angle Bold Chevron"
-              />
-            </div>
-          </li> */}
-          <li className="flex h-[6.4rem] cursor-pointer items-center rounded-[1rem] border border-black bg-[#942B31] px-[1.6rem] md:hidden">
-            <div className="flex w-full items-center text-white">
-              <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/power-off.svg"
-                width="25"
-                height="25"
-                alt="Dashboard"
-              />
-              Logout
-            </div>
-          </li>
-        </ul>
+      <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mt-4 md:mb-[1.6rem] md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
+        {MENUS[currentMenu]}
       </div>
 
       {/* Connected Exchanges */}
@@ -357,7 +439,7 @@ const RightSideBar = () => {
       </div> */}
 
       {/* Connected Wallets */}
-      {allWallets.length !== 0 ? (
+      {allWallets.length && (
         <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
           <div className="header mb-[2rem] flex justify-between">
             <h1 className="text-[1.4rem]">{CONNECTED_WALLETS}</h1>
@@ -402,9 +484,10 @@ const RightSideBar = () => {
             ))}
           </ul>
 
-          <div
+          <button
+            type="button"
             onClick={disconnectWallets}
-            className="xl-[1rem] flex h-[6.4rem] cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image
@@ -425,10 +508,8 @@ const RightSideBar = () => {
                 alt="plus sign"
               />
             </div>
-          </div>
+          </button>
         </div>
-      ) : (
-        ''
       )}
     </motion.div>
   )
