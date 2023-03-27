@@ -27,9 +27,8 @@ const WalletContextProvider = ({ children }) => {
   // const { networkConfiguration } = useNetworkConfiguration()
   // const network = networkConfiguration
   const network = 'mainnet-beta'
-  console.log('network', network)
   const endpoint = useMemo(() => Get.clusterUrl(network), [network])
-  console.log('endpoint', endpoint)
+
   const wallets = useMemo(
     () => [
       new BackpackWalletAdapter(),
