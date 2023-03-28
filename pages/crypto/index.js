@@ -1,7 +1,7 @@
 import React from 'react'
 import { CRYPTO_PORTFOLIO } from 'app/constants/copy'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
-import CryptoSquare from 'components/partials/CryptoSquare'
+import CryptoSquare from 'components/crypto/CryptoSquare'
 import { Tooltip } from 'react-tippy'
 import SingleBar from 'components/crypto/SingleBar'
 
@@ -62,6 +62,16 @@ const index = () => {
       id: 'LTC',
       holding: 25,
       price: 80,
+      colors: {
+        text: '#000',
+        background: ['#BEBEBE'],
+      },
+    },
+    {
+      name: 'Dogecoin',
+      id: 'DOGE',
+      holding: 10000000,
+      price: 0.01,
       colors: {
         text: '#000',
         background: ['#BEBEBE'],
