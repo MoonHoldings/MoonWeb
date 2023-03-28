@@ -11,6 +11,7 @@ import {
   changeRightSideBarOpen,
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
+
 import {
   addAddress,
   removeAllWallets,
@@ -18,7 +19,14 @@ import {
   refreshWallets,
   refreshFloorPrices,
 } from 'redux/reducers/walletSlice'
-import { ADD_WALLET_ADDRESS, CONNECTED_WALLETS } from 'app/constants/copy'
+
+import {
+  ADD_WALLET_ADDRESS,
+  CONNECTED_WALLETS,
+  REFRESH_WALLETS,
+  REFRESH_WALLETS_TITLE,
+} from 'app/constants/copy'
+
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from './TextBlink'
 
@@ -201,11 +209,12 @@ const RightSideBar = () => {
       <button
         type="button"
         onClick={refreshWalletsAndFloorPrice}
+        title={REFRESH_WALLETS_TITLE}
         className="xl-[1rem] mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
       >
         <div className="flex h-[4.1rem] w-full items-center justify-center">
           <p className="mr-4 text-[1.9rem]">↻</p>
-          Refresh Wallets
+          {REFRESH_WALLETS}
         </div>
       </button>
     )
