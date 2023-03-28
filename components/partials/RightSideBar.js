@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 import {
   changeAddWalletModalOpen,
@@ -18,6 +19,8 @@ import {
   refreshFloorPrices,
 } from 'redux/reducers/walletSlice'
 import { ADD_WALLET_ADDRESS, CONNECTED_WALLETS } from 'app/constants/copy'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
+import TextBlink from './TextBlink'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -27,7 +30,10 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
-  const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
+  const { allWallets, addAddressStatus, collections } = useSelector(
+    (state) => state.wallet
+  )
+  const { solUsdPrice } = useSelector((state) => state.crypto)
 
   useEffect(() => {
     if (publicKey) {
@@ -252,6 +258,37 @@ const RightSideBar = () => {
     )
   }
 
+  const getPortfolioValue = () => {
+    return toCurrencyFormat(
+      collections.reduce(
+        (total, c) =>
+          c.floorPrice
+            ? total +
+              (parseFloat(c?.floorPrice?.floorPriceLamports) /
+                LAMPORTS_PER_SOL) *
+                c?.nfts?.length
+            : total,
+        0
+      )
+    )
+  }
+
+  const getPortfolioValueUsd = () => {
+    return `$${toCurrencyFormat(
+      collections.reduce(
+        (total, c) =>
+          c.floorPrice
+            ? total +
+              (parseFloat(c?.floorPrice?.floorPriceLamports) /
+                LAMPORTS_PER_SOL) *
+                c?.nfts?.length *
+                solUsdPrice
+            : total,
+        0
+      )
+    )}`
+  }
+
   const MENUS = {
     home: (
       <>
@@ -268,26 +305,39 @@ const RightSideBar = () => {
         </div>
         <div className="profile-intro mb-[2.66rem] flex items-center md:mb-[2rem] md:justify-between">
           <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
-          {/* <div className="total-value flex h-[8.6rem] flex-col items-end justify-between">
-            <div className="text-[3.2rem] text-white xl:text-[2.8rem]">
-              $1,890,792
+          <div className="total-value flex h-[8.6rem] flex-col items-end">
+            <TextBlink
+              text={getPortfolioValueUsd()}
+              className="text-[3.2rem] text-white xl:text-[2.8rem]"
+            />
+            <div className="flex items-center text-[3.2rem] xl:text-[2.8rem]">
+              {getPortfolioValue()}
+              <Image
+                className="ml-2 inline h-[2rem] w-[2rem] xl:h-[2rem] xl:w-[2rem]"
+                src="/images/svgs/sol-symbol.svg"
+                alt="SOL Symbol"
+                width={0}
+                height={0}
+                unoptimized
+              />
             </div>
-            <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
+            {/* <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
               <Image
                 className="mr-[0.6rem] h-[2.4rem] w-[2.4rem]"
                 src="/images/svgs/growth-rate.svg"
                 alt="Growth Graph"
+                width={0}
+                height={0}
               />
               +89% 1W
-            </div> 
-          </div>*/}
+            </div> */}
+          </div>
         </div>
         <ul className="dashboard-menu text-[1.4rem]">
           {renderConnectWallet()}
           {renderAddAddress()}
           {renderRefreshWallet()}
           {renderConnectedWalletsMobile()}
-          {renderLogoutMobile()}
         </ul>
       </>
     ),
@@ -439,7 +489,7 @@ const RightSideBar = () => {
       </div> */}
 
       {/* Connected Wallets */}
-      {allWallets.length && (
+      {allWallets.length > 0 && (
         <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
           <div className="header mb-[2rem] flex justify-between">
             <h1 className="text-[1.4rem]">{CONNECTED_WALLETS}</h1>
