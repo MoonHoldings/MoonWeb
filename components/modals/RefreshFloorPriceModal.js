@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { changeRefreshFloorPriceStatus } from 'redux/reducers/walletSlice'
+import useModalTimeout from 'hooks/useModalTimeout'
 
-const LoadingModal = () => {
-  const { currentAddAddress } = useSelector((state) => state.wallet)
+const RefreshFloorPriceModal = () => {
+  const { refreshFloorPriceStatus } = useSelector((state) => state.wallet)
 
-  const [loadingMessage, setLoadingMessage] = useState(
-    'Wallet Assets Loading...'
-  )
-  const { publicKey } = useWallet()
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoadingMessage('Code running through the blockchain...')
-
-      setTimeout(() => {
-        setLoadingMessage('Jpegs are teleporting in... ')
-      }, 3000)
-    }, 3000)
-  }, [])
+  useModalTimeout({
+    modalStatus: refreshFloorPriceStatus,
+    setModalState: changeRefreshFloorPriceStatus,
+    timeout: 60000,
+  })
 
   return (
     <motion.div
@@ -31,11 +23,8 @@ const LoadingModal = () => {
     >
       <div className="relative block items-center rounded-lg border border-gray-100 bg-white p-6 shadow-md dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700">
         <h5 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 opacity-20 dark:text-white">
-          {loadingMessage}
+          Fetching NFT prices...
         </h5>
-        <p className="text-xl font-normal text-gray-700 opacity-20 dark:text-gray-400">
-          {currentAddAddress}
-        </p>
         <div
           role="status"
           className="absolute top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -62,4 +51,4 @@ const LoadingModal = () => {
   )
 }
 
-export default LoadingModal
+export default RefreshFloorPriceModal

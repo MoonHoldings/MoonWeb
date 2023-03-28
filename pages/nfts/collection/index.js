@@ -1,75 +1,126 @@
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 import NFTCard from 'components/partials/NFTCard'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  populateCurrentCollection,
-  populateWalletsAndCollections,
-} from 'redux/reducers/walletSlice'
-import decrypt from 'utils/decrypt'
+import React from 'react'
+import Image from 'next/image'
+import { useSelector } from 'react-redux'
+
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
+import TextBlink from 'components/partials/TextBlink'
 
 const Index = () => {
-  const dispatch = useDispatch()
   const router = useRouter()
-  const { currentCollection, allWallets } = useSelector((state) => state.wallet)
+  const { currentCollection } = useSelector((state) => state.wallet)
+  const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const handleClick = (url) => {
     router.push(`/${url}`)
   }
 
-  const restoreCurrentCollection = () => {
-    const encryptedText = localStorage.getItem('walletState')
-    const decryptedObj = decrypt(encryptedText)
-
-    if (decryptedObj.currentCollection) {
-      dispatch(populateCurrentCollection(decryptedObj.currentCollection))
-    } else {
-      router.push('/nfts')
-    }
+  const formatFloorPrice = () => {
+    return toCurrencyFormat(
+      parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL
+    )
   }
 
-  const restoreWallet = () => {
-    const walletStateDecrypted = localStorage.getItem('walletState')
-    if (walletStateDecrypted && allWallets.length === 0) {
-      const walletState = decrypt(walletStateDecrypted)
-      dispatch(
-        populateWalletsAndCollections({
-          allWallets: walletState.allWallets,
-          collections: walletState.collections,
-        })
-      )
-    }
+  const formatFloorPriceUsd = () => {
+    return `$${toCurrencyFormat(
+      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        solUsdPrice
+    )}`
   }
 
-  useEffect(() => {
-    restoreCurrentCollection()
+  const formatFloorPriceTotal = () => {
+    return toCurrencyFormat(
+      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        currentCollection?.nfts?.length
+    )
+  }
 
-    if (router.pathname.includes('collection')) restoreWallet()
-  }, [])
+  const formatFloorPriceUsdTotal = () => {
+    return `$${toCurrencyFormat(
+      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        solUsdPrice *
+        currentCollection?.nfts?.length
+    )}`
+  }
 
   return (
     <SidebarsLayout>
       <div className="mt-[2rem] text-white md:order-2">
-        <div className="flex items-center">
+        <div className="flex items-center text-center">
           <div
             onClick={() => handleClick('nfts')}
             className="cursor mr-4 text-[2rem] underline"
           >
             NFT Portfolio
           </div>
-          <div className="text-[2.9rem]">
+          <div className="flex items-center text-[2.2rem] md:text-[2.9rem]">
             &gt;
             <span className="ml-4">{currentCollection.name}</span>
           </div>
         </div>
         <p className="text-[1.6rem]">
-          You have <span>{currentCollection.nft_count}</span>{' '}
+          You have <span>{currentCollection?.nfts?.length}</span>{' '}
           {currentCollection.name} NFTs
         </p>
-        <div className="nft-cards mt-[2rem] grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
+        {currentCollection.floorPrice && (
+          <div className="mt-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bold flex items-center text-center text-[1.5rem] md:text-[2rem]">
+                Floor Price:
+                <div className="ml-4 flex items-center">
+                  {formatFloorPrice()}
+                  <Image
+                    className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
+                    src="/images/svgs/sol-symbol.svg"
+                    alt="SOL Symbol"
+                    width={0}
+                    height={0}
+                    unoptimized
+                  />
+                </div>
+              </div>
+              <TextBlink
+                className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                text={formatFloorPriceUsd()}
+              />
+            </div>
+
+            <div className="flex items-center">
+              <div className="bold flex items-center text-center text-[1.5rem] md:text-[2rem]">
+                Total Value:
+                <div className="ml-4 flex items-center">
+                  {formatFloorPriceTotal()}
+                  <Image
+                    className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
+                    src="/images/svgs/sol-symbol.svg"
+                    alt="SOL Symbol"
+                    width={0}
+                    height={0}
+                    unoptimized
+                  />
+                </div>
+              </div>
+              <TextBlink
+                className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                text={formatFloorPriceUsdTotal()}
+              />
+            </div>
+          </div>
+        )}
+        <div className="h grid grid-cols-2 gap-6 py-[2rem] xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-6 4xl:grid-cols-8">
           {currentCollection.nfts?.map((nft, index) => (
-            <NFTCard key={index} nft={nft} />
+            <NFTCard
+              key={index}
+              floorPrice={currentCollection.floorPrice}
+              nft={nft}
+            />
           ))}
         </div>
       </div>
