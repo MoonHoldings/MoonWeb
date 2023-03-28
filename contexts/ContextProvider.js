@@ -7,6 +7,7 @@ import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/walle
 import {
   BackpackWalletAdapter,
   ExodusWalletAdapter,
+  GlowWalletAdapter,
   LedgerWalletAdapter,
   PhantomWalletAdapter,
   SolflareWalletAdapter,
@@ -27,13 +28,13 @@ const WalletContextProvider = ({ children }) => {
   // const { networkConfiguration } = useNetworkConfiguration()
   // const network = networkConfiguration
   const network = 'mainnet-beta'
-  console.log('network', network)
   const endpoint = useMemo(() => Get.clusterUrl(network), [network])
-  console.log('endpoint', endpoint)
+
   const wallets = useMemo(
     () => [
       new BackpackWalletAdapter(),
       new ExodusWalletAdapter(),
+      new GlowWalletAdapter(),
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
       new SolletWalletAdapter({ network }),
