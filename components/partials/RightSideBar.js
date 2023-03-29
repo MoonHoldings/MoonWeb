@@ -45,7 +45,6 @@ const RightSideBar = () => {
 
   useEffect(() => {
     if (publicKey && !disconnecting) {
-      console.log('publicKey', publicKey)
       addWallet()
     }
   }, [publicKey, addWallet, disconnecting])
