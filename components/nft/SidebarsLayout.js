@@ -4,7 +4,7 @@ import RefreshWalletModal from 'components/modals/RefreshWalletModal'
 import RefreshFloorPriceModal from 'components/modals/RefreshFloorPriceModal'
 import WalletsModal from 'components/modals/WalletsModal'
 import LeftSideBar from 'components/partials/LeftSideBar'
-import RightSideBar from 'components/partials/RightSideBar'
+import RightSideBar from 'components/nft/RightSideBar'
 import { AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -42,17 +42,12 @@ const SidebarsLayout = ({ children }) => {
         {addWalletModalOpen && <AddWalletModal />}
       </AnimatePresence>
 
-      {/* removed xl:max-w-[144rem] */}
       <div className="min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid  xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]">
         <AnimatePresence>
-          {leftSideBarOpen === true && innerWidth < 1280 ? <LeftSideBar /> : ''}
-          {rightSideBarOpen === true &&
-          innerWidth &&
-          (router.pathname !== `/collection/nft/`) < 1280 ? (
-            <RightSideBar />
-          ) : (
-            ''
-          )}
+          {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
+          {rightSideBarOpen &&
+            innerWidth < 1280 &&
+            router.pathname.includes('nfts') && <RightSideBar />}
         </AnimatePresence>
 
         <AnimatePresence>
@@ -61,18 +56,16 @@ const SidebarsLayout = ({ children }) => {
 
         {(addAddressStatus === 'loading' ||
           fetchingNftDataStatus === 'loading') && <LoadingModal />}
-
         {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
         {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
 
-        {innerWidth > 1280 ? (
+        {innerWidth > 1280 && (
           <>
             <LeftSideBar />
-            {router.pathname !== `/collection/nft/` ? <RightSideBar /> : ''}
+            {router.pathname.includes('nfts') && <RightSideBar />}
           </>
-        ) : (
-          <></>
         )}
+
         {children}
       </div>
     </>

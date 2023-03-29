@@ -28,7 +28,7 @@ import {
 } from 'app/constants/copy'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
-import TextBlink from './TextBlink'
+import TextBlink from '../partials/TextBlink'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()

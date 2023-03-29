@@ -6,7 +6,7 @@ import {
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
 
-import Collections from 'components/partials/Collections'
+import Collections from 'components/nft/Collections'
 import SidebarsLayout from 'components/nft/SidebarsLayout'
 
 import {

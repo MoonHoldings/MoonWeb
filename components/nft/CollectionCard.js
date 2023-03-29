@@ -12,7 +12,7 @@ import {
 
 import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
-import TextBlink from './TextBlink'
+import TextBlink from '../partials/TextBlink'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
