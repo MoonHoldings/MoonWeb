@@ -92,7 +92,9 @@ const LeftSideBar = () => {
             <button
               id="btn-nft-portfolio"
               onClick={() => handleClick('nfts')}
-              className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('nfts') ? '#62EAD2' : '#FFFFFF'
+              }]`}
             >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
@@ -102,6 +104,23 @@ const LeftSideBar = () => {
                 alt="NFTs"
               />
               NFTs
+            </button>
+          </li>
+          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+            <button
+              onClick={() => handleClick('defi-loans/lend')}
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('defi-loans') ? '#62EAD2' : '#FFFFFF'
+              }]`}
+            >
+              <Image
+                className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
+                src="/images/svgs/calendar.svg"
+                alt="Dashboard"
+                width={25}
+                height={25}
+              />
+              Lend & Borrow
             </button>
           </li>
           {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">

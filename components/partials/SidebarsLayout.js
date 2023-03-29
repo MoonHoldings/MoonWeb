@@ -4,7 +4,8 @@ import RefreshWalletModal from 'components/modals/RefreshWalletModal'
 import RefreshFloorPriceModal from 'components/modals/RefreshFloorPriceModal'
 import WalletsModal from 'components/modals/WalletsModal'
 import LeftSideBar from 'components/partials/LeftSideBar'
-import RightSideBar from 'components/nft/RightSideBar'
+import NftRightSideBar from 'components/nft/RightSideBar'
+import DefiLoansRightSideBar from 'components/defi-loans/RightSideBar'
 import { AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -47,7 +48,10 @@ const SidebarsLayout = ({ children }) => {
           {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
           {rightSideBarOpen &&
             innerWidth < 1280 &&
-            router.pathname.includes('nfts') && <RightSideBar />}
+            router.pathname.includes('nfts') && <NftRightSideBar />}
+          {rightSideBarOpen &&
+            innerWidth < 1280 &&
+            router.pathname.includes('defi-loans') && <DefiLoansRightSideBar />}
         </AnimatePresence>
 
         <AnimatePresence>
@@ -62,7 +66,10 @@ const SidebarsLayout = ({ children }) => {
         {innerWidth > 1280 && (
           <>
             <LeftSideBar />
-            {router.pathname.includes('nfts') && <RightSideBar />}
+            {router.pathname.includes('nfts') && <NftRightSideBar />}
+            {router.pathname.includes('defi-loans') && (
+              <DefiLoansRightSideBar />
+            )}
           </>
         )}
 

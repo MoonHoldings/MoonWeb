@@ -7,7 +7,7 @@ import {
 } from 'redux/reducers/utilSlice'
 
 import Collections from 'components/nft/Collections'
-import SidebarsLayout from 'components/nft/SidebarsLayout'
+import SidebarsLayout from 'components/partials/SidebarsLayout'
 
 import {
   ADD_WALLET_ADDRESSES,
