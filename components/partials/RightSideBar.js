@@ -96,8 +96,8 @@ const RightSideBar = () => {
     }
   }
 
-  const disconnectWallets = () => {
-    disconnect()
+  const disconnectWallets = async () => {
+    await disconnect()
     dispatch(removeAllWallets())
 
     if (router.pathname !== '/nfts') {
