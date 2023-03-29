@@ -34,7 +34,7 @@ const RightSideBar = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const { disconnect, publicKey } = useWallet()
+  const { disconnect, publicKey, disconnecting } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
@@ -44,10 +44,11 @@ const RightSideBar = () => {
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   useEffect(() => {
-    if (publicKey) {
+    if (publicKey && !disconnecting) {
+      console.log('publicKey', publicKey)
       addWallet()
     }
-  }, [publicKey, addWallet])
+  }, [publicKey, addWallet, disconnecting])
 
   useEffect(() => {
     function handleResize() {
@@ -97,8 +98,8 @@ const RightSideBar = () => {
   }
 
   const disconnectWallets = async () => {
-    await disconnect()
     dispatch(removeAllWallets())
+    disconnect()
 
     if (router.pathname !== '/nfts') {
       router.push('/nfts')
