@@ -3,6 +3,7 @@ const { createSlice } = require('@reduxjs/toolkit')
 const initialState = {
   leftSideBarOpen: false,
   rightSideBarOpen: false,
+  lendRightSideBarOpen: true,
   addWalletModalOpen: false,
   walletsModalOpen: false,
 }
@@ -17,6 +18,9 @@ const utilSlice = createSlice({
     changeRightSideBarOpen(state, action) {
       state.rightSideBarOpen = action.payload
     },
+    changeLendRightSidebarOpen(state, action) {
+      state.lendRightSideBarOpen = action.payload
+    },
     changeAddWalletModalOpen(state, action) {
       state.addWalletModalOpen = action.payload
     },
@@ -29,6 +33,7 @@ const utilSlice = createSlice({
 export const {
   changeLeftSideBarOpen,
   changeRightSideBarOpen,
+  changeLendRightSidebarOpen,
   changeAddWalletModalOpen,
   changeWalletsModalOpen,
 } = utilSlice.actions

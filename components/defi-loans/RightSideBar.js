@@ -4,13 +4,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 
-import { changeWalletsModalOpen } from 'redux/reducers/utilSlice'
+import {
+  changeWalletsModalOpen,
+  changeLendRightSidebarOpen,
+} from 'redux/reducers/utilSlice'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
 
   const { disconnect, publicKey } = useWallet()
   const { addAddressStatus } = useSelector((state) => state.wallet)
+  const { lendRightSideBarOpen } = useSelector((state) => state.util)
 
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
@@ -61,11 +65,45 @@ const RightSideBar = () => {
       exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
-      <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mt-4 md:mb-[1.6rem] md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
-        <ul className="dashboard-menu text-[1.4rem]">
-          {renderConnectWallet()}
-        </ul>
-      </div>
+      {lendRightSideBarOpen && (
+        <motion.div
+          className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
+          initial={{ x: '100%' }}
+          animate={{ x: '0%' }}
+          exit={{ x: '100%' }}
+          transition={{ duration: 0.6, type: 'spring' }}
+        >
+          <div className="main-buttons relative mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mt-4 md:mb-[1.6rem] md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
+            <button
+              className="fixed left-[-3rem] mt-5 rounded-2xl border-[0.5px] border-[#62EAD2] bg-[#2A2D31] p-5"
+              onClick={() => dispatch(changeLendRightSidebarOpen(false))}
+            >
+              <Image
+                src={'/images/svgs/right-arrow.svg'}
+                width="11"
+                height="11"
+                alt="plus sign"
+              />
+            </button>
+            <ul className="dashboard-menu text-[1.4rem]">
+              {renderConnectWallet()}
+            </ul>
+          </div>
+        </motion.div>
+      )}
+      {!lendRightSideBarOpen && (
+        <button
+          className="fixed left-[-3rem] mt-5 rounded-2xl border-[0.5px] border-[#62EAD2] bg-[#2A2D31] p-5"
+          onClick={() => dispatch(changeLendRightSidebarOpen(true))}
+        >
+          <Image
+            src={'/images/svgs/left-arrow.svg'}
+            width="11"
+            height="11"
+            alt="plus sign"
+          />
+        </button>
+      )}
     </motion.div>
   )
 }
