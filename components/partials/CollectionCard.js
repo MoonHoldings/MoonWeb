@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import axios from 'axios'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { Tooltip } from 'flowbite-react'
 
 import {
   insertCurrentCollection,
@@ -12,7 +13,9 @@ import {
 
 import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
+import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import TextBlink from './TextBlink'
+import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
@@ -61,8 +64,25 @@ const CollectionCard = ({ collection, index }) => {
     )
   }
 
+  const formatShortFloorPrice = () => {
+    return toShortCurrencyFormat(
+      (parseFloat(collection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        collection.nfts.length
+    )
+  }
+
   const formatFloorPriceUSD = () => {
     return `$${toCurrencyFormat(
+      (parseFloat(collection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        collection.nfts.length *
+        solUsdPrice
+    )}`
+  }
+
+  const formatShortFloorPriceUSD = () => {
+    return `$${toShortCurrencyFormat(
       (parseFloat(collection.floorPrice.floorPriceLamports) /
         LAMPORTS_PER_SOL) *
         collection.nfts.length *
@@ -80,7 +100,7 @@ const CollectionCard = ({ collection, index }) => {
   const renderFloorPrice = () => {
     return (
       <>
-        {formatFloorPrice()}
+        {formatShortFloorPrice()}
         <Image
           className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
           src="/images/svgs/sol-symbol.svg"
@@ -137,13 +157,39 @@ const CollectionCard = ({ collection, index }) => {
         {shouldRenderFloorPrice && (
           <div className="items-center xl:flex xl:justify-between">
             <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
-              {renderFloorPrice()}
+              <Tooltip
+                className="rounded-xl py-[1.5rem] px-[2rem]"
+                content={
+                  <span className="text-[1.5rem]">{formatFloorPrice()}</span>
+                }
+                placement="bottom"
+                trigger={
+                  isShortCurrencyFormat(formatShortFloorPrice())
+                    ? 'hover'
+                    : null
+                }
+              >
+                {renderFloorPrice()}
+              </Tooltip>
             </div>
             {solUsdPrice && (
-              <TextBlink
-                text={formatFloorPriceUSD()}
-                className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
-              />
+              <Tooltip
+                className="rounded-xl py-[1.5rem] px-[2rem]"
+                content={
+                  <span className="text-[1.5rem]">{formatFloorPriceUSD()}</span>
+                }
+                placement="bottom"
+                trigger={
+                  isShortCurrencyFormat(formatShortFloorPriceUSD())
+                    ? 'hover'
+                    : null
+                }
+              >
+                <TextBlink
+                  text={formatShortFloorPriceUSD()}
+                  className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
+                />
+              </Tooltip>
             )}
           </div>
         )}
