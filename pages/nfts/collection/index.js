@@ -97,7 +97,7 @@ const Index = () => {
                 <div className="ml-4 flex items-center">
                   {formatFloorPrice()}
                   <Image
-                    className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
+                    className="ml-1 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
                     src="/images/svgs/sol-symbol.svg"
                     alt="SOL Symbol"
                     width={0}
@@ -133,7 +133,7 @@ const Index = () => {
                 <div className="ml-4 flex items-center">
                   {formatFloorPriceTotal()}
                   <Image
-                    className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
+                    className="ml-1 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
                     src="/images/svgs/sol-symbol.svg"
                     alt="SOL Symbol"
                     width={0}
