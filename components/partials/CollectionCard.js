@@ -15,6 +15,7 @@ import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import TextBlink from './TextBlink'
+import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
@@ -87,19 +88,6 @@ const CollectionCard = ({ collection, index }) => {
         collection.nfts.length *
         solUsdPrice
     )}`
-  }
-
-  const isShortCurrencyFormat = (amount) => {
-    if (!amount) {
-      return false
-    }
-
-    return (
-      amount.includes('k') ||
-      amount.includes('m') ||
-      amount.includes('b') ||
-      amount.includes('t')
-    )
   }
 
   const collectionClick = async () => {
