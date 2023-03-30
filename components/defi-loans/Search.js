@@ -8,7 +8,7 @@ const Search = () => {
         <Image src="/images/svgs/search.svg" alt="" width="15" height="15" />
       </span>
       <input
-        className="block w-full appearance-none rounded-xl border border-[#1D2026] bg-transparent py-5 pl-16 pr-3 text-[1.5rem] leading-tight placeholder-[#333333] focus:outline-none"
+        className="block w-full appearance-none rounded-xl border border-[#1D2026] bg-transparent py-5 pl-16 pr-3 text-[1.5rem] leading-tight placeholder-[#333333] focus:border-[#1D2026] focus:outline-none"
         type="text"
         placeholder="Search"
       />
