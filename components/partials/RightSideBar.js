@@ -29,6 +29,7 @@ import {
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from './TextBlink'
+import { Tooltip } from 'flowbite-react'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -149,7 +150,7 @@ const RightSideBar = () => {
         disabled={addAddressStatus === 'loading'}
         onClick={publicKey ? disconnectCurrentWallet : connectWallet}
         type="button"
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
       >
         <div className="flex h-[4.1rem] w-full items-center">
           <Image
@@ -179,7 +180,7 @@ const RightSideBar = () => {
       <button
         type="button"
         onClick={addWalletAddress}
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
       >
         <div className="flex h-[4.1rem] w-full items-center">
           <Image
@@ -206,17 +207,27 @@ const RightSideBar = () => {
 
   const renderRefreshWallet = () => {
     return (
-      <button
-        type="button"
-        onClick={refreshWalletsAndFloorPrice}
-        title={REFRESH_WALLETS_TITLE}
-        className="xl-[1rem] mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+      <Tooltip
+        content={REFRESH_WALLETS_TITLE}
+        className="rounded-xl py-[1.5rem] px-[2rem]"
+        placement="bottom"
+        theme={{
+          content: 'text-[1.3rem]',
+          target:
+            'hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] text-white px-[1.6rem] hover:border-[#62EAD2]',
+        }}
       >
-        <div className="flex h-[4.1rem] w-full items-center justify-center">
-          <p className="mr-4 text-[1.9rem]">↻</p>
-          {REFRESH_WALLETS}
-        </div>
-      </button>
+        <button
+          type="button"
+          onClick={refreshWalletsAndFloorPrice}
+          className="w-full"
+        >
+          <div className="flex h-[4.1rem] w-full items-center justify-center">
+            <p className="mr-4 text-[1.9rem]">↻</p>
+            {REFRESH_WALLETS}
+          </div>
+        </button>
+      </Tooltip>
     )
   }
 
@@ -225,7 +236,7 @@ const RightSideBar = () => {
       <button
         type="button"
         onClick={() => setCurrentMenu('connectedWallets')}
-        className="mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] hover:border-teal-400 hover:text-teal-400 md:hidden"
+        className="mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] hover:border-[#62EAD2] hover:text-[#62EAD2] md:hidden"
       >
         <div className="flex h-[4.1rem] w-full items-center text-white">
           <Image
@@ -409,7 +420,7 @@ const RightSideBar = () => {
           <button
             type="button"
             onClick={disconnectWallets}
-            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image
@@ -546,7 +557,7 @@ const RightSideBar = () => {
           <button
             type="button"
             onClick={disconnectWallets}
-            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image
