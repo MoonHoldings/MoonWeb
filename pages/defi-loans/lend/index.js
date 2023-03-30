@@ -25,37 +25,39 @@ const Lend = () => {
           the NFT."
         />
         <Search />
-        <table className="w-full">
-          <thead>
-            <tr>
-              {COLUMNS.map((column, index) => (
-                <th
-                  key={index}
-                  className="bg-[#1F2126] py-6 px-6 text-left text-[1.3rem] font-normal"
-                >
-                  {column}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="text-[1.4rem] font-medium">
-              <td className="py-6 px-6">Moonholders</td>
-              <td className="py-6 px-6">207.2k</td>
-              <td className="py-6 px-6">0.80</td>
-              <td className="py-6 px-6 text-[#11AF22]">200%</td>
-              <td className="py-6 px-6">16d</td>
-              <td className="py-6 px-6">
-                <button
-                  type="button"
-                  className="rounded-xl border border-[#61D9EB] px-7 py-1 text-[1.3rem] text-[#61D9EB]"
-                >
-                  Lend
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full table-auto">
+            <thead>
+              <tr>
+                {COLUMNS.map((column, index) => (
+                  <th
+                    key={index}
+                    className="bg-[#1F2126] px-6 py-6 text-left text-[1.3rem] font-normal"
+                  >
+                    {column}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="text-[1.4rem] font-medium">
+                <td className="px-6 py-6">Moonholders</td>
+                <td className="px-6 py-6">207.2k</td>
+                <td className="px-6 py-6">0.80</td>
+                <td className="px-6 py-6 text-[#11AF22]">200%</td>
+                <td className="px-6 py-6">16d</td>
+                <td className="px-6 py-6">
+                  <button
+                    type="button"
+                    className="rounded-xl border border-[#61D9EB] px-7 py-1 text-[1.3rem] text-[#61D9EB]"
+                  >
+                    Lend
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </SidebarsLayout>
   )
