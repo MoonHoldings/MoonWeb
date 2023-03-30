@@ -110,7 +110,7 @@ const AddWalletModal = () => {
             alt=""
           />
           <input
-            className="border-none bg-transparent outline-none placeholder:text-[#61DAE9]"
+            className="border-none border-transparent bg-transparent text-[1.4rem] placeholder:text-[#61DAE9] focus:border-transparent focus:ring-0"
             type="text"
             placeholder="Wallet Address"
             onChange={(e) => setWalletAddress(e.target.value)}
