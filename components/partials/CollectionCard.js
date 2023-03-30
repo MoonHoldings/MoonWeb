@@ -158,11 +158,16 @@ const CollectionCard = ({ collection, index }) => {
           <div className="items-center xl:flex xl:justify-between">
             <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
               <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
+                className="rounded-xl px-[2rem] py-[1.5rem]"
                 content={
                   <span className="text-[1.5rem]">{formatFloorPrice()}</span>
                 }
                 placement="bottom"
+                theme={{
+                  arrow: {
+                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+                  },
+                }}
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPrice())
                     ? 'hover'
@@ -174,11 +179,16 @@ const CollectionCard = ({ collection, index }) => {
             </div>
             {solUsdPrice && (
               <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
+                className="rounded-xl px-[2rem] py-[1.5rem]"
                 content={
                   <span className="text-[1.5rem]">{formatFloorPriceUSD()}</span>
                 }
                 placement="bottom"
+                theme={{
+                  arrow: {
+                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+                  },
+                }}
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUSD())
                     ? 'hover'

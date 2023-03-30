@@ -107,13 +107,18 @@ const Index = () => {
                 </div>
               </div>
               <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
+                className="rounded-xl px-[2rem] py-[1.5rem]"
                 content={
                   <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
                     {formatFloorPriceUsd()}
                   </span>
                 }
                 placement="bottom"
+                theme={{
+                  arrow: {
+                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+                  },
+                }}
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUsd())
                     ? 'hover'
@@ -143,13 +148,18 @@ const Index = () => {
                 </div>
               </div>
               <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
+                className="rounded-xl px-[2rem] py-[1.5rem]"
                 content={
                   <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
                     {formatFloorPriceUsdTotal()}
                   </span>
                 }
                 placement="bottom"
+                theme={{
+                  arrow: {
+                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+                  },
+                }}
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUsdTotal())
                     ? 'hover'
