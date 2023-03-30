@@ -83,7 +83,7 @@ const AddWalletModal = () => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0 }}
       transition={{ duration: 0.5, type: 'spring' }}
-      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center p-[1rem] font-inter"
+      className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex items-center justify-center p-[1rem] font-inter"
     >
       <Overlay closeModal={closeModal} />
       <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] text-white drop-shadow-lg">
@@ -110,7 +110,7 @@ const AddWalletModal = () => {
             alt=""
           />
           <input
-            className="border-none border-transparent bg-transparent text-[1.4rem] placeholder:text-[#61DAE9] focus:border-transparent focus:ring-0"
+            className="bg-transparent text-[1.4rem] placeholder:text-[#61DAE9] focus:outline-none"
             type="text"
             placeholder="Wallet Address"
             onChange={(e) => setWalletAddress(e.target.value)}
