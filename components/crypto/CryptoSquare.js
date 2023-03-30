@@ -1,10 +1,24 @@
 import Image from 'next/image'
 import React from 'react'
+import numeral from 'numeral'
 
 const CryptoSquare = ({ crypto }) => {
   const totalValue = (holding, price) => {
     const value = holding * price
-    return value.toLocaleString('en-US')
+    return numeral(value).format('0,0.00')
+  }
+
+  const formattedHolding = (holding) => {
+    const length = holding
+      .toString()
+      .split('')
+      .filter((n) => n !== ',').length
+
+    if (length > 7) {
+      return numeral(holding).format('0a')
+    } else {
+      return numeral(holding).format('0,0')
+    }
   }
 
   const numSize = (num) => {
@@ -41,7 +55,7 @@ const CryptoSquare = ({ crypto }) => {
           style={{ fontSize: numSize(crypto.holding) }}
           className="quantity font-[700] leading-[9.07rem]"
         >
-          {crypto.holding.toLocaleString('en-US')}
+          {formattedHolding(crypto.holding)}
         </h1>
         <div className="value-dollar text-[2.2rem] font-[500]">
           ${totalValue(crypto.holding, crypto.price)}
