@@ -94,7 +94,7 @@ const Index = () => {
             <div className="flex items-center">
               <div className="bold flex items-center text-center text-[1.5rem] md:text-[2rem]">
                 Floor Price:
-                <div className="ml-4 flex items-center">
+                <div className="ml-2 flex items-center md:ml-4">
                   {formatFloorPrice()}
                   <Image
                     className="ml-1 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
@@ -130,7 +130,7 @@ const Index = () => {
             <div className="flex items-center">
               <div className="bold flex items-center text-center text-[1.5rem] md:text-[2rem]">
                 Total Value:
-                <div className="ml-4 flex items-center">
+                <div className="ml-2 flex items-center md:ml-4">
                   {formatFloorPriceTotal()}
                   <Image
                     className="ml-1 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
