@@ -11,7 +11,7 @@ import {
 } from 'redux/reducers/walletSlice'
 
 import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
-import toCurrencyFormat from 'utils/toCurrencyFormat'
+import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import TextBlink from './TextBlink'
 
 const CollectionCard = ({ collection, index }) => {
@@ -54,7 +54,7 @@ const CollectionCard = ({ collection, index }) => {
   }
 
   const formatFloorPrice = () => {
-    return toCurrencyFormat(
+    return toShortCurrencyFormat(
       (parseFloat(collection.floorPrice.floorPriceLamports) /
         LAMPORTS_PER_SOL) *
         collection.nfts.length
@@ -62,7 +62,7 @@ const CollectionCard = ({ collection, index }) => {
   }
 
   const formatFloorPriceUSD = () => {
-    return `$${toCurrencyFormat(
+    return `$${toShortCurrencyFormat(
       (parseFloat(collection.floorPrice.floorPriceLamports) /
         LAMPORTS_PER_SOL) *
         collection.nfts.length *
