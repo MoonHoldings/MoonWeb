@@ -8,6 +8,9 @@ import { useSelector } from 'react-redux'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
+import { Tooltip } from 'flowbite-react'
+import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
+import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 
 const Index = () => {
   const router = useRouter()
@@ -33,6 +36,14 @@ const Index = () => {
     )}`
   }
 
+  const formatShortFloorPriceUsd = () => {
+    return `$${toShortCurrencyFormat(
+      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        solUsdPrice
+    )}`
+  }
+
   const formatFloorPriceTotal = () => {
     return toCurrencyFormat(
       (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
@@ -43,6 +54,15 @@ const Index = () => {
 
   const formatFloorPriceUsdTotal = () => {
     return `$${toCurrencyFormat(
+      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
+        LAMPORTS_PER_SOL) *
+        solUsdPrice *
+        currentCollection?.nfts?.length
+    )}`
+  }
+
+  const formatShortFloorPriceUsdTotal = () => {
+    return `$${toShortCurrencyFormat(
       (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
         LAMPORTS_PER_SOL) *
         solUsdPrice *
@@ -74,10 +94,10 @@ const Index = () => {
             <div className="flex items-center">
               <div className="bold flex items-center text-center text-[1.5rem] md:text-[2rem]">
                 Floor Price:
-                <div className="ml-4 flex items-center">
+                <div className="ml-2 flex items-center md:ml-4">
                   {formatFloorPrice()}
                   <Image
-                    className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
+                    className="ml-1 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
                     src="/images/svgs/sol-symbol.svg"
                     alt="SOL Symbol"
                     width={0}
@@ -86,19 +106,34 @@ const Index = () => {
                   />
                 </div>
               </div>
-              <TextBlink
-                className="bold ml-4 text-[1.5rem] md:text-[2rem]"
-                text={formatFloorPriceUsd()}
-              />
+              <Tooltip
+                className="rounded-xl py-[1.5rem] px-[2rem]"
+                content={
+                  <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
+                    {formatFloorPriceUsd()}
+                  </span>
+                }
+                placement="bottom"
+                trigger={
+                  isShortCurrencyFormat(formatShortFloorPriceUsd())
+                    ? 'hover'
+                    : null
+                }
+              >
+                <TextBlink
+                  className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                  text={formatShortFloorPriceUsd()}
+                />
+              </Tooltip>
             </div>
 
             <div className="flex items-center">
               <div className="bold flex items-center text-center text-[1.5rem] md:text-[2rem]">
                 Total Value:
-                <div className="ml-4 flex items-center">
+                <div className="ml-2 flex items-center md:ml-4">
                   {formatFloorPriceTotal()}
                   <Image
-                    className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
+                    className="ml-1 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
                     src="/images/svgs/sol-symbol.svg"
                     alt="SOL Symbol"
                     width={0}
@@ -107,10 +142,25 @@ const Index = () => {
                   />
                 </div>
               </div>
-              <TextBlink
-                className="bold ml-4 text-[1.5rem] md:text-[2rem]"
-                text={formatFloorPriceUsdTotal()}
-              />
+              <Tooltip
+                className="rounded-xl py-[1.5rem] px-[2rem]"
+                content={
+                  <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
+                    {formatFloorPriceUsdTotal()}
+                  </span>
+                }
+                placement="bottom"
+                trigger={
+                  isShortCurrencyFormat(formatShortFloorPriceUsdTotal())
+                    ? 'hover'
+                    : null
+                }
+              >
+                <TextBlink
+                  className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                  text={formatShortFloorPriceUsdTotal()}
+                />
+              </Tooltip>
             </div>
           </div>
         )}

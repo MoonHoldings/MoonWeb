@@ -29,12 +29,15 @@ import {
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from './TextBlink'
+import { Tooltip } from 'flowbite-react'
+import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
+import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const { disconnect, publicKey } = useWallet()
+  const { disconnect, publicKey, disconnecting } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
@@ -44,10 +47,10 @@ const RightSideBar = () => {
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   useEffect(() => {
-    if (publicKey) {
+    if (publicKey && !disconnecting) {
       addWallet()
     }
-  }, [publicKey, addWallet])
+  }, [publicKey, addWallet, disconnecting])
 
   useEffect(() => {
     function handleResize() {
@@ -96,9 +99,9 @@ const RightSideBar = () => {
     }
   }
 
-  const disconnectWallets = () => {
-    disconnect()
+  const disconnectWallets = async () => {
     dispatch(removeAllWallets())
+    disconnect()
 
     if (router.pathname !== '/nfts') {
       router.push('/nfts')
@@ -149,7 +152,7 @@ const RightSideBar = () => {
         disabled={addAddressStatus === 'loading'}
         onClick={publicKey ? disconnectCurrentWallet : connectWallet}
         type="button"
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
       >
         <div className="flex h-[4.1rem] w-full items-center">
           <Image
@@ -179,7 +182,7 @@ const RightSideBar = () => {
       <button
         type="button"
         onClick={addWalletAddress}
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
       >
         <div className="flex h-[4.1rem] w-full items-center">
           <Image
@@ -206,17 +209,27 @@ const RightSideBar = () => {
 
   const renderRefreshWallet = () => {
     return (
-      <button
-        type="button"
-        onClick={refreshWalletsAndFloorPrice}
-        title={REFRESH_WALLETS_TITLE}
-        className="xl-[1rem] mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+      <Tooltip
+        content={REFRESH_WALLETS_TITLE}
+        className="rounded-xl py-[1.5rem] px-[2rem]"
+        placement="bottom"
+        theme={{
+          content: 'text-[1.3rem]',
+          target:
+            'hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] text-white px-[1.6rem] hover:border-[#62EAD2]',
+        }}
       >
-        <div className="flex h-[4.1rem] w-full items-center justify-center">
-          <p className="mr-4 text-[1.9rem]">↻</p>
-          {REFRESH_WALLETS}
-        </div>
-      </button>
+        <button
+          type="button"
+          onClick={refreshWalletsAndFloorPrice}
+          className="w-full"
+        >
+          <div className="flex h-[4.1rem] w-full items-center justify-center">
+            <p className="mr-4 text-[1.9rem]">↻</p>
+            {REFRESH_WALLETS}
+          </div>
+        </button>
+      </Tooltip>
     )
   }
 
@@ -225,7 +238,7 @@ const RightSideBar = () => {
       <button
         type="button"
         onClick={() => setCurrentMenu('connectedWallets')}
-        className="mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] hover:border-teal-400 hover:text-teal-400 md:hidden"
+        className="mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] hover:border-[#62EAD2] hover:text-[#62EAD2] md:hidden"
       >
         <div className="flex h-[4.1rem] w-full items-center text-white">
           <Image
@@ -298,6 +311,37 @@ const RightSideBar = () => {
     )}`
   }
 
+  const getShortPortfolioValue = () => {
+    return toShortCurrencyFormat(
+      collections.reduce(
+        (total, c) =>
+          c.floorPrice
+            ? total +
+              (parseFloat(c?.floorPrice?.floorPriceLamports) /
+                LAMPORTS_PER_SOL) *
+                c?.nfts?.length
+            : total,
+        0
+      )
+    )
+  }
+
+  const getShortPortfolioValueUsd = () => {
+    return `$${toShortCurrencyFormat(
+      collections.reduce(
+        (total, c) =>
+          c.floorPrice
+            ? total +
+              (parseFloat(c?.floorPrice?.floorPriceLamports) /
+                LAMPORTS_PER_SOL) *
+                c?.nfts?.length *
+                solUsdPrice
+            : total,
+        0
+      )
+    )}`
+  }
+
   const MENUS = {
     home: (
       <>
@@ -315,21 +359,49 @@ const RightSideBar = () => {
         <div className="profile-intro mb-[2.66rem] flex items-center md:mb-[2rem] md:justify-between">
           <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
           <div className="total-value flex h-[8.6rem] flex-col items-end">
-            <TextBlink
-              text={getPortfolioValueUsd()}
-              className="text-[3.2rem] text-white xl:text-[2.8rem]"
-            />
-            <div className="flex items-center text-[3.2rem] xl:text-[2.8rem]">
-              {getPortfolioValue()}
-              <Image
-                className="ml-2 inline h-[2rem] w-[2rem] xl:h-[2rem] xl:w-[2rem]"
-                src="/images/svgs/sol-symbol.svg"
-                alt="SOL Symbol"
-                width={0}
-                height={0}
-                unoptimized
+            <Tooltip
+              className="rounded-xl py-[1.5rem] px-[2rem]"
+              content={
+                <span className="flex h-full items-center text-[2rem]">
+                  {getPortfolioValueUsd()}
+                </span>
+              }
+              placement="left"
+              trigger={
+                isShortCurrencyFormat(getShortPortfolioValueUsd())
+                  ? 'hover'
+                  : null
+              }
+            >
+              <TextBlink
+                text={getShortPortfolioValueUsd()}
+                className="text-[3.2rem] text-white xl:text-[2.8rem]"
               />
-            </div>
+            </Tooltip>
+            <Tooltip
+              className="rounded-xl py-[1.5rem] px-[2rem]"
+              content={
+                <span className="flex h-full items-center text-[2rem]">
+                  {getPortfolioValue()}
+                </span>
+              }
+              placement="left"
+              trigger={
+                isShortCurrencyFormat(getShortPortfolioValue()) ? 'hover' : null
+              }
+            >
+              <div className="flex items-center text-[3.2rem] xl:text-[2.8rem]">
+                {getShortPortfolioValue()}
+                <Image
+                  className="ml-2 inline h-[2rem] w-[2rem] xl:h-[2rem] xl:w-[2rem]"
+                  src="/images/svgs/sol-symbol.svg"
+                  alt="SOL Symbol"
+                  width={0}
+                  height={0}
+                  unoptimized
+                />
+              </div>
+            </Tooltip>
             {/* <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
               <Image
                 className="mr-[0.6rem] h-[2.4rem] w-[2.4rem]"
@@ -409,7 +481,7 @@ const RightSideBar = () => {
           <button
             type="button"
             onClick={disconnectWallets}
-            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image
@@ -546,7 +618,7 @@ const RightSideBar = () => {
           <button
             type="button"
             onClick={disconnectWallets}
-            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-teal-400 hover:text-teal-400"
+            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image
