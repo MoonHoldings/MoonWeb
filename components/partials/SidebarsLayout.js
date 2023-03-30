@@ -45,11 +45,11 @@ const SidebarsLayout = ({ children }) => {
       </AnimatePresence>
 
       <div
-        className={`min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:grid-cols-[28.8rem_auto_${
+        className={
           lendRightSideBarOpen || !router.pathname.includes('defi-loans')
-            ? '30.8'
-            : '1'
-        }rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]`}
+            ? 'min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:grid-cols-[28.8rem_auto_30.8rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]'
+            : 'min-h-screen px-[1.7rem] pt-[4.6rem] xl:mx-auto xl:grid xl:grid-cols-[28.8rem_auto_1rem] xl:items-start xl:gap-[3.2rem] xl:pt-[2rem]'
+        }
       >
         <AnimatePresence>
           {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
