@@ -30,6 +30,8 @@
     "axios": "^1.2.2",
     "bigint-buffer": "^1.1.5",
     "crypto-js": "^4.1.1",
+    "flowbite": "^1.6.4",
+    "flowbite-react": "^0.4.2",
     "framer-motion": "^9.0.0",
     "next": "latest",
     "next-redux-wrapper": "^8.1.0",

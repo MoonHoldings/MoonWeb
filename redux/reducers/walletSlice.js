@@ -230,7 +230,7 @@ export const refreshWallets = createAsyncThunk(
     // Fetch all nfts of a wallet
     const allNftPromises = allWallets.map(async (wallet) => {
       const res = await axios.get(
-        `${SHYFT_URL}/nft/read_all?network=mainnet-beta&address=${wallet}`,
+        `${SHYFT_URL}/nft/read_all?network=mainnet-beta&address=${wallet}&refresh`,
         AXIOS_CONFIG_SHYFT_KEY
       )
 
@@ -397,7 +397,7 @@ export const addAddress = createAsyncThunk(
     if (!allWallets.includes(walletAddress)) {
       try {
         const response = await axios.get(
-          `${SHYFT_URL}/nft/read_all?network=mainnet-beta&address=${walletAddress}`,
+          `${SHYFT_URL}/nft/read_all?network=mainnet-beta&address=${walletAddress}&refresh`,
           AXIOS_CONFIG_SHYFT_KEY
         )
         const res = response.data
