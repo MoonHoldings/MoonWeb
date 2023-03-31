@@ -59,7 +59,7 @@ const RightSideBar = () => {
 
   return (
     <motion.div
-      className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
+      className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-[calc(100vh-3rem)]"
       initial={{ x: '101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '101%' }}
@@ -67,13 +67,13 @@ const RightSideBar = () => {
     >
       {lendRightSideBarOpen && (
         <motion.div
-          className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
+          className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem]"
           initial={{ x: '100%' }}
           animate={{ x: '0%' }}
           exit={{ x: '100%' }}
           transition={{ duration: 0.6, type: 'spring' }}
         >
-          <div className="main-buttons relative mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
+          <div className="main-buttons relative mt-0 flex h-full flex-col items-center bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
             <button
               className="fixed left-[-3rem] mt-5 rounded-2xl border-[0.5px] border-[#62EAD2] bg-[#2A2D31] p-5"
               onClick={() => dispatch(changeLendRightSidebarOpen(false))}
@@ -85,9 +85,20 @@ const RightSideBar = () => {
                 alt="plus sign"
               />
             </button>
-            <ul className="dashboard-menu text-[1.4rem]">
+            <ul className="dashboard-menu w-full text-[1.4rem]">
               {renderConnectWallet()}
             </ul>
+            <div className="flex h-full flex-col items-center justify-center">
+              <Image
+                src={'/images/svgs/no-wallet.svg'}
+                width="90"
+                height="90"
+                alt="plus sign"
+              />
+              <span className="mt-4 text-[1.4rem] opacity-30">
+                No Wallet Connected
+              </span>
+            </div>
           </div>
         </motion.div>
       )}

@@ -2,8 +2,13 @@ import React from 'react'
 import Header from 'components/defi-loans/Header'
 import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Search from 'components/defi-loans/Search'
+import LendOfferModal from 'components/modals/LendOfferModal'
+import { useDispatch } from 'react-redux'
+import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
 
 const Lend = () => {
+  const dispatch = useDispatch()
+
   const COLUMNS = [
     'Collection',
     'Total Pool',
@@ -15,6 +20,7 @@ const Lend = () => {
 
   return (
     <SidebarsLayout>
+      <LendOfferModal />
       <div className="mt-[2rem] md:order-2">
         <Header
           title="Lend"
@@ -50,6 +56,7 @@ const Lend = () => {
                   <button
                     type="button"
                     className="rounded-xl border border-[#61D9EB] px-7 py-1 text-[1.3rem] text-[#61D9EB]"
+                    onClick={() => dispatch(changeLendOfferModalOpen(true))}
                   >
                     Lend
                   </button>

@@ -6,6 +6,7 @@ const initialState = {
   lendRightSideBarOpen: true,
   addWalletModalOpen: false,
   walletsModalOpen: false,
+  lendOfferModalOpen: false,
 }
 
 const utilSlice = createSlice({
@@ -27,6 +28,9 @@ const utilSlice = createSlice({
     changeWalletsModalOpen(state, action) {
       state.walletsModalOpen = action.payload
     },
+    changeLendOfferModalOpen(state, action) {
+      state.lendOfferModalOpen = action.payload
+    },
   },
 })
 
@@ -36,6 +40,7 @@ export const {
   changeLendRightSidebarOpen,
   changeAddWalletModalOpen,
   changeWalletsModalOpen,
+  changeLendOfferModalOpen,
 } = utilSlice.actions
 
 export default utilSlice.reducer
