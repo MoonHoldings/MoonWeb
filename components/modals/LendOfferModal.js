@@ -19,7 +19,7 @@ const LendOfferModal = () => {
         className="absolute bottom-0 left-0 right-0 top-0 z-[52] flex flex items-center justify-center font-inter"
       >
         <Overlay onClose={onClose} />
-        <div className="relative h-screen overflow-y-scroll md:h-auto md:overflow-y-visible">
+        <div className="relative flex h-screen flex-col justify-center overflow-y-scroll md:block md:h-auto md:overflow-y-visible">
           <div className="absolute left-1/2 z-[99] mr-3 hidden h-[8rem] w-[8rem] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full border border-black bg-white md:flex">
             <Image
               className="h-[4rem] w-[4rem]"
