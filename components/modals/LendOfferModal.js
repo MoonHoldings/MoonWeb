@@ -58,7 +58,7 @@ const LendOfferModal = () => {
             <div className="flex w-full flex-col justify-between xl:flex-row">
               <div className="flex flex-col">
                 <p className="text-xl">Offer Amount</p>
-                <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.3rem] text-[1.4rem] focus-within:border-[1px] focus-within:border-[#62E3DD]">
+                <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
                   <Image
                     className="h-[1.6rem] w-[1.6rem]"
                     src="/images/svgs/sol.svg"
@@ -85,7 +85,7 @@ const LendOfferModal = () => {
               </div>
               <div className="flex flex-col xl:ml-8">
                 <p className="text-xl">Total Interest</p>
-                <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.3rem] text-[1.4rem] focus-within:border-[1px] focus-within:border-[#62E3DD]">
+                <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
                   <Image
                     className="h-[1.6rem] w-[1.6rem]"
                     src="/images/svgs/sol.svg"
