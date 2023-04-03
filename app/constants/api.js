@@ -16,3 +16,4 @@ export const AXIOS_CONFIG_HELLO_MOON_KEY = {
   },
 }
 export const CRYPTO_SECRET = process.env.NEXT_PUBLIC_CRYPTO_SECRET
+export const RPC_URL = process.env.NEXT_PUBLIC_RPC

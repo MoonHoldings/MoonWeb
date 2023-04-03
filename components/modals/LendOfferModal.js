@@ -16,10 +16,10 @@ const LendOfferModal = () => {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 1 }}
         transition={{ duration: 0.5, type: 'spring' }}
-        className="absolute bottom-0 left-0 right-0 top-0 z-[52] flex flex items-center justify-center font-inter"
+        className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex flex h-full items-center justify-center font-inter md:h-auto"
       >
         <Overlay onClose={onClose} />
-        <div className="relative flex h-screen flex-col justify-center overflow-y-scroll md:block md:h-auto md:overflow-y-visible">
+        <div className="relative flex flex-col justify-center md:block">
           <div className="absolute left-1/2 z-[99] mr-3 hidden h-[8rem] w-[8rem] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full border border-black bg-white md:flex">
             <Image
               className="h-[4rem] w-[4rem]"

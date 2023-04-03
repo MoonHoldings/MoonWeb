@@ -6,12 +6,14 @@ import authSlice from './reducers/authSlice'
 import utilSlice from './reducers/utilSlice'
 import walletSlice from './reducers/walletSlice'
 import cryptoSlice from './reducers/cryptoSlice'
+import sharkifySlice from './reducers/sharkifySlice'
 
 const reducer = combineReducers({
   auth: authSlice,
   util: utilSlice,
   wallet: walletSlice,
   crypto: cryptoSlice,
+  sharkify: sharkifySlice,
 })
 
 const makeConfiguredStore = (reducer) => configureStore({ reducer })
@@ -28,7 +30,7 @@ const makeStore = () => {
 
     const persistConfig = {
       key: 'root',
-      whitelist: ['auth', 'util', 'wallet', 'crypto'],
+      whitelist: ['auth', 'util', 'wallet', 'crypto', 'sharkify'],
       storage,
     }
 
