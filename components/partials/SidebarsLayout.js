@@ -65,7 +65,7 @@ const SidebarsLayout = ({ children }) => {
           {rightSideBarOpen &&
             innerWidth < 1280 &&
             router.pathname.includes('nfts') && <NftRightSideBar />}
-          {rightSideBarOpen &&
+          {lendRightSideBarOpen &&
             innerWidth < 1280 &&
             router.pathname.includes('defi-loans') && <DefiLoansRightSideBar />}
         </AnimatePresence>

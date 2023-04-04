@@ -8,22 +8,26 @@ import Image from 'next/image'
 import {
   changeLeftSideBarOpen,
   changeRightSideBarOpen,
+  changeLendRightSidebarOpen,
 } from 'redux/reducers/utilSlice'
 
 const Navbar = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const { leftSideBarOpen, rightSideBarOpen } = useSelector(
-    (state) => state.util
-  )
+  const { leftSideBarOpen, rightSideBarOpen, lendRightSideBarOpen } =
+    useSelector((state) => state.util)
 
   const clickHamburgerMenu = () => {
     dispatch(changeLeftSideBarOpen(!leftSideBarOpen))
   }
 
   const clickWallet = () => {
-    dispatch(changeRightSideBarOpen(!rightSideBarOpen))
+    if (router.pathname.includes('nfts')) {
+      dispatch(changeRightSideBarOpen(!rightSideBarOpen))
+    } else {
+      dispatch(changeLendRightSidebarOpen(!lendRightSideBarOpen))
+    }
   }
 
   return (
