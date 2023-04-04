@@ -27,15 +27,19 @@ const Navbar = () => {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex h-[4.6rem] items-center justify-between border-b border-gray-800 bg-black px-[2rem] xl:hidden">
+    <div className="fixed left-0 right-0 top-0 z-50 flex h-[4.6rem] items-center justify-between border-b border-gray-800 bg-black px-[2rem] xl:hidden">
       <Link
         href="/"
         className="flex items-center"
         style={{
-          order: router.pathname.includes('/nfts') && '2',
+          order:
+            (router.pathname.includes('/nfts') ||
+              router.pathname.includes('defi-loans')) &&
+            '2',
         }}
       >
-        {router.pathname.includes('/nfts') ? (
+        {router.pathname.includes('/nfts') ||
+        router.pathname.includes('defi-loans') ? (
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white">
             <Image
               className="h-[1.3rem] w-[1.3rem]"
@@ -64,7 +68,10 @@ const Navbar = () => {
         id="btn-hamburger"
         onClick={clickHamburgerMenu}
         style={{
-          order: router.pathname.includes('/nfts') && '1',
+          order:
+            (router.pathname.includes('/nfts') ||
+              router.pathname.includes('defi-loans')) &&
+            '1',
         }}
       >
         <Image
@@ -76,12 +83,16 @@ const Navbar = () => {
         />
       </button>
 
-      {router.pathname.includes('/nfts') && (
+      {(router.pathname.includes('/nfts') ||
+        router.pathname.includes('/defi-loans')) && (
         <button
           id="btn-wallet-mobile"
           onClick={clickWallet}
           style={{
-            order: router.pathname.includes('/nfts') && '3',
+            order:
+              (router.pathname.includes('/nfts') ||
+                router.pathname.includes('defi-loans')) &&
+              '3',
           }}
         >
           <Image

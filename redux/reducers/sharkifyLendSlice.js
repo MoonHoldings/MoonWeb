@@ -28,6 +28,9 @@ const sharkifyLendSlice = createSlice({
     changePageIndex(state, action) {
       state.pageIndex = action.payload
     },
+    changePage(state, action) {
+      state.pageIndex = (action.payload - 1) * state.pageSize
+    },
     search(state, action) {
       state.pageIndex = 0
       state.search = action.payload
@@ -45,7 +48,7 @@ const sharkifyLendSlice = createSlice({
   },
 })
 
-export const { changePageIndex, previousPage, nextPage, search } =
+export const { changePageIndex, changePage, previousPage, nextPage, search } =
   sharkifyLendSlice.actions
 
 export default sharkifyLendSlice.reducer

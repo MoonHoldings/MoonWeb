@@ -1,6 +1,10 @@
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
-import { nextPage, previousPage } from 'redux/reducers/sharkifyLendSlice'
+import {
+  nextPage,
+  previousPage,
+  changePage,
+} from 'redux/reducers/sharkifyLendSlice'
 import mergeClasses from 'utils/mergeClasses'
 
 const Pagination = ({ totalItems }) => {
@@ -41,7 +45,7 @@ const Pagination = ({ totalItems }) => {
           height="8"
         />
       </button>
-      <button
+      {/* <button
         type="button"
         className={mergeClasses(
           'flex',
@@ -56,11 +60,11 @@ const Pagination = ({ totalItems }) => {
           'text-[1.3rem]',
           'font-bold'
         )}
-        onClick={() => dispatch(previousPage())}
+        onClick={() => dispatch(changePage(currentPage))}
       >
         {currentPage}
       </button>
-      {lastPage > 1 && (
+      {lastPage > 1 && currentPage !== lastPage && (
         <button
           type="button"
           className={mergeClasses(
@@ -76,12 +80,12 @@ const Pagination = ({ totalItems }) => {
             'text-[1.3rem]',
             'font-bold'
           )}
-          onClick={() => dispatch(previousPage())}
+          onClick={() => dispatch(changePage(currentPage + 1))}
         >
           {currentPage + 1}
         </button>
       )}
-      {lastPage > 2 && (
+      {lastPage > 2 && currentPage !== lastPage && (
         <button
           type="button"
           className={mergeClasses(
@@ -101,7 +105,7 @@ const Pagination = ({ totalItems }) => {
         >
           {lastPage}
         </button>
-      )}
+      )} */}
       <button
         type="button"
         className={mergeClasses(

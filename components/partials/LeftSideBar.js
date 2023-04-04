@@ -28,7 +28,7 @@ const LeftSideBar = () => {
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Header */}
-      <div className="mt-[1rem] mb-[4.6rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
+      <div className="mb-[4.6rem] mt-[1rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
         <button
           onClick={leftArrowClick}
           id="btn-left-sidebar-arrow"
@@ -115,7 +115,9 @@ const LeftSideBar = () => {
             >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
-                src="/images/svgs/calendar.svg"
+                src={`/images/svgs/calendar${
+                  router.pathname.includes('defi-loans') ? '-active' : ''
+                }.svg`}
                 alt="Dashboard"
                 width={25}
                 height={25}

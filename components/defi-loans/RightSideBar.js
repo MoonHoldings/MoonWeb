@@ -73,7 +73,7 @@ const RightSideBar = () => {
           exit={{ x: '100%' }}
           transition={{ duration: 0.6, type: 'spring' }}
         >
-          <div className="main-buttons relative mt-0 flex h-full flex-col items-center bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
+          <div className="main-buttons relative mt-0 flex h-full flex-col items-center bg-[rgb(25,28,32)] p-[1.5rem] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] lg:mt-0">
             <button
               className="fixed left-[-3rem] mt-5 rounded-2xl border-[0.5px] border-[#62EAD2] bg-[#2A2D31] p-5"
               onClick={() => dispatch(changeLendRightSidebarOpen(false))}

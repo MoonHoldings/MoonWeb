@@ -7,9 +7,8 @@ import Search from 'components/defi-loans/Search'
 import LendOfferModal from 'components/modals/LendOfferModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
-import { fetchNftList, fetchOrderBooks } from 'redux/reducers/sharkifySlice'
+import { fetchOrderBooks } from 'redux/reducers/sharkifySlice'
 import mergeClasses from 'utils/mergeClasses'
-import { nextPage, previousPage } from 'redux/reducers/sharkifyLendSlice'
 import Pagination from 'components/defi-loans/Pagination'
 
 const Lend = () => {
@@ -45,7 +44,7 @@ const Lend = () => {
 
   if (search) {
     filteredOrderBooks = filteredOrderBooks?.filter((orderBook) =>
-      orderBook?.collectionName?.includes(search)
+      orderBook?.collectionName?.toLowerCase().includes(search.toLowerCase())
     )
   }
 
@@ -75,7 +74,7 @@ const Lend = () => {
         <div className={mergeClasses(!isLoading && 'overflow-x-auto')}>
           {isLoading ? (
             <div className="mt-12 flex w-full justify-center">
-              <Spinner className="h-14 w-14 fill-[#62EAD2]" />
+              <Spinner className="h-[3.5rem] w-[3.5rem] fill-[#62EAD2]" />
             </div>
           ) : (
             <table className="w-full table-auto">
@@ -136,6 +135,9 @@ const Lend = () => {
               </tbody>
             </table>
           )}
+        </div>
+        <div className="my-8 flex w-full items-center justify-end">
+          <Pagination totalItems={totalItems} />
         </div>
       </div>
     </SidebarsLayout>
