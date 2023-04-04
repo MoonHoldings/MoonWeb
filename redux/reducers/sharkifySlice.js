@@ -1,5 +1,8 @@
 import { createSharkyClient, enabledOrderBooks } from '@sharkyfi/client'
+import { AXIOS_CONFIG_HELLO_MOON_KEY, HELLO_MOON_URL } from 'app/constants/api'
 import createAnchorProvider from 'utils/createAnchorProvider'
+import collectionNames from 'utils/collectionNames.json'
+import axios from 'axios'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
@@ -46,7 +49,7 @@ export const fetchNftList = createAsyncThunk(
     collectionNames.forEach((collection) => {
       nftListPubKeyToNameMap[collection.pubKey.toBase58()] = {
         collectionName: collection.collectionName,
-        nftMint: collection?.mints[0].toBase58(),
+        nftMint: collection?.mints[collection?.mints.length - 1].toBase58(),
       }
     })
 
@@ -54,10 +57,25 @@ export const fetchNftList = createAsyncThunk(
   }
 )
 
+const fetchMintInformation = async (nftMint) => {
+  console.log('fetchMintInformation', nftMint)
+
+  const { data } = await axios.post(
+    `${HELLO_MOON_URL}/nft/mint_information`,
+    {
+      nftMint,
+    },
+    AXIOS_CONFIG_HELLO_MOON_KEY
+  )
+
+  return data?.data
+}
+
 export const fetchOrderBooks = createAsyncThunk(
   'sharkify/fetchOrderBooks',
   async (_, { getState, dispatch }) => {
     const sharkifyState = getState().sharkify
+    const { pageIndex, pageSize } = getState().sharkifyLend
     const currentOrderBooks = sharkifyState.orderBooks
 
     const provider = createAnchorProvider()
@@ -96,12 +114,7 @@ export const fetchOrderBooks = createAsyncThunk(
       enabledOrderBooks.includes(orderBook.pubKey)
     )
 
-    // Refetch nftList only if order books length changed
-    if (orderBooks.length !== currentOrderBooks?.length) {
-      await dispatch(fetchNftList())
-    }
-
-    const nftListPubKeyToNameMap = sharkifyState.nftList
+    const nftListPubKeyToNameMap = collectionNames
 
     orderBooks = orderBooks
       .map((orderBook) => ({
@@ -115,15 +128,20 @@ export const fetchOrderBooks = createAsyncThunk(
       }))
       .sort((a, b) => (a.collectionName < b.collectionName ? -1 : 1))
 
-    // Fetch nft meta data
-    // Fetch collection meta data
-    // Fetch image uri
+    // Fetch nft meta data using nftMint in hello moon
+
+    // console.log(
+    //   'nftMintInfos',
+    //   orderBooks
+    //     .slice(pageIndex, pageSize -)
+    //     .map((orderBook) => orderBook?.nftMint)
+    // )
+    // Fetch collection meta data in hello moon
+    // Fetch image uri using axios
     // Map to each collection
 
     return orderBooks
   }
 )
-
-export const { changeSolUsdPrice } = sharkifySlice.actions
 
 export default sharkifySlice.reducer
