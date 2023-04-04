@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Image from 'next/image'
-import { Spinner } from 'flowbite-react'
+import { Spinner, Tooltip } from 'flowbite-react'
 import Header from 'components/defi-loans/Header'
 import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Search from 'components/defi-loans/Search'
@@ -10,6 +10,7 @@ import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
 import { fetchOrderBooks } from 'redux/reducers/sharkifySlice'
 import mergeClasses from 'utils/mergeClasses'
 import Pagination from 'components/defi-loans/Pagination'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const Lend = () => {
   const dispatch = useDispatch()
@@ -20,6 +21,7 @@ const Lend = () => {
   const { pageIndex, pageSize, search } = useSelector(
     (state) => state.sharkifyLend
   )
+  const { publicKey } = useWallet()
 
   const isLoading = fetchOrderBooksStatus === 'loading'
 
@@ -118,16 +120,32 @@ const Lend = () => {
                       </td>
                       <td className="px-6 py-6">{duration}d</td>
                       <td className="px-6 py-6">
-                        <button
-                          disabled
-                          type="button"
-                          className="rounded-xl border border-[#61D9EB] px-7 py-1 text-[1.3rem] text-[#61D9EB]"
-                          onClick={() =>
-                            dispatch(changeLendOfferModalOpen(true))
+                        <Tooltip
+                          className="rounded-xl px-[1.6rem] py-[1.2rem]"
+                          content={
+                            <span className="text-[1.2rem]">
+                              Connect your wallet
+                            </span>
                           }
+                          placement="bottom"
+                          theme={{
+                            arrow: {
+                              base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+                            },
+                          }}
+                          trigger={publicKey === null ? 'hover' : null}
                         >
-                          Lend
-                        </button>
+                          <button
+                            disabled={publicKey === null}
+                            type="button"
+                            className="rounded-xl border border-[#61D9EB] px-7 py-1 text-[1.3rem] text-[#61D9EB]"
+                            onClick={() =>
+                              dispatch(changeLendOfferModalOpen(true))
+                            }
+                          >
+                            Lend
+                          </button>
+                        </Tooltip>
                       </td>
                     </tr>
                   )
