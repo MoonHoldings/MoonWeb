@@ -6,7 +6,10 @@ import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Search from 'components/defi-loans/Search'
 import LendOfferModal from 'components/modals/LendOfferModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
+import {
+  changeLendOfferModalOpen,
+  changeLoanDetailsModalOpen,
+} from 'redux/reducers/utilSlice'
 import {
   fetchLoans,
   fetchOrderBooks,
@@ -22,6 +25,7 @@ import { setLoanDetails } from 'redux/reducers/sharkifyLendSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
+import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 
 const Lend = ({ orderBooks }) => {
   const dispatch = useDispatch()
@@ -77,6 +81,8 @@ const Lend = ({ orderBooks }) => {
   return (
     <SidebarsLayout>
       <LendOfferModal />
+      <LoanDetailsModal />
+
       <div className="pb-[4rem] pt-[2rem] md:order-2">
         <Header
           title="Lend"
@@ -141,7 +147,7 @@ const Lend = ({ orderBooks }) => {
 
                   return (
                     <tr
-                      className="cursor-pointer text-[1.4rem] font-medium"
+                      className="cursor-pointer bg-transparent text-[1.5rem] font-medium hover:bg-[#013C40]"
                       key={index}
                       onClick={() => {
                         dispatch(
@@ -150,6 +156,8 @@ const Lend = ({ orderBooks }) => {
                             loan: loansByOrderBook[orderBook.pubKey],
                           })
                         )
+
+                        dispatch(changeLoanDetailsModalOpen(true))
                       }}
                     >
                       <td className="px-6 py-6">{orderBook.collectionName}</td>
@@ -160,7 +168,7 @@ const Lend = ({ orderBooks }) => {
                       <td className="px-6 py-6 text-[#11AF22]">
                         {Math.floor(apy)}%
                       </td>
-                      <td className="px-6 py-6">{duration}d</td>
+                      <td className="px-6 py-6">{Math.floor(duration)}d</td>
                       <td className="px-6 py-6">
                         <Tooltip
                           className="rounded-xl px-[1.6rem] py-[1.2rem]"
@@ -180,7 +188,7 @@ const Lend = ({ orderBooks }) => {
                           <button
                             disabled={publicKey === null}
                             type="button"
-                            className="rounded-xl border border-[#61D9EB] px-7 py-1 text-[1.3rem] text-[#61D9EB]"
+                            className="rounded-xl border border-[#61D9EB] from-[#61D9EB] to-[#63EDD0] px-7 py-1 text-[1.3rem] text-[#61D9EB] hover:border-[#f0f6f0] hover:bg-gradient-to-b hover:text-[#15181B]"
                             onClick={() =>
                               dispatch(changeLendOfferModalOpen(true))
                             }
@@ -257,7 +265,7 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      orderBooks,
+      orderBooks: orderBooks.filter((orderBook) => orderBook.collectionName),
     },
   }
 }
