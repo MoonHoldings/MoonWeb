@@ -23,6 +23,7 @@ const Pagination = ({ totalItems }) => {
           'flex',
           'h-14',
           'w-14',
+          'mr-4',
           'items-center',
           'justify-center',
           'rounded-sm',
@@ -45,6 +46,9 @@ const Pagination = ({ totalItems }) => {
           height="8"
         />
       </button>
+      <span className="text-[1.4rem]">
+        {currentPage} / {lastPage}
+      </span>
       {/* <button
         type="button"
         className={mergeClasses(

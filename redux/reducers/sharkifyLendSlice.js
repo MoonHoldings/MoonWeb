@@ -19,6 +19,7 @@ const initialState = {
   pageIndex: 0,
   pageSize: 20,
   search: '',
+  loanDetails: null,
 }
 
 const sharkifyLendSlice = createSlice({
@@ -45,10 +46,19 @@ const sharkifyLendSlice = createSlice({
         state.pageIndex += state.pageSize
       }
     },
+    setLoanDetails(state, action) {
+      state.loanDetails = action.payload
+    },
   },
 })
 
-export const { changePageIndex, changePage, previousPage, nextPage, search } =
-  sharkifyLendSlice.actions
+export const {
+  changePageIndex,
+  changePage,
+  previousPage,
+  nextPage,
+  search,
+  setLoanDetails,
+} = sharkifyLendSlice.actions
 
 export default sharkifyLendSlice.reducer

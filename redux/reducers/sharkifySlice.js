@@ -8,15 +8,21 @@ const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
 const initialState = {
   orderBooks: null,
+  loansByOrderBook: null,
   nftList: null,
   fetchOrderBooksStatus: 'idle',
+  fetchLoansStatus: 'idle',
   fetchNftListStatus: 'idle',
 }
 
 const sharkifySlice = createSlice({
   name: 'sharkify',
   initialState,
-  reducers: {},
+  reducers: {
+    setOrderBooks(state, action) {
+      state.orderBooks = action.payload
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchOrderBooks.pending, (state, _) => {
@@ -26,6 +32,13 @@ const sharkifySlice = createSlice({
         state.fetchOrderBooksStatus = 'successful'
         state.orderBooks = action.payload
       })
+      .addCase(fetchLoans.pending, (state, _) => {
+        state.fetchLoansStatus = 'loading'
+      })
+      .addCase(fetchLoans.fulfilled, (state, action) => {
+        state.fetchLoansStatus = 'successful'
+        state.loansByOrderBook = action.payload
+      })
       .addCase(fetchNftList.pending, (state, _) => {
         state.fetchNftListStatus = 'loading'
       })
@@ -34,6 +47,67 @@ const sharkifySlice = createSlice({
         state.nftList = action.payload
       })
   },
+})
+
+export const fetchLoans = createAsyncThunk('sharkify/fetchLoans', async () => {
+  const provider = createAnchorProvider()
+  const sharkyClient = createSharkyClient(provider)
+  const { program } = sharkyClient
+
+  const loans = await sharkyClient.fetchAllLoans({ program })
+
+  const loansByOrderBook = loans.reduce((accumulator, loan) => {
+    const orderBookKey = loan.data.orderBook.toBase58()
+
+    const parsedLoan = {
+      principalLamports: loan.data.principalLamports.toNumber(),
+      orderBook: loan.data.orderBook.toBase58(),
+      valueTokenMint: loan.data.valueTokenMint.toBase58(),
+      offerTime: loan?.data?.loanState?.offer?.offer?.offerTime?.toNumber(),
+      takenTime:
+        loan?.data?.loanState?.taken?.taken?.terms?.time?.start.toNumber(),
+      pubKey: loan.pubKey.toBase58(),
+      supportsFreezingCollateral: loan.supportsFreezingCollateral,
+      isCollateralFrozen: loan.isCollateralFrozen,
+      isHistorical: loan.isHistorical,
+      state: loan.state,
+    }
+
+    accumulator[orderBookKey] = accumulator[orderBookKey] || []
+    accumulator[orderBookKey].push(parsedLoan)
+    return accumulator
+  }, {})
+
+  const loansData = {}
+
+  Object.entries(loansByOrderBook).forEach(([key, loans]) => {
+    const takenLoans = loans
+      .filter((loan) => loan.state === 'taken')
+      .sort((a, b) => a.takenTime - b.takenTime)
+    const offeredLoans = loans
+      .filter((loan) => loan.state === 'offered')
+      .sort((a, b) => b.principalLamports - a.principalLamports)
+
+    const takenLoansPool = takenLoans.reduce(
+      (sum, takenLoan) => sum + takenLoan.principalLamports,
+      0
+    )
+    const offeredLoansPool = offeredLoans.reduce(
+      (sum, offeredLoan) => sum + offeredLoan.principalLamports,
+      0
+    )
+
+    loansData[key] = {
+      totalTakenLoans: takenLoans.length,
+      totalOfferedLoans: offeredLoans.length,
+      takenLoansPool,
+      offeredLoansPool,
+      latestTakenLoans: takenLoans.slice(-10),
+      latestOfferedLoans: offeredLoans.slice(0, 10),
+    }
+  })
+
+  return loansData
 })
 
 export const fetchNftList = createAsyncThunk(
@@ -143,5 +217,7 @@ export const fetchOrderBooks = createAsyncThunk(
     return orderBooks
   }
 )
+
+export const { setOrderBooks } = sharkifySlice.actions
 
 export default sharkifySlice.reducer
