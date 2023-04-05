@@ -83,7 +83,7 @@ export const fetchLoans = createAsyncThunk('sharkify/fetchLoans', async () => {
   Object.entries(loansByOrderBook).forEach(([key, loans]) => {
     const takenLoans = loans
       .filter((loan) => loan.state === 'taken')
-      .sort((a, b) => a.takenTime - b.takenTime)
+      .sort((a, b) => b.takenTime - a.takenTime)
     const offeredLoans = loans
       .filter((loan) => loan.state === 'offered')
       .sort((a, b) => b.principalLamports - a.principalLamports)
@@ -102,8 +102,8 @@ export const fetchLoans = createAsyncThunk('sharkify/fetchLoans', async () => {
       totalOfferedLoans: offeredLoans.length,
       takenLoansPool,
       offeredLoansPool,
-      latestTakenLoans: takenLoans.slice(-10),
-      latestOfferedLoans: offeredLoans.slice(0, 10),
+      latestTakenLoans: takenLoans.slice(0, 5),
+      latestOfferedLoans: offeredLoans.slice(0, 5),
     }
   })
 

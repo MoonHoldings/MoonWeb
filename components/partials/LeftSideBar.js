@@ -15,6 +15,7 @@ const LeftSideBar = () => {
   }
 
   const handleClick = (url) => {
+    leftArrowClick()
     router.push(`/${url}`)
   }
 
