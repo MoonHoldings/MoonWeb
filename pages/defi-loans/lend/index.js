@@ -164,7 +164,9 @@ const Lend = ({ orderBooks }) => {
                       <td className="px-6 py-6">
                         {toCurrencyFormat(totalPoolSol)}
                       </td>
-                      <td className="px-6 py-6">{bestOfferSol}</td>
+                      <td className="px-6 py-6">
+                        {toCurrencyFormat(bestOfferSol)}
+                      </td>
                       <td className="px-6 py-6 text-[#11AF22]">
                         {Math.floor(apy)}%
                       </td>
