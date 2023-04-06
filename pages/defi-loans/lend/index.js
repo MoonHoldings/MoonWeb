@@ -21,7 +21,12 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import createAnchorProvider from 'utils/createAnchorProvider'
 import { createSharkyClient } from '@sharkyfi/client'
 import collectionNames from 'utils/collectionNames.json'
-import { setLoanDetails } from 'redux/reducers/sharkifyLendSlice'
+import {
+  setLoanDetails,
+  setSortOption,
+  SortOptions,
+  SortOrder,
+} from 'redux/reducers/sharkifyLendSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
@@ -36,7 +41,7 @@ const Lend = ({ orderBooks }) => {
     fetchOrderBooksStatus,
     fetchLoansStatus,
   } = useSelector((state) => state.sharkify)
-  const { pageIndex, pageSize, search } = useSelector(
+  const { pageIndex, pageSize, search, sortOption, sortOrder } = useSelector(
     (state) => state.sharkifyLend
   )
   const { publicKey } = useWallet()
@@ -63,7 +68,62 @@ const Lend = ({ orderBooks }) => {
     }
   }, [orderBooksLocal, dispatch])
 
-  let filteredOrderBooks = orderBooksLocal
+  const onClickRow = (orderBook) => {
+    dispatch(
+      setLoanDetails({
+        collectionName: orderBook.collectionName,
+        loan: loansByOrderBook[orderBook.pubKey],
+      })
+    )
+
+    dispatch(changeLoanDetailsModalOpen(true))
+  }
+
+  const sortOrderBooks = (orderBooks) => {
+    if (!orderBooks) return
+    const sortedOrderBooks = [...orderBooks]
+    if (!loansByOrderBook) return sortedOrderBooks
+
+    return sortedOrderBooks.sort((a, b) => {
+      switch (sortOption) {
+        case SortOptions.TOTAL_POOL:
+          const [totalPoolSolA, totalPoolSolB] = [a, b].map(
+            (book) =>
+              loansByOrderBook[book.pubKey]?.offeredLoansPool /
+                LAMPORTS_PER_SOL || 0
+          )
+          return sortOrder === SortOrder.ASC
+            ? totalPoolSolA - totalPoolSolB
+            : totalPoolSolB - totalPoolSolA
+        case SortOptions.BEST_OFFER:
+          const [bestOfferSolA, bestOfferSolB] = [a, b].map(
+            (book) =>
+              loansByOrderBook[book.pubKey]?.latestOfferedLoans[0]
+                ?.principalLamports / LAMPORTS_PER_SOL || 0
+          )
+          return sortOrder === SortOrder.ASC
+            ? bestOfferSolA - bestOfferSolB
+            : bestOfferSolB - bestOfferSolA
+        case SortOptions.APY:
+          const [aprA, aprB] = [a.apy?.fixed?.apy, b.apy?.fixed?.apy]
+          return sortOrder === SortOrder.ASC ? aprA - aprB : aprB - aprA
+        case SortOptions.DURATION:
+          const [durationA, durationB] = [
+            a.loanTerms?.fixed?.terms?.time?.duration,
+            b.loanTerms?.fixed?.terms?.time?.duration,
+          ]
+          return sortOrder === SortOrder.ASC
+            ? durationA - durationB
+            : durationB - durationA
+        default:
+          return sortOrder === SortOrder.ASC
+            ? a.collectionName.localeCompare(b.collectionName)
+            : b.collectionName.localeCompare(a.collectionName)
+      }
+    })
+  }
+
+  let filteredOrderBooks = sortOrderBooks(orderBooksLocal)
 
   if (search) {
     filteredOrderBooks = filteredOrderBooks?.filter((orderBook) =>
@@ -77,17 +137,6 @@ const Lend = ({ orderBooks }) => {
     pageIndex,
     pageIndex + pageSize
   )
-
-  const onClickRow = (orderBook) => {
-    dispatch(
-      setLoanDetails({
-        collectionName: orderBook.collectionName,
-        loan: loansByOrderBook[orderBook.pubKey],
-      })
-    )
-
-    dispatch(changeLoanDetailsModalOpen(true))
-  }
 
   return (
     <SidebarsLayout>
@@ -136,12 +185,21 @@ const Lend = ({ orderBooks }) => {
                       key={index}
                       className="bg-[#1F2126] px-6 py-6 text-left text-[1.3rem] font-normal"
                     >
-                      <button className="flex items-center">
+                      <button
+                        className="flex items-center"
+                        onClick={() => dispatch(setSortOption(column))}
+                      >
                         {column}
                         <Image
-                          // className="rotate-180 transform"
-                          className={mergeClasses('ml-4')}
-                          src="/images/svgs/table-sort-arrow.svg"
+                          className={mergeClasses(
+                            'ml-4',
+                            sortOrder === SortOrder.DESC &&
+                              sortOption === column &&
+                              'rotate-180 transform'
+                          )}
+                          src={`/images/svgs/table-sort-arrow${
+                            sortOption === column ? '-active' : ''
+                          }.svg`}
                           alt=""
                           width="10"
                           height="10"

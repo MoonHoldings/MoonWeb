@@ -49,6 +49,15 @@ const sharkifyLendSlice = createSlice({
     setLoanDetails(state, action) {
       state.loanDetails = action.payload
     },
+    setSortOption(state, action) {
+      if (state.sortOption !== action.payload) {
+        state.sortOrder = SortOrder.DESC
+        state.sortOption = action.payload
+      } else {
+        state.sortOrder =
+          state.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+      }
+    },
   },
 })
 
@@ -59,6 +68,7 @@ export const {
   nextPage,
   search,
   setLoanDetails,
+  setSortOption,
 } = sharkifyLendSlice.actions
 
 export default sharkifyLendSlice.reducer

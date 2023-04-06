@@ -12,6 +12,18 @@ const createAnchorProvider = () => {
     }
   )
 
+  // const provider = new AnchorProvider(
+  //   new Connection(RPC_URL, {
+  //     httpHeaders: {
+  //       Authorization: `Bearer ${HELLO_MOON_KEY}`,
+  //     },
+  //   }),
+  //   { publicKey: Keypair.generate().publicKey },
+  //   {
+  //     maxRetries: 2,
+  //   }
+  // )
+
   provider.connection._confirmTransactionInitialTimeout = 180_000
 
   return provider

@@ -54,7 +54,14 @@ export const fetchLoans = createAsyncThunk('sharkify/fetchLoans', async () => {
   const sharkyClient = createSharkyClient(provider)
   const { program } = sharkyClient
 
-  const loans = await sharkyClient.fetchAllLoans({ program })
+  let loans = []
+
+  try {
+    loans = await sharkyClient.fetchAllLoans({ program })
+  } catch (e) {
+    console.log('failed to fetch loans')
+    console.log(e.response)
+  }
 
   const loansByOrderBook = loans.reduce((accumulator, loan) => {
     const orderBookKey = loan.data.orderBook.toBase58()
