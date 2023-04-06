@@ -1,10 +1,12 @@
 import React from 'react'
 import Image from 'next/image'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { search } from 'redux/reducers/sharkifyLendSlice'
 
 const Search = () => {
   const dispatch = useDispatch()
+
+  const { search: searchString } = useSelector((state) => state.sharkifyLend)
 
   return (
     <div className="relative sticky top-20 mt-6 flex items-center rounded-xl bg-[#0C0D0F] p-7 md:top-0">
@@ -16,6 +18,7 @@ const Search = () => {
         type="text"
         placeholder="Search"
         onChange={(e) => dispatch(search(e.target.value))}
+        value={searchString}
       />
     </div>
   )
