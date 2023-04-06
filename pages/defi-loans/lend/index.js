@@ -244,13 +244,31 @@ const Lend = ({ orderBooks }) => {
                         className="px-6 py-6"
                         onClick={() => onClickRow(orderBook)}
                       >
-                        {toCurrencyFormat(totalPoolSol)}
+                        <div className="flex items-center">
+                          {toCurrencyFormat(totalPoolSol)}{' '}
+                          <Image
+                            className="ml-3 h-[1.6rem] w-[1.6rem]"
+                            src="/images/svgs/sol.svg"
+                            width={20}
+                            height={20}
+                            alt=""
+                          />
+                        </div>
                       </td>
                       <td
                         className="px-6 py-6"
                         onClick={() => onClickRow(orderBook)}
                       >
-                        {toCurrencyFormat(bestOfferSol)}
+                        <div className="flex items-center">
+                          {toCurrencyFormat(bestOfferSol)}
+                          <Image
+                            className="ml-3 h-[1.6rem] w-[1.6rem]"
+                            src="/images/svgs/sol.svg"
+                            width={20}
+                            height={20}
+                            alt=""
+                          />
+                        </div>
                       </td>
                       <td
                         className="px-6 py-6 text-[#11AF22]"

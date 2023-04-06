@@ -3,6 +3,7 @@ import { changeLoanDetailsModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
+import Image from 'next/image'
 
 const LoanDetailsModal = () => {
   const { loanDetailsModalOpen } = useSelector((state) => state.util)
@@ -37,9 +38,18 @@ const LoanDetailsModal = () => {
           <div className="mt-6 flex w-full justify-between bg-[#34383D] py-6">
             <div className="flex flex-1 justify-center text-[1.4rem]">
               Active Lenders (
-              {toCurrencyFormat(
-                loanDetails?.loan?.takenLoansPool / LAMPORTS_PER_SOL
-              )}
+              <div className="flex items-center">
+                {toCurrencyFormat(
+                  loanDetails?.loan?.takenLoansPool / LAMPORTS_PER_SOL
+                )}
+                <Image
+                  className="ml-2 h-[1.6rem] w-[1.6rem]"
+                  src="/images/svgs/sol.svg"
+                  width={20}
+                  height={20}
+                  alt=""
+                />
+              </div>
               )
             </div>
             <div className="flex flex-1 justify-center text-[1.4rem]">
@@ -82,9 +92,18 @@ const LoanDetailsModal = () => {
                   key={index}
                 >
                   <div className="flex flex-1 justify-center bg-[#101113] py-5 text-[1.6rem]">
-                    {toCurrencyFormat(
-                      loan.principalLamports / LAMPORTS_PER_SOL
-                    )}
+                    <div className="flex items-center">
+                      {toCurrencyFormat(
+                        loan.principalLamports / LAMPORTS_PER_SOL
+                      )}
+                      <Image
+                        className="ml-3 h-[1.6rem] w-[1.6rem]"
+                        src="/images/svgs/sol.svg"
+                        width={20}
+                        height={20}
+                        alt=""
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-1 justify-center bg-[#212327] py-5 text-[1.6rem]">
                     {timePassed} {unit} ago
@@ -101,9 +120,18 @@ const LoanDetailsModal = () => {
           <div className="flex w-full justify-between bg-[#34383D] py-6">
             <div className="flex flex-1 justify-center text-[1.4rem]">
               Active Offers (
-              {toCurrencyFormat(
-                loanDetails?.loan?.offeredLoansPool / LAMPORTS_PER_SOL
-              )}
+              <div className="flex items-center">
+                {toCurrencyFormat(
+                  loanDetails?.loan?.offeredLoansPool / LAMPORTS_PER_SOL
+                )}
+                <Image
+                  className="ml-2 h-[1.6rem] w-[1.6rem]"
+                  src="/images/svgs/sol.svg"
+                  width={20}
+                  height={20}
+                  alt=""
+                />
+              </div>
               )
             </div>
             <div className="flex flex-1 justify-center text-[1.4rem]">
@@ -146,9 +174,18 @@ const LoanDetailsModal = () => {
                   key={index}
                 >
                   <div className="flex flex-1 justify-center bg-[#101113] py-5 text-[1.6rem]">
-                    {toCurrencyFormat(
-                      loan.principalLamports / LAMPORTS_PER_SOL
-                    )}
+                    <div className="flex items-center">
+                      {toCurrencyFormat(
+                        loan.principalLamports / LAMPORTS_PER_SOL
+                      )}
+                      <Image
+                        className="ml-3 h-[1.6rem] w-[1.6rem]"
+                        src="/images/svgs/sol.svg"
+                        width={20}
+                        height={20}
+                        alt=""
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-1 justify-center bg-[#212327] py-5 text-[1.6rem]">
                     {timePassed} {unit} ago
