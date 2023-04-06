@@ -73,6 +73,8 @@ export const fetchLoans = createAsyncThunk('sharkify/fetchLoans', async () => {
       offerTime: loan?.data?.loanState?.offer?.offer?.offerTime?.toNumber(),
       takenTime:
         loan?.data?.loanState?.taken?.taken?.terms?.time?.start.toNumber(),
+      totalOwedLamports:
+        loan?.data?.loanState?.taken?.taken?.terms?.time?.totalOwedLamports.toNumber(),
       pubKey: loan.pubKey.toBase58(),
       supportsFreezingCollateral: loan.supportsFreezingCollateral,
       isCollateralFrozen: loan.isCollateralFrozen,

@@ -43,10 +43,10 @@ const LoanDetailsModal = () => {
                   loanDetails?.loan?.takenLoansPool / LAMPORTS_PER_SOL
                 )}
                 <Image
-                  className="ml-2 h-[1.6rem] w-[1.6rem]"
+                  className="ml-3 h-[1.7rem] w-[1.7rem]"
                   src="/images/svgs/sol.svg"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                   alt=""
                 />
               </div>
@@ -97,10 +97,23 @@ const LoanDetailsModal = () => {
                         loan.principalLamports / LAMPORTS_PER_SOL
                       )}
                       <Image
-                        className="ml-3 h-[1.6rem] w-[1.6rem]"
+                        className="ml-3 h-[1.7rem] w-[1.7rem]"
                         src="/images/svgs/sol.svg"
-                        width={20}
-                        height={20}
+                        width={24}
+                        height={24}
+                        alt=""
+                      />
+                    </div>
+                    <div className="mx-6">{'>'}</div>
+                    <div className="flex items-center">
+                      {toCurrencyFormat(
+                        loan.totalOwedLamports / LAMPORTS_PER_SOL
+                      )}
+                      <Image
+                        className="ml-3 h-[1.7rem] w-[1.7rem]"
+                        src="/images/svgs/sol.svg"
+                        width={24}
+                        height={24}
                         alt=""
                       />
                     </div>
@@ -125,10 +138,10 @@ const LoanDetailsModal = () => {
                   loanDetails?.loan?.offeredLoansPool / LAMPORTS_PER_SOL
                 )}
                 <Image
-                  className="ml-2 h-[1.6rem] w-[1.6rem]"
+                  className="ml-3 h-[1.7rem] w-[1.7rem]"
                   src="/images/svgs/sol.svg"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                   alt=""
                 />
               </div>
@@ -179,10 +192,10 @@ const LoanDetailsModal = () => {
                         loan.principalLamports / LAMPORTS_PER_SOL
                       )}
                       <Image
-                        className="ml-3 h-[1.6rem] w-[1.6rem]"
+                        className="ml-3 h-[1.7rem] w-[1.7rem]"
                         src="/images/svgs/sol.svg"
-                        width={20}
-                        height={20}
+                        width={24}
+                        height={24}
                         alt=""
                       />
                     </div>
