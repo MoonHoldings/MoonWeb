@@ -3,10 +3,12 @@ import { AnchorProvider } from '@project-serum/anchor'
 import { Connection, Keypair } from '@solana/web3.js'
 import { RPC_URL, HELLO_MOON_KEY } from 'app/constants/api'
 
-const createAnchorProvider = () => {
+export const connection = new Connection(RPC_URL, 'confirmed')
+
+const createAnchorProvider = (pubKey = null) => {
   const provider = new AnchorProvider(
-    new Connection(RPC_URL, 'confirmed'),
-    { publicKey: Keypair.generate().publicKey },
+    connection,
+    { publicKey: pubKey ? pubKey : Keypair.generate().publicKey },
     {
       maxRetries: 2,
     }

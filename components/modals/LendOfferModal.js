@@ -4,15 +4,31 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import sharkyClient from 'utils/sharkyClient'
+import { useWallet } from '@solana/wallet-adapter-react'
+import createAnchorProvider, { connection } from 'utils/createAnchorProvider'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
+import { createSharkyClient } from '@sharkyfi/client'
+import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import { BN } from '@project-serum/anchor'
+import mergeClasses from 'utils/mergeClasses'
+import Link from 'next/link'
+
+const MAX_OFFERS = 4
 
 const LendOfferModal = () => {
   const dispatch = useDispatch()
 
+  const { publicKey, sendTransaction } = useWallet()
+
   const { lendOfferModalOpen } = useSelector((state) => state.util)
   const { orderBook } = useSelector((state) => state.sharkifyLend)
 
-  const [placingOffer, setPlacingOffer] = useState(false)
+  const [balance, setBalance] = useState(null)
+  const [numLoanOffers, setNumLoanOffers] = useState(1)
+  const [bestOffer, setBestOffer] = useState(0)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [txLink, setTxLink] = useState(null)
 
   const methods = useForm({
     defaultValues: {
@@ -23,39 +39,174 @@ const LendOfferModal = () => {
 
   const {
     formState: { errors, isSubmitting },
+    getValues,
     watch,
     register,
     setValue,
+    handleSubmit,
+    reset,
+    clearErrors,
   } = methods
 
-  const onClose = () => dispatch(changeLendOfferModalOpen(false))
+  useEffect(() => {
+    if (lendOfferModalOpen && publicKey && orderBook) {
+      async function getBalance() {
+        if (!publicKey) return
+
+        const balance = await connection.getBalance(publicKey)
+        setBalance(balance / LAMPORTS_PER_SOL)
+      }
+
+      // async function getBestOffer() {
+      //   const provider = createAnchorProvider(publicKey)
+      //   const sharkyClient = createSharkyClient(provider)
+      //   const { program } = sharkyClient
+
+      //   const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
+      //     program,
+      //     orderBookPubKey: orderBook.pubKey,
+      //   })
+
+      //   console.log('getBestOffer', orderBookInfo)
+
+      //   const { offered } = orderBookInfo.createOfferLoanInstruction
+      //   const bestOffer = toCurrencyFormat(
+      //     offered?.data?.principalLamports.toNumber() / LAMPORTS_PER_SOL
+      //   )
+
+      //   setBestOffer(bestOffer)
+      // }
+
+      getBalance()
+      // getBestOffer()
+    }
+  }, [lendOfferModalOpen, publicKey, orderBook])
+
+  const onClose = () => {
+    dispatch(changeLendOfferModalOpen(false))
+    setNumLoanOffers(1)
+    reset()
+  }
+
+  const waitTransactionConfirmation = async (tx) => {
+    const provider = createAnchorProvider(publicKey)
+
+    const confirmedTransaction = await provider.connection.confirmTransaction(
+      { signature: tx },
+      'confirmed'
+    )
+
+    if (confirmedTransaction.value.err) {
+      throw new Error(`Transaction failed: ${confirmedTransaction.value.err}`)
+    }
+
+    console.log(`Transaction successful: ${tx}`)
+
+    setIsSuccess(true)
+    setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
+  }
 
   const placeOffer = async () => {
-    setPlacingOffer(true)
+    const { offerAmount } = getValues()
+
+    const provider = createAnchorProvider(publicKey)
+    const sharkyClient = createSharkyClient(provider)
 
     const { program } = sharkyClient
 
-    const { orderBook } = await sharkyClient.fetchOrderBook({
+    try {
+      const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
+        program,
+        orderBookPubKey: orderBook.pubKey,
+      })
+
+      if (!orderBookInfo) {
+        console.error(`No orderbook found with pubkey ${orderBook.pubKey}`)
+        onClose()
+      }
+
+      const { blockhash, lastValidBlockHeight } =
+        await provider.connection.getLatestBlockhash('finalized')
+
+      const offerLoanTransaction = new Transaction({
+        blockhash,
+        feePayer: publicKey,
+        lastValidBlockHeight,
+      })
+
+      const signers = []
+
+      // Loop over the number of loan offers and create an instruction for each one
+      for (let i = 0; i < numLoanOffers; i++) {
+        // Create a loan offer instruction
+        const { instruction, loanKeypair } =
+          await orderBookInfo.createOfferLoanInstruction({
+            program,
+            lenderValueTokenAccount: new PublicKey(
+              'H6Y4G44iopxh9iC5f4hg7WuELysGZo7A91xk1EKV7yZ1'
+            ),
+            valueMint: new PublicKey(
+              'So11111111111111111111111111111111111111112'
+            ),
+            principalLamports: new BN(
+              parseFloat(offerAmount) * LAMPORTS_PER_SOL
+            ),
+          })
+
+        // Add the loan offer instruction to the transaction
+        offerLoanTransaction.add(instruction)
+        // Add loan signer
+        signers.push(loanKeypair)
+      }
+
+      const signature = await sendTransaction(
+        offerLoanTransaction,
+        provider.connection,
+        {
+          signers,
+        }
+      )
+      console.log('Transaction sent!', signature)
+
+      // Check if the transaction was successful
+      await waitTransactionConfirmation(signature)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const placeOffer2 = async () => {
+    const provider = createAnchorProvider(publicKey)
+    const sharkyClient = createSharkyClient(provider)
+
+    const { program } = sharkyClient
+
+    const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
       program,
       orderBookPubKey: orderBook.pubKey,
     })
 
-    if (!orderBook) {
-      console.error(`No orderbook found with pubkey ${orderBook.pubKey}`)
-      onClose()
-    }
+    const { offeredLoans, sig } = await orderBookInfo.offerLoan({
+      program,
+      principalLamports: 0.01 * LAMPORTS_PER_SOL,
+      onTransactionUpdate: console.dir,
+    })
 
-    setPlacingOffer(false)
+    console.log(offeredLoans, sig)
   }
 
   const onChangeOfferAmount = (event) => {
     const { name, value } = event.target
     const VALID_INPUT_FORMAT = /^(\d*(\.(\d{1,2})?)?)$/
 
+    clearErrors()
+
     if (VALID_INPUT_FORMAT.test(value)) {
-      setValue(name, value, {
-        shouldDirty: true,
-      })
+      if (parseFloat(value) < 999999 || value === '') {
+        setValue(name, value, {
+          shouldDirty: true,
+        })
+      }
     }
   }
 
@@ -80,7 +231,11 @@ const LendOfferModal = () => {
             />
           </div>
           <FormProvider {...methods}>
-            <div className="modal relative flex flex-col rounded-t-[1.25rem] bg-[#191C20] px-[2rem] pb-[1.5rem] pt-[5.8rem] text-white shadow-lg xl:min-w-[500px]">
+            <div
+              className={`modal duration-400 relative flex flex-col rounded-t-[1.25rem] transition-colors ease-in-out ${
+                isSuccess ? 'bg-[#022628]' : 'bg-[#191C20]'
+              } px-[2rem] pb-[1.5rem] pt-[5.8rem] text-white shadow-lg xl:w-[500px]`}
+            >
               <div className="absolute right-10 top-10">
                 <button onClick={onClose}>
                   <Image
@@ -92,11 +247,22 @@ const LendOfferModal = () => {
                   />
                 </button>
               </div>
-              <div className="flex w-full justify-center">
-                <h1 className="text-[2.1rem] font-bold">
-                  {orderBook?.collectionName}
-                </h1>
-              </div>
+              <motion.div
+                key={isSuccess}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                className="flex w-full justify-center"
+              >
+                {isSuccess ? (
+                  <h1 className="text-[2.1rem] font-bold">SUCCESS!</h1>
+                ) : (
+                  <h1 className="text-[2.1rem] font-bold">
+                    {orderBook?.collectionName}
+                  </h1>
+                )}
+              </motion.div>
               <div className="mt-8 flex w-full justify-between text-xl">
                 <p>APY%</p>
                 <p>Duration</p>
@@ -109,7 +275,7 @@ const LendOfferModal = () => {
               </div>
               <div className="my-8 border border-white opacity-10" />
               <div className="flex w-full flex-col justify-between xl:flex-row">
-                <div className="flex flex-col">
+                <div className="flex flex-1 flex-col">
                   <p className="text-xl">Offer Amount</p>
                   <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
                     <Image
@@ -125,21 +291,34 @@ const LendOfferModal = () => {
                           value: true,
                           message: 'Offer amount is required.',
                         },
+                        min: {
+                          value: 0.01,
+                          message:
+                            'Please input an offer amount not less than 0.01.',
+                        },
+                        max: {
+                          value: balance,
+                          message: `Please input an offer amount not more than ${toCurrencyFormat(
+                            balance ? balance : 0
+                          )}.`,
+                        },
                       })}
                       className="bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
                       type="text"
                       id="offerAmount"
                       value={watch('offerAmount')}
                       onChange={(event) => onChangeOfferAmount(event)}
-                      // value={offerAmount}
+                      onFocus={() => {
+                        setIsSuccess(false)
+                      }}
                     />
                   </div>
                   {errors?.offerAmount?.message && (
-                    <p className="mb-2 text-xl text-red-500">
+                    <span className="mb-2 w-auto break-words text-xl text-red-500">
                       {errors?.offerAmount?.message}
-                    </p>
+                    </span>
                   )}
-                  <div className="flex items-center">
+                  <div className="mb-6 flex items-center xl:mb-0">
                     <p className="mr-2 text-xl text-[#747E92]">Best offer:</p>
                     <Image
                       className="h-[1.6rem] w-[1.6rem]"
@@ -149,11 +328,11 @@ const LendOfferModal = () => {
                       alt=""
                     />
                     <p className="ml-1 mr-2 text-xl text-[#747E92]">
-                      {orderBook?.bestOfferSol}
+                      {bestOffer}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col xl:ml-8">
+                <div className="flex flex-1 flex-col xl:ml-8">
                   <p className="text-xl">Total Interest</p>
                   <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
                     <Image
@@ -175,23 +354,42 @@ const LendOfferModal = () => {
               <div className="mt-6 flex flex-col justify-between xl:flex-row xl:items-center">
                 <p className="mb-4 text-xl xl:mb-0">Number of Offers</p>
                 <div className="flex">
-                  <button className="h-24 w-24 rounded rounded-2xl border border-[#747E92] text-[1.6rem] font-bold text-[#747E92]">
-                    1
-                  </button>
-                  <button className="ml-6 h-24 w-24 rounded rounded-2xl border border-[#747E92] text-[1.6rem] font-bold text-[#747E92]">
-                    2
-                  </button>
-                  <button className="ml-6 h-24 w-24 rounded rounded-2xl border border-[#747E92] text-[1.6rem] font-bold text-[#747E92]">
-                    3
-                  </button>
-                  <button className="ml-6 h-24 w-24 rounded rounded-2xl border border-[#747E92] text-[1.6rem] font-bold text-[#747E92]">
-                    4
-                  </button>
+                  {Array.from({ length: MAX_OFFERS }).map((_value, index) => (
+                    <button
+                      className={mergeClasses(
+                        index > 0 && 'ml-6',
+                        'h-24',
+                        'w-24',
+                        'rounded rounded-2xl',
+                        'border',
+                        numLoanOffers === index + 1
+                          ? 'border-[#62E3DD]'
+                          : 'border-[#747E92]',
+                        'text-[1.6rem]',
+                        'font-bold',
+                        numLoanOffers === index + 1
+                          ? 'text-[#62E3DD]'
+                          : 'text-[#747E92',
+                        'hover:border-[#62E3DD]',
+                        'transition duration-200 ease-in-out hover:border-[1px]'
+                      )}
+                      key={index}
+                      onClick={() => {
+                        setNumLoanOffers(index + 1)
+
+                        if (isSuccess) {
+                          setIsSuccess(false)
+                        }
+                      }}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
                 </div>
               </div>
               <div className="my-8 border border-white opacity-10" />
               <div className="flex justify-between">
-                <p className="text-xl">Total</p>
+                <p className="text-2xl">Total</p>
                 <div className="flex">
                   <Image
                     className="h-[1.6rem] w-[1.6rem]"
@@ -200,11 +398,15 @@ const LendOfferModal = () => {
                     height={16}
                     alt=""
                   />
-                  <p className="ml-2 text-xl">9.30</p>
+                  <p className="ml-2 text-2xl">
+                    {toCurrencyFormat(
+                      parseFloat(watch('offerAmount')) * numLoanOffers
+                    )}
+                  </p>
                 </div>
               </div>
               <div className="mt-4 flex justify-between">
-                <p className="text-xl">You have</p>
+                <p className="text-2xl">You have</p>
                 <div className="flex">
                   <Image
                     src="/images/svgs/sol.svg"
@@ -212,17 +414,29 @@ const LendOfferModal = () => {
                     height={16}
                     alt=""
                   />
-                  <p className="ml-2 text-xl text-[#747E92]">9.30</p>
+                  <p className="ml-2 text-2xl">
+                    {toCurrencyFormat(balance ? balance : 0)}
+                  </p>
                 </div>
               </div>
               <div className="mt-4 flex w-full justify-center">
                 <button
                   type="button"
                   className="flex items-center justify-center rounded rounded-xl border-2 border-white bg-gradient-to-b from-[#61D9EB] to-[#63EDD0] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-[#15181B]"
-                  disabled={placingOffer}
+                  disabled={
+                    isSubmitting ||
+                    errors?.offerAmount?.message !== undefined ||
+                    balance === null
+                  }
+                  onClick={handleSubmit(placeOffer)}
+                  // onClick={() => setIsSuccess((prevState) => !prevState)}
                 >
-                  <span>Place Offer</span>
-                  {placingOffer && (
+                  <span>
+                    {numLoanOffers === 1
+                      ? 'Place Offer'
+                      : `Place ${numLoanOffers} Offers`}
+                  </span>
+                  {isSubmitting && (
                     <svg
                       aria-hidden="true"
                       className="ml-2 mr-2 h-7 w-7 animate-spin fill-white"
@@ -242,6 +456,18 @@ const LendOfferModal = () => {
                   )}
                 </button>
               </div>
+              {txLink && (
+                <div className="flex w-full justify-center">
+                  <Link
+                    href={txLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 text-[1.4rem] underline"
+                  >
+                    View your last transaction on Solana FM
+                  </Link>
+                </div>
+              )}
               <p className="mt-10 w-full text-center text-[1.4rem] text-[#747E92]">
                 Offers can be revoked at any time up until it is taken by a
                 borrower.
