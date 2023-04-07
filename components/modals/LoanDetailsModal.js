@@ -125,7 +125,7 @@ const LoanDetailsModal = () => {
         className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex flex items-center justify-center font-inter md:h-auto"
       >
         <Overlay onClose={onClose} />
-        <div className="modal relative flex w-4/5 flex-col rounded-[1.25rem] bg-[#191C20] pt-6 text-white shadow-lg lg:h-auto lg:w-auto lg:min-w-[500px]">
+        <div className="modal relative flex w-full flex-col rounded-[1.25rem] bg-[#191C20] pt-6 text-white shadow-lg md:w-4/5 lg:h-auto lg:w-auto lg:min-w-[500px]">
           <div className="flex w-full justify-center">
             <span className="text-[1.5rem] font-medium">
               {loanDetails?.collectionName}
