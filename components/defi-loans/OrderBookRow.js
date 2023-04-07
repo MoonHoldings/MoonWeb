@@ -6,6 +6,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
+import { setOrderBook } from 'redux/reducers/sharkifyLendSlice'
 
 const OrderBookRow = ({ orderBook, onClickRow }) => {
   const dispatch = useDispatch()
@@ -78,6 +79,14 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
             type="button"
             className="rounded-xl border border-[#61D9EB] from-[#61D9EB] to-[#63EDD0] px-7 py-1 text-[1.3rem] text-[#61D9EB] hover:border-[#f0f6f0] hover:bg-gradient-to-b hover:text-[#15181B]"
             onClick={() => {
+              dispatch(
+                setOrderBook({
+                  ...orderBook,
+                  bestOfferSol: toCurrencyFormat(bestOfferSol),
+                  apy: `${Math.floor(apy)}%`,
+                  duration: `${Math.floor(duration)}d`,
+                })
+              )
               dispatch(changeLendOfferModalOpen(true))
             }}
           >

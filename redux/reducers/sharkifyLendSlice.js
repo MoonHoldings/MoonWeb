@@ -20,6 +20,7 @@ const initialState = {
   pageSize: 20,
   search: '',
   loanDetails: null,
+  orderBook: null,
 }
 
 const sharkifyLendSlice = createSlice({
@@ -49,6 +50,9 @@ const sharkifyLendSlice = createSlice({
     setLoanDetails(state, action) {
       state.loanDetails = action.payload
     },
+    setOrderBook(state, action) {
+      state.orderBook = action.payload
+    },
     setSortOption(state, action) {
       if (state.sortOption !== action.payload) {
         state.sortOrder = SortOrder.DESC
@@ -68,6 +72,7 @@ export const {
   nextPage,
   search,
   setLoanDetails,
+  setOrderBook,
   setSortOption,
 } = sharkifyLendSlice.actions
 

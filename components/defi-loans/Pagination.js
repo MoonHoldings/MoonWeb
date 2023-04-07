@@ -22,6 +22,26 @@ const Pagination = ({ totalItems }) => {
         className={mergeClasses(
           'flex',
           'h-14',
+          'px-5',
+          'mr-4',
+          'items-center',
+          'justify-center',
+          'rounded-sm',
+          'border',
+          'border-[#434343]',
+          'text-xl',
+          pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
+        )}
+        onClick={() => dispatch(changePage(1))}
+        disabled={pageIndex === 0}
+      >
+        First Page
+      </button>
+      <button
+        type="button"
+        className={mergeClasses(
+          'flex',
+          'h-14',
           'w-14',
           'mr-4',
           'items-center',
@@ -116,7 +136,7 @@ const Pagination = ({ totalItems }) => {
           'flex',
           'h-14',
           'w-14',
-          'ml-4',
+          'mx-4',
           'items-center',
           'justify-center',
           'rounded-sm',
@@ -137,6 +157,26 @@ const Pagination = ({ totalItems }) => {
           width="8"
           height="8"
         />
+      </button>
+      <button
+        type="button"
+        className={mergeClasses(
+          'flex',
+          'h-14',
+          'px-5',
+          'mr-4',
+          'items-center',
+          'justify-center',
+          'rounded-sm',
+          'border',
+          'border-[#434343]',
+          'text-xl',
+          pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
+        )}
+        onClick={() => dispatch(changePage(lastPage))}
+        disabled={currentPage === lastPage}
+      >
+        Last Page
       </button>
     </div>
   )
