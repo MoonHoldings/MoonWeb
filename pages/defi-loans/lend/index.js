@@ -17,8 +17,10 @@ import OrderBookTable from 'components/defi-loans/OrderBookTable'
 
 import {
   dataStreamFilters,
-  SharkyEventStream,
   StreamClient,
+  SharkyEventStream,
+  CreateStreamsRequest,
+  RestClient,
 } from '@hellomoon/api'
 import { HELLO_MOON_KEY } from 'app/constants/api'
 
@@ -32,26 +34,69 @@ const Lend = ({ orderBooks }) => {
   useEffect(() => {
     dispatch(setOrderBooks(orderBooks))
 
-    // const stream = new SharkyEventStream({
+    // const sharkyStream = new SharkyEventStream({
     //   target: {
     //     targetType: 'WEBSOCKET',
     //   },
-    //   filters: {
-    //     eventType: dataStreamFilters.enum.equals('OfferLoan'),
-    //   },
+    //   filters: {},
     // })
 
-    // const client = new StreamClient(HELLO_MOON_KEY)
-    // client
-    //   .subscribe(stream.subscriptionId, (data) => {
-    //     // An array of data dependent on what you are subscribed to
+    // const streamClient = new StreamClient(HELLO_MOON_KEY)
+
+    // streamClient
+    //   .connect((data) => {
+    //     // A fallback message catcher.  This shouldn't fire, but can be used for system messages come through
     //     console.log(data)
     //   })
-    //   .then((disconnect) => {
-    //     // Disconnect after 10 seconds, setTimeout is optional.
-    //     setTimeout(disconnect, 10000)
-    //   })
+    //   .then(
+    //     (disconnect) => {
+    //       const unsubscribe = streamClient.subscribe(
+    //         'c9a29fc2-50cf-40bf-a199-fe4571dfcd19',
+    //         (data) => {
+    //           // An array of streamed events
+    //           console.log(data)
+    //         }
+    //       )
+    //     },
+    //     (err) => {
+    //       // Handle error
+    //       console.log(err)
+    //     }
+    //   )
     //   .catch(console.error)
+    // const websocket = require('websocket')
+    // var WebSocketClient = require('websocket').w3cwebsocket
+    // const client = new WebSocketClient('wss://kiki-stream.hellomoon.io')
+
+    // client.onopen = function () {
+    //   console.log('WebSocket Client Connected')
+    // }
+
+    // client.onmessage = function (message) {
+    //   console.log(message)
+    // }
+
+    // client.on('connect', (connection) => {
+    //   connection.on('message', (message) => {
+    //     if (!message || message.type !== 'utf8') return
+    //     const data = JSON.parse(message.utf8Data)
+    //     if (data === 'You have successfully subscribed') {
+    //       console.log('You have successfully subscribed')
+    //     }
+
+    //     // do logic under here
+    //   })
+
+    //   connection.sendUTF(
+    //     JSON.stringify({
+    //       action: 'subscribe',
+    //       apiKey: HELLO_MOON_KEY,
+    //       subscriptionId: '',
+    //     })
+    //   )
+    // })
+
+    // client.connect('wss://kiki-stream.hellomoon.io')
   }, [orderBooks, dispatch])
 
   useEffect(() => {

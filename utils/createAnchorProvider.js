@@ -1,7 +1,7 @@
 import { AnchorProvider } from '@project-serum/anchor'
 
 import { Connection, Keypair } from '@solana/web3.js'
-import { RPC_URL } from 'app/constants/api'
+import { RPC_URL, HELLO_MOON_KEY } from 'app/constants/api'
 
 const createAnchorProvider = () => {
   const provider = new AnchorProvider(
