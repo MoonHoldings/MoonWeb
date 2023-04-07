@@ -328,7 +328,7 @@ const LendOfferModal = () => {
                       alt=""
                     />
                     <p className="ml-1 mr-2 text-xl text-[#747E92]">
-                      {bestOffer}
+                      {orderBook?.bestOfferSol}
                     </p>
                   </div>
                 </div>
@@ -351,7 +351,7 @@ const LendOfferModal = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-6 flex flex-col justify-between xl:flex-row xl:items-center">
+              <div className="mt-4 flex flex-col justify-between xl:flex-row xl:items-center">
                 <p className="mb-4 text-xl xl:mb-0">Number of Offers</p>
                 <div className="flex">
                   {Array.from({ length: MAX_OFFERS }).map((_value, index) => (
