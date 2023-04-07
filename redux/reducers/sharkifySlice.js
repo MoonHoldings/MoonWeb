@@ -3,6 +3,7 @@ import { AXIOS_CONFIG_HELLO_MOON_KEY, HELLO_MOON_URL } from 'app/constants/api'
 import createAnchorProvider from 'utils/createAnchorProvider'
 import collectionNames from 'utils/collectionNames.json'
 import axios from 'axios'
+import sharkyClient from 'utils/sharkyClient'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
@@ -50,8 +51,6 @@ const sharkifySlice = createSlice({
 })
 
 export const fetchLoans = createAsyncThunk('sharkify/fetchLoans', async () => {
-  const provider = createAnchorProvider()
-  const sharkyClient = createSharkyClient(provider)
   const { program } = sharkyClient
 
   let loans = []
@@ -122,8 +121,6 @@ export const fetchLoans = createAsyncThunk('sharkify/fetchLoans', async () => {
 export const fetchNftList = createAsyncThunk(
   'sharkify/fetchNftList',
   async () => {
-    const provider = createAnchorProvider()
-    const sharkyClient = createSharkyClient(provider)
     const { program } = sharkyClient
 
     const collectionNames = await sharkyClient.fetchAllNftLists({ program })
@@ -161,8 +158,6 @@ export const fetchOrderBooks = createAsyncThunk(
     const { pageIndex, pageSize } = getState().sharkifyLend
     const currentOrderBooks = sharkifyState.orderBooks
 
-    const provider = createAnchorProvider()
-    const sharkyClient = createSharkyClient(provider)
     const { program } = sharkyClient
 
     let orderBooks = (await sharkyClient.fetchAllOrderBooks({ program })).map(
