@@ -503,8 +503,14 @@ const LendOfferModal = () => {
       >
         <Overlay onClose={onClose} />
         <div className="relative flex flex-col justify-center md:block">
-          <div className="absolute left-1/2 z-[99] mr-3 hidden h-[8rem] w-[8rem] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full border border-black bg-white md:flex">
-            {collectionImage ? (
+          {collectionImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              className="absolute left-1/2 z-[99] mr-3 hidden h-[8rem] w-[8rem] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full border border-black bg-white md:flex"
+            >
               <Image
                 className={mergeClasses(
                   'h-full',
@@ -519,21 +525,8 @@ const LendOfferModal = () => {
                 unoptimized
                 style={{ objectFit: 'cover' }}
               />
-            ) : (
-              <Image
-                className={mergeClasses(
-                  'h-[4rem]',
-                  'w-[4rem]',
-                  'rounded-full',
-                  'border'
-                )}
-                src={'/images/svgs/moon-holdings-logo-black.svg'}
-                width={0}
-                height={0}
-                alt=""
-              />
-            )}
-          </div>
+            </motion.div>
+          )}
           <FormProvider {...methods}>
             <div
               className={`modal duration-400 relative flex flex-col rounded-t-[1.25rem] transition-colors ease-in-out ${
