@@ -85,6 +85,8 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
                   bestOfferSol: toCurrencyFormat(bestOfferSol),
                   apy: `${Math.floor(apy)}%`,
                   duration: `${Math.floor(duration)}d`,
+                  durationNumber: Math.floor(duration),
+                  apyPercent: Math.floor(apy),
                 })
               )
               dispatch(changeLendOfferModalOpen(true))

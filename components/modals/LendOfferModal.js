@@ -1,25 +1,25 @@
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
 import { FormProvider, useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import createAnchorProvider, { connection } from 'utils/createAnchorProvider'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { createSharkyClient } from '@sharkyfi/client'
-import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
-import { BN } from '@project-serum/anchor'
+
 import mergeClasses from 'utils/mergeClasses'
-import Link from 'next/link'
 
 const MAX_OFFERS = 4
 
 const LendOfferModal = () => {
   const dispatch = useDispatch()
 
-  const { publicKey, sendTransaction } = useWallet()
+  const { publicKey } = useWallet()
+  const wallet = useWallet()
 
   const { lendOfferModalOpen } = useSelector((state) => state.util)
   const { orderBook } = useSelector((state) => state.sharkifyLend)
@@ -28,6 +28,7 @@ const LendOfferModal = () => {
   const [numLoanOffers, setNumLoanOffers] = useState(1)
   const [bestOffer, setBestOffer] = useState(0)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [failMessage, setFailMessage] = useState(null)
   const [txLink, setTxLink] = useState(null)
 
   const methods = useForm({
@@ -58,7 +59,7 @@ const LendOfferModal = () => {
       }
 
       // async function getBestOffer() {
-      //   const provider = createAnchorProvider(publicKey)
+      //   const provider = createAnchorProvider(wallet)
       //   const sharkyClient = createSharkyClient(provider)
       //   const { program } = sharkyClient
 
@@ -89,7 +90,7 @@ const LendOfferModal = () => {
   }
 
   const waitTransactionConfirmation = async (tx) => {
-    const provider = createAnchorProvider(publicKey)
+    const provider = createAnchorProvider(wallet)
 
     const confirmedTransaction = await provider.connection.confirmTransaction(
       { signature: tx },
@@ -97,86 +98,15 @@ const LendOfferModal = () => {
     )
 
     if (confirmedTransaction.value.err) {
-      throw new Error(`Transaction failed: ${confirmedTransaction.value.err}`)
+      setFailMessage(`Transaction failed: ${confirmedTransaction.value.err}`)
     }
-
-    console.log(`Transaction successful: ${tx}`)
 
     setIsSuccess(true)
     setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
   }
 
   const placeOffer = async () => {
-    const { offerAmount } = getValues()
-
-    const provider = createAnchorProvider(publicKey)
-    const sharkyClient = createSharkyClient(provider)
-
-    const { program } = sharkyClient
-
-    try {
-      const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
-        program,
-        orderBookPubKey: orderBook.pubKey,
-      })
-
-      if (!orderBookInfo) {
-        console.error(`No orderbook found with pubkey ${orderBook.pubKey}`)
-        onClose()
-      }
-
-      const { blockhash, lastValidBlockHeight } =
-        await provider.connection.getLatestBlockhash('finalized')
-
-      const offerLoanTransaction = new Transaction({
-        blockhash,
-        feePayer: publicKey,
-        lastValidBlockHeight,
-      })
-
-      const signers = []
-
-      // Loop over the number of loan offers and create an instruction for each one
-      for (let i = 0; i < numLoanOffers; i++) {
-        // Create a loan offer instruction
-        const { instruction, loanKeypair } =
-          await orderBookInfo.createOfferLoanInstruction({
-            program,
-            lenderValueTokenAccount: new PublicKey(
-              'H6Y4G44iopxh9iC5f4hg7WuELysGZo7A91xk1EKV7yZ1'
-            ),
-            valueMint: new PublicKey(
-              'So11111111111111111111111111111111111111112'
-            ),
-            principalLamports: new BN(
-              parseFloat(offerAmount) * LAMPORTS_PER_SOL
-            ),
-          })
-
-        // Add the loan offer instruction to the transaction
-        offerLoanTransaction.add(instruction)
-        // Add loan signer
-        signers.push(loanKeypair)
-      }
-
-      const signature = await sendTransaction(
-        offerLoanTransaction,
-        provider.connection,
-        {
-          signers,
-        }
-      )
-      console.log('Transaction sent!', signature)
-
-      // Check if the transaction was successful
-      await waitTransactionConfirmation(signature)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const placeOffer2 = async () => {
-    const provider = createAnchorProvider(publicKey)
+    const provider = createAnchorProvider(wallet)
     const sharkyClient = createSharkyClient(provider)
 
     const { program } = sharkyClient
@@ -186,13 +116,19 @@ const LendOfferModal = () => {
       orderBookPubKey: orderBook.pubKey,
     })
 
-    const { offeredLoans, sig } = await orderBookInfo.offerLoan({
-      program,
-      principalLamports: 0.01 * LAMPORTS_PER_SOL,
-      onTransactionUpdate: console.dir,
-    })
+    try {
+      const { offeredLoans, sig } = await orderBookInfo.offerLoan({
+        program,
+        principalLamports: 0.01 * LAMPORTS_PER_SOL,
+        onTransactionUpdate: console.dir,
+        count: numLoanOffers,
+      })
 
-    console.log(offeredLoans, sig)
+      // Check if the transaction was successful
+      await waitTransactionConfirmation(sig)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const onChangeOfferAmount = (event) => {
@@ -208,6 +144,14 @@ const LendOfferModal = () => {
         })
       }
     }
+  }
+
+  const calculateInterest = (amount, duration, apy) => {
+    const dailyInterestRate = Math.pow(1 + apy / 100, 1 / 365) - 1
+    const finalAmount = amount * Math.pow(1 + dailyInterestRate, duration / 365)
+    const interest = finalAmount - amount
+
+    return toCurrencyFormat(interest ? interest : 0)
   }
 
   return (
@@ -345,7 +289,11 @@ const LendOfferModal = () => {
                     <input
                       className="ml-4 bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
                       type="text"
-                      value={'0.00'}
+                      value={calculateInterest(
+                        parseFloat(watch('offerAmount')),
+                        orderBook?.durationNumber,
+                        orderBook?.apyPercent
+                      )}
                       disabled
                     />
                   </div>
@@ -429,7 +377,6 @@ const LendOfferModal = () => {
                     balance === null
                   }
                   onClick={handleSubmit(placeOffer)}
-                  // onClick={() => setIsSuccess((prevState) => !prevState)}
                 >
                   <span>
                     {numLoanOffers === 1
@@ -466,6 +413,11 @@ const LendOfferModal = () => {
                   >
                     View your last transaction on Solana FM
                   </Link>
+                </div>
+              )}
+              {failMessage && (
+                <div className="flex w-full justify-center text-red-500">
+                  {failMessage}
                 </div>
               )}
               <p className="mt-10 w-full text-center text-[1.4rem] text-[#747E92]">
