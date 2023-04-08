@@ -65,66 +65,51 @@ const LendOfferModal = () => {
 
   useEffect(() => {
     if (lendOfferModalOpen && publicKey && orderBook) {
-      const getBalance = async () => {
-        if (!publicKey) return
-
-        const balance = await connection.getBalance(publicKey)
-        setBalance(balance / LAMPORTS_PER_SOL)
-      }
-
-      const getHelloMoonId = async () => {
-        setFetchingFloorPrice(true)
-
-        try {
-          const id = await fetchHelloMoonCollectionIds(orderBook?.nftMint)
-          const helloMoonId = id?.data[0]?.helloMoonCollectionId ?? null
-
-          setHelloMoonId(helloMoonId)
-
-          if (!helloMoonId) {
-            setFetchingFloorPrice(false)
-          }
-        } catch (error) {
-          console.log(error)
-        }
-      }
-      // async function getBestOffer() {
-      //   const provider = createAnchorProvider(wallet)
-      //   const sharkyClient = createSharkyClient(provider)
-      //   const { program } = sharkyClient
-
-      //   const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
-      //     program,
-      //     orderBookPubKey: orderBook.pubKey,
-      //   })
-
-      //   console.log('getBestOffer', orderBookInfo)
-
-      //   const { offered } = orderBookInfo.createOfferLoanInstruction
-      //   const bestOffer = toCurrencyFormat(
-      //     offered?.data?.principalLamports.toNumber() / LAMPORTS_PER_SOL
-      //   )
-
-      //   setBestOffer(bestOffer)
-      // }
-
       getBalance()
-      getHelloMoonId()
       getCollectionImage()
+      getFloorPrice()
       // getBestOffer()
     }
   }, [lendOfferModalOpen, publicKey, orderBook])
 
-  useEffect(() => {
+  // async function getBestOffer() {
+  //   const provider = createAnchorProvider(wallet)
+  //   const sharkyClient = createSharkyClient(provider)
+  //   const { program } = sharkyClient
+
+  //   const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
+  //     program,
+  //     orderBookPubKey: orderBook.pubKey,
+  //   })
+
+  //   console.log('getBestOffer', orderBookInfo)
+
+  //   const { offered } = orderBookInfo.createOfferLoanInstruction
+  //   const bestOffer = toCurrencyFormat(
+  //     offered?.data?.principalLamports.toNumber() / LAMPORTS_PER_SOL
+  //   )
+
+  //   setBestOffer(bestOffer)
+  // }
+
+  const getBalance = async () => {
+    if (!publicKey) return
+
+    const balance = await connection.getBalance(publicKey)
+    setBalance(balance / LAMPORTS_PER_SOL)
+  }
+
+  const getFloorPrice = async () => {
+    setFetchingFloorPrice(true)
+
+    const id = await fetchHelloMoonCollectionIds(orderBook?.nftMint)
+    const helloMoonId = id?.data[0]?.helloMoonCollectionId ?? null
+
     if (helloMoonId) {
-      getFloorPrice(helloMoonId)
+      const floorPrice = await fetchFloorPrice(helloMoonId)
+      setFloorPrice(floorPrice?.floorPriceLamports ?? null)
     }
-  }, [helloMoonId])
 
-  const getFloorPrice = async (id) => {
-    const floorPrice = await fetchFloorPrice(id)
-
-    setFloorPrice(floorPrice?.floorPriceLamports ?? null)
     setFetchingFloorPrice(false)
   }
 
