@@ -234,7 +234,7 @@ const LendOfferModal = () => {
             <div
               className={`modal duration-400 relative flex flex-col rounded-t-[1.25rem] transition-colors ease-in-out ${
                 isSuccess ? 'bg-[#022628]' : 'bg-[#191C20]'
-              } px-[2rem] pb-[1.5rem] pt-[5.8rem] text-white shadow-lg xl:w-[500px]`}
+              } px-[2rem] pb-[1.5rem] pt-[5.8rem] text-white shadow-lg`}
             >
               <div className="absolute right-10 top-10">
                 <button onClick={onClose}>
@@ -275,9 +275,9 @@ const LendOfferModal = () => {
               </div>
               <div className="my-8 border border-white opacity-10" />
               <div className="flex w-full flex-col justify-between xl:flex-row">
-                <div className="flex flex-1 flex-col">
+                <div className="flex w-full flex-col xl:w-1/2">
                   <p className="text-xl">Offer Amount</p>
-                  <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
+                  <div className="mb-[1rem] mt-4 flex items-center rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
                     <Image
                       className="h-[1.6rem] w-[1.6rem]"
                       src="/images/svgs/sol.svg"
@@ -303,7 +303,7 @@ const LendOfferModal = () => {
                           )}.`,
                         },
                       })}
-                      className="bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
+                      className="ml-4 bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
                       type="text"
                       id="offerAmount"
                       value={watch('offerAmount')}
@@ -332,9 +332,9 @@ const LendOfferModal = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-1 flex-col xl:ml-8">
+                <div className="flex w-full flex-col xl:ml-8 xl:w-1/2">
                   <p className="text-xl">Total Interest</p>
-                  <div className="mb-[1rem] mt-4 grid grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
+                  <div className="mb-[1rem] mt-4 flex items-center rounded-[0.8rem] border border-[#0C0D0F] bg-[#0C0D0F] px-[1.6rem] py-[1.1rem] text-[1.4rem] transition duration-200 ease-in-out focus-within:border-[1px] focus-within:border-[#62E3DD]">
                     <Image
                       className="h-[1.6rem] w-[1.6rem]"
                       src="/images/svgs/sol.svg"
@@ -343,7 +343,7 @@ const LendOfferModal = () => {
                       alt=""
                     />
                     <input
-                      className="bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
+                      className="ml-4 bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
                       type="text"
                       value={'0.00'}
                       disabled
