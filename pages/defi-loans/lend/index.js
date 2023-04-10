@@ -142,7 +142,14 @@ export async function getServerSideProps() {
   const { program } = sharkyClient
 
   let orderBooks = (await sharkyClient.fetchAllOrderBooks({ program })).map(
-    ({ feeAuthority, pubKey, orderBookType, loanTerms, apy }) => ({
+    ({
+      feeAuthority,
+      feePermillicentage,
+      pubKey,
+      orderBookType,
+      loanTerms,
+      apy,
+    }) => ({
       apy,
       pubKey: pubKey.toBase58(),
       orderBookType: {
@@ -166,6 +173,7 @@ export async function getServerSideProps() {
         },
       },
       feeAuthority: feeAuthority.toBase58(),
+      feePermillicentage,
     })
   )
 

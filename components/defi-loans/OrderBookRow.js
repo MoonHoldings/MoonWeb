@@ -13,6 +13,21 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
   const { loansByOrderBook } = useSelector((state) => state.sharkify)
   const { publicKey } = useWallet()
 
+  function apyAfterFee(aprBeforeFee, feePermillicentage, durationSeconds) {
+    const interestRatioBeforeFee =
+      Math.exp(
+        (durationSeconds / (365 * 24 * 60 * 60)) * (aprBeforeFee / 100)
+      ) - 1
+    const interestRatioAfterFee =
+      interestRatioBeforeFee * (1 - feePermillicentage / 100_000)
+    const aprAfterFee =
+      (Math.log(1 + interestRatioAfterFee) /
+        (durationSeconds / (365 * 24 * 60 * 60))) *
+      100
+    const apyAfterFee = 100 * (Math.exp(aprAfterFee / 100) - 1)
+    return apyAfterFee
+  }
+
   const totalPoolSol =
     loansByOrderBook?.[orderBook.pubKey]?.offeredLoansPool / LAMPORTS_PER_SOL
 
@@ -20,8 +35,14 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
     loansByOrderBook?.[orderBook.pubKey]?.latestOfferedLoans?.[0]
       ?.principalLamports / LAMPORTS_PER_SOL || 0
 
-  const apr = orderBook?.apy?.fixed?.apy / 1000
-  const apy = 100 * (Math.exp(apr / 100) - 1)
+  const aprBeforeFee = orderBook?.apy?.fixed?.apy / 1000
+  const durationSeconds = orderBook?.loanTerms?.fixed?.terms?.time?.duration
+
+  const apy = apyAfterFee(
+    aprBeforeFee,
+    orderBook?.feePermillicentage,
+    durationSeconds
+  )
   const duration = orderBook?.loanTerms?.fixed?.terms?.time?.duration / 86400
 
   return (
@@ -57,7 +78,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
         className="px-6 py-6 text-[#11AF22]"
         onClick={() => onClickRow(orderBook)}
       >
-        {Math.floor(apy)}%
+        {Math.ceil(apy)}%
       </td>
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         {Math.floor(duration)}d
@@ -83,10 +104,10 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
                 setOrderBook({
                   ...orderBook,
                   bestOfferSol: toCurrencyFormat(bestOfferSol),
-                  apy: `${Math.floor(apy)}%`,
+                  apy: `${Math.ceil(apy)}%`,
                   duration: `${Math.floor(duration)}d`,
                   durationNumber: Math.floor(duration),
-                  apyPercent: Math.floor(apy),
+                  apyPercent: Math.ceil(apy),
                 })
               )
               dispatch(changeLendOfferModalOpen(true))

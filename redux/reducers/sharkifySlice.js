@@ -161,7 +161,14 @@ export const fetchOrderBooks = createAsyncThunk(
     const { program } = sharkyClient
 
     let orderBooks = (await sharkyClient.fetchAllOrderBooks({ program })).map(
-      ({ feeAuthority, pubKey, orderBookType, loanTerms, apy }) => ({
+      ({
+        feeAuthority,
+        pubKey,
+        orderBookType,
+        loanTerms,
+        apy,
+        feePermillicentage,
+      }) => ({
         apy,
         pubKey: pubKey.toBase58(),
         orderBookType: {
@@ -185,6 +192,7 @@ export const fetchOrderBooks = createAsyncThunk(
           },
         },
         feeAuthority: feeAuthority.toBase58(),
+        feePermillicentage,
       })
     )
 

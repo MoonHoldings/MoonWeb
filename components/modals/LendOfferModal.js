@@ -72,25 +72,24 @@ const LendOfferModal = () => {
     }
   }, [lendOfferModalOpen, publicKey, orderBook])
 
-  // async function getBestOffer() {
-  //   const provider = createAnchorProvider(wallet)
-  //   const sharkyClient = createSharkyClient(provider)
-  //   const { program } = sharkyClient
+  async function getBestOffer() {
+    const provider = createAnchorProvider(wallet)
+    const sharkyClient = createSharkyClient(provider)
+    const { program } = sharkyClient
 
-  //   const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
-  //     program,
-  //     orderBookPubKey: orderBook.pubKey,
-  //   })
+    const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
+      program,
+      orderBookPubKey: orderBook.pubKey,
+    })
 
-  //   console.log('getBestOffer', orderBookInfo)
+    console.log('orderBook', orderBookInfo)
 
-  //   const { offered } = orderBookInfo.createOfferLoanInstruction
-  //   const bestOffer = toCurrencyFormat(
-  //     offered?.data?.principalLamports.toNumber() / LAMPORTS_PER_SOL
-  //   )
+    const bestLoan = await orderBookInfo.fetchBestLoan(program)
 
-  //   setBestOffer(bestOffer)
-  // }
+    console.log(bestLoan)
+
+    setBestOffer(bestOffer)
+  }
 
   const getBalance = async () => {
     if (!publicKey) return
