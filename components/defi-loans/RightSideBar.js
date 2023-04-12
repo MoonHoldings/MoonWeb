@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
-
+import { useLazyQuery } from '@apollo/client'
 import {
   changeWalletsModalOpen,
   changeLendRightSidebarOpen,
 } from 'redux/reducers/utilSlice'
+import mergeClasses from 'utils/mergeClasses'
+import { MY_OFFERS } from 'utils/queries'
+import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -15,6 +19,24 @@ const RightSideBar = () => {
   const { disconnect, publicKey } = useWallet()
   const { addAddressStatus } = useSelector((state) => state.wallet)
   const { lendRightSideBarOpen } = useSelector((state) => state.util)
+
+  const [getMyOffers, { loading, error, data }] = useLazyQuery(MY_OFFERS)
+
+  useEffect(() => {
+    if (publicKey) {
+      getMyOffers({
+        variables: {
+          args: {
+            filter: {
+              lenderWallet: publicKey.toBase58(),
+              type: 'offered',
+            },
+          },
+        },
+        pollInterval: 20000,
+      })
+    }
+  }, [publicKey, getMyOffers])
 
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
@@ -57,6 +79,96 @@ const RightSideBar = () => {
     )
   }
 
+  const renderTabs = () => {
+    return (
+      <div className="mt-5 rounded-[30px] bg-[#060606] p-4">
+        <button
+          type="button"
+          className={mergeClasses(
+            'inline-flex',
+            'items-center',
+            'justify-center',
+            'rounded-[30px]',
+            'border',
+            'border-transparent',
+            'py-1.5',
+            'px-4',
+            'text-[1.4rem]',
+            'text-white',
+            'focus:outline-none',
+            'bg-[#3C434B]'
+          )}
+        >
+          Offers
+        </button>
+        <button
+          type="button"
+          className={mergeClasses(
+            'inline-flex',
+            'items-center',
+            'justify-center',
+            'rounded-[30px]',
+            'border',
+            'border-transparent',
+            'py-1.5',
+            'px-4',
+            'text-[1.4rem]',
+            'text-white',
+            'focus:outline-none',
+            'bg-[#060606]'
+          )}
+        >
+          Loans
+        </button>
+      </div>
+    )
+  }
+
+  const renderOffers = () => {
+    return (
+      <div className="mt-8 flex w-full flex-col">
+        {data?.getLoans?.data?.map((offer, index) => (
+          <div className="mb-6 flex items-center px-3" key={index}>
+            <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
+              <Image
+                className="h-full w-full rounded-full"
+                src={offer?.orderBook?.nftList?.collectionImage}
+                unoptimized
+                style={{ objectFit: 'cover' }}
+                width={0}
+                height={0}
+                alt=""
+              />
+            </div>
+            <div className="ml-5 flex flex-1 flex-col">
+              <div className="text-[1.6rem]">
+                {offer?.orderBook?.nftList?.collectionName}
+              </div>
+              <div className="mt-2 flex text-[1.2rem]">
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
+                  <p>
+                    {toShortCurrencyFormat(
+                      offer?.principalLamports / LAMPORTS_PER_SOL
+                    )}
+                  </p>
+                  <p>Offer</p>
+                </div>
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
+                  <p>0.80</p>
+                  <p>Interest</p>
+                </div>
+                <div className="flex flex-1 flex-col items-center">
+                  <p>200%</p>
+                  <p>APY</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <motion.div
       className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-[calc(100vh-3rem)]"
@@ -73,7 +185,7 @@ const RightSideBar = () => {
           exit={{ x: '100%' }}
           transition={{ duration: 0.6, type: 'spring' }}
         >
-          <div className="main-buttons relative mt-0 flex h-full flex-col items-center bg-[rgb(25,28,32)] p-[1.5rem] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] lg:mt-0">
+          <div className="main-buttons relative mt-0 flex h-full flex-col items-center overflow-y-scroll bg-[rgb(25,28,32)] p-[1.5rem] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] lg:mt-0">
             <div className="mb-6 flex w-full justify-end md:mb-0">
               <button
                 className="left-[-3rem] mt-5 rounded-2xl border-[0.5px] border-[#62EAD2] bg-[#2A2D31] p-5 md:fixed"
@@ -90,16 +202,27 @@ const RightSideBar = () => {
             <ul className="dashboard-menu w-full text-[1.4rem]">
               {renderConnectWallet()}
             </ul>
-            <div className="flex h-full flex-col items-center justify-center">
-              <Image
-                src={'/images/svgs/no-wallet.svg'}
-                width="90"
-                height="90"
-                alt="plus sign"
-              />
-              <span className="mt-4 text-[1.4rem] opacity-30">
-                No Wallet Connected
-              </span>
+            <div
+              className={mergeClasses(
+                'flex h-full w-full flex-col items-center',
+                !publicKey && 'justify-center'
+              )}
+            >
+              {!publicKey && (
+                <>
+                  <Image
+                    src={'/images/svgs/no-wallet.svg'}
+                    width="90"
+                    height="90"
+                    alt="plus sign"
+                  />
+                  <span className="mt-4 text-[1.4rem] opacity-30">
+                    No Wallet Connected
+                  </span>
+                </>
+              )}
+              {publicKey && renderTabs()}
+              {publicKey && renderOffers()}
             </div>
           </div>
         </motion.div>

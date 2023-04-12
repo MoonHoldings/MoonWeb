@@ -19,6 +19,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.11",
     "@hellomoon/api": "^1.14.0",
     "@project-serum/anchor": "^0.26.0",
     "@pythnetwork/client": "^2.15.0",
@@ -36,6 +37,7 @@
     "flowbite": "^1.6.4",
     "flowbite-react": "^0.4.2",
     "framer-motion": "^9.0.0",
+    "graphql": "^16.6.0",
     "next": "latest",
     "next-redux-wrapper": "^8.1.0",
     "next-themes": "^0.2.1",

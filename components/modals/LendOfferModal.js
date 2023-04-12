@@ -121,11 +121,11 @@ const LendOfferModal = () => {
       AXIOS_CONFIG_HELLO_MOON_KEY
     )
 
-    const nftImage = mintInfo?.data[0]?.nftCollectionMint
+    const nftMint = mintInfo?.data[0]?.nftCollectionMint
 
-    if (nftImage) {
+    if (nftMint) {
       const { data: metadata } = await axios.get(
-        `https://api.shyft.to/sol/v1/nft/read?network=mainnet-beta&token_address=${nftImage}`,
+        `https://api.shyft.to/sol/v1/nft/read?network=mainnet-beta&token_address=${nftMint}`,
         AXIOS_CONFIG_SHYFT_KEY
       )
 
