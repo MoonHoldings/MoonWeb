@@ -211,9 +211,12 @@ const RightSideBar = () => {
     return (
       <Tooltip
         content={REFRESH_WALLETS_TITLE}
-        className="rounded-xl py-[1.5rem] px-[2rem]"
+        className="rounded-xl px-[2rem] py-[1.5rem]"
         placement="bottom"
         theme={{
+          arrow: {
+            base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+          },
           content: 'text-[1.3rem]',
           target:
             'hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] text-white px-[1.6rem] hover:border-[#62EAD2]',
@@ -360,13 +363,18 @@ const RightSideBar = () => {
           <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
           <div className="total-value flex h-[8.6rem] flex-col items-end">
             <Tooltip
-              className="rounded-xl py-[1.5rem] px-[2rem]"
+              className="rounded-xl px-[2rem] py-[1.5rem]"
               content={
                 <span className="flex h-full items-center text-[2rem]">
                   {getPortfolioValueUsd()}
                 </span>
               }
               placement="left"
+              theme={{
+                arrow: {
+                  base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+                },
+              }}
               trigger={
                 isShortCurrencyFormat(getShortPortfolioValueUsd())
                   ? 'hover'
@@ -379,13 +387,18 @@ const RightSideBar = () => {
               />
             </Tooltip>
             <Tooltip
-              className="rounded-xl py-[1.5rem] px-[2rem]"
+              className="rounded-xl px-[2rem] py-[1.5rem]"
               content={
                 <span className="flex h-full items-center text-[2rem]">
                   {getPortfolioValue()}
                 </span>
               }
               placement="left"
+              theme={{
+                arrow: {
+                  base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
+                },
+              }}
               trigger={
                 isShortCurrencyFormat(getShortPortfolioValue()) ? 'hover' : null
               }
@@ -510,14 +523,14 @@ const RightSideBar = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
+      className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
       initial={{ x: '101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Desktop View = buttons section */}
-      <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mt-4 md:mb-[1.6rem] md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
+      <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
         {MENUS[currentMenu]}
       </div>
 
