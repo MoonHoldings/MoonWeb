@@ -9,6 +9,7 @@ const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
 const initialState = {
   orderBooks: null,
+  totalOrderBooks: null,
   loansByOrderBook: null,
   nftList: null,
   fetchOrderBooksStatus: 'idle',
@@ -21,7 +22,8 @@ const sharkifySlice = createSlice({
   initialState,
   reducers: {
     setOrderBooks(state, action) {
-      state.orderBooks = action.payload
+      state.orderBooks = action.payload.orderBooks
+      state.totalOrderBooks = action.payload.total
     },
   },
   extraReducers(builder) {

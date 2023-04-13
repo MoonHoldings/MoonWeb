@@ -23,3 +23,21 @@ export const MY_OFFERS = gql`
     }
   }
 `
+
+export const GET_ORDER_BOOKS = gql`
+  query GetOrderBooks($args: GetOrderBooksArgs) {
+    getOrderBooks(args: $args) {
+      count
+      data {
+        id
+        duration
+        apyAfterFee
+        collectionName
+        collectionImage
+        totalPool
+        bestOffer
+        floorPriceSol
+      }
+    }
+  }
+`

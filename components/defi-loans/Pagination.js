@@ -7,7 +7,7 @@ import {
 } from 'redux/reducers/sharkifyLendSlice'
 import mergeClasses from 'utils/mergeClasses'
 
-const Pagination = ({ totalItems }) => {
+const Pagination = ({ totalItems, disabled = false }) => {
   const dispatch = useDispatch()
   const { pageIndex, pageSize } = useSelector((state) => state.sharkifyLend)
   const { orderBooks } = useSelector((state) => state.sharkify)
@@ -33,7 +33,7 @@ const Pagination = ({ totalItems }) => {
           pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
         )}
         onClick={() => dispatch(changePage(1))}
-        disabled={pageIndex === 0}
+        disabled={pageIndex === 0 || disabled}
       >
         First Page
       </button>
@@ -52,7 +52,7 @@ const Pagination = ({ totalItems }) => {
           pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
         )}
         onClick={() => dispatch(previousPage())}
-        disabled={pageIndex === 0}
+        disabled={pageIndex === 0 || disabled}
       >
         <Image
           className="rotate-180 transform"
@@ -144,8 +144,8 @@ const Pagination = ({ totalItems }) => {
           'border-[#434343]',
           lastPage === currentPage ? 'bg-[#262626]' : 'bg-[#141414]'
         )}
-        onClick={() => dispatch(nextPage({ length: orderBooks.length }))}
-        disabled={lastPage === currentPage}
+        onClick={() => dispatch(nextPage({ length: totalItems }))}
+        disabled={lastPage === currentPage || disabled}
       >
         <Image
           src={
@@ -174,7 +174,7 @@ const Pagination = ({ totalItems }) => {
           pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
         )}
         onClick={() => dispatch(changePage(lastPage))}
-        disabled={currentPage === lastPage}
+        disabled={currentPage === lastPage || disabled}
       >
         Last Page
       </button>

@@ -13,37 +13,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
   const { loansByOrderBook } = useSelector((state) => state.sharkify)
   const { publicKey } = useWallet()
 
-  function apyAfterFee(aprBeforeFee, feePermillicentage, durationSeconds) {
-    const interestRatioBeforeFee =
-      Math.exp(
-        (durationSeconds / (365 * 24 * 60 * 60)) * (aprBeforeFee / 100)
-      ) - 1
-    const interestRatioAfterFee =
-      interestRatioBeforeFee * (1 - feePermillicentage / 100_000)
-    const aprAfterFee =
-      (Math.log(1 + interestRatioAfterFee) /
-        (durationSeconds / (365 * 24 * 60 * 60))) *
-      100
-    const apyAfterFee = 100 * (Math.exp(aprAfterFee / 100) - 1)
-    return apyAfterFee
-  }
-
-  const totalPoolSol =
-    loansByOrderBook?.[orderBook.pubKey]?.offeredLoansPool / LAMPORTS_PER_SOL
-
-  const bestOfferSol =
-    loansByOrderBook?.[orderBook.pubKey]?.latestOfferedLoans?.[0]
-      ?.principalLamports / LAMPORTS_PER_SOL || 0
-
-  const aprBeforeFee = orderBook?.apy?.fixed?.apy / 1000
-  const durationSeconds = orderBook?.loanTerms?.fixed?.terms?.time?.duration
-
-  const apy = apyAfterFee(
-    aprBeforeFee,
-    orderBook?.feePermillicentage,
-    durationSeconds
-  )
-  const duration = orderBook?.loanTerms?.fixed?.terms?.time?.duration / 86400
+  const duration = orderBook?.duration / 86400
 
   return (
     <tr className="cursor-pointer bg-transparent text-[1.5rem] font-medium hover:bg-[#013C40]">
@@ -52,7 +22,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
       </td>
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         <div className="flex items-center">
-          {toCurrencyFormat(totalPoolSol)}{' '}
+          {toCurrencyFormat(orderBook.totalPool)}{' '}
           <Image
             className="ml-3 h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/sol.svg"
@@ -64,7 +34,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
       </td>
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         <div className="flex items-center">
-          {toCurrencyFormat(bestOfferSol)}
+          {toCurrencyFormat(orderBook.bestOffer)}
           <Image
             className="ml-3 h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/sol.svg"
@@ -78,7 +48,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
         className="px-6 py-6 text-[#11AF22]"
         onClick={() => onClickRow(orderBook)}
       >
-        {Math.ceil(apy)}%
+        {orderBook.apyAfterFee}%
       </td>
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         {Math.floor(duration)}d

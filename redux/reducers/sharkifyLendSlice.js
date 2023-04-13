@@ -9,17 +9,17 @@ export const SortOptions = {
 }
 
 export const SortOrder = {
-  ASC: 'asc',
-  DESC: 'desc',
+  ASC: 'ASC',
+  DESC: 'DESC',
 }
 
-export const PAGE_SIZE = 50
+export const SHARKY_PAGE_SIZE = 50
 
 const initialState = {
   sortOption: SortOptions.NAME,
   sortOrder: SortOrder.ASC,
   pageIndex: 0,
-  pageSize: PAGE_SIZE,
+  pageSize: SHARKY_PAGE_SIZE,
   search: '',
   loanDetails: null,
   revokeLoan: null,

@@ -169,14 +169,14 @@ const RightSideBar = () => {
               </div>
             </div>
             <button
-              class="absolute left-0 top-0 h-full w-full rounded-lg border border-red-500 bg-red-600 bg-opacity-50 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
+              className="absolute left-0 top-0 h-full w-full rounded-lg border border-red-500 bg-red-600 bg-opacity-50 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
               onClick={() => {
                 dispatch(setRevokeLoan(offer))
                 dispatch(changeRevokeOfferModalOpen(true))
               }}
             >
-              <div class="flex h-full items-center justify-center">
-                <span class="text-[1.8rem] font-medium text-white">
+              <div className="flex h-full items-center justify-center">
+                <span className="text-[1.8rem] font-medium text-white">
                   Revoke Offer
                 </span>
               </div>

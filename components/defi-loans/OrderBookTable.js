@@ -1,11 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import {
-  SortOptions,
-  SortOrder,
-  setSortOption,
-} from 'redux/reducers/sharkifyLendSlice'
+import { SortOrder, setSortOption } from 'redux/reducers/sharkifyLendSlice'
 import OrderBookRow from './OrderBookRow'
 import mergeClasses from 'utils/mergeClasses'
 import { useDispatch, useSelector } from 'react-redux'
@@ -20,87 +15,21 @@ const COLUMNS = [
   'Action',
 ]
 
-const OrderBookTable = ({ onClickRow }) => {
+const OrderBookTable = ({ onClickRow, loading }) => {
   const dispatch = useDispatch()
-  const {
-    orderBooks,
-    loansByOrderBook,
-    fetchOrderBooksStatus,
-    fetchLoansStatus,
-  } = useSelector((state) => state.sharkify)
-  const { pageIndex, pageSize, search, sortOption, sortOrder } = useSelector(
-    (state) => state.sharkifyLend
-  )
 
-  const isLoading =
-    fetchOrderBooksStatus === 'loading' || fetchLoansStatus === 'loading'
+  const { orderBooks, totalOrderBooks } = useSelector((state) => state.sharkify)
+  const { sortOption, sortOrder } = useSelector((state) => state.sharkifyLend)
 
-  const sortOrderBooks = (orderBooks) => {
-    if (!orderBooks) return
-    const sortedOrderBooks = [...orderBooks]
-    if (!loansByOrderBook) return sortedOrderBooks
-
-    return sortedOrderBooks.sort((a, b) => {
-      switch (sortOption) {
-        case SortOptions.TOTAL_POOL:
-          const [totalPoolSolA, totalPoolSolB] = [a, b].map(
-            (book) =>
-              loansByOrderBook[book.pubKey]?.offeredLoansPool /
-                LAMPORTS_PER_SOL || 0
-          )
-          return sortOrder === SortOrder.ASC
-            ? totalPoolSolA - totalPoolSolB
-            : totalPoolSolB - totalPoolSolA
-        case SortOptions.BEST_OFFER:
-          const [bestOfferSolA, bestOfferSolB] = [a, b].map(
-            (book) =>
-              loansByOrderBook[book.pubKey]?.latestOfferedLoans[0]
-                ?.principalLamports / LAMPORTS_PER_SOL || 0
-          )
-          return sortOrder === SortOrder.ASC
-            ? bestOfferSolA - bestOfferSolB
-            : bestOfferSolB - bestOfferSolA
-        case SortOptions.APY:
-          const [aprA, aprB] = [a.apy?.fixed?.apy, b.apy?.fixed?.apy]
-          return sortOrder === SortOrder.ASC ? aprA - aprB : aprB - aprA
-        case SortOptions.DURATION:
-          const [durationA, durationB] = [
-            a.loanTerms?.fixed?.terms?.time?.duration,
-            b.loanTerms?.fixed?.terms?.time?.duration,
-          ]
-          return sortOrder === SortOrder.ASC
-            ? durationA - durationB
-            : durationB - durationA
-        default:
-          return sortOrder === SortOrder.ASC
-            ? a.collectionName.localeCompare(b.collectionName)
-            : b.collectionName.localeCompare(a.collectionName)
-      }
-    })
-  }
-
-  let filteredOrderBooks = sortOrderBooks(orderBooks)
-
-  if (search) {
-    filteredOrderBooks = filteredOrderBooks?.filter((orderBook) =>
-      orderBook?.collectionName?.toLowerCase().includes(search.toLowerCase())
-    )
-  }
-
-  const totalItems = filteredOrderBooks?.length
-
-  filteredOrderBooks = filteredOrderBooks?.slice(
-    pageIndex,
-    pageIndex + pageSize
-  )
+  const totalItems = totalOrderBooks
 
   return (
     <>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination totalItems={totalItems} />
+        <Pagination totalItems={totalItems} disabled={loading} />
       </div>
-      <div className={mergeClasses(!isLoading && 'overflow-x-auto')}>
-        {isLoading ? (
+      <div className={mergeClasses(!loading && 'overflow-x-auto')}>
+        {loading ? (
           <div className="mt-12 flex w-full justify-center">
             <svg
               aria-hidden="true"
@@ -153,7 +82,7 @@ const OrderBookTable = ({ onClickRow }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredOrderBooks?.map((orderBook, index) => (
+              {orderBooks?.map((orderBook, index) => (
                 <OrderBookRow
                   orderBook={orderBook}
                   onClickRow={onClickRow}
@@ -165,7 +94,7 @@ const OrderBookTable = ({ onClickRow }) => {
         )}
       </div>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination totalItems={totalItems} />
+        <Pagination totalItems={totalItems} disabled={loading} />
       </div>
     </>
   )
