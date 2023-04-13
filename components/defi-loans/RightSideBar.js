@@ -7,18 +7,23 @@ import { useLazyQuery } from '@apollo/client'
 import {
   changeWalletsModalOpen,
   changeLendRightSidebarOpen,
+  changeRevokeOfferModalOpen,
 } from 'redux/reducers/utilSlice'
 import mergeClasses from 'utils/mergeClasses'
 import { MY_OFFERS } from 'utils/queries'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { setRevokeLoan } from 'redux/reducers/sharkifyLendSlice'
+import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
 
   const { disconnect, publicKey } = useWallet()
   const { addAddressStatus } = useSelector((state) => state.wallet)
-  const { lendRightSideBarOpen } = useSelector((state) => state.util)
+  const { lendRightSideBarOpen, revokeOfferModalOpen } = useSelector(
+    (state) => state.util
+  )
 
   const [getMyOffers, { loading, error, data }] = useLazyQuery(MY_OFFERS)
 
@@ -33,7 +38,7 @@ const RightSideBar = () => {
             },
           },
         },
-        pollInterval: 20000,
+        pollInterval: 500,
       })
     }
   }, [publicKey, getMyOffers])
@@ -128,7 +133,7 @@ const RightSideBar = () => {
     return (
       <div className="mt-8 flex w-full flex-col">
         {data?.getLoans?.data?.map((offer, index) => (
-          <div className="mb-6 flex items-center px-3" key={index}>
+          <div className="relative mb-6 flex items-center px-3" key={index}>
             <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
               <Image
                 className="h-full w-full rounded-full"
@@ -144,7 +149,7 @@ const RightSideBar = () => {
               <div className="text-[1.6rem]">
                 {offer?.orderBook?.nftList?.collectionName}
               </div>
-              <div className="mt-2 flex text-[1.2rem]">
+              <div className="mt-2 flex text-[1.25rem]">
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
                   <p>
                     {toShortCurrencyFormat(
@@ -158,11 +163,24 @@ const RightSideBar = () => {
                   <p>Interest</p>
                 </div>
                 <div className="flex flex-1 flex-col items-center">
-                  <p>200%</p>
+                  <p>{offer?.orderBook?.apyAfterFee}%</p>
                   <p>APY</p>
                 </div>
               </div>
             </div>
+            <button
+              class="absolute left-0 top-0 h-full w-full rounded-lg border border-red-500 bg-red-600 bg-opacity-50 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
+              onClick={() => {
+                dispatch(setRevokeLoan(offer))
+                dispatch(changeRevokeOfferModalOpen(true))
+              }}
+            >
+              <div class="flex h-full items-center justify-center">
+                <span class="text-[1.8rem] font-medium text-white">
+                  Revoke Offer
+                </span>
+              </div>
+            </button>
           </div>
         ))}
       </div>

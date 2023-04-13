@@ -13,13 +13,16 @@ export const SortOrder = {
   DESC: 'desc',
 }
 
+export const PAGE_SIZE = 50
+
 const initialState = {
   sortOption: SortOptions.NAME,
   sortOrder: SortOrder.ASC,
   pageIndex: 0,
-  pageSize: 20,
+  pageSize: PAGE_SIZE,
   search: '',
   loanDetails: null,
+  revokeLoan: null,
   orderBook: null,
 }
 
@@ -50,6 +53,9 @@ const sharkifyLendSlice = createSlice({
     setLoanDetails(state, action) {
       state.loanDetails = action.payload
     },
+    setRevokeLoan(state, action) {
+      state.revokeLoan = action.payload
+    },
     setOrderBook(state, action) {
       state.orderBook = action.payload
     },
@@ -72,6 +78,7 @@ export const {
   nextPage,
   search,
   setLoanDetails,
+  setRevokeLoan,
   setOrderBook,
   setSortOption,
 } = sharkifyLendSlice.actions

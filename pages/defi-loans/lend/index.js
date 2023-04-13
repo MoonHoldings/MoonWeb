@@ -13,6 +13,7 @@ import { createSharkyClient } from '@sharkyfi/client'
 import collectionNames from 'utils/collectionNames.json'
 import { setLoanDetails } from 'redux/reducers/sharkifyLendSlice'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
+import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 import OrderBookTable from 'components/defi-loans/OrderBookTable'
 
 import {
@@ -119,6 +120,7 @@ const Lend = ({ orderBooks }) => {
   return (
     <SidebarsLayout>
       <LendOfferModal />
+      <RevokeOfferModal />
       <LoanDetailsModal />
       <div className="pb-[4rem] pt-[2rem] md:order-2">
         <Header

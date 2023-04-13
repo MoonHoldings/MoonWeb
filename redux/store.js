@@ -32,7 +32,7 @@ const makeStore = () => {
 
     const persistConfig = {
       key: 'root',
-      whitelist: ['auth', 'util', 'wallet', 'crypto', 'sharkifyLend'],
+      whitelist: ['auth', 'wallet', 'crypto', 'sharkifyLend'],
       storage,
     }
 

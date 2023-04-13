@@ -12,8 +12,11 @@ export const MY_OFFERS = gql`
           nftList {
             collectionImage
             collectionName
+            floorPriceSol
+            nftMint
           }
-          apy
+          apyAfterFee
+          duration
         }
         state
       }

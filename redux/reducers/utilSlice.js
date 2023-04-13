@@ -7,6 +7,7 @@ const initialState = {
   addWalletModalOpen: false,
   walletsModalOpen: false,
   lendOfferModalOpen: false,
+  revokeOfferModalOpen: false,
   loanDetailsModalOpen: false,
 }
 
@@ -32,6 +33,9 @@ const utilSlice = createSlice({
     changeLendOfferModalOpen(state, action) {
       state.lendOfferModalOpen = action.payload
     },
+    changeRevokeOfferModalOpen(state, action) {
+      state.revokeOfferModalOpen = action.payload
+    },
     changeLoanDetailsModalOpen(state, action) {
       state.loanDetailsModalOpen = action.payload
     },
@@ -45,6 +49,7 @@ export const {
   changeAddWalletModalOpen,
   changeWalletsModalOpen,
   changeLendOfferModalOpen,
+  changeRevokeOfferModalOpen,
   changeLoanDetailsModalOpen,
 } = utilSlice.actions
 

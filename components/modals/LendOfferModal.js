@@ -139,6 +139,7 @@ const LendOfferModal = () => {
     setHelloMoonId(null)
     setFloorPrice(null)
     setCollectionImage(null)
+    setIsSuccess(false)
     reset()
   }
 
@@ -567,7 +568,7 @@ const LendOfferModal = () => {
                 </div>
               )}
               {failMessage && (
-                <div className="flex w-full justify-center text-red-500">
+                <div className="mt-4 flex w-full justify-center text-[1.6rem] text-red-500">
                   {failMessage}
                 </div>
               )}
