@@ -30,6 +30,7 @@ export const GET_ORDER_BOOKS = gql`
       count
       data {
         id
+        pubKey
         duration
         apyAfterFee
         collectionName

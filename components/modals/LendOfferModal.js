@@ -45,6 +45,7 @@ const LendOfferModal = () => {
     handleSubmit,
     reset,
     clearErrors,
+    getValues,
   } = methods
 
   useEffect(() => {
@@ -64,7 +65,6 @@ const LendOfferModal = () => {
   const onClose = () => {
     dispatch(changeLendOfferModalOpen(false))
     setNumLoanOffers(1)
-    setHelloMoonId(null)
     setIsSuccess(false)
     reset()
   }
@@ -79,10 +79,11 @@ const LendOfferModal = () => {
 
     if (confirmedTransaction.value.err) {
       setFailMessage(`Transaction failed: ${confirmedTransaction.value.err}`)
+    } else {
+      getBalance()
+      setIsSuccess(true)
+      setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
     }
-
-    setIsSuccess(true)
-    setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
   }
 
   const placeOffer = async () => {
@@ -96,10 +97,12 @@ const LendOfferModal = () => {
       orderBookPubKey: orderBook.pubKey,
     })
 
+    const { offerAmount } = getValues()
+
     try {
       const { sig } = await orderBookInfo.offerLoan({
         program,
-        principalLamports: 0.01 * LAMPORTS_PER_SOL,
+        principalLamports: parseFloat(offerAmount) * LAMPORTS_PER_SOL,
         onTransactionUpdate: console.dir,
         count: numLoanOffers,
       })
@@ -234,7 +237,7 @@ const LendOfferModal = () => {
             alt=""
           />
           <p className="ml-1 mr-2 text-xl text-[#747E92]">
-            {orderBook?.bestOfferSol}
+            {toCurrencyFormat(orderBook?.bestOffer)}
           </p>
         </div>
       </div>
