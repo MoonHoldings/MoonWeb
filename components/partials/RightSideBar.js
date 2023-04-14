@@ -389,7 +389,7 @@ const RightSideBar = () => {
             <Tooltip
               className="rounded-xl px-[2rem] py-[1.5rem]"
               content={
-                <span className="flex h-full items-center text-[2rem]">
+                <span className="flex h-full items-center text-[2rem] text-white">
                   {getPortfolioValue()}
                 </span>
               }
@@ -403,7 +403,7 @@ const RightSideBar = () => {
                 isShortCurrencyFormat(getShortPortfolioValue()) ? 'hover' : null
               }
             >
-              <div className="flex items-center text-[3.2rem] xl:text-[2.8rem]">
+              <div className="flex items-center text-[3.2rem] text-white xl:text-[2.8rem]">
                 {getShortPortfolioValue()}
                 <Image
                   className="ml-2 inline h-[2rem] w-[2rem] xl:h-[2rem] xl:w-[2rem]"
