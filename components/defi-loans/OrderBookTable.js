@@ -23,6 +23,40 @@ const OrderBookTable = ({ onClickRow, loading }) => {
 
   const totalItems = totalOrderBooks
 
+  const renderColumns = () => {
+    return COLUMNS.map((column, index) => (
+      <th
+        key={index}
+        className="bg-[#1F2126] px-6 py-6 text-left text-[1.3rem] font-normal"
+      >
+        {column !== 'Action' ? (
+          <button
+            className="flex items-center"
+            onClick={() => dispatch(setSortOption(column))}
+          >
+            {column}
+            <Image
+              className={mergeClasses(
+                'ml-4',
+                sortOrder === SortOrder.DESC &&
+                  sortOption === column &&
+                  'rotate-180 transform'
+              )}
+              src={`/images/svgs/table-sort-arrow${
+                sortOption === column ? '-active' : ''
+              }.svg`}
+              alt=""
+              width="10"
+              height="10"
+            />
+          </button>
+        ) : (
+          'Action'
+        )}
+      </th>
+    ))
+  }
+
   return (
     <>
       <div className="my-8 flex w-full items-center justify-end">
@@ -51,35 +85,7 @@ const OrderBookTable = ({ onClickRow, loading }) => {
         ) : (
           <table className="w-full table-auto">
             <thead>
-              <tr>
-                {COLUMNS.map((column, index) => (
-                  <th
-                    key={index}
-                    className="bg-[#1F2126] px-6 py-6 text-left text-[1.3rem] font-normal"
-                  >
-                    <button
-                      className="flex items-center"
-                      onClick={() => dispatch(setSortOption(column))}
-                    >
-                      {column}
-                      <Image
-                        className={mergeClasses(
-                          'ml-4',
-                          sortOrder === SortOrder.DESC &&
-                            sortOption === column &&
-                            'rotate-180 transform'
-                        )}
-                        src={`/images/svgs/table-sort-arrow${
-                          sortOption === column ? '-active' : ''
-                        }.svg`}
-                        alt=""
-                        width="10"
-                        height="10"
-                      />
-                    </button>
-                  </th>
-                ))}
-              </tr>
+              <tr>{renderColumns()}</tr>
             </thead>
             <tbody>
               {orderBooks?.map((orderBook, index) => (

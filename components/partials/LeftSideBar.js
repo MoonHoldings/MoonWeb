@@ -116,9 +116,7 @@ const LeftSideBar = () => {
             >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
-                src={`/images/svgs/calendar${
-                  router.pathname.includes('defi-loans') ? '-active' : ''
-                }.svg`}
+                src={'/images/sharky-white.png'}
                 alt="Dashboard"
                 width={25}
                 height={25}

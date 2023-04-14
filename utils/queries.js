@@ -41,3 +41,34 @@ export const GET_ORDER_BOOKS = gql`
     }
   }
 `
+
+export const GET_ORDER_BOOK_ACTIVE = gql`
+  query GetOrderBookActive($args: GetLoansArgs) {
+    getLoans(args: $args) {
+      offerCount
+      activeCount
+      totalOffers
+      totalActive
+      count
+      data {
+        principalLamports
+        start
+        state
+      }
+    }
+  }
+`
+export const GET_ORDER_BOOK_OFFERS = gql`
+  query GetOrderBookOffers($args: GetLoansArgs) {
+    getLoans(args: $args) {
+      offerCount
+      activeCount
+      totalOffers
+      totalActive
+      data {
+        principalLamports
+        offerTime
+      }
+    }
+  }
+`

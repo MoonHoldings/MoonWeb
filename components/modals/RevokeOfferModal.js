@@ -239,7 +239,7 @@ const RevokeOfferModal = () => {
             </motion.div>
           )}
           <div
-            className={`modal duration-400 relative flex w-[500px] flex-col rounded-[1.25rem] transition-colors ease-in-out ${
+            className={`modal duration-400 relative flex w-[360px] flex-col rounded-[1.25rem] transition-colors ease-in-out md:w-[420px] ${
               isSuccess ? 'bg-[#022628]' : 'bg-[#191C20]'
             } px-[2rem] pb-[2.5rem] pt-[5.8rem] text-white shadow-lg`}
           >

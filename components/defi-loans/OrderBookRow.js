@@ -18,7 +18,22 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
   return (
     <tr className="cursor-pointer bg-transparent text-[1.5rem] font-medium hover:bg-[#013C40]">
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
-        {orderBook.collectionName}
+        <div className="flex items-center">
+          <div className="flex h-[4rem] w-[4rem] items-center justify-center rounded-full bg-white">
+            {orderBook?.collectionImage && (
+              <Image
+                className="h-full w-full rounded-full"
+                src={orderBook?.collectionImage}
+                unoptimized
+                style={{ objectFit: 'cover' }}
+                width={0}
+                height={0}
+                alt=""
+              />
+            )}
+          </div>
+          <div className="ml-8">{orderBook.collectionName}</div>
+        </div>
       </td>
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         <div className="flex items-center">

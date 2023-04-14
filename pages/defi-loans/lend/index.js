@@ -13,11 +13,10 @@ import {
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 import OrderBookTable from 'components/defi-loans/OrderBookTable'
-import apolloClient from 'utils/apollo-client-ssr'
 import { GET_ORDER_BOOKS } from 'utils/queries'
 import { useLazyQuery } from '@apollo/client'
 
-const Lend = ({ getOrderBooksResponse }) => {
+const Lend = () => {
   const dispatch = useDispatch()
 
   const { loansByOrderBook } = useSelector((state) => state.sharkify)
@@ -60,23 +59,8 @@ const Lend = ({ getOrderBooksResponse }) => {
     }
   }, [data, dispatch])
 
-  useEffect(() => {
-    dispatch(
-      setOrderBooks({
-        orderBooks: getOrderBooksResponse.data,
-        total: getOrderBooksResponse.count,
-      })
-    )
-  }, [getOrderBooksResponse, dispatch])
-
   const onClickRow = (orderBook) => {
-    dispatch(
-      setLoanDetails({
-        collectionName: orderBook.collectionName,
-        loan: loansByOrderBook[orderBook.pubKey],
-      })
-    )
-
+    dispatch(setLoanDetails(orderBook.id))
     dispatch(changeLoanDetailsModalOpen(true))
   }
 
@@ -99,32 +83,6 @@ const Lend = ({ getOrderBooksResponse }) => {
       </div>
     </SidebarsLayout>
   )
-}
-
-export async function getServerSideProps() {
-  const {
-    data: { getOrderBooks: getOrderBooksResponse },
-  } = await apolloClient.query({
-    query: GET_ORDER_BOOKS,
-    variables: {
-      args: {
-        pagination: {
-          limit: SHARKY_PAGE_SIZE,
-          offset: 0,
-        },
-        sort: {
-          order: 'DESC',
-          type: 'Total Pool',
-        },
-      },
-    },
-  })
-
-  return {
-    props: {
-      getOrderBooksResponse,
-    },
-  }
 }
 
 export default Lend

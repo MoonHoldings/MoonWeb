@@ -4,20 +4,73 @@ import { motion } from 'framer-motion'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import Image from 'next/image'
+import { useEffect } from 'react'
+import { GET_ORDER_BOOK_ACTIVE, GET_ORDER_BOOK_OFFERS } from 'utils/queries'
+import { useLazyQuery } from '@apollo/client'
 
 const LoanDetailsModal = () => {
   const { loanDetailsModalOpen } = useSelector((state) => state.util)
   const { loanDetails } = useSelector((state) => state.sharkifyLend)
   const dispatch = useDispatch()
+  const [
+    getOrderBookActiveLoans,
+    { loading: loadingActiveLoans, data: activeLoans },
+  ] = useLazyQuery(GET_ORDER_BOOK_ACTIVE)
+  const [getOrderBookOffers, { loading: loadingOffers, data: offers }] =
+    useLazyQuery(GET_ORDER_BOOK_OFFERS)
+
+  console.log(activeLoans)
+
+  useEffect(() => {
+    getOrderBookActiveLoans({
+      variables: {
+        args: {
+          pagination: {
+            limit: 5,
+            offset: 0,
+          },
+          filter: {
+            type: 'taken',
+            orderBookId: loanDetails,
+          },
+          sort: {
+            order: 'DESC',
+            type: 'time',
+          },
+        },
+      },
+      pollInterval: 10000,
+    })
+  }, [loanDetails, getOrderBookActiveLoans])
+
+  useEffect(() => {
+    getOrderBookOffers({
+      variables: {
+        args: {
+          pagination: {
+            limit: 5,
+            offset: 0,
+          },
+          filter: {
+            type: 'offered',
+            orderBookId: loanDetails,
+          },
+          sort: {
+            order: 'DESC',
+            type: 'amount',
+          },
+        },
+      },
+      pollInterval: 10000,
+    })
+  }, [loanDetails, getOrderBookOffers])
 
   const onClose = () => dispatch(changeLoanDetailsModalOpen(false))
 
   const moreTakenLoansCount =
-    loanDetails?.loan?.totalTakenLoans -
-    loanDetails?.loan?.latestTakenLoans?.length
+    activeLoans?.getLoans?.activeCount - activeLoans?.getLoans?.data?.length
   const moreActiveOffersCount =
-    loanDetails?.loan?.totalOfferedLoans -
-    loanDetails?.loan?.latestOfferedLoans?.length
+    offers?.getLoans?.offerCount - offers?.getLoans?.data?.length
 
   const formatElapsedTime = (unixTime) => {
     const currentUnixTime = Math.floor(Date.now() / 1000)
@@ -51,7 +104,7 @@ const LoanDetailsModal = () => {
   }
 
   const renderTakenLoans = () => {
-    return loanDetails?.loan?.latestTakenLoans?.map((loan, index) => {
+    return activeLoans?.getLoans?.data?.map((loan, index) => {
       return (
         <div
           className="flex justify-around border-b border-b-white border-opacity-25"
@@ -70,7 +123,7 @@ const LoanDetailsModal = () => {
             </div>
             <div className="mx-6">{'>'}</div>
             <div className="flex items-center">
-              {toCurrencyFormat(loan.totalOwedLamports / LAMPORTS_PER_SOL)}
+              {toCurrencyFormat(loan.principalLamports / LAMPORTS_PER_SOL)}
               <Image
                 className="ml-3 h-[1.7rem] w-[1.7rem]"
                 src="/images/svgs/sol.svg"
@@ -81,7 +134,7 @@ const LoanDetailsModal = () => {
             </div>
           </div>
           <div className="flex flex-1 justify-center bg-[#212327] py-5 text-[1.6rem]">
-            {formatElapsedTime(loan.takenTime)}
+            {formatElapsedTime(loan.start)}
           </div>
         </div>
       )
@@ -89,7 +142,7 @@ const LoanDetailsModal = () => {
   }
 
   const renderOffers = () => {
-    return loanDetails?.loan?.latestOfferedLoans?.map((loan, index) => {
+    return offers?.getLoans?.data?.map((loan, index) => {
       return (
         <div
           className="flex justify-around border-b border-b-white border-opacity-25"
@@ -135,9 +188,7 @@ const LoanDetailsModal = () => {
             <div className="flex flex-1 justify-center text-[1.4rem]">
               Active Lenders (
               <div className="flex items-center">
-                {toCurrencyFormat(
-                  loanDetails?.loan?.takenLoansPool / LAMPORTS_PER_SOL
-                )}
+                {toCurrencyFormat(activeLoans?.getLoans?.totalActive)}
                 <Image
                   className="ml-3 h-[1.7rem] w-[1.7rem]"
                   src="/images/svgs/sol.svg"
@@ -162,9 +213,7 @@ const LoanDetailsModal = () => {
             <div className="flex flex-1 justify-center text-[1.4rem]">
               Active Offers (
               <div className="flex items-center">
-                {toCurrencyFormat(
-                  loanDetails?.loan?.offeredLoansPool / LAMPORTS_PER_SOL
-                )}
+                {toCurrencyFormat(activeLoans?.getLoans?.totalOffers)}
                 <Image
                   className="ml-3 h-[1.7rem] w-[1.7rem]"
                   src="/images/svgs/sol.svg"
