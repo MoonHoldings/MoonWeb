@@ -9,6 +9,7 @@ import { setOrderBooks } from 'redux/reducers/sharkifySlice'
 import {
   SHARKY_PAGE_SIZE,
   setLoanDetails,
+  search,
 } from 'redux/reducers/sharkifyLendSlice'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RevokeOfferModal from 'components/modals/RevokeOfferModal'
@@ -19,17 +20,24 @@ import { useLazyQuery } from '@apollo/client'
 const Lend = () => {
   const dispatch = useDispatch()
 
-  const { pageIndex, search, sortOption, sortOrder } = useSelector(
-    (state) => state.sharkifyLend
-  )
+  const {
+    pageIndex,
+    search: searchString,
+    sortOption,
+    sortOrder,
+  } = useSelector((state) => state.sharkifyLend)
   const [getOrderBooks, { loading, data }] = useLazyQuery(GET_ORDER_BOOKS)
+
+  useEffect(() => {
+    dispatch(search(''))
+  }, [])
 
   useEffect(() => {
     getOrderBooks({
       variables: {
         args: {
           filter: {
-            search,
+            search: searchString,
           },
           pagination: {
             limit: SHARKY_PAGE_SIZE,
@@ -43,7 +51,7 @@ const Lend = () => {
       },
       pollInterval: 1000,
     })
-  }, [pageIndex, sortOrder, sortOption, search, getOrderBooks])
+  }, [pageIndex, sortOrder, sortOption, searchString, getOrderBooks])
 
   useEffect(() => {
     if (data) {
@@ -77,7 +85,7 @@ const Lend = () => {
           end of the loan, plus interest. If they fail to repay, you get to keep
           the NFT."
         />
-        <Search initialValue={search} />
+        <Search onChange={(text) => dispatch(search(text))} />
         <OrderBookTable onClickRow={onClickRow} loading={loading} />
       </div>
     </SidebarsLayout>

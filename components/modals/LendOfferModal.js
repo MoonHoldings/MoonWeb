@@ -120,7 +120,11 @@ const LendOfferModal = () => {
 
     clearErrors()
 
-    if (VALID_INPUT_FORMAT.test(value)) {
+    if (value === '.') {
+      setValue(name, '0.', {
+        shouldDirty: true,
+      })
+    } else if (VALID_INPUT_FORMAT.test(value)) {
       if (parseFloat(value) < 999999 || value === '') {
         setValue(name, value, {
           shouldDirty: true,
