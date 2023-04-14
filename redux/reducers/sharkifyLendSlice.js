@@ -16,8 +16,8 @@ export const SortOrder = {
 export const SHARKY_PAGE_SIZE = 50
 
 const initialState = {
-  sortOption: SortOptions.NAME,
-  sortOrder: SortOrder.ASC,
+  sortOption: SortOptions.TOTAL_POOL,
+  sortOrder: SortOrder.DESC,
   pageIndex: 0,
   pageSize: SHARKY_PAGE_SIZE,
   search: '',

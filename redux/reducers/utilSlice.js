@@ -3,7 +3,7 @@ const { createSlice } = require('@reduxjs/toolkit')
 const initialState = {
   leftSideBarOpen: false,
   rightSideBarOpen: false,
-  lendRightSideBarOpen: true,
+  lendRightSideBarOpen: false,
   addWalletModalOpen: false,
   walletsModalOpen: false,
   lendOfferModalOpen: false,
