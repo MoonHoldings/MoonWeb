@@ -7,6 +7,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
 import { setOrderBook } from 'redux/reducers/sharkifyLendSlice'
+import TextBlink from 'components/partials/TextBlink'
 
 const OrderBookRow = ({ orderBook, onClickRow }) => {
   const dispatch = useDispatch()
@@ -37,7 +38,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
       </td>
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         <div className="flex items-center">
-          {toCurrencyFormat(orderBook.totalPool)}{' '}
+          <TextBlink text={toCurrencyFormat(orderBook.totalPool)} />{' '}
           <Image
             className="ml-3 h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/sol.svg"
@@ -49,7 +50,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
       </td>
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         <div className="flex items-center">
-          {toCurrencyFormat(orderBook.bestOffer)}
+          <TextBlink text={toCurrencyFormat(orderBook.bestOffer)} />
           <Image
             className="ml-3 h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/sol.svg"
@@ -85,16 +86,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
             type="button"
             className="rounded-xl border border-[#61D9EB] from-[#61D9EB] to-[#63EDD0] px-7 py-1 text-[1.3rem] text-[#61D9EB] hover:border-[#f0f6f0] hover:bg-gradient-to-b hover:text-[#15181B]"
             onClick={() => {
-              dispatch(
-                setOrderBook({
-                  ...orderBook,
-                  bestOfferSol: toCurrencyFormat(bestOfferSol),
-                  apy: `${Math.ceil(apy)}%`,
-                  duration: `${Math.floor(duration)}d`,
-                  durationNumber: Math.floor(duration),
-                  apyPercent: Math.ceil(apy),
-                })
-              )
+              dispatch(setOrderBook({ ...orderBook, duration }))
               dispatch(changeLendOfferModalOpen(true))
             }}
           >

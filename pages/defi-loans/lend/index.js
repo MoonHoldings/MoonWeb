@@ -19,7 +19,6 @@ import { useLazyQuery } from '@apollo/client'
 const Lend = () => {
   const dispatch = useDispatch()
 
-  const { loansByOrderBook } = useSelector((state) => state.sharkify)
   const { pageIndex, search, sortOption, sortOrder } = useSelector(
     (state) => state.sharkifyLend
   )

@@ -19,8 +19,6 @@ const LoanDetailsModal = () => {
   const [getOrderBookOffers, { loading: loadingOffers, data: offers }] =
     useLazyQuery(GET_ORDER_BOOK_OFFERS)
 
-  console.log(activeLoans)
-
   useEffect(() => {
     getOrderBookActiveLoans({
       variables: {
