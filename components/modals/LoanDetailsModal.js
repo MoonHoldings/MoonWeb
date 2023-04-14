@@ -186,7 +186,7 @@ const LoanDetailsModal = () => {
             <div className="flex flex-1 justify-center text-[1.4rem]">
               Active Lenders (
               <div className="flex items-center">
-                {toCurrencyFormat(activeLoans?.getLoans?.totalActive)}
+                {toCurrencyFormat(activeLoans?.getLoans?.totalActive ?? 0)}
                 <Image
                   className="ml-3 h-[1.7rem] w-[1.7rem]"
                   src="/images/svgs/sol.svg"
@@ -211,7 +211,7 @@ const LoanDetailsModal = () => {
             <div className="flex flex-1 justify-center text-[1.4rem]">
               Active Offers (
               <div className="flex items-center">
-                {toCurrencyFormat(activeLoans?.getLoans?.totalOffers)}
+                {toCurrencyFormat(activeLoans?.getLoans?.totalOffers ?? 0)}
                 <Image
                   className="ml-3 h-[1.7rem] w-[1.7rem]"
                   src="/images/svgs/sol.svg"
