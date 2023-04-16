@@ -5,13 +5,7 @@ import { search } from 'redux/reducers/sharkifyLendSlice'
 
 const Search = ({ onSearch, onChange, initialValue }) => {
   const dispatch = useDispatch()
-  const [searchString, setSearchString] = useState('')
-
-  useEffect(() => {
-    if (initialValue) {
-      setSearchString(initialValue)
-    }
-  }, [])
+  const [searchString, setSearchString] = useState(initialValue ?? '')
 
   const onSearchLocal = (e) => {
     e.preventDefault()
