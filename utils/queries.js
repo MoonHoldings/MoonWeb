@@ -38,6 +38,12 @@ export const GET_ORDER_BOOKS = gql`
         totalPool
         bestOffer
         floorPriceSol
+        ownedNfts {
+          name
+          image
+          mint
+          symbol
+        }
       }
     }
   }

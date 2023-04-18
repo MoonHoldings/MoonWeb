@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
+import { changeLendModalOpen } from 'redux/reducers/utilSlice'
 import { FormProvider, useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
@@ -12,16 +12,17 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { createSharkyClient } from '@sharkyfi/client'
 import mergeClasses from 'utils/mergeClasses'
+import TextBlink from 'components/partials/TextBlink'
 
 const MAX_OFFERS = 4
 
-const LendOfferModal = () => {
+const LendModal = () => {
   const dispatch = useDispatch()
 
   const { publicKey } = useWallet()
   const wallet = useWallet()
 
-  const { lendOfferModalOpen } = useSelector((state) => state.util)
+  const { lendModalOpen } = useSelector((state) => state.util)
   const { orderBook } = useSelector((state) => state.sharkifyLend)
 
   const [balance, setBalance] = useState(null)
@@ -49,10 +50,10 @@ const LendOfferModal = () => {
   } = methods
 
   useEffect(() => {
-    if (lendOfferModalOpen && publicKey) {
+    if (lendModalOpen && publicKey) {
       getBalance()
     }
-  }, [getBalance, lendOfferModalOpen, publicKey])
+  }, [getBalance, lendModalOpen, publicKey])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getBalance = async () => {
@@ -63,7 +64,7 @@ const LendOfferModal = () => {
   }
 
   const onClose = () => {
-    dispatch(changeLendOfferModalOpen(false))
+    dispatch(changeLendModalOpen(false))
     setNumLoanOffers(1)
     setIsSuccess(false)
     reset()
@@ -396,16 +397,17 @@ const LendOfferModal = () => {
         <p className="text-2xl">You have</p>
         <div className="flex">
           <Image src="/images/svgs/sol.svg" width={16} height={16} alt="" />
-          <p className="ml-2 text-2xl">
-            {toCurrencyFormat(balance ? balance : 0)}
-          </p>
+          <TextBlink
+            className="ml-2 text-2xl"
+            text={toCurrencyFormat(balance ? balance : 0)}
+          />
         </div>
       </div>
     )
   }
 
   return (
-    lendOfferModalOpen && (
+    lendModalOpen && (
       <motion.div
         initial={{ opacity: 0, scale: 1 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -512,4 +514,4 @@ const Overlay = ({ onClose }) => {
   )
 }
 
-export default LendOfferModal
+export default LendModal
