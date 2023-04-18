@@ -1,6 +1,6 @@
 import React from 'react'
 import { CRYPTO_PORTFOLIO } from 'app/constants/copy'
-import SidebarsLayout from 'components/nft/SidebarsLayout'
+import SidebarsLayout from 'components/partials/SidebarsLayout'
 import CryptoSquare from 'components/crypto/CryptoSquare'
 import { Tooltip } from 'react-tippy'
 import SingleBar from 'components/crypto/SingleBar'
