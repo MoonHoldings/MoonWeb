@@ -1,5 +1,5 @@
-import SidebarsLayout from 'components/nft/SidebarsLayout'
-import NFTCard from 'components/partials/NFTCard'
+import SidebarsLayout from 'components/partials/SidebarsLayout'
+import NFTCard from 'components/nft/NFTCard'
 import { useRouter } from 'next/router'
 import React from 'react'
 import Image from 'next/image'
