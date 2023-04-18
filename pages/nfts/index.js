@@ -6,8 +6,8 @@ import {
   changeWalletsModalOpen,
 } from 'redux/reducers/utilSlice'
 
-import Collections from 'components/partials/Collections'
-import SidebarsLayout from 'components/nft/SidebarsLayout'
+import Collections from 'components/nft/Collections'
+import SidebarsLayout from 'components/partials/SidebarsLayout'
 
 import {
   ADD_WALLET_ADDRESSES,
@@ -31,7 +31,7 @@ const Index = () => {
 
   return (
     <SidebarsLayout>
-      {allWallets.length === 0 ? (
+      {allWallets?.length === 0 ? (
         <div className="welcome-message mt-[10rem] text-[1.6rem] font-semibold text-white md:order-2 md:mt-[15rem]">
           <h1 className="text-[2.2rem] font-bold">{WELCOME_MOON_HOLDINGS}</h1>
           <p className="mb-[2rem]">{START_CONNECTING_WALLETS}</p>

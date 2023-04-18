@@ -15,6 +15,7 @@ const LeftSideBar = () => {
   }
 
   const handleClick = (url) => {
+    leftArrowClick()
     router.push(`/${url}`)
   }
 
@@ -28,7 +29,7 @@ const LeftSideBar = () => {
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Header */}
-      <div className="mt-[1rem] mb-[4.6rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
+      <div className="mb-[4.6rem] mt-[1rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
         <button
           onClick={leftArrowClick}
           id="btn-left-sidebar-arrow"
@@ -92,7 +93,9 @@ const LeftSideBar = () => {
             <button
               id="btn-nft-portfolio"
               onClick={() => handleClick('nfts')}
-              className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('nfts') ? '#62EAD2' : '#FFFFFF'
+              }]`}
             >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
@@ -102,6 +105,23 @@ const LeftSideBar = () => {
                 alt="NFTs"
               />
               NFTs
+            </button>
+          </li>
+          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+            <button
+              onClick={() => handleClick('defi-loans/lend')}
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('defi-loans') ? '#62EAD2' : '#FFFFFF'
+              }]`}
+            >
+              <Image
+                className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
+                src={'/images/sharky-white.png'}
+                alt="Dashboard"
+                width={25}
+                height={25}
+              />
+              Lend & Borrow
             </button>
           </li>
           {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">

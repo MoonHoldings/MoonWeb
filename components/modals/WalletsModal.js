@@ -25,11 +25,11 @@ const WalletsModal = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.3 }}
+      initial={{ opacity: 0, scale: 1 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.3 }}
+      exit={{ opacity: 0, scale: 1 }}
       transition={{ duration: 0.5, type: 'spring' }}
-      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center font-inter"
+      className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex items-center justify-center font-inter"
     >
       <Overlay closeWalletsModal={closeWalletsModal} />
       <div className="modal relative min-w-[28rem] rounded-[1.25rem] bg-[#191C20] p-[2rem] text-white shadow-lg xl:min-h-[28rem] xl:min-w-[40rem]">
@@ -55,7 +55,7 @@ const WalletsModal = () => {
             <button
               key={index}
               onClick={() => walletBtnClick(wallet.adapter.name)}
-              className={`flex w-full items-center justify-between border border-black bg-[#191C20] py-[1rem] px-[2rem] text-[1.5rem] ${
+              className={`flex w-full items-center justify-between border border-black bg-[#191C20] px-[2rem] py-[1rem] text-[1.5rem] ${
                 index === 0 && 'rounded-tl-[0.5rem] rounded-tr-[0.5rem]'
               } ${
                 index === wallets.length - 1 &&
@@ -93,7 +93,7 @@ const Overlay = ({ closeWalletsModal }) => {
   return (
     <div
       onClick={closeWalletsModal}
-      className="absolute top-0 left-0 right-0 bottom-0 bg-[#00000099]"
+      className="absolute bottom-0 left-0 right-0 top-0 bg-[#00000099]"
     />
   )
 }

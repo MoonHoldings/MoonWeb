@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
-import SidebarsLayout from 'components/nft/SidebarsLayout'
-import Attribute from 'components/partials/AttributeBox'
+import SidebarsLayout from 'components/partials/SidebarsLayout'
+import Attribute from 'components/nft/AttributeBox'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 

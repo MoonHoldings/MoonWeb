@@ -28,7 +28,7 @@ import {
 } from 'app/constants/copy'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
-import TextBlink from './TextBlink'
+import TextBlink from 'components/partials/TextBlink'
 import { Tooltip } from 'flowbite-react'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
