@@ -9,7 +9,7 @@ import { GENERATE_DISCORD_URL } from 'utils/queries.js'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import BannerModal from 'components/modals/BannerModal'
-import { getServerSidePropsWithAuth } from '../withAuth.js'
+import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 
 const SignUp = () => {
   const dispatch = useDispatch()

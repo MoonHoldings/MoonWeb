@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { loginUser } from 'redux/reducers/authSlice'
 import BannerModal from 'components/modals/BannerModal'
 import { isValidEmail } from 'utils/string'
-import { getServerSidePropsWithAuth } from '../withAuth.js'
+import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 
 const Login = () => {
   const dispatch = useDispatch()
