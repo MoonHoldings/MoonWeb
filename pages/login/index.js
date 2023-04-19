@@ -83,7 +83,7 @@ border border-[#50545A] px-4 py-[1.1rem]"
             <button
               onClick={login}
               disable={loading}
-              className={`primary-btn-gradient relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] text-[1.8rem] text-black ${
+              className={`relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] bg-gradient-to-b from-teal-400 to-teal-300 text-[1.8rem] text-black ${
                 loading ? 'cursor-wait opacity-50' : ''
               }`}
             >
@@ -146,7 +146,7 @@ border border-[#50545A] px-4 py-[1.1rem]"
         message={message}
         hasError={error}
         closeModal={() => {
-          setModal('', false, false)
+          setModal('', error, false)
         }}
       />
     </>

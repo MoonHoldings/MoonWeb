@@ -7,7 +7,11 @@ const BannerModal = (props) => {
         props.showModal
           ? 'transition-y-100 opacity-100'
           : 'transition-y-0 opacity-0'
-      } ${props.hasError ? 'modal-error-gradient' : 'primary-btn-gradient'}`}
+      } ${
+        props.hasError
+          ? 'bg-gradient-to-b from-red-600 to-red-500'
+          : 'bg-gradient-to-b from-teal-400 to-teal-300'
+      }`}
     >
       <div className="container mx-auto flex items-center justify-between">
         <h2 className="text-[2.2rem] font-medium">{props.message}</h2>

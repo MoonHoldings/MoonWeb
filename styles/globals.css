@@ -17,12 +17,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .primary-btn-gradient {
-    background: linear-gradient(#60d6ec, #63eecf);
-  }
-  .modal-error-gradient {
-    background: linear-gradient(#E5383B,#E05E28 );
-  }
   .primary-color {
     color: linear-gradient(#60d6ec, #63eecf);
   }

@@ -151,7 +151,7 @@ const SignUp = () => {
             <button
               onClick={register}
               disable={signingUp}
-              className={`primary-btn-gradient relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] text-[1.8rem] text-black ${
+              className={`relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] bg-gradient-to-b from-teal-400 to-teal-300 text-[1.8rem] text-black ${
                 signingUp ? 'cursor-wait opacity-50' : ''
               }`}
             >
@@ -201,7 +201,7 @@ const SignUp = () => {
           <div className="flex flex-row justify-end ">
             <button
               onClick={register}
-              className="primary-btn-gradient mx-[1.1rem] h-[5rem] w-[12.2rem] rounded-[1rem] text-[1.8rem] text-black"
+              className="mx-[1.1rem] h-[5rem] w-[12.2rem] rounded-[1rem] bg-gradient-to-b from-teal-400 to-teal-300 text-[1.8rem] text-black"
             >
               Sign Up
             </button>
@@ -250,7 +250,7 @@ const SignUp = () => {
         message={message}
         hasError={error}
         closeModal={() => {
-          setModal('', false, false)
+          setModal('', error, false)
         }}
       />
     </>
