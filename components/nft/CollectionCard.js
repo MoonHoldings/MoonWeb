@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import axios from 'axios'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { Tooltip } from 'flowbite-react'
+import { Tooltip } from 'antd'
 
 import {
   insertCurrentCollection,
@@ -156,49 +156,38 @@ const CollectionCard = ({ collection, index }) => {
         </div>
         {shouldRenderFloorPrice && (
           <div className="items-center xl:flex xl:justify-between">
-            <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
-              <Tooltip
-                className="rounded-xl px-[2rem] py-[1.5rem]"
-                content={
-                  <span className="text-[1.5rem]">{formatFloorPrice()}</span>
-                }
-                placement="bottom"
-                theme={{
-                  arrow: {
-                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-                  },
-                }}
-                trigger={
-                  isShortCurrencyFormat(formatShortFloorPrice())
-                    ? 'hover'
-                    : null
-                }
-              >
+            <Tooltip
+              color="#1F2126"
+              title={
+                <span className="text-[1.5rem]">{formatFloorPrice()}</span>
+              }
+              trigger={
+                isShortCurrencyFormat(formatShortFloorPrice()) ? 'hover' : null
+              }
+            >
+              <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
                 {renderFloorPrice()}
-              </Tooltip>
-            </div>
+              </div>
+            </Tooltip>
+
             {solUsdPrice && (
               <Tooltip
-                className="rounded-xl px-[2rem] py-[1.5rem]"
-                content={
-                  <span className="text-[1.5rem]">{formatFloorPriceUSD()}</span>
+                color="#1F2126"
+                title={
+                  <span className="text-[1.6rem]">{formatFloorPriceUSD()}</span>
                 }
-                placement="bottom"
-                theme={{
-                  arrow: {
-                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-                  },
-                }}
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUSD())
                     ? 'hover'
                     : null
                 }
               >
-                <TextBlink
-                  text={formatShortFloorPriceUSD()}
-                  className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
-                />
+                <div>
+                  <TextBlink
+                    text={formatShortFloorPriceUSD()}
+                    className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
+                  />
+                </div>
               </Tooltip>
             )}
           </div>

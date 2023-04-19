@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Tooltip } from 'flowbite-react'
+import { Tooltip } from 'antd'
 import { useDispatch } from 'react-redux'
 import { useWallet } from '@solana/wallet-adapter-react'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
@@ -26,9 +26,9 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
 
     return (
       <Tooltip
-        className="rounded-xl px-[1.6rem] py-[1.2rem]"
-        content={
-          <span className="text-[1.2rem]">
+        color="#1F2126"
+        title={
+          <span className="text-[1.35rem]">
             {noWalletConnected
               ? 'Connect your wallet'
               : noOwnedNftsInBorrow
@@ -36,12 +36,6 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
               : ''}
           </span>
         }
-        placement="auto"
-        theme={{
-          arrow: {
-            base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-          },
-        }}
         trigger={disabled ? 'hover' : null}
       >
         <button

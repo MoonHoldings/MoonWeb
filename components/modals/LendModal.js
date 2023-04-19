@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Alert } from 'flowbite-react'
+import { Alert } from 'antd'
 import { useWallet } from '@solana/wallet-adapter-react'
 import createAnchorProvider, { connection } from 'utils/createAnchorProvider'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
@@ -456,11 +456,15 @@ const LendModal = () => {
                 {renderInterest()}
               </div>
               {isOfferGreaterThanFloorPrice && (
-                <Alert color="failure" className="my-5" withBorderAccent={true}>
-                  <span className="text-[1.4rem] font-medium">
-                    This offer amount is more than the current floor price!
-                  </span>
-                </Alert>
+                <Alert
+                  className="my-5"
+                  message={
+                    <span className="text-[1.3rem]">
+                      This offer amount is more than the current floor price!
+                    </span>
+                  }
+                  type="error"
+                />
               )}
               {renderQuantityOptions()}
               <div className="my-8 border border-white opacity-10" />
