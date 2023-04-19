@@ -4,8 +4,9 @@ import { useDispatch } from 'react-redux'
 import Router from 'next/router'
 import {} from 'redux/reducers/authSlice'
 
-import { REGISTER_USER } from 'utils/mutations'
-import { useMutation } from '@apollo/client'
+import { REGISTER_USER, DISCORD_AUTH } from 'utils/mutations'
+import { GENERATE_DISCORD_URL } from 'utils/queries.js'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import BannerModal from 'components/modals/BannerModal'
 import { getServerSidePropsWithAuth } from '../withAuth.js'
@@ -19,70 +20,96 @@ const SignUp = () => {
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
-  const [signUp, { loading, data }] = useMutation(REGISTER_USER)
+  const [signUp, { loading: signingUp, data: signUpData }] =
+    useMutation(REGISTER_USER)
+  const [discordAuth, { loading: gettingDiscordUrl, data: discordUrl }] =
+    useLazyQuery(GENERATE_DISCORD_URL)
 
+  //handle signup response
   useEffect(() => {
-    if (data) {
+    if (signUpData) {
       setModal(
         'You have successfully signed up. Please verify your email to login.',
         false,
         true
       )
-      const timer = setTimeout(() => {
-        Router.push('/login')
-      }, 5000)
-      return () => {
-        clearTimeout(timer)
-      }
+      Router.push('/login')
     }
-  }, [data, dispatch])
+  }, [signUpData, dispatch])
 
+  //handle discord url
+  useEffect(() => {
+    if (discordUrl) {
+    }
+  }, [discordUrl, dispatch])
+
+  useEffect(() => {
+    if (signUpData) {
+      setModal(
+        'You have successfully signed up. Please verify your email to login.',
+        false,
+        true
+      )
+      Router.push('/login')
+    }
+  }, [signUpData, dispatch])
+
+  //to hide banner after 2 seconds
   useEffect(() => {
     if (showModal) {
       const timer = setTimeout(() => {
-        setModal('', false, false)
+        setModal('', error, false)
       }, 2000)
       return () => {
         clearTimeout(timer)
       }
     }
-  }, [showModal])
+  }, [showModal, error])
 
   const register = async () => {
-    if (
-      email.length == 0 ||
-      password.length == 0 ||
-      confirmPassword.length == 0
-    ) {
-      setModal('Please fill up all fields', true, true)
-    } else {
-      try {
-        await signUp({
-          variables: { email: email, password: password },
-        })
-      } catch (error) {
-        setModal(error.message, true, true)
-      }
-    }
+    // if (
+    //   email.length == 0 ||
+    //   password.length == 0 ||
+    //   confirmPassword.length == 0
+    // ) {
+    //   setModal('Please fill up all fields', true, true)
+    // } else {
+    //   try {
+    //     await signUp({
+    //       variables: { email: email, password: password },
+    //     })
+    //   } catch (error) {
+    //     setModal(error.message, true, true)
+    //   }
+    // }
+    setModal('', false, true)
   }
 
   const setModal = (message, error, show) => {
     setShowModal(show)
     setMessage(message)
-    setTimeout(
-      () => {
-        setError(error)
-      },
-      show ? 0 : 300
-    )
+    setError(error)
   }
 
-  const discordAuth = () => {
-    dispatch(changeLoginType('discord'))
-    window.open(
-      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
-      '_self'
+  const discordSignUp = () => {
+    const authWindow = window.open(
+      'https://discord.com/oauth2/authorize?client_id=1096313631894933544&redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fauth%2Fdiscord&response_type=code&scope=identify%20email&state=c13971630a36f5b727eee2b9ed84c4d1'
     )
+
+    // Handle the window's load event to detect when the user is finished with the authentication flow
+    authWindow.addEventListener('load', () => {
+      // If the window's URL includes the access token, the user has authenticated successfully
+      if (authWindow.location.href.includes('access_token')) {
+        // Extract the access token from the URL hash
+        const accessToken = authWindow.location.hash.split('=')[1]
+
+        // Close the authentication window
+        authWindow.close()
+
+        // Redirect the user back to your web app with the access token in the URL query string
+        res.redirect(`/dashboard?access_token=${accessToken}`)
+      }
+    })
   }
   const loginInstead = () => {
     Router.push('/login')
@@ -136,12 +163,12 @@ const SignUp = () => {
             </div>
             <button
               onClick={register}
-              disable={loading}
+              disable={signingUp}
               className={`primary-btn-gradient relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] text-[1.8rem] text-black ${
-                loading ? 'cursor-wait opacity-50' : ''
+                signingUp ? 'cursor-wait opacity-50' : ''
               }`}
             >
-              {loading && (
+              {signingUp && (
                 <div className="absolute right-0 top-1/2 mr-4 -translate-y-1/2 transform">
                   <svg
                     aria-hidden="true"
@@ -169,7 +196,7 @@ const SignUp = () => {
           border border-[#50545A] px-4 py-[1.1rem]"
           >
             <button
-              onClick={discordAuth}
+              onClick={discordSignUp}
               className="mx-[1.1rem] h-[5rem] w-full rounded-[1rem] bg-[#5865F2] text-[1.8rem] text-white"
             >
               Sign up with Discord

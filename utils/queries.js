@@ -73,3 +73,9 @@ export const GET_ORDER_BOOK_OFFERS = gql`
     }
   }
 `
+
+export const GENERATE_DISCORD_URL = gql`
+  query GenerateDiscordUrl {
+    generateDiscordUrl
+  }
+`

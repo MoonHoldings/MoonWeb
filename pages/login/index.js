@@ -17,16 +17,17 @@ const Login = () => {
 
   const { loading } = useSelector((state) => state.auth)
 
+  //to hide banner after 2 seconds
   useEffect(() => {
     if (showModal) {
       const timer = setTimeout(() => {
-        setModal('', false, false)
+        setModal('', error, false)
       }, 2000)
       return () => {
         clearTimeout(timer)
       }
     }
-  }, [showModal])
+  }, [showModal, error])
 
   const login = async () => {
     if (email.length == 0 || password.length == 0) {
@@ -43,12 +44,7 @@ const Login = () => {
 
       if (res.payload.ok) {
         setModal('You have successfully signed in', false, true)
-        const timer = setTimeout(() => {
-          Router.push('/')
-        }, 3500)
-        return () => {
-          clearTimeout(timer)
-        }
+        Router.push('/')
       } else if (res.payload.error) {
         setModal(res.payload.error, true, true)
       }
@@ -70,12 +66,7 @@ const Login = () => {
   const setModal = (message, error, show) => {
     setShowModal(show)
     setMessage(message)
-    setTimeout(
-      () => {
-        setError(error)
-      },
-      show ? 0 : 300
-    )
+    setError(error)
   }
 
   return (
