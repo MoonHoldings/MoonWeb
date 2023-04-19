@@ -4,7 +4,7 @@ const WelcomePage = () => {
   return (
     <div className="z-90 relative h-screen bg-black px-[2rem] pt-[8rem]">
       <img
-        className="absolute left-0 bottom-0 w-screen"
+        className="absolute bottom-0 left-0 w-screen"
         src="/images/svgs/ufo-graphic.svg"
         alt=""
       />

@@ -18,6 +18,13 @@ module.exports = {
         '3xl': '1920px',
         '4xl': '2560px',
       },
+      transitionDuration: {
+        300: '300ms',
+      },
+      translate: {
+        0: '0',
+        '-full': '-100%',
+      },
     },
   },
 }
