@@ -1,45 +1,27 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { SERVER_URL } from 'app/constants/api'
 import axios from 'axios'
+import { signIn } from 'next-auth/react'
 
 const initialState = {
-  loginType: '',
   signUpSuccess: null,
   loginSuccess: null,
   error: null,
-  user: null,
+  loading: false,
 }
 
-export const signup = createAsyncThunk('auth/signup', async (creds) => {
-  try {
-    const response = await axios.post(`${SERVER_URL}/register`, creds, {
-      headers: { 'Content-Type': 'application/json' },
+export const loginUser = createAsyncThunk(
+  'auth/login',
+  async ({ email, password }) => {
+    const res = await signIn('credentials', {
+      email: email,
+      password: password,
+      redirect: false,
     })
 
-    return response.data
-  } catch (error) {
-    return {
-      success: false,
-      message: error,
-    }
+    return res
   }
-})
-
-export const login = createAsyncThunk('auth/login', async (creds) => {
-  try {
-    const response = await axios.post(`${SERVER_URL}/login`, creds, {
-      withCredentials: true,
-      headers: { 'Content-Type': 'application/json' },
-    })
-
-    return response.data
-  } catch (error) {
-    return {
-      success: false,
-      message: error,
-    }
-  }
-})
+)
 
 export const getUser = createAsyncThunk('auth/getUser', async () => {
   try {
@@ -61,34 +43,19 @@ export const getUser = createAsyncThunk('auth/getUser', async () => {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-    changeLoginType(state, action) {
-      state.loginType = action.payload
-    },
-  },
+  reducers: {},
+
   extraReducers(builder) {
     builder
-      .addCase(signup.fulfilled, (state, action) => {
-        state.signUpSuccess = action.payload.success
+      .addCase(loginUser.pending, (state, action) => {
+        state.loading = true
       })
-      .addCase(signup.rejected, (state, action) => {
-        state.signUpSuccess = false
-        state.error = action.payload
-      })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loginSuccess = action.payload.success
-        state.user = action.payload.user
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.signUpSuccess = false
-        state.error = action.payload
-      })
-      .addCase(getUser.fulfilled, (state, action) => {
-        state.user = action.payload.user
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false
       })
   },
 })
 
-export const { changeLoginType } = authSlice.actions
+export const { signUpUser } = authSlice.actions
 
 export default authSlice.reducer

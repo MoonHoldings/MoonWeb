@@ -16,9 +16,11 @@ import {
   START_CONNECTING_WALLETS,
   WELCOME_MOON_HOLDINGS,
 } from 'app/constants/copy'
-
-const Index = () => {
+import { useSession } from 'next-auth/react'
+import { getServerSidePropsWithAuth } from '../../utils/withAuth'
+const Nfts = (props) => {
   const dispatch = useDispatch()
+  const { data } = useSession()
   const { collections, allWallets } = useSelector((state) => state.wallet)
 
   const addWalletAddress = () => {
@@ -28,6 +30,11 @@ const Index = () => {
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
   }
+  // useEffect(() => {
+  //   if (props.isExpired === true) {
+  //     signOut({ redirect: false })
+  //   }
+  // }, [])
 
   return (
     <SidebarsLayout>
@@ -62,4 +69,5 @@ const Index = () => {
   )
 }
 
-export default Index
+export default Nfts
+export const getServerSideProps = getServerSidePropsWithAuth

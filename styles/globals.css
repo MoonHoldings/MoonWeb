@@ -17,8 +17,8 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .primary-btn-gradient {
-    background: linear-gradient(#60d6ec, #63eecf);
+  .primary-color {
+    color: linear-gradient(#60d6ec, #63eecf);
   }
   .all-exchanges li:not(:last-child) {
     margin-bottom: 1rem;

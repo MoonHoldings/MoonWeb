@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 
-const LoadingModal = () => {
+const LoadingModal = (props) => {
   const { currentAddAddress } = useSelector((state) => state.wallet)
 
   const [loadingMessage, setLoadingMessage] = useState(
@@ -27,18 +27,23 @@ const LoadingModal = () => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.3 }}
       transition={{ duration: 0.5, type: 'spring' }}
-      className="fixed top-0 left-0 right-0 bottom-0 z-[52] flex items-center justify-center bg-[#00000099] font-inter"
+      className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex items-center justify-center bg-[#00000099] font-inter"
     >
       <div className="relative block items-center rounded-lg border border-gray-100 bg-white p-6 shadow-md dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700">
-        <h5 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 opacity-20 dark:text-white">
-          {loadingMessage}
-        </h5>
-        <p className="text-xl font-normal text-gray-700 opacity-20 dark:text-gray-400">
-          {currentAddAddress}
-        </p>
+        {!props.showMessage && (
+          <>
+            <h5 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 opacity-20 dark:text-white">
+              {loadingMessage}
+            </h5>
+            <p className="text-xl font-normal text-gray-700 opacity-20 dark:text-gray-400">
+              {currentAddAddress}
+            </p>
+          </>
+        )}
+
         <div
           role="status"
-          className="absolute top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-2/4 -translate-x-1/2 -translate-y-1/2"
         >
           <svg
             aria-hidden="true"

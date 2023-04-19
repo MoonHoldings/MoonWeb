@@ -8,20 +8,25 @@ import Layout from 'components/Layout'
 import 'react-tippy/dist/tippy.css'
 import useSolUsdPrice from 'hooks/useSolUsdPrice'
 import client from '../utils/apollo-client'
+import { SessionProvider } from 'next-auth/react'
 
-export default wrapper.withRedux(({ Component, pageProps }) => {
-  useSolUsdPrice()
-  const store = useStore()
+export default wrapper.withRedux(
+  ({ Component, pageProps: { session, ...pageProps } }) => {
+    useSolUsdPrice()
+    const store = useStore()
 
-  return (
-    <ApolloProvider client={client}>
-      <PersistGate persistor={store.__persistor}>
-        <ThemeProvider enableSystem={true} attribute="class">
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ThemeProvider>
-      </PersistGate>
-    </ApolloProvider>
-  )
-})
+    return (
+      <ApolloProvider client={client}>
+        <SessionProvider session={session}>
+          <PersistGate persistor={store.__persistor}>
+            <ThemeProvider enableSystem={true} attribute="class">
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ThemeProvider>
+          </PersistGate>
+        </SessionProvider>
+      </ApolloProvider>
+    )
+  }
+)
