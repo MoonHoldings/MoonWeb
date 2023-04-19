@@ -19,10 +19,10 @@ const SignUp = () => {
   const [message, setMessage] = useState('')
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
-
+  const [discordUrl, setDiscordUrl] = useState('')
   const [signUp, { loading: signingUp, data: signUpData }] =
     useMutation(REGISTER_USER)
-  const [discordAuth, { loading: gettingDiscordUrl, data: discordUrl }] =
+  const [discordAuth, { loading: gettingDiscordUrl, data: discordData }] =
     useLazyQuery(GENERATE_DISCORD_URL)
 
   //handle signup response
@@ -39,9 +39,11 @@ const SignUp = () => {
 
   //handle discord url
   useEffect(() => {
-    if (discordUrl) {
+    if (discordData) {
+      setDiscordUrl(discordData.generateDiscordUrl)
     }
-  }, [discordUrl, dispatch])
+    discordSignUp()
+  }, [discordData])
 
   useEffect(() => {
     if (signUpData) {
@@ -79,24 +81,10 @@ const SignUp = () => {
   }
 
   const discordSignUp = () => {
-    const authWindow = window.open(
-      'https://discord.com/oauth2/authorize?client_id=1096313631894933544&redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fauth%2Fdiscord&response_type=code&scope=identify%20email&state=c13971630a36f5b727eee2b9ed84c4d1'
-    )
+    const windowFeatures =
+      'height=800,width=800,resizable=yes,scrollbars=yes,status=yes'
 
-    // Handle the window's load event to detect when the user is finished with the authentication flow
-    authWindow.addEventListener('load', () => {
-      // If the window's URL includes the access token, the user has authenticated successfully
-      if (authWindow.location.href.includes('access_token')) {
-        // Extract the access token from the URL hash
-        const accessToken = authWindow.location.hash.split('=')[1]
-
-        // Close the authentication window
-        authWindow.close()
-
-        // Redirect the user back to your web app with the access token in the URL query string
-        res.redirect(`/dashboard?access_token=${accessToken}`)
-      }
-    })
+    const authWindow = window.open(discordUrl, '_blank', windowFeatures)
   }
   const loginInstead = () => {
     Router.push('/login')

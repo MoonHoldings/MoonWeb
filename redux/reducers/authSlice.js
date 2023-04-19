@@ -23,6 +23,32 @@ export const loginUser = createAsyncThunk(
   }
 )
 
+export const refreshAccessToken = createAsyncThunk(
+  '/refresh_token',
+  async () => {
+    const res = await axios.post(
+      'http://localhost:80/refresh_token',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      }
+    )
+
+    if (res.data) {
+      const response = await signIn('credentials', {
+        refreshAccessToken: true,
+        accessToken: res.data.accessToken,
+        email: res.data.email,
+        redirect: false,
+      })
+      return res
+    }
+  }
+)
+
 export const getUser = createAsyncThunk('auth/getUser', async () => {
   try {
     const response = await axios({
@@ -51,6 +77,9 @@ const authSlice = createSlice({
         state.loading = true
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false
+      })
+      .addCase(refreshAccessToken.pending, (state, action) => {
         state.loading = false
       })
   },
