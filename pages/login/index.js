@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useDispatch, useSelector } from 'react-redux'
 import Router from 'next/router'
+
+import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from 'redux/reducers/authSlice'
-import BannerModal from 'components/modals/BannerModal'
 import { isValidEmail } from 'utils/string'
 import { getServerSidePropsWithAuth } from '../../utils/withAuth'
-
+import {
+  authenticateComplete,
+  authenticatePending,
+} from 'redux/reducers/authSlice'
 import { GENERATE_DISCORD_URL } from 'utils/queries.js'
-import { openDiscordWindow } from 'utils/discord'
+import { getSession } from 'next-auth/react'
 import { useLazyQuery } from '@apollo/client'
+
+import client from '../../utils/apollo-client'
+import BannerModal from 'components/modals/BannerModal'
+import LoadingModal from 'components/modals/LoadingModal'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -19,10 +26,16 @@ const Login = () => {
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
-  const { loading } = useSelector((state) => state.auth)
+  const { loading: signingIn, modalLoading } = useSelector(
+    (state) => state.auth
+  )
 
   const [discordAuth, { loading: gettingDiscordUrl }] =
     useLazyQuery(GENERATE_DISCORD_URL)
+
+  useEffect(() => {
+    dispatch(authenticateComplete())
+  }, [dispatch])
 
   const login = async () => {
     if (email.length == 0 || password.length == 0) {
@@ -52,12 +65,33 @@ const Login = () => {
 
   const generateDiscordUrl = async () => {
     try {
+      dispatch(authenticatePending())
       await client.resetStore()
       const res = await discordAuth()
       if (res.data) {
         openDiscordWindow(res.data.generateDiscordUrl)
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const openDiscordWindow = (discordUrl) => {
+    const windowFeatures =
+      'height=800,width=800,resizable=yes,scrollbars=yes,status=yes'
+
+    const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
+
+    const intervalId = setInterval(async () => {
+      if (discordWindow.closed) {
+        const session = await getSession()
+        if (session) {
+          Router.push('/')
+        }
+        clearInterval(intervalId)
+        dispatch(authenticateComplete())
+      }
+    }, 1000)
   }
 
   const setModal = (message, error, show) => {
@@ -75,7 +109,7 @@ const Login = () => {
           </h1>
           <div
             className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
-border border-[#50545A] px-4 py-[1.1rem]"
+            border border-[#50545A] px-4 py-[1.1rem]"
           >
             <input
               className="form-field w-full"
@@ -91,12 +125,12 @@ border border-[#50545A] px-4 py-[1.1rem]"
             />
             <button
               onClick={login}
-              disable={loading}
+              disabled={signingIn}
               className={`relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] bg-gradient-to-b from-teal-400 to-teal-300 text-[1.8rem] text-black ${
-                loading ? 'cursor-wait opacity-50' : ''
+                signingIn ? 'cursor-wait opacity-50' : ''
               }`}
             >
-              {loading && (
+              {signingIn && (
                 <div className="absolute right-0 top-1/2 mr-4 -translate-y-1/2 transform">
                   <svg
                     aria-hidden="true"
@@ -180,6 +214,7 @@ border border-[#50545A] px-4 py-[1.1rem]"
           setModal('', error, false)
         }}
       />
+      {modalLoading && <LoadingModal showMessage />}
     </>
   )
 }

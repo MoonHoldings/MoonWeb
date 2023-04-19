@@ -4,10 +4,8 @@ import axios from 'axios'
 import { signIn } from 'next-auth/react'
 
 const initialState = {
-  signUpSuccess: null,
-  loginSuccess: null,
-  error: null,
   loading: false,
+  modalLoading: false,
 }
 
 export const loginUser = createAsyncThunk(
@@ -49,7 +47,7 @@ export const refreshAccessToken = createAsyncThunk(
           email: res.data.email,
           redirect: false,
         })
-        return response
+        // return response
       }
     } catch (error) {}
   }
@@ -58,7 +56,14 @@ export const refreshAccessToken = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    authenticatePending(state, action) {
+      state.modalLoading = true
+    },
+    authenticateComplete(state, action) {
+      state.modalLoading = false
+    },
+  },
 
   extraReducers(builder) {
     builder
@@ -69,11 +74,14 @@ const authSlice = createSlice({
         state.loading = false
       })
       .addCase(refreshAccessToken.pending, (state, action) => {
+        state.loading = true
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.loading = false
       })
   },
 })
 
-export const { signUpUser } = authSlice.actions
+export const { authenticatePending, authenticateComplete } = authSlice.actions
 
 export default authSlice.reducer

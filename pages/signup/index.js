@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useDispatch } from 'react-redux'
 import Router from 'next/router'
-import {} from 'redux/reducers/authSlice'
 
-import { REGISTER_USER, DISCORD_AUTH } from 'utils/mutations'
-import { GENERATE_DISCORD_URL } from 'utils/queries.js'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import client from '../../utils/apollo-client'
 import { MOON_HOLDINGS } from 'app/constants/copy'
+import {
+  authenticateComplete,
+  authenticatePending,
+} from 'redux/reducers/authSlice'
+import { REGISTER_USER } from 'utils/mutations'
+import { GENERATE_DISCORD_URL } from 'utils/queries.js'
+import { getServerSidePropsWithAuth } from 'utils/withAuth'
+import { getSession } from 'next-auth/react'
+
+import client from 'utils/apollo-client'
+import LoadingModal from 'components/modals/LoadingModal'
 import BannerModal from 'components/modals/BannerModal'
-import { getServerSidePropsWithAuth } from '../../utils/withAuth'
-import { useSession } from 'next-auth/react'
-import { openDiscordWindow } from 'utils/discord'
 
 const SignUp = () => {
   const dispatch = useDispatch()
@@ -22,16 +26,18 @@ const SignUp = () => {
   const [message, setMessage] = useState('')
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
+
   const [signUp, { loading: signingUp, data: signUpData }] =
     useMutation(REGISTER_USER)
   const [discordAuth, { loading: gettingDiscordUrl, data: discordData }] =
     useLazyQuery(GENERATE_DISCORD_URL)
 
-  const { data: session, status } = useSession()
+  const { modalLoading } = useSelector((state) => state.auth)
 
   useEffect(() => {
-    console.log(session)
-  }, [session])
+    dispatch(authenticateComplete())
+  }, [dispatch])
+
   //handle signup response
   useEffect(() => {
     if (signUpData) {
@@ -40,18 +46,7 @@ const SignUp = () => {
         false,
         true
       )
-      Router.push('/login')
-    }
-  }, [signUpData, dispatch])
-
-  useEffect(() => {
-    if (signUpData) {
-      setModal(
-        'You have successfully signed up. Please verify your email to login.',
-        false,
-        true
-      )
-      Router.push('/login')
+      setTimeout(Router.push('/login'), 3000)
     }
   }, [signUpData, dispatch])
 
@@ -79,11 +74,31 @@ const SignUp = () => {
     setError(error)
   }
   const generateDiscordUrl = async () => {
+    dispatch(authenticatePending())
     await client.resetStore()
     const res = await discordAuth()
+
     if (res.data) {
       openDiscordWindow(res.data.generateDiscordUrl)
     }
+  }
+
+  const openDiscordWindow = (discordUrl) => {
+    const windowFeatures =
+      'height=800,width=800,resizable=yes,scrollbars=yes,status=yes'
+
+    const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
+
+    const intervalId = setInterval(async () => {
+      if (discordWindow.closed) {
+        const session = await getSession()
+        if (session) {
+          Router.push('/')
+        }
+        clearInterval(intervalId)
+        dispatch(authenticateComplete())
+      }
+    }, 1000)
   }
 
   const loginInstead = () => {
@@ -133,12 +148,12 @@ const SignUp = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <div className=" mb-[1rem] text-[1.2rem] text-[#A6A6A6]">
-              Minimum 8 characters long, at least 1 special, 1 number and 1
-              letter
+              Minimum 8 characters long, at least 1 special, 1 number, and 1
+              uppercase and lowercase letter
             </div>
             <button
               onClick={register}
-              // disable={false}
+              disabled={signingUp}
               className={`relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] bg-gradient-to-b from-teal-400 to-teal-300 text-[1.8rem] text-black ${
                 signingUp ? 'cursor-wait opacity-50' : ''
               }`}
@@ -206,12 +221,12 @@ const SignUp = () => {
         </div>
         <div className="flex hidden h-full w-3/4 flex-col bg-black pt-8 md:flex">
           <div className="flex flex-row justify-end ">
-            <button
+            {/* <button
               onClick={register}
               className="mx-[1.1rem] h-[5rem] w-[12.2rem] rounded-[1rem] bg-gradient-to-b from-teal-400 to-teal-300 text-[1.8rem] text-black"
             >
               Sign Up
-            </button>
+            </button> */}
             <button
               onClick={loginInstead}
               className="mx-[1.1rem] h-[5rem] w-[12.2rem] rounded-[1rem] border text-[1.8rem] text-white"
@@ -260,6 +275,7 @@ const SignUp = () => {
           setModal('', error, false)
         }}
       />
+      {modalLoading && <LoadingModal showMessage />}
     </>
   )
 }

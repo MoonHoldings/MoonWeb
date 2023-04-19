@@ -16,11 +16,3 @@ export const REGISTER_USER = gql`
     }
   }
 `
-
-export const DISCORD_AUTH = gql`
-  mutation Mutation($password: String!, $email: String!) {
-    register(password: $password, email: $email) {
-      email
-    }
-  }
-`
