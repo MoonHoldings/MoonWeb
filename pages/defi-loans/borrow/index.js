@@ -34,8 +34,6 @@ const Borrow = () => {
     dispatch(search(''))
   }, [])
 
-  console.log(data)
-
   useEffect(() => {
     getOrderBooks({
       variables: {

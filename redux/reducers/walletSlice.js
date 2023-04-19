@@ -681,13 +681,11 @@ export const insertSingleNFT = createAsyncThunk(
       for (let i = 0; i < collNfts.length; i++) {
         const response = await axios.get(`${collNfts[i].metadata_uri}`)
         const res = response.data
-        console.log('>>> res', res)
         mappedNfts.push({
           ...collNfts[i],
           image: res.image,
           attributes: res.attributes,
           collection: res.collection,
-          // Add Attributes & Info { name, collection.name }
         })
       }
 

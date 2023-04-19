@@ -50,8 +50,8 @@ const CollectionCard = ({ collection, index }) => {
             )
           }
         }
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        console.log(error)
       }
     }
   }
