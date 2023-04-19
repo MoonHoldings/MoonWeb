@@ -30,7 +30,7 @@ const LoadingModal = (props) => {
       className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex items-center justify-center bg-[#00000099] font-inter"
     >
       <div className="relative block items-center rounded-lg border border-gray-100 bg-white p-6 shadow-md dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700">
-        {!props.showMessage ? (
+        {!props.showMessage && (
           <>
             <h5 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 opacity-20 dark:text-white">
               {loadingMessage}
@@ -39,8 +39,6 @@ const LoadingModal = (props) => {
               {currentAddAddress}
             </p>
           </>
-        ) : (
-          <></>
         )}
 
         <div
