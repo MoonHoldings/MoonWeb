@@ -9,13 +9,12 @@ const Redirect = (props) => {
   useEffect(() => {
     if (props.cookieValue) {
       async function fetchData() {
-        const res = dispatch(refreshAccessToken())
+        const res = await dispatch(refreshAccessToken())
         if (res) {
           window.close()
-          Router.push('/')
         }
-        fetchData()
       }
+      fetchData()
     }
   }, [dispatch, props.cookieValue])
 

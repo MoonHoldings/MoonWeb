@@ -14,7 +14,6 @@ export default wrapper.withRedux(
   ({ Component, pageProps: { session, ...pageProps } }) => {
     useSolUsdPrice()
     const store = useStore()
-
     return (
       <ApolloProvider client={client}>
         <SessionProvider session={session}>

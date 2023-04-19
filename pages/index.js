@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import WelcomePage from 'components/home/WelcomePage'
 import { signOut } from 'next-auth/react'
 

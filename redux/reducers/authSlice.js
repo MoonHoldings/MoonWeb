@@ -13,58 +13,47 @@ const initialState = {
 export const loginUser = createAsyncThunk(
   'auth/login',
   async ({ email, password }) => {
-    const res = await signIn('credentials', {
-      email: email,
-      password: password,
-      redirect: false,
-    })
+    try {
+      const res = await signIn('credentials', {
+        email: email,
+        password: password,
+        redirect: false,
+      })
 
-    return res
+      return res
+    } catch (error) {
+      return error
+    }
   }
 )
 
 export const refreshAccessToken = createAsyncThunk(
   '/refresh_token',
   async () => {
-    const res = await axios.post(
-      'http://localhost:80/refresh_token',
-      {},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      }
-    )
+    try {
+      const res = await axios.post(
+        `${SERVER_URL}/refresh_token`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      )
 
-    if (res.data) {
-      const response = await signIn('credentials', {
-        refreshAccessToken: true,
-        accessToken: res.data.accessToken,
-        email: res.data.email,
-        redirect: false,
-      })
-      return res
-    }
+      if (res.data) {
+        const response = await signIn('credentials', {
+          refreshAccessToken: true,
+          accessToken: res.data.accessToken,
+          email: res.data.email,
+          redirect: false,
+        })
+        return response
+      }
+    } catch (error) {}
   }
 )
-
-export const getUser = createAsyncThunk('auth/getUser', async () => {
-  try {
-    const response = await axios({
-      method: 'GET',
-      url: `${SERVER_URL}/get-user`,
-      withCredentials: true,
-    })
-
-    return response.data
-  } catch (error) {
-    return {
-      success: false,
-      message: error,
-    }
-  }
-})
 
 const authSlice = createSlice({
   name: 'auth',
