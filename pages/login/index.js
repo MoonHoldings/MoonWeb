@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import Router from 'next/router'
-import { getSession } from 'next-auth/react'
 import { loginUser } from 'redux/reducers/authSlice'
 import BannerModal from 'components/modals/BannerModal'
 import { isValidEmail } from 'utils/string'
+import { getServerSidePropsWithAuth } from '../withAuth.js'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -176,18 +176,4 @@ border border-[#50545A] px-4 py-[1.1rem]"
 
 export default Login
 
-export async function getServerSideProps(context) {
-  const session = await getSession(context)
-
-  //if user is logged in
-  if (session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  } else {
-    return { props: {} }
-  }
-}
+export const getServerSideProps = getServerSidePropsWithAuth

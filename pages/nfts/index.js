@@ -16,8 +16,8 @@ import {
   START_CONNECTING_WALLETS,
   WELCOME_MOON_HOLDINGS,
 } from 'app/constants/copy'
-import { useSession, signIn, signOut, getSession } from 'next-auth/react'
-
+import { useSession } from 'next-auth/react'
+import { getServerSidePropsWithAuth } from '../withAuth.js'
 const Nfts = (props) => {
   const dispatch = useDispatch()
   const { data } = useSession()
@@ -70,19 +70,4 @@ const Nfts = (props) => {
 }
 
 export default Nfts
-
-export async function getServerSideProps(context) {
-  const session = await getSession(context)
-
-  //if user is logged in
-  if (session) {
-    return {}
-  } else {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-}
+export const getServerSideProps = getServerSidePropsWithAuth

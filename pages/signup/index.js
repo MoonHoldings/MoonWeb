@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Router from 'next/router'
 import {} from 'redux/reducers/authSlice'
-import { getSession } from 'next-auth/react'
 
 import { REGISTER_USER } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import BannerModal from 'components/modals/BannerModal'
+import { getServerSidePropsWithAuth } from '../withAuth.js'
 
-const Index = () => {
+const SignUp = () => {
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -243,20 +243,6 @@ const Index = () => {
   )
 }
 
-export default Index
+export default SignUp
 
-export async function getServerSideProps(context) {
-  const session = await getSession(context)
-
-  //if user is logged in
-  if (session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  } else {
-    return { props: {} }
-  }
-}
+export const getServerSideProps = getServerSidePropsWithAuth

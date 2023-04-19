@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { SERVER_URL } from 'app/constants/api'
 import axios from 'axios'
 import { signIn } from 'next-auth/react'
-import Router from 'next/router'
 
 const initialState = {
   signUpSuccess: null,
@@ -19,7 +18,6 @@ export const loginUser = createAsyncThunk(
       password: password,
       redirect: false,
     })
-    console.log(res)
 
     return res
   }
