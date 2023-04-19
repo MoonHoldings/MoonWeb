@@ -54,35 +54,22 @@ const SignUp = () => {
     }
   }, [signUpData, dispatch])
 
-  //to hide banner after 2 seconds
-  useEffect(() => {
-    if (showModal) {
-      const timer = setTimeout(() => {
-        setModal('', error, false)
-      }, 2000)
-      return () => {
-        clearTimeout(timer)
+  const register = async () => {
+    if (
+      email.length == 0 ||
+      password.length == 0 ||
+      confirmPassword.length == 0
+    ) {
+      setModal('Please fill up all fields', true, true)
+    } else {
+      try {
+        await signUp({
+          variables: { email: email, password: password },
+        })
+      } catch (error) {
+        setModal(error.message, true, true)
       }
     }
-  }, [showModal, error])
-
-  const register = async () => {
-    // if (
-    //   email.length == 0 ||
-    //   password.length == 0 ||
-    //   confirmPassword.length == 0
-    // ) {
-    //   setModal('Please fill up all fields', true, true)
-    // } else {
-    //   try {
-    //     await signUp({
-    //       variables: { email: email, password: password },
-    //     })
-    //   } catch (error) {
-    //     setModal(error.message, true, true)
-    //   }
-    // }
-    setModal('', false, true)
   }
 
   const setModal = (message, error, show) => {

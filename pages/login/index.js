@@ -17,18 +17,6 @@ const Login = () => {
 
   const { loading } = useSelector((state) => state.auth)
 
-  //to hide banner after 2 seconds
-  useEffect(() => {
-    if (showModal) {
-      const timer = setTimeout(() => {
-        setModal('', error, false)
-      }, 2000)
-      return () => {
-        clearTimeout(timer)
-      }
-    }
-  }, [showModal, error])
-
   const login = async () => {
     if (email.length == 0 || password.length == 0) {
       setModal('Please fill up all fields', true, true)
