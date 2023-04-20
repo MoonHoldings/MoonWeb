@@ -41,9 +41,10 @@ export const GET_ORDER_BOOKS = gql`
         bestOffer
         floorPriceSol
         ownedNfts {
-          name
           image
           mint
+          name
+          nftListIndex
           symbol
         }
       }
@@ -77,6 +78,17 @@ export const GET_ORDER_BOOK_OFFERS = gql`
       data {
         principalLamports
         offerTime
+      }
+    }
+  }
+`
+
+export const GET_BEST_OFFER_FOR_BORROW = gql`
+  query GetBestOfferForBorrow($args: GetLoansArgs) {
+    getLoans(args: $args) {
+      data {
+        principalLamports
+        pubKey
       }
     }
   }

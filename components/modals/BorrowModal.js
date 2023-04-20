@@ -1,11 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { changeBorrowModalOpen } from 'redux/reducers/utilSlice'
 import Image from 'next/image'
+import { createSharkyClient } from '@sharkyfi/client'
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import mergeClasses from 'utils/mergeClasses'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
+import createAnchorProvider, { connection } from 'utils/createAnchorProvider'
+import { Tooltip } from 'antd'
+import { useLazyQuery } from '@apollo/client'
+import { GET_BEST_OFFER_FOR_BORROW } from 'utils/queries'
+import Link from 'next/link'
 
 const BorrowModal = () => {
   const dispatch = useDispatch()
@@ -16,15 +23,52 @@ const BorrowModal = () => {
   const { borrowModalOpen } = useSelector((state) => state.util)
   const { orderBook } = useSelector((state) => state.sharkifyLend)
   const [selectedNft, setSelectedNft] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [failMessage, setFailMessage] = useState(null)
+  const [txLink, setTxLink] = useState(null)
+  const [getBestOffer, { data, loading }] = useLazyQuery(
+    GET_BEST_OFFER_FOR_BORROW
+  )
+  const bestOffer = data?.getLoans?.data[0]
+  const bestOfferSol = toCurrencyFormat(
+    bestOffer ? bestOffer.principalLamports / LAMPORTS_PER_SOL : 0
+  )
 
-  const isSuccess = false
   const floorPriceSol = orderBook?.floorPriceSol
     ? orderBook?.floorPriceSol
     : null
 
+  useEffect(() => {
+    if (orderBook && !loading) {
+      getBestOffer({
+        variables: {
+          args: {
+            pagination: {
+              limit: 1,
+              offset: 0,
+            },
+            filter: {
+              type: 'offered',
+              orderBookId: orderBook?.id,
+            },
+            sort: {
+              order: 'DESC',
+              type: 'amount',
+            },
+          },
+        },
+        pollInterval: 0,
+      })
+    }
+  }, [orderBook, getBestOffer, loading])
+
   const onClose = () => {
     dispatch(changeBorrowModalOpen(false))
     setSelectedNft(null)
+    setFailMessage(null)
+    setIsSuccess(false)
+    setTxLink(null)
   }
 
   const renderCloseButton = () => {
@@ -94,7 +138,9 @@ const BorrowModal = () => {
           'items-center',
           'rounded rounded-2xl',
           'border',
-          ownedNft?.mint === selectedNft ? 'border-[#62E3DD]' : 'border-black',
+          ownedNft?.mint === selectedNft?.mint
+            ? 'border-[#62E3DD]'
+            : 'border-black',
           'text-[1.3rem]',
           'font-bold',
           'hover:border-[#62E3DD]',
@@ -103,7 +149,8 @@ const BorrowModal = () => {
           'p-3',
           index > 0 && 'ml-6'
         )}
-        onClick={() => setSelectedNft(ownedNft?.mint)}
+        disabled={ownedNft?.mint === selectedNft?.mint}
+        onClick={() => setSelectedNft(ownedNft)}
       >
         <Image
           className="h-full w-full rounded rounded-2xl"
@@ -131,7 +178,7 @@ const BorrowModal = () => {
             height={16}
             alt=""
           />
-          <p className="ml-2 text-2xl">0</p>
+          <p className="ml-2 text-2xl">{bestOfferSol}</p>
         </div>
       </div>
     )
@@ -147,32 +194,150 @@ const BorrowModal = () => {
   }
 
   const renderBorrowButton = () => {
+    const disabled = isSubmitting || selectedNft === null
+
     return (
-      <button
-        type="button"
-        className="flex items-center justify-center rounded rounded-xl border-2 border-white bg-gradient-to-b from-[#61D9EB] to-[#63EDD0] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-[#15181B]"
+      <Tooltip
+        color="#1F2126"
+        title={
+          <span className="text-[1.35rem]">Select an NFT as collateral</span>
+        }
+        trigger={disabled ? 'hover' : null}
       >
-        <span>Borrow</span>
-        {/* {isSubmitting && (
-          <svg
-            aria-hidden="true"
-            className="ml-2 mr-2 h-7 w-7 animate-spin fill-white"
-            viewBox="0 0 100 101"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+        <div>
+          <button
+            type="button"
+            onClick={borrow}
+            disabled={disabled}
+            className="flex items-center justify-center rounded rounded-xl border-2 border-white bg-gradient-to-b from-[#61D9EB] to-[#63EDD0] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-[#15181B]"
           >
-            <path
-              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-              fill="currentColor"
-            />
-            <path
-              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-              fill="currentFill"
-            />
-          </svg>
-        )} */}
-      </button>
+            <span>Borrow</span>
+            {bestOfferSol && (
+              <div className="ml-2 flex items-center">
+                <Image
+                  className="h-[1.6rem] w-[1.6rem]"
+                  src="/images/svgs/sol.svg"
+                  width={16}
+                  height={16}
+                  alt=""
+                />
+                <p className="ml-1">{bestOfferSol}</p>
+              </div>
+            )}
+            {isSubmitting && (
+              <svg
+                aria-hidden="true"
+                className="ml-2 mr-2 h-7 w-7 animate-spin fill-white"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+      </Tooltip>
     )
+  }
+
+  const waitTransactionConfirmation = async (tx) => {
+    const provider = createAnchorProvider(wallet)
+
+    const confirmedTransaction = await provider.connection.confirmTransaction(
+      { signature: tx },
+      'confirmed'
+    )
+
+    if (confirmedTransaction.value.err) {
+      setFailMessage(`Transaction failed: ${confirmedTransaction.value.err}`)
+    } else {
+      setIsSuccess(true)
+      setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
+    }
+  }
+
+  const borrow = async () => {
+    setIsSubmitting(true)
+    setFailMessage(null)
+
+    const provider = createAnchorProvider(wallet)
+    const sharkyClient = createSharkyClient(provider)
+    const { program } = sharkyClient
+
+    // Fetch best loan
+    const {
+      data: {
+        getLoans: { data },
+      },
+    } = await getBestOffer({
+      variables: {
+        args: {
+          pagination: {
+            limit: 1,
+            offset: 0,
+          },
+          filter: {
+            type: 'offered',
+            orderBookId: orderBook?.id,
+          },
+          sort: {
+            order: 'DESC',
+            type: 'amount',
+          },
+        },
+      },
+      pollInterval: 0,
+    })
+
+    if (data && data.length) {
+      const bestOffer = data[0]
+      const offeredOrTaken = await sharkyClient.fetchLoan({
+        program,
+        loanPubKey: new PublicKey(bestOffer.pubKey),
+      })
+
+      if (!offeredOrTaken) {
+        setFailMessage(`No loan found with pubkey ${bestOffer.pubKey}`)
+      }
+      if (!offeredOrTaken.offered) {
+        setFailMessage('Loan is already taken.')
+      }
+
+      const loan = offeredOrTaken.offered
+      const metadata =
+        await sharkyClient.program.provider.connection.getParsedAccountInfo(
+          new PublicKey(selectedNft?.mint),
+          'confirmed'
+        )
+      const { freezeAuthority } = metadata?.value?.data?.parsed?.info
+      const isFreezable = Boolean(freezeAuthority)
+
+      try {
+        const { takenLoan, sig } = await loan.take({
+          program,
+          nftMintPubKey: new PublicKey(selectedNft?.mint),
+          nftListIndex: selectedNft?.nftListIndex,
+          skipFreezingCollateral: !isFreezable,
+        })
+
+        // Check if the transaction was successful
+        await waitTransactionConfirmation(sig)
+      } catch (e) {
+        if (e.sig) {
+          setFailMessage(`Error taking loan (sig: ${e.sig})`)
+        }
+      }
+    }
+
+    setIsSubmitting(false)
   }
 
   return (
@@ -226,6 +391,23 @@ const BorrowModal = () => {
             <div className="mt-4 flex w-full justify-center">
               {renderBorrowButton()}
             </div>
+            {txLink && (
+              <div className="flex w-full justify-center">
+                <Link
+                  href={txLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 text-[1.4rem] underline"
+                >
+                  View your last transaction on Solana FM
+                </Link>
+              </div>
+            )}
+            {failMessage && (
+              <div className="mt-4 flex w-full justify-center text-[1.6rem] text-red-500">
+                {failMessage}
+              </div>
+            )}
           </div>
         </div>
       </motion.div>

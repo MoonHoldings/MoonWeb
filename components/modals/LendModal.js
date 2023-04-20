@@ -90,7 +90,6 @@ const LendModal = () => {
   const placeOffer = async () => {
     const provider = createAnchorProvider(wallet)
     const sharkyClient = createSharkyClient(provider)
-
     const { program } = sharkyClient
 
     const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
