@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
 import { createWrapper } from 'next-redux-wrapper'
 
@@ -18,7 +18,14 @@ const reducer = combineReducers({
   sharkifyLend: sharkifyLendSlice,
 })
 
-const makeConfiguredStore = (reducer) => configureStore({ reducer })
+const makeConfiguredStore = (reducer) =>
+  configureStore({
+    reducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
+  })
 
 const makeStore = () => {
   const isServer = typeof window === 'undefined'

@@ -22,6 +22,15 @@ export const getServerSidePropsWithAuth = async (context) => {
       return { props: {} }
     }
   } else {
-    return { props: {} }
+    if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
+      return { props: {} }
+    else {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      }
+    }
   }
 }

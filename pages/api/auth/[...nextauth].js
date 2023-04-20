@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import client from '../../../utils/apollo-client'
 import { LOGIN_USER } from 'utils/mutations'
+import axios from 'axios'
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -21,18 +22,25 @@ export const authOptions = {
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-
-        const res = await client.mutate({
-          mutation: LOGIN_USER,
-          variables: {
+        if (credentials.refreshAccessToken) {
+          return {
             email: credentials.email,
-            password: credentials.password,
-          },
-        })
-        const user = res.data.login
+            jid: credentials.accessToken,
+            name: credentials.accessToken,
+          }
+        } else {
+          const res = await client.mutate({
+            mutation: LOGIN_USER,
+            variables: {
+              email: credentials.email,
+              password: credentials.password,
+            },
+          })
+          const user = res.data.login
 
-        if (user) {
-          return { email: user.email, name: user.accessToken }
+          if (user) {
+            return { email: user.email, jid: user.accessToken }
+          }
         }
       },
       callbacks: {

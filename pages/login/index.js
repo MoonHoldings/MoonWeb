@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useDispatch, useSelector } from 'react-redux'
 import Router from 'next/router'
+
+import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from 'redux/reducers/authSlice'
-import BannerModal from 'components/modals/BannerModal'
 import { isValidEmail } from 'utils/string'
 import { getServerSidePropsWithAuth } from '../../utils/withAuth'
+import {
+  authenticateComplete,
+  authenticatePending,
+} from 'redux/reducers/authSlice'
+import { GENERATE_DISCORD_URL } from 'utils/queries.js'
+import { getSession } from 'next-auth/react'
+import { useLazyQuery } from '@apollo/client'
+
+import client from '../../utils/apollo-client'
+import BannerModal from 'components/modals/BannerModal'
+import LoadingModal from 'components/modals/LoadingModal'
+import { GeneralButton } from 'components/forms/GeneralButton'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -15,7 +27,16 @@ const Login = () => {
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
-  const { loading } = useSelector((state) => state.auth)
+  const { loading: signingIn, modalLoading } = useSelector(
+    (state) => state.auth
+  )
+
+  const [discordAuth, { loading: gettingDiscordUrl }] =
+    useLazyQuery(GENERATE_DISCORD_URL)
+
+  useEffect(() => {
+    dispatch(authenticateComplete())
+  }, [dispatch])
 
   const login = async () => {
     if (email.length == 0 || password.length == 0) {
@@ -43,12 +64,38 @@ const Login = () => {
     Router.push('/signup')
   }
 
-  const discordAuth = () => {
-    dispatch(changeLoginType('discord'))
-    window.open(
-      `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api/auth/discord`,
-      '_self'
-    )
+  const generateDiscordUrl = async () => {
+    try {
+      dispatch(authenticatePending())
+      await client.resetStore()
+      const res = await discordAuth()
+
+      if (res.data) {
+        openDiscordWindow(res.data.generateDiscordUrl)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const openDiscordWindow = (discordUrl) => {
+    const windowFeatures =
+      'height=800,width=800,resizable=yes,scrollbars=yes,status=yes'
+
+    const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
+
+    const intervalId = setInterval(async () => {
+      if (discordWindow.closed) {
+        const session = await getSession()
+
+        if (session) {
+          Router.push('/')
+        }
+
+        clearInterval(intervalId)
+        dispatch(authenticateComplete())
+      }
+    }, 1000)
   }
 
   const setModal = (message, error, show) => {
@@ -66,7 +113,7 @@ const Login = () => {
           </h1>
           <div
             className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
-border border-[#50545A] px-4 py-[1.1rem]"
+            border border-[#50545A] px-4 py-[1.1rem]"
           >
             <input
               className="form-field w-full"
@@ -80,54 +127,35 @@ border border-[#50545A] px-4 py-[1.1rem]"
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button
-              onClick={login}
-              disable={loading}
-              className={`relative mx-[1.1rem] h-[5rem] w-full rounded-[1rem] bg-gradient-to-b from-teal-400 to-teal-300 text-[1.8rem] text-black ${
-                loading ? 'cursor-wait opacity-50' : ''
-              }`}
-            >
-              {loading && (
-                <div className="absolute right-0 top-1/2 mr-4 -translate-y-1/2 transform">
-                  <svg
-                    aria-hidden="true"
-                    className="mr-2 h-10 w-10 animate-spin fill-teal-400 text-gray-200 dark:text-gray-600"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                      fill="currentFill"
-                    />
-                  </svg>
-                </div>
-              )}
-              Login
-            </button>
+            <GeneralButton
+              onSubmit={login}
+              loading={signingIn}
+              title={'Login'}
+              bgColor={'bg-gradient-to-b from-teal-400 to-teal-300'}
+            />
           </div>
           <div
             className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"
           >
-            <button
-              onClick={discordAuth}
-              className="mx-[1.1rem] h-[5rem] w-[25.2rem] w-full rounded-[1rem] bg-[#5865F2] text-[1.8rem] text-white"
-            >
-              Login with Discord
-            </button>
+            <GeneralButton
+              onSubmit={generateDiscordUrl}
+              loading={gettingDiscordUrl}
+              title={'Login With Discord'}
+              bgColor={'bg-gradient-to-b from-indigo-600 to-indigo-500'}
+              isWhite
+            />
           </div>
           <div className="mb-[1rem] text-[1.6rem]">or</div>
-          <button
-            onClick={signupInstead}
-            className="mx-[1.1rem] h-[5rem] w-[25.2rem] rounded-[1rem] border bg-black text-[1.8rem] text-white"
-          >
-            Sign Up
-          </button>
+          <div className={'flex w-[27.4rem] px-4'}>
+            <GeneralButton
+              onSubmit={signupInstead}
+              title={'Signup'}
+              bgColor={'bg-black'}
+              isWhite
+              hasBorder
+            />
+          </div>
         </div>
         <footer className="h-84 fixed bottom-0 flex hidden   w-full bg-gray-900 md:block">
           <div className="h-full w-full ">
@@ -149,6 +177,7 @@ border border-[#50545A] px-4 py-[1.1rem]"
           setModal('', error, false)
         }}
       />
+      {modalLoading && <LoadingModal showMessage />}
     </>
   )
 }

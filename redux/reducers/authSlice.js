@@ -4,46 +4,66 @@ import axios from 'axios'
 import { signIn } from 'next-auth/react'
 
 const initialState = {
-  signUpSuccess: null,
-  loginSuccess: null,
-  error: null,
   loading: false,
+  modalLoading: false,
 }
 
 export const loginUser = createAsyncThunk(
   'auth/login',
   async ({ email, password }) => {
-    const res = await signIn('credentials', {
-      email: email,
-      password: password,
-      redirect: false,
-    })
+    try {
+      const res = await signIn('credentials', {
+        email: email,
+        password: password,
+        redirect: false,
+      })
 
-    return res
+      return res
+    } catch (error) {
+      return error
+    }
   }
 )
 
-export const getUser = createAsyncThunk('auth/getUser', async () => {
-  try {
-    const response = await axios({
-      method: 'GET',
-      url: `${SERVER_URL}/get-user`,
-      withCredentials: true,
-    })
+export const refreshAccessToken = createAsyncThunk(
+  '/refresh_token',
+  async () => {
+    try {
+      const res = await axios.post(
+        `${SERVER_URL}/refresh_token`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      )
 
-    return response.data
-  } catch (error) {
-    return {
-      success: false,
-      message: error,
-    }
+      if (res.data) {
+        const response = await signIn('credentials', {
+          refreshAccessToken: true,
+          accessToken: res.data.accessToken,
+          email: res.data.email,
+          redirect: false,
+        })
+        // return response
+      }
+    } catch (error) {}
   }
-})
+)
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    authenticatePending(state, action) {
+      state.modalLoading = true
+    },
+    authenticateComplete(state, action) {
+      state.modalLoading = false
+    },
+  },
 
   extraReducers(builder) {
     builder
@@ -53,9 +73,15 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false
       })
+      .addCase(refreshAccessToken.pending, (state, action) => {
+        state.loading = true
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
+        state.loading = false
+      })
   },
 })
 
-export const { signUpUser } = authSlice.actions
+export const { authenticatePending, authenticateComplete } = authSlice.actions
 
 export default authSlice.reducer
