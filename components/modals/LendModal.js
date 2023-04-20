@@ -59,8 +59,12 @@ const LendModal = () => {
   const getBalance = async () => {
     if (!publicKey) return
 
-    const balance = await connection.getBalance(publicKey)
-    setBalance(balance / LAMPORTS_PER_SOL)
+    try {
+      const balance = await connection.getBalance(publicKey)
+      setBalance(balance / LAMPORTS_PER_SOL)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const onClose = () => {
@@ -422,7 +426,7 @@ const LendModal = () => {
         className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex flex h-full items-center justify-center font-inter md:h-auto"
       >
         <Overlay onClose={onClose} />
-        <div className="relative flex flex-col justify-center md:block">
+        <div className="relative flex w-full flex-col items-center justify-center md:block md:w-auto">
           {orderBook?.collectionImage && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -449,9 +453,9 @@ const LendModal = () => {
           )}
           <FormProvider {...methods}>
             <div
-              className={`modal duration-400 relative flex flex-col rounded-t-[1.25rem] transition-colors ease-in-out ${
+              className={`modal duration-400 relative flex h-screen flex-col justify-center rounded-[1.25rem] transition-colors ease-in-out md:h-auto md:overflow-y-auto ${
                 isSuccess ? 'bg-[#022628]' : 'bg-[#191C20]'
-              } px-[2rem] pb-[1.5rem] pt-[5.8rem] text-white shadow-lg`}
+              } w-full overflow-y-scroll px-[2rem] pb-[2rem] pt-[5.8rem] text-white shadow-lg md:w-auto`}
             >
               {renderCloseButton()}
               {renderTitle()}
@@ -502,13 +506,13 @@ const LendModal = () => {
               </p>
             </div>
           </FormProvider>
-          <Image
+          {/* <Image
             className="bottom-0 w-full"
             src="/images/svgs/modal-footer.svg"
             width={0}
             height={0}
             alt=""
-          />
+          /> */}
         </div>
       </motion.div>
     )

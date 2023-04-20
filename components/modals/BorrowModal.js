@@ -58,7 +58,7 @@ const BorrowModal = () => {
             },
           },
         },
-        pollInterval: 0,
+        pollInterval: 1000,
       })
     }
   }, [orderBook, getBestOffer, loading])
@@ -112,14 +112,27 @@ const BorrowModal = () => {
     return (
       <>
         <div className="mt-8 flex w-full justify-between text-xl">
-          <p>APY%</p>
+          <p>Interest</p>
           <p>Duration</p>
           <p>Floor</p>
         </div>
         <div className="mt-4 flex w-full justify-between text-3xl">
-          <p className="text-[#11AF22]">{orderBook?.apyAfterFee}%</p>
-          <p>{orderBook?.duration}d</p>
-          <p>{floorPriceSol ? toCurrencyFormat(floorPriceSol) : 'No Data'}</p>
+          <p className="flex flex-1 justify-start text-[#11AF22]">
+            {orderBook?.apyAfterFee}%
+          </p>
+          <p className="flex flex-1 justify-center">{orderBook?.duration}d</p>
+          <div className="flex flex-1 items-center justify-end">
+            {floorPriceSol && (
+              <Image
+                className="mr-2 h-[2rem] w-[2rem]"
+                src="/images/svgs/sol.svg"
+                width={16}
+                height={16}
+                alt=""
+              />
+            )}
+            <p>{floorPriceSol ? toCurrencyFormat(floorPriceSol) : 'No Data'}</p>
+          </div>
         </div>
       </>
     )
@@ -133,7 +146,7 @@ const BorrowModal = () => {
         className={mergeClasses(
           'flex',
           'flex-col',
-          'w-1/3',
+          'w-[31%]',
           'justify-center',
           'items-center',
           'rounded rounded-2xl',
@@ -146,8 +159,7 @@ const BorrowModal = () => {
           'hover:border-[#62E3DD]',
           'transition duration-200 ease-in-out',
           'bg-[#191C20]',
-          'p-3',
-          index > 0 && 'ml-6'
+          'p-3'
         )}
         disabled={ownedNft?.mint === selectedNft?.mint}
         onClick={() => setSelectedNft(ownedNft)}
@@ -347,10 +359,10 @@ const BorrowModal = () => {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 1 }}
         transition={{ duration: 0.5, type: 'spring' }}
-        className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex flex h-full items-center justify-center font-inter md:h-auto"
+        className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex h-full items-center justify-center font-inter md:h-auto"
       >
         <Overlay onClose={onClose} />
-        <div className="relative flex flex-col justify-center md:block">
+        <div className="relative flex w-full flex-col items-center justify-center md:block md:w-auto">
           {orderBook?.collectionImage && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -376,15 +388,17 @@ const BorrowModal = () => {
             </motion.div>
           )}
           <div
-            className={`modal duration-400 relative flex flex-col rounded-[1.25rem] transition-colors ease-in-out ${
+            className={`modal duration-400 relative flex h-screen flex-col justify-center rounded-[1.25rem] transition-colors ease-in-out md:h-auto md:overflow-y-auto ${
               isSuccess ? 'bg-[#022628]' : 'bg-[#111111]'
-            } px-[2rem] pb-[3rem] pt-[5.8rem] text-white shadow-lg xl:w-[500px]`}
+            } w-full overflow-y-scroll px-[2rem] pb-[3rem] pt-[5.8rem] text-white shadow-lg md:w-[600px]`}
           >
             {renderCloseButton()}
             {renderTitle()}
             {renderOrderBookInfo()}
             <div className="my-8 border border-white opacity-10" />
-            <div class="flex w-full flex-wrap">{renderOwnedNfts()}</div>
+            <div class="flex max-h-[500px] w-auto flex-wrap gap-4 overflow-y-scroll">
+              {renderOwnedNfts()}
+            </div>
             <div className="my-8 border border-white opacity-10" />
             {renderSelectedNftCount()}
             {renderTotal()}
