@@ -96,6 +96,7 @@ const OrderBookTable = ({ onClickRow, loading }) => {
                   orderBook={orderBook}
                   onClickRow={onClickRow}
                   key={index}
+                  loading={loading}
                 />
               ))}
             </tbody>

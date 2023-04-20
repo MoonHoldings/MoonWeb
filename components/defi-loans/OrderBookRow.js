@@ -11,7 +11,7 @@ import { setOrderBook } from 'redux/reducers/sharkifyLendSlice'
 import TextBlink from 'components/partials/TextBlink'
 import { useRouter } from 'next/router'
 
-const OrderBookRow = ({ orderBook, onClickRow }) => {
+const OrderBookRow = ({ orderBook, onClickRow, loading }) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { publicKey } = useWallet()
@@ -118,7 +118,7 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
             : orderBook?.interest < 0.01
             ? orderBook?.interest?.toFixed(3)
             : orderBook?.interest?.toFixed(2)}
-          {!isLendPage && !orderBook?.interest && (
+          {loading && (
             <svg
               aria-hidden="true"
               className="ml-2 mr-2 h-7 w-7 animate-spin fill-black"
