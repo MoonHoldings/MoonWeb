@@ -134,12 +134,21 @@ const LendModal = () => {
     }
   }
 
-  const calculateInterest = (amount, duration, apy) => {
-    const dailyInterestRate = Math.pow(1 + apy / 100, 1 / 365) - 1
-    const finalAmount = amount * Math.pow(1 + dailyInterestRate, duration / 365)
-    const interest = finalAmount - amount
+  const calculateInterest = (amount, duration, apy, feePermillicentage) => {
+    console.log(amount, duration, apy, feePermillicentage)
+    if (!amount) return 0
 
-    return toCurrencyFormat(interest ? interest : 0)
+    const apr = apy / 1000
+    const durationSeconds = duration
+    const interestRatio =
+      Math.exp((durationSeconds / (365 * 24 * 60 * 60)) * (apr / 100)) - 1
+    const interestLamportsBeforeFee = amount * interestRatio
+    const interestLamportsAfterFee =
+      interestLamportsBeforeFee * (1 - feePermillicentage / 100_000)
+
+    return interestLamportsAfterFee < 0.01
+      ? interestLamportsAfterFee.toFixed(3)
+      : interestLamportsAfterFee.toFixed(2)
   }
 
   const floorPriceSol = orderBook?.floorPriceSol
@@ -212,9 +221,7 @@ const LendModal = () => {
               },
               max: {
                 value: balance,
-                message: `Please input an offer amount not more than ${toCurrencyFormat(
-                  balance ? balance : 0
-                )}.`,
+                message: `Not enough balance.`,
               },
             })}
             className="ml-4 bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
@@ -266,8 +273,9 @@ const LendModal = () => {
             type="text"
             value={calculateInterest(
               parseFloat(watch('offerAmount')),
-              orderBook?.durationNumber,
-              orderBook?.apyPercent
+              orderBook?.durationSeconds,
+              orderBook?.apy,
+              orderBook?.feePermillicentage
             )}
             disabled
           />

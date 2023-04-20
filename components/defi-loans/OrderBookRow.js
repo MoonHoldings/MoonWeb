@@ -43,7 +43,13 @@ const OrderBookRow = ({ orderBook, onClickRow }) => {
           type="button"
           className="rounded-xl border border-[#61D9EB] from-[#61D9EB] to-[#63EDD0] px-7 py-1 text-[1.3rem] text-[#61D9EB] hover:border-[#f0f6f0] hover:bg-gradient-to-b hover:text-[#15181B]"
           onClick={() => {
-            dispatch(setOrderBook({ ...orderBook, duration }))
+            dispatch(
+              setOrderBook({
+                ...orderBook,
+                duration,
+                durationSeconds: orderBook?.duration,
+              })
+            )
 
             if (isLendPage) {
               dispatch(changeLendModalOpen(true))

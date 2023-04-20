@@ -32,7 +32,9 @@ export const GET_ORDER_BOOKS = gql`
         id
         pubKey
         duration
+        apy
         apyAfterFee
+        feePermillicentage
         collectionName
         collectionImage
         totalPool
