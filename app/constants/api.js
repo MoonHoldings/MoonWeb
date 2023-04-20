@@ -1,4 +1,4 @@
-export const SERVER_URL = `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}`
+export const SERVER_URL = `${process.env.NEXT_PUBLIC_MOON_SERVER_URL}/api`
 export const MOON_API_URL = process.env.NEXT_PUBLIC_MOON_API_URL
 export const SHYFT_URL = `${process.env.NEXT_PUBLIC_SHYFT_SERVER_URL}`
 export const SHYFT_KEY = `${process.env.NEXT_PUBLIC_SHYFT_KEY}`

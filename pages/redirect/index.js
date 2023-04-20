@@ -14,6 +14,7 @@ const Redirect = (props) => {
           window.close()
         }
       }
+
       fetchData()
     }
   }, [dispatch, props.cookieValue])
