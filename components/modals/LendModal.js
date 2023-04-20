@@ -135,7 +135,6 @@ const LendModal = () => {
   }
 
   const calculateInterest = (amount, duration, apy, feePermillicentage) => {
-    console.log(amount, duration, apy, feePermillicentage)
     if (!amount) return 0
 
     const apr = apy / 1000
