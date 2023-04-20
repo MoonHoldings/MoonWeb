@@ -146,6 +146,9 @@ const BorrowModal = () => {
   }
 
   const renderOwnedNfts = () => {
+    // TODO: Filter out nfts that are currently in taken loan
+    // TODO: Fetch current loans, and check for nftCollateralMint
+
     return orderBook?.ownedNfts?.map((ownedNft, index) => (
       <button
         key={index}
@@ -442,7 +445,7 @@ const BorrowModal = () => {
               </div>
             )}
             {failMessage && (
-              <div className="mt-4 flex w-full justify-center text-[1.6rem] text-red-500">
+              <div className="mt-4 flex w-full justify-center break-all text-center text-[1.6rem] text-red-500">
                 {failMessage}
               </div>
             )}
