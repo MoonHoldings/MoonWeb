@@ -17,7 +17,6 @@ import Link from 'next/link'
 const BorrowModal = () => {
   const dispatch = useDispatch()
 
-  const { publicKey } = useWallet()
   const wallet = useWallet()
 
   const { borrowModalOpen } = useSelector((state) => state.util)
@@ -31,8 +30,18 @@ const BorrowModal = () => {
     GET_BEST_OFFER_FOR_BORROW
   )
   const bestOffer = data?.getLoans?.data[0]
+  const bestOfferSolNum = bestOffer
+    ? bestOffer.principalLamports / LAMPORTS_PER_SOL
+    : 0
   const bestOfferSol = toCurrencyFormat(
     bestOffer ? bestOffer.principalLamports / LAMPORTS_PER_SOL : 0
+  )
+  const duration = bestOffer?.duration
+  const interest = calculateInterest(
+    bestOfferSolNum,
+    duration,
+    orderBook?.apy,
+    orderBook?.feePermillicentage
   )
 
   const floorPriceSol = orderBook?.floorPriceSol
@@ -117,9 +126,7 @@ const BorrowModal = () => {
           <p>Floor</p>
         </div>
         <div className="mt-4 flex w-full justify-between text-3xl">
-          <p className="flex flex-1 justify-start text-[#11AF22]">
-            {orderBook?.apyAfterFee}%
-          </p>
+          <p className="flex flex-1 justify-start text-[#11AF22]">{interest}</p>
           <p className="flex flex-1 justify-center">{orderBook?.duration}d</p>
           <div className="flex flex-1 items-center justify-end">
             {floorPriceSol && (
@@ -352,6 +359,19 @@ const BorrowModal = () => {
     setIsSubmitting(false)
   }
 
+  function calculateInterest(amount, duration, apy, feePermillicentage) {
+    if (!amount) return 0
+
+    const apr = apy / 1000 // Order book
+    const durationSeconds = duration
+    const interestRatio =
+      Math.exp((durationSeconds / (365 * 24 * 60 * 60)) * (apr / 100)) - 1
+    const totalOwedLamports = amount * (1 + interestRatio)
+    const interest = totalOwedLamports - amount
+
+    return interest < 0.01 ? interest.toFixed(3) : interest.toFixed(2)
+  }
+
   return (
     borrowModalOpen && (
       <motion.div
@@ -390,7 +410,7 @@ const BorrowModal = () => {
           <div
             className={`modal duration-400 relative flex h-screen flex-col justify-center rounded-[1.25rem] transition-colors ease-in-out md:h-auto md:overflow-y-auto ${
               isSuccess ? 'bg-[#022628]' : 'bg-[#111111]'
-            } w-full overflow-y-scroll px-[2rem] pb-[3rem] pt-[5.8rem] text-white shadow-lg md:w-[600px]`}
+            } w-full overflow-y-scroll px-[2rem] pb-[3rem] pt-[5.8rem] text-white shadow-lg md:w-[550px]`}
           >
             {renderCloseButton()}
             {renderTitle()}
@@ -404,6 +424,10 @@ const BorrowModal = () => {
             {renderTotal()}
             <div className="mt-4 flex w-full justify-center">
               {renderBorrowButton()}
+            </div>
+            <div className="mt-6 flex w-full justify-center text-[1.35rem]">
+              Repay {parseFloat(interest) + bestOfferSolNum} in{' '}
+              {orderBook?.duration} days
             </div>
             {txLink && (
               <div className="flex w-full justify-center">

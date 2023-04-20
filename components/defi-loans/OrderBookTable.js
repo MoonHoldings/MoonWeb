@@ -5,23 +5,26 @@ import OrderBookRow from './OrderBookRow'
 import mergeClasses from 'utils/mergeClasses'
 import { useDispatch, useSelector } from 'react-redux'
 import Pagination from './Pagination'
-
-const COLUMNS = [
-  'Collection',
-  'Total Pool',
-  'Best Offer',
-  'APY',
-  'Duration',
-  'Action',
-]
+import { useRouter } from 'next/router'
 
 const OrderBookTable = ({ onClickRow, loading }) => {
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const { orderBooks, totalOrderBooks } = useSelector((state) => state.sharkify)
   const { sortOption, sortOrder } = useSelector((state) => state.sharkifyLend)
 
+  const isLendPage = router.pathname.includes('lend')
   const totalItems = totalOrderBooks
+
+  const COLUMNS = [
+    'Collection',
+    'Total Pool',
+    'Best Offer',
+    isLendPage ? 'APY' : 'Interest',
+    'Duration',
+    'Action',
+  ]
 
   const renderColumns = () => {
     return COLUMNS.map((column, index) => (

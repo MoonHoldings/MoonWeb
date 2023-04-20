@@ -50,6 +50,7 @@ const Borrow = () => {
             type: sortOption,
           },
           borrowWalletAddress: publicKey?.toBase58(),
+          isBorrowPage: true,
         },
       },
       pollInterval: 1000,
