@@ -6,7 +6,7 @@ const BannerModal = (props) => {
       className={`fixed left-0 top-0 z-50 w-full transform  px-4 py-2 text-white transition-all duration-300 ${
         props.showModal
           ? 'transition-y-100 opacity-100'
-          : 'transition-y-0 opacity-0'
+          : 'transition-y-0 pointer-events-none opacity-0'
       } ${
         props.hasError
           ? 'bg-gradient-to-b from-red-600 to-red-500'

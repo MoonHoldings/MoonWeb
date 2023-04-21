@@ -10,7 +10,7 @@ import {
   authenticateComplete,
   authenticatePending,
 } from 'redux/reducers/authSlice'
-import { GENERATE_DISCORD_URL } from 'utils/queries.js'
+import { GENERATE_DISCORD_URL, GET_PASSWORD_RESET } from 'utils/queries.js'
 import { getSession } from 'next-auth/react'
 import { useLazyQuery } from '@apollo/client'
 
@@ -22,17 +22,22 @@ import { GeneralButton } from 'components/forms/GeneralButton'
 const Login = () => {
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
+  const [forgetEmail, setForgetEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
+  const [isForgetPass, setIsForgetPass] = useState(false)
   const { loading: signingIn, modalLoading } = useSelector(
     (state) => state.auth
   )
 
   const [discordAuth, { loading: gettingDiscordUrl }] =
     useLazyQuery(GENERATE_DISCORD_URL)
+
+  const [getPasswordResetUrl, { loading: gettingUrl }] =
+    useLazyQuery(GET_PASSWORD_RESET)
 
   useEffect(() => {
     dispatch(authenticateComplete())
@@ -78,6 +83,27 @@ const Login = () => {
     }
   }
 
+  const getPasswordReset = async () => {
+    try {
+      const res = await getPasswordResetUrl({
+        variables: { email: forgetEmail },
+      })
+
+      if (res.data) {
+        setModal(
+          'Successfully sent reset link to your email. Please check yout inbox.',
+          false,
+          true
+        )
+        setIsForgetPass(false)
+      } else if (res.payload.error) {
+        setModal(res.payload.error, true, true)
+      }
+    } catch (error) {
+      setModal(error, true, true)
+    }
+  }
+
   const openDiscordWindow = (discordUrl) => {
     const windowFeatures =
       'height=800,width=800,resizable=yes,scrollbars=yes,status=yes'
@@ -111,51 +137,92 @@ const Login = () => {
           <h1 className="mb-[2rem] mt-[4rem] text-[6.4rem] font-bold text-[#63ECD2]">
             Login
           </h1>
-          <div
-            className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
+          {isForgetPass ? (
+            <>
+              <div
+                className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
+                 border border-[#50545A] px-4 py-[1.1rem]"
+              >
+                <input
+                  className="form-field w-full"
+                  type="email"
+                  placeholder="Email"
+                  onChange={(e) => setForgetEmail(e.target.value)}
+                />
+                <GeneralButton
+                  onSubmit={getPasswordReset}
+                  loading={gettingUrl}
+                  title={'Confirm'}
+                  bgColor={'bg-gradient-to-b from-teal-400 to-teal-300'}
+                />
+              </div>
+              <div className={'flex w-[27.4rem] px-4'}>
+                <GeneralButton
+                  onSubmit={() => setIsForgetPass(false)}
+                  title={'Back'}
+                  bgColor={'bg-black'}
+                  isWhite
+                  hasBorder
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"
-          >
-            <input
-              className="form-field w-full"
-              type="email"
-              placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              className="form-field w-full"
-              type="password"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <GeneralButton
-              onSubmit={login}
-              loading={signingIn}
-              title={'Login'}
-              bgColor={'bg-gradient-to-b from-teal-400 to-teal-300'}
-            />
-          </div>
-          <div
-            className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
+              >
+                <input
+                  className="form-field w-full"
+                  type="email"
+                  placeholder="Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  className="form-field w-full"
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <GeneralButton
+                  onSubmit={login}
+                  loading={signingIn}
+                  title={'Login'}
+                  bgColor={
+                    'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
+                  }
+                />
+              </div>
+              <div
+                className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"
-          >
-            <GeneralButton
-              onSubmit={generateDiscordUrl}
-              loading={gettingDiscordUrl}
-              title={'Login With Discord'}
-              bgColor={'bg-gradient-to-b from-indigo-600 to-indigo-500'}
-              isWhite
-            />
-          </div>
-          <div className="mb-[1rem] text-[1.6rem]">or</div>
-          <div className={'flex w-[27.4rem] px-4'}>
-            <GeneralButton
-              onSubmit={signupInstead}
-              title={'Signup'}
-              bgColor={'bg-black'}
-              isWhite
-              hasBorder
-            />
-          </div>
+              >
+                <GeneralButton
+                  onSubmit={generateDiscordUrl}
+                  loading={gettingDiscordUrl}
+                  title={'Login With Discord'}
+                  bgColor={'bg-blue-600 hover:bg-blue-700'}
+                  isWhite
+                />
+              </div>
+              <div
+                onClick={() => setIsForgetPass(true)}
+                className="mb-[1rem] text-[1.6rem] group hover:underline hover:cursor-pointer hover:text-gray-200"
+              >
+                Forgot Password?
+              </div>
+              <div className="mb-[1rem] text-[1.6rem]">or</div>
+              <div className={'flex w-[27.4rem] px-4'}>
+                <GeneralButton
+                  onSubmit={signupInstead}
+                  title={'Signup'}
+                  bgColor={'bg-black hover:bg-gray-900'}
+                  isWhite
+                  hasBorder
+                />
+              </div>
+            </>
+          )}
         </div>
         <footer className="h-84 fixed bottom-0 flex hidden   w-full bg-gray-900 md:block">
           <div className="h-full w-full ">
