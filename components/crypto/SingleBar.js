@@ -8,7 +8,6 @@ const SingleBar = ({ crypto, dummyCryptos, index }) => {
   useEffect(() => {
     const div = chartRef.current
     const { width } = div.getBoundingClientRect()
-    console.log(width)
 
     setBarWidth(width)
   }, [])

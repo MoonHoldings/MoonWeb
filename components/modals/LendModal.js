@@ -1,27 +1,29 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeLendOfferModalOpen } from 'redux/reducers/utilSlice'
+import { changeLendModalOpen } from 'redux/reducers/utilSlice'
 import { FormProvider, useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Alert } from 'flowbite-react'
+import { Alert } from 'antd'
 import { useWallet } from '@solana/wallet-adapter-react'
 import createAnchorProvider, { connection } from 'utils/createAnchorProvider'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { createSharkyClient } from '@sharkyfi/client'
 import mergeClasses from 'utils/mergeClasses'
+import TextBlink from 'components/partials/TextBlink'
+import calculateLendInterest from 'utils/calculateLendInterest'
 
 const MAX_OFFERS = 4
 
-const LendOfferModal = () => {
+const LendModal = () => {
   const dispatch = useDispatch()
 
   const { publicKey } = useWallet()
   const wallet = useWallet()
 
-  const { lendOfferModalOpen } = useSelector((state) => state.util)
+  const { lendModalOpen } = useSelector((state) => state.util)
   const { orderBook } = useSelector((state) => state.sharkifyLend)
 
   const [balance, setBalance] = useState(null)
@@ -49,21 +51,25 @@ const LendOfferModal = () => {
   } = methods
 
   useEffect(() => {
-    if (lendOfferModalOpen && publicKey) {
+    if (lendModalOpen && publicKey) {
       getBalance()
     }
-  }, [getBalance, lendOfferModalOpen, publicKey])
+  }, [getBalance, lendModalOpen, publicKey])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getBalance = async () => {
     if (!publicKey) return
 
-    const balance = await connection.getBalance(publicKey)
-    setBalance(balance / LAMPORTS_PER_SOL)
+    try {
+      const balance = await connection.getBalance(publicKey)
+      setBalance(balance / LAMPORTS_PER_SOL)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const onClose = () => {
-    dispatch(changeLendOfferModalOpen(false))
+    dispatch(changeLendModalOpen(false))
     setNumLoanOffers(1)
     setIsSuccess(false)
     reset()
@@ -89,7 +95,6 @@ const LendOfferModal = () => {
   const placeOffer = async () => {
     const provider = createAnchorProvider(wallet)
     const sharkyClient = createSharkyClient(provider)
-
     const { program } = sharkyClient
 
     const { orderBook: orderBookInfo } = await sharkyClient.fetchOrderBook({
@@ -131,14 +136,6 @@ const LendOfferModal = () => {
         })
       }
     }
-  }
-
-  const calculateInterest = (amount, duration, apy) => {
-    const dailyInterestRate = Math.pow(1 + apy / 100, 1 / 365) - 1
-    const finalAmount = amount * Math.pow(1 + dailyInterestRate, duration / 365)
-    const interest = finalAmount - amount
-
-    return toCurrencyFormat(interest ? interest : 0)
   }
 
   const floorPriceSol = orderBook?.floorPriceSol
@@ -211,9 +208,7 @@ const LendOfferModal = () => {
               },
               max: {
                 value: balance,
-                message: `Please input an offer amount not more than ${toCurrencyFormat(
-                  balance ? balance : 0
-                )}.`,
+                message: `Not enough balance.`,
               },
             })}
             className="ml-4 bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
@@ -263,10 +258,11 @@ const LendOfferModal = () => {
           <input
             className="ml-4 bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
             type="text"
-            value={calculateInterest(
+            value={calculateLendInterest(
               parseFloat(watch('offerAmount')),
-              orderBook?.durationNumber,
-              orderBook?.apyPercent
+              orderBook?.durationSeconds,
+              orderBook?.apy,
+              orderBook?.feePermillicentage
             )}
             disabled
           />
@@ -396,16 +392,17 @@ const LendOfferModal = () => {
         <p className="text-2xl">You have</p>
         <div className="flex">
           <Image src="/images/svgs/sol.svg" width={16} height={16} alt="" />
-          <p className="ml-2 text-2xl">
-            {toCurrencyFormat(balance ? balance : 0)}
-          </p>
+          <TextBlink
+            className="ml-2 text-2xl"
+            text={toCurrencyFormat(balance ? balance : 0)}
+          />
         </div>
       </div>
     )
   }
 
   return (
-    lendOfferModalOpen && (
+    lendModalOpen && (
       <motion.div
         initial={{ opacity: 0, scale: 1 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -414,7 +411,7 @@ const LendOfferModal = () => {
         className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex flex h-full items-center justify-center font-inter md:h-auto"
       >
         <Overlay onClose={onClose} />
-        <div className="relative flex flex-col justify-center md:block">
+        <div className="relative flex w-full flex-col items-center justify-center md:block md:w-auto">
           {orderBook?.collectionImage && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -441,9 +438,9 @@ const LendOfferModal = () => {
           )}
           <FormProvider {...methods}>
             <div
-              className={`modal duration-400 relative flex flex-col rounded-t-[1.25rem] transition-colors ease-in-out ${
+              className={`modal duration-400 relative flex h-screen flex-col justify-center rounded-[1.25rem] transition-colors ease-in-out md:h-auto md:overflow-y-auto ${
                 isSuccess ? 'bg-[#022628]' : 'bg-[#191C20]'
-              } px-[2rem] pb-[1.5rem] pt-[5.8rem] text-white shadow-lg`}
+              } w-full overflow-y-scroll px-[2rem] pb-[2rem] pt-[5.8rem] text-white shadow-lg md:w-auto`}
             >
               {renderCloseButton()}
               {renderTitle()}
@@ -454,11 +451,15 @@ const LendOfferModal = () => {
                 {renderInterest()}
               </div>
               {isOfferGreaterThanFloorPrice && (
-                <Alert color="failure" className="my-5" withBorderAccent={true}>
-                  <span className="text-[1.4rem] font-medium">
-                    This offer amount is more than the current floor price!
-                  </span>
-                </Alert>
+                <Alert
+                  className="my-5"
+                  message={
+                    <span className="text-[1.3rem]">
+                      This offer amount is more than the current floor price!
+                    </span>
+                  }
+                  type="error"
+                />
               )}
               {renderQuantityOptions()}
               <div className="my-8 border border-white opacity-10" />
@@ -490,13 +491,13 @@ const LendOfferModal = () => {
               </p>
             </div>
           </FormProvider>
-          <Image
+          {/* <Image
             className="bottom-0 w-full"
             src="/images/svgs/modal-footer.svg"
             width={0}
             height={0}
             alt=""
-          />
+          /> */}
         </div>
       </motion.div>
     )
@@ -512,4 +513,4 @@ const Overlay = ({ onClose }) => {
   )
 }
 
-export default LendOfferModal
+export default LendModal

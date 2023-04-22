@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { Tooltip } from 'flowbite-react'
+import { Tooltip } from 'antd'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 
@@ -107,28 +107,24 @@ const Index = () => {
                 </div>
               </div>
               <Tooltip
-                className="rounded-xl px-[2rem] py-[1.5rem]"
-                content={
+                color="#1F2126"
+                title={
                   <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
                     {formatFloorPriceUsd()}
                   </span>
                 }
-                placement="bottom"
-                theme={{
-                  arrow: {
-                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-                  },
-                }}
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUsd())
                     ? 'hover'
                     : null
                 }
               >
-                <TextBlink
-                  className="bold ml-4 text-[1.5rem] md:text-[2rem]"
-                  text={formatShortFloorPriceUsd()}
-                />
+                <div>
+                  <TextBlink
+                    className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                    text={formatShortFloorPriceUsd()}
+                  />
+                </div>
               </Tooltip>
             </div>
 
@@ -148,28 +144,24 @@ const Index = () => {
                 </div>
               </div>
               <Tooltip
-                className="rounded-xl px-[2rem] py-[1.5rem]"
-                content={
+                color="#1F2126"
+                title={
                   <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
                     {formatFloorPriceUsdTotal()}
                   </span>
                 }
-                placement="bottom"
-                theme={{
-                  arrow: {
-                    base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-                  },
-                }}
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUsdTotal())
                     ? 'hover'
                     : null
                 }
               >
-                <TextBlink
-                  className="bold ml-4 text-[1.5rem] md:text-[2rem]"
-                  text={formatShortFloorPriceUsdTotal()}
-                />
+                <div>
+                  <TextBlink
+                    className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                    text={formatShortFloorPriceUsdTotal()}
+                  />
+                </div>
               </Tooltip>
             </div>
           </div>

@@ -14,16 +14,14 @@ import { MY_OFFERS } from 'utils/queries'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { setRevokeLoan } from 'redux/reducers/sharkifyLendSlice'
-import RevokeOfferModal from 'components/modals/RevokeOfferModal'
+import calculateLendInterest from 'utils/calculateLendInterest'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
 
   const { disconnect, publicKey } = useWallet()
   const { addAddressStatus } = useSelector((state) => state.wallet)
-  const { lendRightSideBarOpen, revokeOfferModalOpen } = useSelector(
-    (state) => state.util
-  )
+  const { lendRightSideBarOpen } = useSelector((state) => state.util)
 
   const [getMyOffers, { loading, error, data }] = useLazyQuery(MY_OFFERS)
 
@@ -159,7 +157,14 @@ const RightSideBar = () => {
                   <p>Offer</p>
                 </div>
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
-                  <p>0.80</p>
+                  <p>
+                    {calculateLendInterest(
+                      offer?.principalLamports / LAMPORTS_PER_SOL,
+                      offer?.orderBook?.duration,
+                      offer?.orderBook?.apy,
+                      offer?.orderBook?.feePermillicentage
+                    )}
+                  </p>
                   <p>Interest</p>
                 </div>
                 <div className="flex flex-1 flex-col items-center">

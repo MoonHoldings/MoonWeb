@@ -29,7 +29,7 @@ import {
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { Tooltip } from 'flowbite-react'
+import { Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 
@@ -210,22 +210,13 @@ const RightSideBar = () => {
   const renderRefreshWallet = () => {
     return (
       <Tooltip
-        content={REFRESH_WALLETS_TITLE}
-        className="rounded-xl px-[2rem] py-[1.5rem]"
-        placement="bottom"
-        theme={{
-          arrow: {
-            base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-          },
-          content: 'text-[1.3rem]',
-          target:
-            'hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] text-white px-[1.6rem] hover:border-[#62EAD2]',
-        }}
+        color="#1F2126"
+        title={<span className="text-[1.5rem]">{REFRESH_WALLETS_TITLE}</span>}
       >
         <button
           type="button"
           onClick={refreshWalletsAndFloorPrice}
-          className="w-full"
+          className='hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2]'
         >
           <div className="flex h-[4.1rem] w-full items-center justify-center">
             <p className="mr-4 text-[1.9rem]">↻</p>
@@ -363,42 +354,28 @@ const RightSideBar = () => {
           <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
           <div className="total-value flex h-[8.6rem] flex-col items-end">
             <Tooltip
-              className="rounded-xl px-[2rem] py-[1.5rem]"
-              content={
-                <span className="flex h-full items-center text-[2rem]">
+              color="#1F2126"
+              title={
+                <span className="flex h-full items-center text-[2rem] text-white">
                   {getPortfolioValueUsd()}
                 </span>
               }
-              placement="left"
-              theme={{
-                arrow: {
-                  base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-                },
-              }}
-              trigger={
-                isShortCurrencyFormat(getShortPortfolioValueUsd())
-                  ? 'hover'
-                  : null
-              }
+              trigger={'hover'}
             >
-              <TextBlink
-                text={getShortPortfolioValueUsd()}
-                className="text-[3.2rem] text-white xl:text-[2.8rem]"
-              />
+              <div>
+                <TextBlink
+                  text={getShortPortfolioValueUsd()}
+                  className="text-[3.2rem] text-white xl:text-[2.8rem]"
+                />
+              </div>
             </Tooltip>
             <Tooltip
-              className="rounded-xl px-[2rem] py-[1.5rem]"
-              content={
+              color="#1F2126"
+              title={
                 <span className="flex h-full items-center text-[2rem] text-white">
                   {getPortfolioValue()}
                 </span>
               }
-              placement="left"
-              theme={{
-                arrow: {
-                  base: 'absolute z-10 h-5 w-5 rotate-45 bg-gray-900 dark:bg-gray-700',
-                },
-              }}
               trigger={
                 isShortCurrencyFormat(getShortPortfolioValue()) ? 'hover' : null
               }

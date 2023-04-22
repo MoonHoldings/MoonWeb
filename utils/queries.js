@@ -15,8 +15,10 @@ export const MY_OFFERS = gql`
             floorPriceSol
             nftMint
           }
+          apy
           apyAfterFee
           duration
+          feePermillicentage
         }
         state
       }
@@ -32,12 +34,22 @@ export const GET_ORDER_BOOKS = gql`
         id
         pubKey
         duration
+        apy
         apyAfterFee
+        feePermillicentage
         collectionName
         collectionImage
         totalPool
         bestOffer
+        interest
         floorPriceSol
+        ownedNfts {
+          image
+          mint
+          name
+          nftListIndex
+          symbol
+        }
       }
     }
   }
@@ -69,6 +81,18 @@ export const GET_ORDER_BOOK_OFFERS = gql`
       data {
         principalLamports
         offerTime
+      }
+    }
+  }
+`
+
+export const GET_BEST_OFFER_FOR_BORROW = gql`
+  query GetBestOfferForBorrow($args: GetLoansArgs) {
+    getLoans(args: $args) {
+      data {
+        duration
+        principalLamports
+        pubKey
       }
     }
   }

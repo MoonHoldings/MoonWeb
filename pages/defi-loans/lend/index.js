@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Header from 'components/defi-loans/Header'
 import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Search from 'components/defi-loans/Search'
-import LendOfferModal from 'components/modals/LendOfferModal'
+import LendModal from 'components/modals/LendModal'
 import { changeLoanDetailsModalOpen } from 'redux/reducers/utilSlice'
 import { setOrderBooks } from 'redux/reducers/sharkifySlice'
 import {
@@ -73,7 +73,7 @@ const Lend = () => {
 
   return (
     <SidebarsLayout>
-      <LendOfferModal />
+      <LendModal />
       <RevokeOfferModal />
       <LoanDetailsModal />
       <div className="pb-[4rem] pt-[2rem] md:order-2">
