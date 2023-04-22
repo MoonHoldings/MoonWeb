@@ -7,8 +7,9 @@ const calculateLendInterest = (amount, duration, apy, feePermillicentage) => {
   const interestLamports =
     amount * interestRatio * (1 - feePermillicentage / 100_000)
 
-  if (interestLamports < 0.001) return 0
-  return interestLamports.toFixed(interestLamports < 0.01 ? 3 : 2)
+  return interestLamports.toFixed(
+    interestLamports < 0.01 ? (interestLamports < 0.001 ? 4 : 3) : 2
+  )
 }
 
 export default calculateLendInterest
