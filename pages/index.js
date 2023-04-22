@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react'
 import { GeneralButton } from 'components/forms/GeneralButton'
 import Image from 'next/image'
 import { MOON_HOLDINGS } from 'app/constants/copy'
+import Router from 'next/router'
 
 const index = () => {
   const loginInstead = () => {
@@ -16,8 +17,8 @@ const index = () => {
   return (
     <div className="flex h-screen w-full flex-col pt-8">
       <div className="flex justify-center md:mx-8 md:justify-between">
-        <div className="flex hidden items-center self-start md:block lg:block lg:flex">
-          <div className=" flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
+        <div className="flex hidden items-center self-start hover:cursor-pointer md:block lg:block lg:flex">
+          <div className="flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
             <Image
               className="h-[1.8Rem] w-[1.8Rem] xl:h-[3rem] xl:w-[3rem]"
               src="/images/svgs/moon-holdings-logo-white.svg"
@@ -35,7 +36,9 @@ const index = () => {
             <GeneralButton
               onSubmit={signupInstead}
               title={'Signup'}
-              bgColor={'bg-gradient-to-b from-teal-400 to-teal-300'}
+              bgColor={
+                'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
+              }
             />
           </div>
           <div className={'ml-4 w-[12.2rem] '}>
@@ -44,7 +47,7 @@ const index = () => {
               isWhite
               onSubmit={loginInstead}
               title={'Login'}
-              bgColor={'bg-black'}
+              bgColor={'bg-black hover:bg-gray-900'}
             />
           </div>
         </div>
