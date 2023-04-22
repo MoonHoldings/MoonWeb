@@ -1,12 +1,13 @@
 import React from 'react'
 import WelcomePage from 'components/home/WelcomePage'
-import { signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { GeneralButton } from 'components/forms/GeneralButton'
 import Image from 'next/image'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import Router from 'next/router'
+import { getServerSidePropsWithAuth } from 'utils/withAuth'
 
-const index = () => {
+const Index = (props) => {
   const loginInstead = () => {
     Router.push('/login')
   }
@@ -31,27 +32,30 @@ const index = () => {
             {MOON_HOLDINGS}
           </div>
         </div>
-        <div className={'flex flex-row'}>
-          <div className={'mr-4 w-[12.2rem]'}>
-            <GeneralButton
-              onSubmit={signupInstead}
-              title={'Signup'}
-              bgColor={
-                'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
-              }
-            />
+        {props.session && (
+          <div className={'flex flex-row'}>
+            <div className={'mr-4 w-[12.2rem]'}>
+              <GeneralButton
+                onSubmit={signupInstead}
+                title={'Signup'}
+                bgColor={
+                  'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
+                }
+              />
+            </div>
+            <div className={'ml-4 w-[12.2rem] '}>
+              <GeneralButton
+                hasBorder
+                isWhite
+                onSubmit={loginInstead}
+                title={'Login'}
+                bgColor={'bg-black hover:bg-gray-900'}
+              />
+            </div>
           </div>
-          <div className={'ml-4 w-[12.2rem] '}>
-            <GeneralButton
-              hasBorder
-              isWhite
-              onSubmit={loginInstead}
-              title={'Login'}
-              bgColor={'bg-black hover:bg-gray-900'}
-            />
-          </div>
-        </div>
+        )}
       </div>
+
       <div className="mx-auto mt-10 flex flex-1 flex-col px-10 md:w-4/5 md:px-60">
         <h1 className="text-[3rem] font-bold">
           Skyrocketing portfolio decision-making
@@ -87,4 +91,5 @@ const index = () => {
   )
 }
 
-export default index
+export default Index
+export const getServerSideProps = getServerSidePropsWithAuth
