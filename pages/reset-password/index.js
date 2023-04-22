@@ -103,7 +103,9 @@ const ResetPassword = (props) => {
               onSubmit={submit}
               loading={loading}
               title={'Submit'}
-              bgColor={'bg-gradient-to-b from-teal-400 to-teal-300'}
+              bgColor={
+                'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
+              }
             />
           </div>
 
@@ -113,7 +115,7 @@ const ResetPassword = (props) => {
               onSubmit={loginInstead}
               loading={loading}
               title={'Login'}
-              bgColor={'bg-black'}
+              bgColor={'bg-black hover:bg-gray-900'}
               isWhite
               hasBorder
             />

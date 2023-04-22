@@ -108,11 +108,17 @@ const SignUp = () => {
 
   return (
     <>
-      <div className=" flex h-screen flex-col md:flex-row">
-        <div className="form z-30 flex h-screen flex-col items-center justify-center bg-gray-500 pl-8 pt-8 md:w-1/2">
+      <div className="flex h-screen flex-col md:flex-row">
+        <div className="form z-30 flex h-screen flex-col items-center justify-center bg-gray-900 pl-8 pt-8 md:w-1/2">
           <div className="absolute left-0 top-0 pl-8 pt-8">
-            <div className="block flex items-center self-start md:hidden lg:block lg:flex">
-              <div className=" flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
+            <div
+              onClick={() => Router.push('/')}
+              className="block flex items-center self-start hover:cursor-pointer md:hidden lg:block lg:flex"
+            >
+              <div
+                onClick={() => Router.push('/')}
+                className=" flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]"
+              >
                 <Image
                   className="h-[1.8Rem] w-[1.8Rem] xl:h-[3rem] xl:w-[3rem]"
                   src="/images/svgs/moon-holdings-logo-white.svg"
@@ -159,7 +165,9 @@ const SignUp = () => {
               onSubmit={register}
               loading={signingUp}
               title={'Complete Sign Up'}
-              bgColor={'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'}
+              bgColor={
+                'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
+              }
             />
           </div>
 

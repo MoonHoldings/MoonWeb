@@ -18,6 +18,7 @@ import client from '../../utils/apollo-client'
 import BannerModal from 'components/modals/BannerModal'
 import LoadingModal from 'components/modals/LoadingModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
+import { MOON_HOLDINGS } from 'app/constants/copy'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -132,9 +133,26 @@ const Login = () => {
 
   return (
     <>
-      <div className="flex h-screen flex-col items-center bg-black pt-[4.6rem]">
-        <div className="form z-30 flex flex-col items-center">
-          <h1 className="mb-[2rem] mt-[4rem] text-[6.4rem] font-bold text-[#63ECD2]">
+      <div className="flex h-screen flex-col items-center">
+        <div
+          onClick={() => Router.push('/')}
+          className="flex items-center self-start pl-8 pt-8 hover:cursor-pointer md:block lg:block lg:flex"
+        >
+          <div className="flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
+            <Image
+              className="h-[1.8Rem] w-[1.8Rem] xl:h-[3rem] xl:w-[3rem]"
+              src="/images/svgs/moon-holdings-logo-white.svg"
+              width={40}
+              height={40}
+              alt=""
+            />
+          </div>
+          <div className="text-[1.6rem] font-semibold text-[#FFFFFF] xl:text-[1.8rem] xl:font-semibold ">
+            {MOON_HOLDINGS}
+          </div>
+        </div>
+        <div className="form z-30 flex h-screen flex-col items-center justify-center md:justify-start">
+          <h1 className="mb-[2rem] text-[6.4rem] font-bold text-[#63ECD2]">
             Login
           </h1>
           {isForgetPass ? (
@@ -149,18 +167,21 @@ const Login = () => {
                   placeholder="Email"
                   onChange={(e) => setForgetEmail(e.target.value)}
                 />
+
                 <GeneralButton
                   onSubmit={getPasswordReset}
                   loading={gettingUrl}
                   title={'Confirm'}
-                  bgColor={'bg-gradient-to-b from-teal-400 to-teal-300'}
+                  bgColor={
+                    'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
+                  }
                 />
               </div>
               <div className={'flex w-[27.4rem] px-4'}>
                 <GeneralButton
                   onSubmit={() => setIsForgetPass(false)}
                   title={'Back'}
-                  bgColor={'bg-black'}
+                  bgColor={'bg-black hover:bg-gray-900'}
                   isWhite
                   hasBorder
                 />
@@ -178,6 +199,7 @@ const Login = () => {
                   placeholder="Email"
                   onChange={(e) => setEmail(e.target.value)}
                 />
+
                 <input
                   className="form-field w-full"
                   type="password"
@@ -207,7 +229,7 @@ const Login = () => {
               </div>
               <div
                 onClick={() => setIsForgetPass(true)}
-                className="mb-[1rem] text-[1.6rem] group hover:underline hover:cursor-pointer hover:text-gray-200"
+                className="group mb-[1rem] text-[1.6rem] hover:cursor-pointer hover:text-gray-200 hover:underline"
               >
                 Forgot Password?
               </div>
