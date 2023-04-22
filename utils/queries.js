@@ -15,8 +15,10 @@ export const MY_OFFERS = gql`
             floorPriceSol
             nftMint
           }
+          apy
           apyAfterFee
           duration
+          feePermillicentage
         }
         state
       }

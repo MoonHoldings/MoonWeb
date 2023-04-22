@@ -13,6 +13,7 @@ import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { createSharkyClient } from '@sharkyfi/client'
 import mergeClasses from 'utils/mergeClasses'
 import TextBlink from 'components/partials/TextBlink'
+import calculateLendInterest from 'utils/calculateLendInterest'
 
 const MAX_OFFERS = 4
 
@@ -137,22 +138,6 @@ const LendModal = () => {
     }
   }
 
-  const calculateInterest = (amount, duration, apy, feePermillicentage) => {
-    if (!amount) return 0
-
-    const apr = apy / 1000
-    const durationSeconds = duration
-    const interestRatio =
-      Math.exp((durationSeconds / (365 * 24 * 60 * 60)) * (apr / 100)) - 1
-    const interestLamportsBeforeFee = amount * interestRatio
-    const interestLamportsAfterFee =
-      interestLamportsBeforeFee * (1 - feePermillicentage / 100_000)
-
-    return interestLamportsAfterFee < 0.01
-      ? interestLamportsAfterFee.toFixed(3)
-      : interestLamportsAfterFee.toFixed(2)
-  }
-
   const floorPriceSol = orderBook?.floorPriceSol
     ? orderBook?.floorPriceSol
     : null
@@ -273,7 +258,7 @@ const LendModal = () => {
           <input
             className="ml-4 bg-transparent text-[1.4rem] placeholder:text-[#62E3DD] focus:outline-none"
             type="text"
-            value={calculateInterest(
+            value={calculateLendInterest(
               parseFloat(watch('offerAmount')),
               orderBook?.durationSeconds,
               orderBook?.apy,
