@@ -6,4 +6,7 @@ export default {
     // Include additional properties here
     properties: ['email', 'name'],
   },
+  env: {
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+  },
 }
