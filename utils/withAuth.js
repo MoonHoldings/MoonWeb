@@ -1,5 +1,4 @@
 import React from 'react'
-import { getSession } from 'next-auth/react'
 
 export function withAuthRedirect(Component) {
   return function WithAuthRedirect(props) {
@@ -7,30 +6,30 @@ export function withAuthRedirect(Component) {
   }
 }
 
-export const getServerSidePropsWithAuth = async (context) => {
-  const session = await getSession(context)
+// export const getServerSidePropsWithAuth = async (context) => {
+// const session = await getSession(context)
 
-  if (session) {
-    if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      }
-    else {
-      return { props: {} }
-    }
-  } else {
-    if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
-      return { props: {} }
-    else {
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      }
-    }
-  }
-}
+// if (session) {
+//   if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false,
+//       },
+//     }
+//   else {
+//     return { props: {} }
+//   }
+// } else {
+//   if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
+//     return { props: {} }
+//   else {
+//     return {
+//       redirect: {
+//         destination: '/login',
+//         permanent: false,
+//       },
+//     }
+//   }
+// }
+// }
