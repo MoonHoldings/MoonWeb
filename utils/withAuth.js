@@ -19,7 +19,7 @@ export const getServerSidePropsWithAuth = async (context) => {
         },
       }
     else {
-      return { props: {} }
+      return { props: { session } }
     }
   } else {
     if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')

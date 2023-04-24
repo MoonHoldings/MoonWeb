@@ -273,4 +273,4 @@ const Login = () => {
 
 export default Login
 
-export const getServerSideProps = getServerSidePropsWithAuth
+// export const getServerSideProps = getServerSidePropsWithAuth
