@@ -10,23 +10,22 @@ import useSolUsdPrice from 'hooks/useSolUsdPrice'
 import client from '../utils/apollo-client'
 import { SessionProvider } from 'next-auth/react'
 
-export default wrapper.withRedux(
-  ({ Component, pageProps: { session, ...pageProps } }) => {
-    useSolUsdPrice()
-    const store = useStore()
-    console.log(process.env.VERCEL_URL)
-    return (
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
+  useSolUsdPrice()
+  const store = useStore()
+  return (
+    <SessionProvider session={session}>
       <ApolloProvider client={client}>
-        <SessionProvider session={session}>
-          <PersistGate persistor={store.__persistor}>
-            <ThemeProvider enableSystem={true} attribute="class">
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </ThemeProvider>
-          </PersistGate>
-        </SessionProvider>
+        <PersistGate persistor={store.__persistor}>
+          <ThemeProvider enableSystem={true} attribute="class">
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ThemeProvider>
+        </PersistGate>
       </ApolloProvider>
-    )
-  }
-)
+    </SessionProvider>
+  )
+}
+
+export default wrapper.withRedux(MyApp)
