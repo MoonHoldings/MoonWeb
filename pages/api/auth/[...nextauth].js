@@ -19,6 +19,7 @@ export const authOptions = {
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
+        console.log(credentials)
         if (credentials.refreshAccessToken) {
           return {
             email: credentials.email,
@@ -47,10 +48,11 @@ export const authOptions = {
   callbacks: {
     jwt: async ({ token, user }) => {
       user && (token.user = user)
-      return token
+      return Promise.resolve(token) //
     },
     session: async ({ session, token }) => {
-      return { ...session, user: { email: token.email } }
+      session.user = user.user
+      return Promise.resolve(session)
     },
   },
   session: {
