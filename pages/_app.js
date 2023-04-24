@@ -14,19 +14,18 @@ export default wrapper.withRedux(
   ({ Component, pageProps: { session, ...pageProps } }) => {
     useSolUsdPrice()
     const store = useStore()
-    console.log(process.env.NEXT_PUBLIC_SECRET)
-    console.log(process.env.NEXTAUTH_URL)
+    console.log(session)
     return (
       <ApolloProvider client={client}>
-        <SessionProvider session={session}>
-          <PersistGate persistor={store.__persistor}>
-            <ThemeProvider enableSystem={true} attribute="class">
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </ThemeProvider>
-          </PersistGate>
-        </SessionProvider>
+        {/* <SessionProvider session={session}> */}
+        <PersistGate persistor={store.__persistor}>
+          <ThemeProvider enableSystem={true} attribute="class">
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ThemeProvider>
+        </PersistGate>
+        {/* </SessionProvider> */}
       </ApolloProvider>
     )
   }
