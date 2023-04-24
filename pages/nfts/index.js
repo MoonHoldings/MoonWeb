@@ -17,7 +17,7 @@ import {
   WELCOME_MOON_HOLDINGS,
 } from 'app/constants/copy'
 import { useSession } from 'next-auth/react'
-import { getServerSidePropsWithAuth } from '../../utils/withAuth'
+// import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 const Nfts = (props) => {
   const dispatch = useDispatch()
   const { data } = useSession()
@@ -70,4 +70,4 @@ const Nfts = (props) => {
 }
 
 export default Nfts
-export const getServerSideProps = getServerSidePropsWithAuth
+// export const getServerSideProps = getServerSidePropsWithAuth

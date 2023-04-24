@@ -11,7 +11,7 @@ import {
 } from 'redux/reducers/authSlice'
 import { REGISTER_USER } from 'utils/mutations'
 import { GENERATE_DISCORD_URL } from 'utils/queries.js'
-import { getServerSidePropsWithAuth } from 'utils/withAuth'
+// import { getServerSidePropsWithAuth } from 'utils/withAuth'
 import { getSession } from 'next-auth/react'
 
 import client from 'utils/apollo-client'
@@ -236,4 +236,4 @@ const SignUp = () => {
 
 export default SignUp
 
-export const getServerSideProps = getServerSidePropsWithAuth
+// export const getServerSideProps = getServerSidePropsWithAuth

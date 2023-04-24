@@ -24,15 +24,15 @@ const Redirect = (props) => {
 
 export default Redirect
 
-export const getServerSideProps = async (context) => {
-  const cookieValue = context.req.headers.cookie
-    ?.split('; ')
-    .find((row) => row.startsWith('jid='))
-    .split('=')[1]
+// export const getServerSideProps = async (context) => {
+//   const cookieValue = context.req.headers.cookie
+//     ?.split('; ')
+//     .find((row) => row.startsWith('jid='))
+//     .split('=')[1]
 
-  return {
-    props: {
-      cookieValue,
-    },
-  }
-}
+//   return {
+//     props: {
+//       cookieValue,
+//     },
+//   }
+// }

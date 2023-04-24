@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from 'redux/reducers/authSlice'
 import { isValidEmail } from 'utils/string'
-import { getServerSidePropsWithAuth } from '../../utils/withAuth'
+// import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 import {
   authenticateComplete,
   authenticatePending,
@@ -184,4 +184,4 @@ const Login = () => {
 
 export default Login
 
-export const getServerSideProps = getServerSidePropsWithAuth
+// export const getServerSideProps = getServerSidePropsWithAuth
