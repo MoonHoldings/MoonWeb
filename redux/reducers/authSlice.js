@@ -30,7 +30,7 @@ export const refreshAccessToken = createAsyncThunk(
   async () => {
     try {
       const res = await axios.post(
-        `${SERVER_URL}/refresh_token`,
+        `${SERVER_URL}/api/refresh_token`,
         {},
         {
           headers: {

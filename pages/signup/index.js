@@ -47,7 +47,7 @@ const SignUp = () => {
         false,
         true
       )
-      setTimeout(Router.push('/login'), 3000)
+      Router.push('/login')
     }
   }, [signUpData, dispatch])
 
@@ -108,11 +108,17 @@ const SignUp = () => {
 
   return (
     <>
-      <div className="pmt-8 flex h-screen flex-col bg-white md:flex-row">
-        <div className="form z-30 flex h-screen flex-col items-center justify-center bg-gray-500 pl-8 pt-8 md:w-1/2">
+      <div className="flex h-screen flex-col md:flex-row">
+        <div className="form z-30 flex h-screen flex-col items-center justify-center bg-gray-900 pl-8 pt-8 md:w-1/2">
           <div className="absolute left-0 top-0 pl-8 pt-8">
-            <div className="block flex items-center self-start md:hidden lg:block lg:flex">
-              <div className=" flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
+            <div
+              onClick={() => Router.push('/')}
+              className="block flex items-center self-start hover:cursor-pointer md:hidden lg:block lg:flex"
+            >
+              <div
+                onClick={() => Router.push('/')}
+                className=" flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]"
+              >
                 <Image
                   className="h-[1.8Rem] w-[1.8Rem] xl:h-[3rem] xl:w-[3rem]"
                   src="/images/svgs/moon-holdings-logo-white.svg"
@@ -126,6 +132,9 @@ const SignUp = () => {
               </div>
             </div>
           </div>
+          <h1 className="mb-[2rem] mt-[4rem] bg-gradient-to-b from-teal-400 to-teal-300 bg-clip-text text-[6.4rem] font-bold text-transparent">
+            Sign Up
+          </h1>
           <div
             className="mb-[1rem] flex w-[27.4rem] flex-col items-center justify-center rounded-[1.5rem] border
           border-[#50545A] px-4 py-[1.1rem]"
@@ -156,7 +165,9 @@ const SignUp = () => {
               onSubmit={register}
               loading={signingUp}
               title={'Complete Sign Up'}
-              bgColor={'bg-gradient-to-b from-teal-400 to-teal-200'}
+              bgColor={
+                'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
+              }
             />
           </div>
 
@@ -165,7 +176,7 @@ const SignUp = () => {
               onSubmit={generateDiscordUrl}
               loading={gettingDiscordUrl}
               title={'Sign Up With Discord'}
-              bgColor={'bg-gradient-to-b from-indigo-600 to-indigo-500'}
+              bgColor={'bg-blue-600 hover:bg-blue-700'}
               isWhite
             />
           </div>
@@ -179,12 +190,13 @@ const SignUp = () => {
         </div>
         <div className="flex hidden h-full w-3/4 flex-col bg-black pt-8 md:flex">
           <div className="flex flex-row justify-end">
-            <div className={'w-[12.2rem] '}>
+            <div className={'mr-8 w-[12.2rem]'}>
               <GeneralButton
                 hasBorder
                 isWhite
                 onSubmit={loginInstead}
                 title={'Login'}
+                bgColor={'bg-black hover:bg-gray-900'}
               />
             </div>
           </div>
@@ -192,13 +204,13 @@ const SignUp = () => {
             <h1 className="text-[3rem] font-bold">
               Skyrocketing portfolio decision-making
             </h1>
-            <h4 className="mt-20 bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-[6rem] font-bold text-transparent">
+            <h4 className="mt-20 bg-gradient-to-r from-teal-500 to-cyan-300 bg-clip-text text-[6rem] font-bold text-transparent">
               Track.
             </h4>
-            <h4 className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-[6rem] font-bold text-transparent">
+            <h4 className="bg-gradient-to-r from-teal-500 to-cyan-300 bg-clip-text text-[6rem] font-bold text-transparent">
               Compare.
             </h4>
-            <h4 className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-[6rem] font-bold text-transparent">
+            <h4 className="bg-gradient-to-r from-teal-500 to-cyan-300 bg-clip-text text-[6rem] font-bold text-transparent">
               Compete.
             </h4>
             <p className="mt-20 text-justify text-[1.8rem]">
