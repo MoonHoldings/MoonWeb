@@ -3,7 +3,7 @@ import {
   AXIOS_CONFIG_HELLO_MOON_KEY,
   HELLO_MOON_URL,
   SHYFT_URL,
-} from 'app/constants/api'
+} from 'app/constants/be'
 
 import axios from 'axios'
 

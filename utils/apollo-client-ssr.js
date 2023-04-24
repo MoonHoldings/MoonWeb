@@ -1,5 +1,5 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
-import { GRAPHQL_URL } from 'app/constants/api'
+import { GRAPHQL_URL } from 'app/constants/be'
 
 const client = new ApolloClient({
   ssrMode: true,

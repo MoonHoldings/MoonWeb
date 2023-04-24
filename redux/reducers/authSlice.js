@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { SERVER_URL } from 'app/constants/api'
+import { SERVER_URL } from 'app/constants/be'
 import axios from 'axios'
 import { signIn } from 'next-auth/react'
 
