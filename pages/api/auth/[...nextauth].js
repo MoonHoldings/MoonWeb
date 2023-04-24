@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
@@ -25,18 +26,18 @@ export const authOptions = {
             name: credentials.accessToken,
           }
         } else {
-          // const res = await client.mutate({
-          //   mutation: LOGIN_USER,
-          //   variables: {
-          //     email: credentials.email,
-          //     password: credentials.password,
-          //   },
-          // })
-          // const user = res.data.login
+          const res = await client.mutate({
+            mutation: LOGIN_USER,
+            variables: {
+              email: credentials.email,
+              password: credentials.password,
+            },
+          })
+          const user = res.data.login
 
-          // if (user) {
-          //   return { email: user.email, jid: user.accessToken }
-          // }
+          if (user) {
+            return { email: user.email, jid: user.accessToken }
+          }
           return null
         }
       },
@@ -52,7 +53,6 @@ export const authOptions = {
       return { ...session, user: { email: token.email } }
     },
   },
-  secret: process.env.NEXT_PUBLIC_SECRET,
   session: {
     jwt: true,
     maxAge: 24 * 60 * 60, // 30 days

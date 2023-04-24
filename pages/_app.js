@@ -17,15 +17,15 @@ export default wrapper.withRedux(
     console.log(session)
     return (
       <ApolloProvider client={client}>
-        {/* <SessionProvider session={session}> */}
-        <PersistGate persistor={store.__persistor}>
-          <ThemeProvider enableSystem={true} attribute="class">
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </ThemeProvider>
-        </PersistGate>
-        {/* </SessionProvider> */}
+        <SessionProvider session={session}>
+          <PersistGate persistor={store.__persistor}>
+            <ThemeProvider enableSystem={true} attribute="class">
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ThemeProvider>
+          </PersistGate>
+        </SessionProvider>
       </ApolloProvider>
     )
   }
