@@ -1,11 +1,11 @@
 import NextAuth from 'next-auth'
-import Providers from 'next-auth/providers'
+import CredentialsProvider from 'next-auth/providers/credentials'
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   // Configure one or more authentication providers
   providers: [
-    Providers.Credentials({
+    CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
       name: 'Credentials',
       // The credentials is used to generate a suitable form on the sign in page.
