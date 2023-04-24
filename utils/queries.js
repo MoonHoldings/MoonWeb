@@ -34,6 +34,7 @@ export const MY_LOANS = gql`
         pubKey
         principalLamports
         offerTime
+        nftCollateralMint
         orderBook {
           nftList {
             collectionImage

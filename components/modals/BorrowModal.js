@@ -11,7 +11,7 @@ import toCurrencyFormat from 'utils/toCurrencyFormat'
 import createAnchorProvider from 'utils/createAnchorProvider'
 import { Tooltip } from 'antd'
 import { useLazyQuery } from '@apollo/client'
-import { GET_BEST_OFFER_FOR_BORROW } from 'utils/queries'
+import { GET_BEST_OFFER_FOR_BORROW, MY_LOANS } from 'utils/queries'
 import Link from 'next/link'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
 
@@ -30,6 +30,8 @@ const BorrowModal = () => {
   const [getBestOffer, { data, loading }] = useLazyQuery(
     GET_BEST_OFFER_FOR_BORROW
   )
+  const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
+    useLazyQuery(MY_LOANS)
   const bestOffer = data?.getLoans?.data[0]
   const bestOfferSolNum = bestOffer
     ? bestOffer.principalLamports / LAMPORTS_PER_SOL
@@ -48,6 +50,21 @@ const BorrowModal = () => {
   const floorPriceSol = orderBook?.floorPriceSol
     ? orderBook?.floorPriceSol
     : null
+
+  useEffect(() => {
+    if (wallet.publicKey && !loadingMyLoans) {
+      getMyLoans({
+        variables: {
+          args: {
+            filter: {
+              borrowerWallet: wallet.publicKey.toBase58(),
+              type: 'taken',
+            },
+          },
+        },
+      })
+    }
+  }, [wallet.publicKey, loadingMyLoans, getMyLoans])
 
   useEffect(() => {
     if (orderBook && !loading) {
@@ -147,46 +164,52 @@ const BorrowModal = () => {
   }
 
   const renderOwnedNfts = () => {
-    // TODO: Filter out nfts that are currently in taken loan
-    // TODO: Fetch current loans, and check for nftCollateralMint
+    if (loadingMyLoans) return null
 
-    return orderBook?.ownedNfts?.map((ownedNft, index) => (
-      <button
-        key={index}
-        type="button"
-        className={mergeClasses(
-          'flex',
-          'flex-col',
-          'w-[31%]',
-          'justify-center',
-          'items-center',
-          'rounded rounded-2xl',
-          'border',
-          ownedNft?.mint === selectedNft?.mint
-            ? 'border-[#62E3DD]'
-            : 'border-black',
-          'text-[1.3rem]',
-          'font-bold',
-          'hover:border-[#62E3DD]',
-          'transition duration-200 ease-in-out',
-          'bg-[#191C20]',
-          'p-3'
-        )}
-        disabled={ownedNft?.mint === selectedNft?.mint}
-        onClick={() => setSelectedNft(ownedNft)}
-      >
-        <Image
-          className="h-full w-full rounded rounded-2xl"
-          src={ownedNft?.image}
-          style={{ objectFit: 'cover' }}
-          width={0}
-          height={0}
-          unoptimized
-          alt="nft-image"
-        />
-        <div className="mt-5">{ownedNft?.name}</div>
-      </button>
-    ))
+    return orderBook?.ownedNfts
+      ?.filter(
+        (ownedNft) =>
+          myLoans?.getLoans?.data?.find(
+            (myLoan) => myLoan.nftCollateralMint === ownedNft.mint
+          ) === undefined
+      )
+      .map((ownedNft, index) => (
+        <button
+          key={index}
+          type="button"
+          className={mergeClasses(
+            'flex',
+            'flex-col',
+            'w-[31%]',
+            'justify-center',
+            'items-center',
+            'rounded rounded-2xl',
+            'border',
+            ownedNft?.mint === selectedNft?.mint
+              ? 'border-[#62E3DD]'
+              : 'border-black',
+            'text-[1.3rem]',
+            'font-bold',
+            'hover:border-[#62E3DD]',
+            'transition duration-200 ease-in-out',
+            'bg-[#191C20]',
+            'p-3'
+          )}
+          disabled={ownedNft?.mint === selectedNft?.mint}
+          onClick={() => setSelectedNft(ownedNft)}
+        >
+          <Image
+            className="h-full w-full rounded rounded-2xl"
+            src={ownedNft?.image}
+            style={{ objectFit: 'cover' }}
+            width={0}
+            height={0}
+            unoptimized
+            alt="nft-image"
+          />
+          <div className="mt-5">{ownedNft?.name}</div>
+        </button>
+      ))
   }
 
   const renderTotal = () => {
@@ -407,7 +430,7 @@ const BorrowModal = () => {
             {renderTitle()}
             {renderOrderBookInfo()}
             <div className="my-8 border border-white opacity-10" />
-            <div class="flex max-h-[500px] w-auto flex-wrap gap-4 overflow-y-scroll">
+            <div className="flex max-h-[500px] w-auto flex-wrap gap-4 overflow-y-scroll">
               {renderOwnedNfts()}
             </div>
             <div className="my-8 border border-white opacity-10" />
