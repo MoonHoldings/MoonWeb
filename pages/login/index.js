@@ -44,7 +44,8 @@ const Login = (props) => {
     dispatch(authenticateComplete())
   }, [dispatch])
 
-  const login = async () => {
+  const login = async (event) => {
+    event.preventDefault()
     if (email.length == 0 || password.length == 0) {
       setModal('Please fill up all fields', true, true)
     } else if (!isValidEmail(email)) {
@@ -84,13 +85,12 @@ const Login = (props) => {
     }
   }
 
-  const getPasswordReset = async () => {
+  const getPasswordReset = async (event) => {
+    event.preventDefault()
     try {
       const res = await getPasswordResetUrl({
         variables: { email: forgetEmail },
       })
-
-      console.log(res)
 
       if (res.data) {
         setModal(
@@ -99,11 +99,11 @@ const Login = (props) => {
           true
         )
         setIsForgetPass(false)
-      } else if (res.payload.message) {
-        setModal(res.payload.message, true, true)
+      } else if (res.error.message) {
+        setModal(res.error.message, true, true)
       }
     } catch (error) {
-      setModal(error, true, true)
+      setModal(error.message, true, true)
     }
   }
 
@@ -154,8 +154,9 @@ const Login = (props) => {
           </h1>
           {isForgetPass ? (
             <>
-              <div
-                className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
+              <form
+                onSubmit={getPasswordReset}
+                className="form mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
                  border border-[#50545A] px-4 py-[1.1rem]"
               >
                 <input
@@ -173,7 +174,7 @@ const Login = (props) => {
                     'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
                   }
                 />
-              </div>
+              </form>
               <div className={'flex w-[27.4rem] px-4'}>
                 <GeneralButton
                   onSubmit={() => setIsForgetPass(false)}
@@ -186,7 +187,8 @@ const Login = (props) => {
             </>
           ) : (
             <>
-              <div
+              <form
+                onSubmit={login}
                 className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"
               >
@@ -211,7 +213,7 @@ const Login = (props) => {
                     'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
                   }
                 />
-              </div>
+              </form>
               <div
                 className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"

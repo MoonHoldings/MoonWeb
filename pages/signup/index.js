@@ -50,7 +50,8 @@ const SignUp = () => {
     }
   }, [signUpData, dispatch])
 
-  const register = async () => {
+  const register = async (event) => {
+    event.preventDefault()
     if (
       email.length == 0 ||
       password.length == 0 ||
@@ -63,7 +64,6 @@ const SignUp = () => {
           variables: { email: email, password: password },
         })
       } catch (error) {
-        console.log(error)
         setModal(error.message, true, true)
       }
     }
@@ -135,8 +135,9 @@ const SignUp = () => {
           <h1 className="mb-[2rem] mt-[4rem] bg-gradient-to-b from-teal-400 to-teal-300 bg-clip-text text-[6.4rem] font-bold text-transparent">
             Sign Up
           </h1>
-          <div
-            className="mb-[1rem] flex w-[27.4rem] flex-col items-center justify-center rounded-[1.5rem] border
+          <form
+            onSubmit={register}
+            className="form mb-[1rem] flex w-[27.4rem] flex-col items-center justify-center rounded-[1.5rem] border
           border-[#50545A] px-4 py-[1.1rem]"
           >
             <input
@@ -169,7 +170,7 @@ const SignUp = () => {
                 'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
               }
             />
-          </div>
+          </form>
 
           <div className="wflex-col mb-[1rem] flex w-[27.4rem] items-center rounded-[1.5rem] border border-[#50545A] px-4 py-[1.1rem]">
             <GeneralButton
