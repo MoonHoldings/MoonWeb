@@ -14,7 +14,7 @@ export default wrapper.withRedux(
   ({ Component, pageProps: { session, ...pageProps } }) => {
     useSolUsdPrice()
     const store = useStore()
-    console.log(session)
+    console.log(process.env.VERCEL_URL)
     return (
       <ApolloProvider client={client}>
         <SessionProvider session={session}>
