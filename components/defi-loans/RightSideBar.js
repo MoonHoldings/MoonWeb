@@ -241,7 +241,7 @@ const RightSideBar = () => {
       <div className="mt-8 flex w-full flex-col">
         {myLoans?.getLoans?.data?.map((loan, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
-            <div className="flex max-w-[4rem] flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
               <div className="flex h-[3.5rem] w-[3.5rem] items-center justify-center rounded-full bg-white">
                 {loan?.orderBook?.nftList?.collectionImage && (
                   <Image
@@ -255,11 +255,11 @@ const RightSideBar = () => {
                   />
                 )}
               </div>
-              <div className="mt-2 text-center text-[1.1rem] text-[#62EAD2]">
+              <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
                 {getRemainingDays(loan)} Days Remaining
               </div>
             </div>
-            <div className="ml-5 flex flex-1 flex-col">
+            <div className="ml-6 flex flex-1 flex-col">
               <div className="text-[1.6rem]">
                 {loan?.orderBook?.nftList?.collectionName}
               </div>
