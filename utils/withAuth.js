@@ -1,5 +1,4 @@
 import React from 'react'
-import { getSession } from 'next-auth/react'
 
 export function withAuthRedirect(Component) {
   return function WithAuthRedirect(props) {
@@ -7,11 +6,16 @@ export function withAuthRedirect(Component) {
   }
 }
 
-export const getServerSidePropsWithAuth = async (context) => {
-  const session = await getSession(context)
+const publicUrls = ['/signup', '/login']
 
-  if (session) {
-    if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
+export const getServerSidePropsWithAuth = async (context) => {
+  const cookieValue = context.req.headers.cookie
+    ?.split('; ')
+    .find((row) => row.startsWith('aid='))
+
+  if (cookieValue) {
+    const aid = cookieValue.split('=')[1]
+    if (publicUrls.includes(context.resolvedUrl) && aid)
       return {
         redirect: {
           destination: '/',
@@ -19,11 +23,10 @@ export const getServerSidePropsWithAuth = async (context) => {
         },
       }
     else {
-      return { props: {} }
+      return { props: { isLoggedIn: true } }
     }
   } else {
-    if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
-      return { props: {} }
+    if (publicUrls.includes(context.resolvedUrl)) return { props: {} }
     else {
       return {
         redirect: {
