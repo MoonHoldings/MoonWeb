@@ -8,11 +8,12 @@ import { createSharkyClient } from '@sharkyfi/client'
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import mergeClasses from 'utils/mergeClasses'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
-import createAnchorProvider, { connection } from 'utils/createAnchorProvider'
+import createAnchorProvider from 'utils/createAnchorProvider'
 import { Tooltip } from 'antd'
 import { useLazyQuery } from '@apollo/client'
 import { GET_BEST_OFFER_FOR_BORROW } from 'utils/queries'
 import Link from 'next/link'
+import calculateBorrowInterest from 'utils/calculateBorrowInterest'
 
 const BorrowModal = () => {
   const dispatch = useDispatch()
@@ -37,12 +38,12 @@ const BorrowModal = () => {
     bestOffer ? bestOffer.principalLamports / LAMPORTS_PER_SOL : 0
   )
   const duration = bestOffer?.duration
-  const interest = calculateInterest(
+  let interest = calculateBorrowInterest(
     bestOfferSolNum,
     duration,
-    orderBook?.apy,
-    orderBook?.feePermillicentage
+    orderBook?.apy
   )
+  interest = interest < 0.01 ? interest.toFixed(3) : interest.toFixed(2)
 
   const floorPriceSol = orderBook?.floorPriceSol
     ? orderBook?.floorPriceSol
@@ -360,19 +361,6 @@ const BorrowModal = () => {
     }
 
     setIsSubmitting(false)
-  }
-
-  function calculateInterest(amount, duration, apy, feePermillicentage) {
-    if (!amount) return 0
-
-    const apr = apy / 1000 // Order book
-    const durationSeconds = duration
-    const interestRatio =
-      Math.exp((durationSeconds / (365 * 24 * 60 * 60)) * (apr / 100)) - 1
-    const totalOwedLamports = amount * (1 + interestRatio)
-    const interest = totalOwedLamports - amount
-
-    return interest < 0.01 ? interest.toFixed(3) : interest.toFixed(2)
   }
 
   return (

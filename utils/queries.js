@@ -26,6 +26,32 @@ export const MY_OFFERS = gql`
   }
 `
 
+export const MY_LOANS = gql`
+  query MyOffers($args: GetLoansArgs) {
+    getLoans(args: $args) {
+      count
+      data {
+        pubKey
+        principalLamports
+        offerTime
+        orderBook {
+          nftList {
+            collectionImage
+            collectionName
+            floorPriceSol
+            nftMint
+          }
+          apy
+          apyAfterFee
+          duration
+          feePermillicentage
+        }
+        state
+      }
+    }
+  }
+`
+
 export const GET_ORDER_BOOKS = gql`
   query GetOrderBooks($args: GetOrderBooksArgs) {
     getOrderBooks(args: $args) {
@@ -64,7 +90,13 @@ export const GET_ORDER_BOOK_ACTIVE = gql`
       totalActive
       count
       data {
+        orderBook {
+          apy
+          feePermillicentage
+        }
+        duration
         principalLamports
+        totalOwedLamports
         start
         state
       }
