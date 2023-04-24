@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
@@ -10,11 +10,13 @@ import {
   changeRevokeOfferModalOpen,
 } from 'redux/reducers/utilSlice'
 import mergeClasses from 'utils/mergeClasses'
-import { MY_OFFERS } from 'utils/queries'
+import { MY_LOANS, MY_OFFERS } from 'utils/queries'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { setRevokeLoan } from 'redux/reducers/sharkifyLendSlice'
 import calculateLendInterest from 'utils/calculateLendInterest'
+import calculateBorrowInterest from 'utils/calculateBorrowInterest'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -22,11 +24,15 @@ const RightSideBar = () => {
   const { disconnect, publicKey } = useWallet()
   const { addAddressStatus } = useSelector((state) => state.wallet)
   const { lendRightSideBarOpen } = useSelector((state) => state.util)
+  const [activeTab, setActiveTab] = useState('offers')
 
-  const [getMyOffers, { loading, error, data }] = useLazyQuery(MY_OFFERS)
+  const [getMyOffers, { data: myOffers, loading: loadingOffers }] =
+    useLazyQuery(MY_OFFERS)
+  const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
+    useLazyQuery(MY_LOANS)
 
   useEffect(() => {
-    if (publicKey) {
+    if (publicKey && !loadingOffers) {
       getMyOffers({
         variables: {
           args: {
@@ -39,7 +45,22 @@ const RightSideBar = () => {
         pollInterval: 500,
       })
     }
-  }, [publicKey, getMyOffers])
+  }, [publicKey, loadingOffers, getMyOffers])
+
+  useEffect(() => {
+    if (publicKey && !loadingMyLoans) {
+      getMyLoans({
+        variables: {
+          args: {
+            filter: {
+              borrowerWallet: publicKey.toBase58(),
+              type: 'taken',
+            },
+          },
+        },
+      })
+    }
+  }, [publicKey, loadingMyLoans, getMyLoans])
 
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
@@ -86,6 +107,8 @@ const RightSideBar = () => {
     return (
       <div className="mt-5 rounded-[30px] bg-[#060606] p-4">
         <button
+          onClick={() => setActiveTab('offers')}
+          disabled={activeTab === 'offers'}
           type="button"
           className={mergeClasses(
             'inline-flex',
@@ -99,12 +122,14 @@ const RightSideBar = () => {
             'text-[1.4rem]',
             'text-white',
             'focus:outline-none',
-            'bg-[#3C434B]'
+            activeTab === 'offers' ? 'bg-[#3C434B]' : 'bg-[#060606]'
           )}
         >
           Offers
         </button>
         <button
+          onClick={() => setActiveTab('loans')}
+          disabled={activeTab === 'loans'}
           type="button"
           className={mergeClasses(
             'inline-flex',
@@ -118,7 +143,7 @@ const RightSideBar = () => {
             'text-[1.4rem]',
             'text-white',
             'focus:outline-none',
-            'bg-[#060606]'
+            activeTab === 'loans' ? 'bg-[#3C434B]' : 'bg-[#060606]'
           )}
         >
           Loans
@@ -130,7 +155,7 @@ const RightSideBar = () => {
   const renderOffers = () => {
     return (
       <div className="mt-8 flex w-full flex-col">
-        {data?.getLoans?.data?.map((offer, index) => (
+        {myOffers?.getLoans?.data?.map((offer, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
             <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
               {offer?.orderBook?.nftList?.collectionImage && (
@@ -194,6 +219,74 @@ const RightSideBar = () => {
     )
   }
 
+  const renderLoans = () => {
+    return (
+      <div className="mt-8 flex w-full flex-col">
+        {myLoans?.getLoans?.data?.map((loan, index) => (
+          <div className="relative mb-6 flex items-center px-3" key={index}>
+            <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
+              {loan?.orderBook?.nftList?.collectionImage && (
+                <Image
+                  className="h-full w-full rounded-full"
+                  src={loan?.orderBook?.nftList?.collectionImage}
+                  unoptimized
+                  style={{ objectFit: 'cover' }}
+                  width={0}
+                  height={0}
+                  alt=""
+                />
+              )}
+            </div>
+            <div className="ml-5 flex flex-1 flex-col">
+              <div className="text-[1.6rem]">
+                {loan?.orderBook?.nftList?.collectionName}
+              </div>
+              <div className="mt-2 flex text-[1.25rem]">
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
+                  <p>
+                    {toShortCurrencyFormat(
+                      loan?.principalLamports / LAMPORTS_PER_SOL
+                    )}
+                  </p>
+                  <p>Offer</p>
+                </div>
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
+                  <p>
+                    {toCurrencyFormat(
+                      calculateBorrowInterest(
+                        loan?.principalLamports / LAMPORTS_PER_SOL,
+                        loan?.orderBook?.duration,
+                        loan?.orderBook?.apy
+                      )
+                    )}
+                  </p>
+                  <p>Interest</p>
+                </div>
+                <div className="flex flex-1 flex-col items-center">
+                  <p>{loan?.orderBook?.apyAfterFee}%</p>
+                  <p>APY</p>
+                </div>
+              </div>
+            </div>
+            <button
+              className="absolute left-0 top-0 h-full w-full rounded-lg border border-red-500 bg-red-600 bg-opacity-80 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
+              onClick={() => {
+                // dispatch(setRevokeLoan(offer))
+                // dispatch(changeRevokeOfferModalOpen(true))
+              }}
+            >
+              <div className="flex h-full items-center justify-center">
+                <span className="text-[1.8rem] font-medium text-white">
+                  Repay Loan
+                </span>
+              </div>
+            </button>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <motion.div
       className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-[calc(100vh-3rem)]"
@@ -247,7 +340,8 @@ const RightSideBar = () => {
                 </>
               )}
               {publicKey && renderTabs()}
-              {publicKey && renderOffers()}
+              {publicKey && activeTab === 'offers' && renderOffers()}
+              {publicKey && activeTab === 'loans' && renderLoans()}
             </div>
           </div>
         </motion.div>

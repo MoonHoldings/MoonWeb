@@ -27,7 +27,7 @@ export const MY_OFFERS = gql`
 `
 
 export const MY_LOANS = gql`
-  query MyOffers($args: GetLoansArgs) {
+  query MyLoans($args: GetLoansArgs) {
     getLoans(args: $args) {
       count
       data {
