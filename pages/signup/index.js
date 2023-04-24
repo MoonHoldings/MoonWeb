@@ -248,4 +248,30 @@ const SignUp = () => {
 
 export default SignUp
 
-export const getServerSideProps = getServerSidePropsWithAuth
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+
+  if (session) {
+    if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    else {
+      return { props: { session } }
+    }
+  } else {
+    if (context.resolvedUrl == '/signup' || context.resolvedUrl == '/login')
+      return { props: {} }
+    else {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      }
+    }
+  }
+}
