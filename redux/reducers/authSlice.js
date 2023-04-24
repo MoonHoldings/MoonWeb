@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { SERVER_URL } from 'app/constants/api'
 import axios from 'axios'
-import { signIn } from 'next-auth/react'
+import client from 'utils/apollo-client'
+import { LOGIN_USER } from 'utils/mutations'
 
 const initialState = {
   loading: false,
@@ -12,13 +13,18 @@ export const loginUser = createAsyncThunk(
   'auth/login',
   async ({ email, password }) => {
     try {
-      const res = await signIn('credentials', {
-        email: email,
-        password: password,
-        redirect: false,
+      const res = await client.mutate({
+        mutation: LOGIN_USER,
+        variables: {
+          email: email,
+          password: password,
+        },
       })
+      const user = res.data.login
 
-      return res
+      if (user) {
+        return { email: user.email, jid: user.accessToken }
+      }
     } catch (error) {
       return error
     }
@@ -41,15 +47,11 @@ export const refreshAccessToken = createAsyncThunk(
       )
 
       if (res.data) {
-        const response = await signIn('credentials', {
-          refreshAccessToken: true,
-          accessToken: res.data.accessToken,
-          email: res.data.email,
-          redirect: false,
-        })
-        // return response
+        return true
       }
-    } catch (error) {}
+    } catch (error) {
+      return error
+    }
   }
 )
 

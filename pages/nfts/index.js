@@ -16,11 +16,10 @@ import {
   START_CONNECTING_WALLETS,
   WELCOME_MOON_HOLDINGS,
 } from 'app/constants/copy'
-import { useSession } from 'next-auth/react'
+
 import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 const Nfts = (props) => {
   const dispatch = useDispatch()
-  const { data } = useSession()
   const { collections, allWallets } = useSelector((state) => state.wallet)
 
   const addWalletAddress = () => {

@@ -103,3 +103,8 @@ export const GENERATE_DISCORD_URL = gql`
     generateDiscordUrl
   }
 `
+export const GET_PASSWORD_RESET = gql`
+  query Query($email: String!) {
+    getPasswordResetUrl(email: $email)
+  }
+`
