@@ -43,19 +43,20 @@ export const authOptions = {
           }
         }
       },
-      callbacks: {
-        jwt: async ({ token, user }) => {
-          user && (token.user = user)
-          return token
-        },
-        session: async ({ session, token }) => {
-          session.accessToken = token.accessToken // Setting token in session
-          return session
-        },
-      },
     }),
     // ...add more providers here
   ],
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      user && (token.user = user)
+      return token
+    },
+    session: async ({ session, token }) => {
+      session.accessToken = token.accessToken // Setting token in session
+      return session
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 }
 
 export default NextAuth(authOptions)

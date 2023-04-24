@@ -12,6 +12,7 @@ export const loginUser = createAsyncThunk(
   'auth/login',
   async ({ email, password }) => {
     try {
+      e.preventDefault()
       const res = await signIn('credentials', {
         email: email,
         password: password,
