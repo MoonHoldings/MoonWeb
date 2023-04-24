@@ -31,9 +31,9 @@ export const MY_LOANS = gql`
     getLoans(args: $args) {
       count
       data {
+        duration
         pubKey
         principalLamports
-        offerTime
         nftCollateralMint
         orderBook {
           nftList {
@@ -48,6 +48,7 @@ export const MY_LOANS = gql`
           feePermillicentage
         }
         state
+        start
       }
     }
   }

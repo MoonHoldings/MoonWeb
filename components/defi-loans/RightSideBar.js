@@ -17,6 +17,7 @@ import { setRevokeLoan } from 'redux/reducers/sharkifyLendSlice'
 import calculateLendInterest from 'utils/calculateLendInterest'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
+import { addSeconds, differenceInSeconds } from 'date-fns'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -220,22 +221,43 @@ const RightSideBar = () => {
   }
 
   const renderLoans = () => {
+    const getRemainingDays = (loan) => {
+      const startTime = loan.start // April 22, 2021 6:00:00 PM GMT
+      const duration = loan.duration // 1 day in seconds
+      // Add duration to start time to get end time
+      const endTime = addSeconds(new Date(startTime * 1000), duration)
+      // Calculate remaining time in seconds
+      const remainingSeconds = differenceInSeconds(
+        new Date(endTime),
+        new Date()
+      )
+      // Convert remaining time to days
+      const remainingDays = remainingSeconds / 86400
+
+      return Math.floor(remainingDays)
+    }
+
     return (
       <div className="mt-8 flex w-full flex-col">
         {myLoans?.getLoans?.data?.map((loan, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
-            <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
-              {loan?.orderBook?.nftList?.collectionImage && (
-                <Image
-                  className="h-full w-full rounded-full"
-                  src={loan?.orderBook?.nftList?.collectionImage}
-                  unoptimized
-                  style={{ objectFit: 'cover' }}
-                  width={0}
-                  height={0}
-                  alt=""
-                />
-              )}
+            <div className="flex max-w-[4rem] flex-col items-center justify-center">
+              <div className="flex h-[3.5rem] w-[3.5rem] items-center justify-center rounded-full bg-white">
+                {loan?.orderBook?.nftList?.collectionImage && (
+                  <Image
+                    className="h-full w-full rounded-full"
+                    src={loan?.orderBook?.nftList?.collectionImage}
+                    unoptimized
+                    style={{ objectFit: 'cover' }}
+                    width={0}
+                    height={0}
+                    alt=""
+                  />
+                )}
+              </div>
+              <div className="mt-2 text-center text-[1.1rem] text-[#62EAD2]">
+                {getRemainingDays(loan)} Days Remaining
+              </div>
             </div>
             <div className="ml-5 flex flex-1 flex-col">
               <div className="text-[1.6rem]">
