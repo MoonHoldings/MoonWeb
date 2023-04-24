@@ -21,27 +21,29 @@ export const authOptions = {
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        if (credentials.refreshAccessToken) {
-          return {
-            email: credentials.email,
-            jid: credentials.accessToken,
-            name: credentials.accessToken,
-          }
-        } else {
-          const res = await client.mutate({
-            mutation: LOGIN_USER,
-            variables: {
-              email: credentials.email,
-              password: credentials.password,
-            },
-          })
-          const user = res.data.login
+        // if (credentials.refreshAccessToken) {
+        //   return {
+        //     email: credentials.email,
+        //     jid: credentials.accessToken,
+        //     name: credentials.accessToken,
+        //   }
+        // } else {
+        //   const res = await client.mutate({
+        //     mutation: LOGIN_USER,
+        //     variables: {
+        //       email: credentials.email,
+        //       password: credentials.password,
+        //     },
+        //   })
+        //   const user = res.data.login
 
-          if (user) {
-            return { email: user.email, jid: user.accessToken }
-          }
-          return null
-        }
+        //   if (user) {
+        //     return { email: user.email, jid: user.accessToken }
+        //   }
+        //   return null
+        // }
+
+        return null
       },
     }),
     // ...add more providers here
