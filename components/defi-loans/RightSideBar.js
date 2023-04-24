@@ -133,15 +133,17 @@ const RightSideBar = () => {
         {data?.getLoans?.data?.map((offer, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
             <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
-              <Image
-                className="h-full w-full rounded-full"
-                src={offer?.orderBook?.nftList?.collectionImage}
-                unoptimized
-                style={{ objectFit: 'cover' }}
-                width={0}
-                height={0}
-                alt=""
-              />
+              {offer?.orderBook?.nftList?.collectionImage && (
+                <Image
+                  className="h-full w-full rounded-full"
+                  src={offer?.orderBook?.nftList?.collectionImage}
+                  unoptimized
+                  style={{ objectFit: 'cover' }}
+                  width={0}
+                  height={0}
+                  alt=""
+                />
+              )}
             </div>
             <div className="ml-5 flex flex-1 flex-col">
               <div className="text-[1.6rem]">
