@@ -55,7 +55,7 @@ export const authOptions = {
       return { ...session, user: { email: token.email } }
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXT_PUBLIC_SECRET,
   session: {
     jwt: true,
     maxAge: 24 * 60 * 60, // 30 days
