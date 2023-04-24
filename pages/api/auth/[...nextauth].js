@@ -41,6 +41,8 @@ export const authOptions = {
           if (user) {
             return { email: user.email, jid: user.accessToken }
           }
+
+          return null
         }
       },
     }),
