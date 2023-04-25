@@ -8,16 +8,17 @@ import {
   changeWalletsModalOpen,
   changeLendRightSidebarOpen,
   changeRevokeOfferModalOpen,
+  changeRepayModalOpen,
 } from 'redux/reducers/utilSlice'
 import mergeClasses from 'utils/mergeClasses'
 import { MY_LOANS, MY_OFFERS } from 'utils/queries'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { setRevokeLoan } from 'redux/reducers/sharkifyLendSlice'
+import { setRevokeLoan, setRepayLoan } from 'redux/reducers/sharkifyLendSlice'
 import calculateLendInterest from 'utils/calculateLendInterest'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
-import { addSeconds, differenceInSeconds } from 'date-fns'
+import { addSeconds, differenceInSeconds, format } from 'date-fns'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -59,6 +60,7 @@ const RightSideBar = () => {
             },
           },
         },
+        pollInterval: 500,
       })
     }
   }, [publicKey, loadingMyLoans, getMyLoans])
@@ -222,16 +224,11 @@ const RightSideBar = () => {
 
   const renderLoans = () => {
     const getRemainingDays = (loan) => {
-      const startTime = loan.start // April 22, 2021 6:00:00 PM GMT
-      const duration = loan.duration // 1 day in seconds
-      // Add duration to start time to get end time
-      const endTime = addSeconds(new Date(startTime * 1000), duration)
-      // Calculate remaining time in seconds
-      const remainingSeconds = differenceInSeconds(
-        new Date(endTime),
-        new Date()
-      )
-      // Convert remaining time to days
+      const startTime = new Date(loan.start * 1000)
+      const duration = loan.duration
+      const endTime = addSeconds(startTime, duration)
+
+      const remainingSeconds = differenceInSeconds(endTime, new Date())
       const remainingDays = remainingSeconds / 86400
 
       return Math.floor(remainingDays)
@@ -264,37 +261,35 @@ const RightSideBar = () => {
                 {loan?.orderBook?.nftList?.collectionName}
               </div>
               <div className="mt-2 flex text-[1.25rem]">
-                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
                   <p>
-                    {toShortCurrencyFormat(
-                      loan?.principalLamports / LAMPORTS_PER_SOL
-                    )}
+                    {(loan?.principalLamports / LAMPORTS_PER_SOL).toFixed(3)}
                   </p>
-                  <p>Offer</p>
+                  <p>Borrowed</p>
                 </div>
-                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
                   <p>
-                    {toCurrencyFormat(
-                      calculateBorrowInterest(
-                        loan?.principalLamports / LAMPORTS_PER_SOL,
-                        loan?.orderBook?.duration,
-                        loan?.orderBook?.apy
-                      )
-                    )}
+                    {calculateBorrowInterest(
+                      loan?.principalLamports / LAMPORTS_PER_SOL,
+                      loan?.orderBook?.duration,
+                      loan?.orderBook?.apy
+                    ).toFixed(3)}
                   </p>
                   <p>Interest</p>
                 </div>
-                <div className="flex flex-1 flex-col items-center">
-                  <p>{loan?.orderBook?.apyAfterFee}%</p>
-                  <p>APY</p>
+                <div className="flex flex-1 flex-col items-center px-3">
+                  <p>
+                    {(loan?.totalOwedLamports / LAMPORTS_PER_SOL).toFixed(3)}
+                  </p>
+                  <p>Repay</p>
                 </div>
               </div>
             </div>
             <button
               className="absolute left-0 top-0 h-full w-full rounded-lg border border-red-500 bg-red-600 bg-opacity-80 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
               onClick={() => {
-                // dispatch(setRevokeLoan(offer))
-                // dispatch(changeRevokeOfferModalOpen(true))
+                dispatch(setRepayLoan(loan))
+                dispatch(changeRepayModalOpen(true))
               }}
             >
               <div className="flex h-full items-center justify-center">

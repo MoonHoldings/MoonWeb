@@ -34,6 +34,7 @@ export const MY_LOANS = gql`
         duration
         pubKey
         principalLamports
+        totalOwedLamports
         nftCollateralMint
         orderBook {
           nftList {

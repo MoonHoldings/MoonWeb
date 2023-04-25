@@ -23,6 +23,7 @@ const initialState = {
   search: '',
   loanDetails: null,
   revokeLoan: null,
+  repayLoan: null,
   orderBook: null,
 }
 
@@ -56,6 +57,9 @@ const sharkifyLendSlice = createSlice({
     setRevokeLoan(state, action) {
       state.revokeLoan = action.payload
     },
+    setRepayLoan(state, action) {
+      state.repayLoan = action.payload
+    },
     setOrderBook(state, action) {
       state.orderBook = action.payload
     },
@@ -79,6 +83,7 @@ export const {
   search,
   setLoanDetails,
   setRevokeLoan,
+  setRepayLoan,
   setOrderBook,
   setSortOption,
 } = sharkifyLendSlice.actions
