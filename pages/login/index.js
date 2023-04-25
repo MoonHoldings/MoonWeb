@@ -19,6 +19,7 @@ import BannerModal from 'components/modals/BannerModal'
 import LoadingModal from 'components/modals/LoadingModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
 import { MOON_HOLDINGS } from 'app/constants/copy'
+import { NEXT_WEBAPP_URL } from 'app/constants/api'
 
 const Login = (props) => {
   const dispatch = useDispatch()
@@ -44,7 +45,8 @@ const Login = (props) => {
     dispatch(authenticateComplete())
   }, [dispatch])
 
-  const login = async () => {
+  const login = async (event) => {
+    event.preventDefault()
     if (email.length == 0 || password.length == 0) {
       setModal('Please fill up all fields', true, true)
     } else if (!isValidEmail(email)) {
@@ -59,7 +61,9 @@ const Login = (props) => {
 
       if (res.payload.email) {
         setModal('You have successfully signed in', false, true)
-        Router.push('/')
+        setTimeout(function () {
+          Router.push('/')
+        }, 1000)
       } else if (res.payload.message) {
         setModal(res.payload.message, true, true)
       }
@@ -84,26 +88,30 @@ const Login = (props) => {
     }
   }
 
-  const getPasswordReset = async () => {
-    try {
-      const res = await getPasswordResetUrl({
-        variables: { email: forgetEmail },
-      })
+  const getPasswordReset = async (event) => {
+    event.preventDefault()
 
-      console.log(res)
+    if (forgetEmail.length == 0) {
+      setModal('Please fill up the field', true, true)
+    } else {
+      try {
+        const res = await getPasswordResetUrl({
+          variables: { email: forgetEmail },
+        })
 
-      if (res.data) {
-        setModal(
-          'Successfully sent reset link to your email. Please check yout inbox.',
-          false,
-          true
-        )
-        setIsForgetPass(false)
-      } else if (res.payload.message) {
-        setModal(res.payload.message, true, true)
+        if (res.data) {
+          setModal(
+            'Successfully sent reset link to your email. Please check yout inbox.',
+            false,
+            true
+          )
+          setIsForgetPass(false)
+        } else if (res.error.message) {
+          setModal(res.error.message, true, true)
+        }
+      } catch (error) {
+        setModal(error.message, true, true)
       }
-    } catch (error) {
-      setModal(error, true, true)
     }
   }
 
@@ -113,11 +121,33 @@ const Login = (props) => {
 
     const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
 
+    window.addEventListener('message', receiveMessage, false)
+
+    function receiveMessage(event) {
+      const valueReceived = event.data
+      console.log(valueReceived)
+      if (valueReceived.payload) {
+        const intervalId = setInterval(async () => {
+          clearInterval(intervalId)
+          if (valueReceived.payload.ok) {
+            setModal('You have successfully signed in', false, true)
+            Router.reload()
+          } else if (valueReceived.payload.message) {
+            setModal(valueReceived.payload.message, true, true)
+          }
+        }, 1000)
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      } else if (valueReceived.error) {
+        setModal(valueReceived.error ?? 'Please try again later.', true, true)
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      }
+    }
     const intervalId = setInterval(async () => {
       if (discordWindow.closed) {
         clearInterval(intervalId)
         dispatch(authenticateComplete())
-        Router.reload()
       }
     }, 1000)
   }
@@ -154,14 +184,17 @@ const Login = (props) => {
           </h1>
           {isForgetPass ? (
             <>
-              <div
-                className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
+              <form
+                onSubmit={getPasswordReset}
+                className="form mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
                  border border-[#50545A] px-4 py-[1.1rem]"
               >
                 <input
+                  key={'forgetEmail'}
                   className="form-field w-full"
                   type="email"
-                  placeholder="Email"
+                  placeholder="Forget Email"
+                  value={forgetEmail}
                   onChange={(e) => setForgetEmail(e.target.value)}
                 />
 
@@ -173,7 +206,7 @@ const Login = (props) => {
                     'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
                   }
                 />
-              </div>
+              </form>
               <div className={'flex w-[27.4rem] px-4'}>
                 <GeneralButton
                   onSubmit={() => setIsForgetPass(false)}
@@ -186,7 +219,8 @@ const Login = (props) => {
             </>
           ) : (
             <>
-              <div
+              <form
+                onSubmit={login}
                 className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"
               >
@@ -211,7 +245,7 @@ const Login = (props) => {
                     'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
                   }
                 />
-              </div>
+              </form>
               <div
                 className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"
@@ -225,7 +259,11 @@ const Login = (props) => {
                 />
               </div>
               <div
-                onClick={() => setIsForgetPass(true)}
+                onClick={() => {
+                  setIsForgetPass(true)
+                  setEmail('')
+                  setForgetEmail('')
+                }}
                 className="group mb-[1rem] text-[1.6rem] hover:cursor-pointer hover:text-gray-200 hover:underline"
               >
                 Forgot Password?

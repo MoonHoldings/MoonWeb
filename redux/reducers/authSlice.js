@@ -47,7 +47,9 @@ export const refreshAccessToken = createAsyncThunk(
       )
 
       if (res.data) {
-        return true
+        return res.data
+      } else {
+        return false
       }
     } catch (error) {
       return error
