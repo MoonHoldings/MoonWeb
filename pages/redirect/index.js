@@ -11,7 +11,7 @@ const Redirect = (props) => {
       async function fetchData() {
         const res = await dispatch(refreshAccessToken())
         if (res) {
-          window.close()
+          window.opener.postMessage(res, '*')
         }
       }
 

@@ -26,7 +26,8 @@ export const getServerSidePropsWithAuth = async (context) => {
       return { props: { isLoggedIn: true } }
     }
   } else {
-    if (publicUrls.includes(context.resolvedUrl)) return { props: {} }
+    if (publicUrls.includes(context.resolvedUrl) || context.resolvedUrl == '/')
+      return { props: {} }
     else {
       return {
         redirect: {

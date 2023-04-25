@@ -38,9 +38,9 @@ const ResetPassword = (props) => {
     dispatch(authenticateComplete())
   }, [dispatch, updatingPassword])
 
-  const submit = async () => {
+  const submit = async (event) => {
     dispatch(authenticatePending())
-
+    event.preventDefault()
     if (newPassword.length == 0 || confirmPassword.length == 0) {
       setModal('Please fill up all fields', true, true)
     } else {
@@ -90,13 +90,13 @@ const ResetPassword = (props) => {
           >
             <input
               className="form-field w-full"
-              type="newPassword"
+              type="password"
               placeholder="New Password"
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <input
               className="form-field w-full"
-              type="confirmNewPassword"
+              type="password"
               placeholder="Confirm New Password"
               onChange={(e) => setConfirmPassword(e.target.value)}
             />

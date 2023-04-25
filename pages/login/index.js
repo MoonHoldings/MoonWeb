@@ -19,6 +19,7 @@ import BannerModal from 'components/modals/BannerModal'
 import LoadingModal from 'components/modals/LoadingModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
 import { MOON_HOLDINGS } from 'app/constants/copy'
+import { NEXT_WEBAPP_URL } from 'app/constants/api'
 
 const Login = (props) => {
   const dispatch = useDispatch()
@@ -60,7 +61,9 @@ const Login = (props) => {
 
       if (res.payload.email) {
         setModal('You have successfully signed in', false, true)
-        Router.push('/')
+        setTimeout(function () {
+          Router.push('/')
+        }, 1000)
       } else if (res.payload.message) {
         setModal(res.payload.message, true, true)
       }
@@ -87,23 +90,28 @@ const Login = (props) => {
 
   const getPasswordReset = async (event) => {
     event.preventDefault()
-    try {
-      const res = await getPasswordResetUrl({
-        variables: { email: forgetEmail },
-      })
 
-      if (res.data) {
-        setModal(
-          'Successfully sent reset link to your email. Please check yout inbox.',
-          false,
-          true
-        )
-        setIsForgetPass(false)
-      } else if (res.error.message) {
-        setModal(res.error.message, true, true)
+    if (forgetEmail.length == 0) {
+      setModal('Please fill up the field', true, true)
+    } else {
+      try {
+        const res = await getPasswordResetUrl({
+          variables: { email: forgetEmail },
+        })
+
+        if (res.data) {
+          setModal(
+            'Successfully sent reset link to your email. Please check yout inbox.',
+            false,
+            true
+          )
+          setIsForgetPass(false)
+        } else if (res.error.message) {
+          setModal(res.error.message, true, true)
+        }
+      } catch (error) {
+        setModal(error.message, true, true)
       }
-    } catch (error) {
-      setModal(error.message, true, true)
     }
   }
 
@@ -113,11 +121,33 @@ const Login = (props) => {
 
     const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
 
+    window.addEventListener('message', receiveMessage, false)
+
+    function receiveMessage(event) {
+      const valueReceived = event.data
+      console.log(valueReceived)
+      if (valueReceived.payload) {
+        const intervalId = setInterval(async () => {
+          clearInterval(intervalId)
+          if (valueReceived.payload.ok) {
+            setModal('You have successfully signed in', false, true)
+            Router.reload()
+          } else if (valueReceived.payload.message) {
+            setModal(valueReceived.payload.message, true, true)
+          }
+        }, 1000)
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      } else if (valueReceived.error) {
+        setModal(valueReceived.error ?? 'Please try again later.', true, true)
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      }
+    }
     const intervalId = setInterval(async () => {
       if (discordWindow.closed) {
         clearInterval(intervalId)
         dispatch(authenticateComplete())
-        Router.reload()
       }
     }, 1000)
   }
@@ -160,9 +190,11 @@ const Login = (props) => {
                  border border-[#50545A] px-4 py-[1.1rem]"
               >
                 <input
+                  key={'forgetEmail'}
                   className="form-field w-full"
                   type="email"
-                  placeholder="Email"
+                  placeholder="Forget Email"
+                  value={forgetEmail}
                   onChange={(e) => setForgetEmail(e.target.value)}
                 />
 
@@ -227,7 +259,11 @@ const Login = (props) => {
                 />
               </div>
               <div
-                onClick={() => setIsForgetPass(true)}
+                onClick={() => {
+                  setIsForgetPass(true)
+                  setEmail('')
+                  setForgetEmail('')
+                }}
                 className="group mb-[1rem] text-[1.6rem] hover:cursor-pointer hover:text-gray-200 hover:underline"
               >
                 Forgot Password?

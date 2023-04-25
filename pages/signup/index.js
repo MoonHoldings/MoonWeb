@@ -46,7 +46,9 @@ const SignUp = () => {
         false,
         true
       )
-      Router.push('/login')
+      setTimeout(function () {
+        Router.push('/login')
+      }, 1000)
     }
   }, [signUpData, dispatch])
 
@@ -90,12 +92,31 @@ const SignUp = () => {
 
     const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
 
+    window.addEventListener('message', receiveMessage, false)
+
+    function receiveMessage(event) {
+      const valueReceived = event.data
+      console.log(valueReceived)
+      if (valueReceived.payload) {
+        const intervalId = setInterval(async () => {
+          clearInterval(intervalId)
+          if (valueReceived.payload.ok) {
+            setModal('You have successfully signed in', false, true)
+            Router.push('/')
+          } else if (valueReceived.payload.message) {
+            setModal(valueReceived.payload.message, true, true)
+          }
+        }, 1000)
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      } else if (valueReceived.error) {
+        setModal(valueReceived.error ?? 'Please try again later.', true, true)
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      }
+    }
     const intervalId = setInterval(async () => {
       if (discordWindow.closed) {
-        //session
-        if (false) {
-          Router.push('/')
-        }
         clearInterval(intervalId)
         dispatch(authenticateComplete())
       }
