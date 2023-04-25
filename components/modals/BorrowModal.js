@@ -163,6 +163,13 @@ const BorrowModal = () => {
     )
   }
 
+  const ownedNftsCount = orderBook?.ownedNfts?.filter(
+    (ownedNft) =>
+      myLoans?.getLoans?.data?.find(
+        (myLoan) => myLoan.nftCollateralMint === ownedNft.mint
+      ) === undefined
+  ).length
+
   const renderOwnedNfts = () => {
     if (loadingMyLoans) return null
 
@@ -433,6 +440,11 @@ const BorrowModal = () => {
             <div className="flex max-h-[500px] w-auto flex-wrap gap-4 overflow-y-scroll">
               {renderOwnedNfts()}
             </div>
+            {ownedNftsCount === 0 && (
+              <div className="flex w-full justify-center text-[2rem]">
+                All NFTs are being used
+              </div>
+            )}
             <div className="my-8 border border-white opacity-10" />
             {renderSelectedNftCount()}
             {renderTotal()}
