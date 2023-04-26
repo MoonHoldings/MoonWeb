@@ -13,6 +13,18 @@ export const getServerSidePropsWithAuth = async (context) => {
     ?.split('; ')
     .find((row) => row.startsWith('aid='))
 
+  //getting error Message
+  const eMessage = context.req.headers.cookie
+    ?.split('; ')
+    .find((row) => row.startsWith('error='))
+  const errorMessage = eMessage ? eMessage.split('=')[1] : null
+
+  //getting success Messages
+  const message = context.req.headers.cookie
+    ?.split('; ')
+    .find((row) => row.startsWith('message='))
+  const successMessage = message ? message.split('=')[1] : null
+
   if (cookieValue) {
     const aid = cookieValue.split('=')[1]
     if (publicUrls.includes(context.resolvedUrl) && aid)
@@ -27,7 +39,7 @@ export const getServerSidePropsWithAuth = async (context) => {
     }
   } else {
     if (publicUrls.includes(context.resolvedUrl) || context.resolvedUrl == '/')
-      return { props: {} }
+      return { props: { errorMessage, successMessage } }
     else {
       return {
         redirect: {
