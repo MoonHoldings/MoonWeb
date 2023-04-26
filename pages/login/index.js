@@ -29,7 +29,6 @@ const Login = (props) => {
   const [message, setMessage] = useState('')
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
-
   const [isForgetPass, setIsForgetPass] = useState(false)
   const { loading: signingIn, modalLoading } = useSelector(
     (state) => state.auth
@@ -44,6 +43,14 @@ const Login = (props) => {
   useEffect(() => {
     dispatch(authenticateComplete())
   }, [dispatch])
+
+  useEffect(() => {
+    if (props.errorMessage) {
+      setModal(decodeURIComponent(props.errorMessage), true, true)
+    } else if (props.successMessage) {
+      setModal(decodeURIComponent(props.successMessage), false, true)
+    }
+  }, [props])
 
   const login = async (event) => {
     event.preventDefault()
