@@ -17,7 +17,19 @@ const Redirect = (props) => {
 
       fetchData()
     }
-  }, [dispatch, props.jid])
+    if (props.errorMessage) {
+      window.opener.postMessage(
+        { errorMessage: decodeURIComponent(props.errorMessage) },
+        '*'
+      )
+    }
+    if (props.successMessage) {
+      window.opener.postMessage(
+        { successMessage: decodeURIComponent(props.successMessage) },
+        '*'
+      )
+    }
+  }, [dispatch, props])
 
   return <a className="not-found-title-text">Redirecting ...</a>
 }
@@ -29,6 +41,18 @@ export const getServerSideProps = async (context) => {
     ?.split('; ')
     .find((row) => row.startsWith('jid='))
 
+  //getting error Message
+  const eMessage = context.req.headers.cookie
+    ?.split('; ')
+    .find((row) => row.startsWith('error='))
+  const errorMessage = eMessage ? eMessage.split('=')[1] : null
+
+  //getting success Messages
+  const message = context.req.headers.cookie
+    ?.split('; ')
+    .find((row) => row.startsWith('message='))
+  const successMessage = message ? message.split('=')[1] : null
+
   if (cookieValue) {
     const jid = cookieValue.split('=')[1]
     return {
@@ -37,5 +61,5 @@ export const getServerSideProps = async (context) => {
       },
     }
   }
-  return { props: {} }
+  return { props: { errorMessage, successMessage } }
 }

@@ -3,7 +3,7 @@ import mergeClasses from 'utils/mergeClasses'
 export const GeneralButton = (props) => {
   return (
     <button
-      onClick={props.onSubmit}
+      onClick={props.onClick}
       disabled={props.loading}
       className={mergeClasses(
         'relative',

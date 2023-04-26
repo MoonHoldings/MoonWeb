@@ -96,17 +96,32 @@ const SignUp = () => {
 
     function receiveMessage(event) {
       const valueReceived = event.data
-      console.log(valueReceived)
       if (valueReceived.payload) {
         const intervalId = setInterval(async () => {
           clearInterval(intervalId)
           if (valueReceived.payload.ok) {
             setModal('You have successfully signed in', false, true)
-            Router.push('/')
+            Router.reload()
           } else if (valueReceived.payload.message) {
             setModal(valueReceived.payload.message, true, true)
           }
         }, 1000)
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      } else if (valueReceived.errorMessage) {
+        setModal(
+          valueReceived.errorMessage ?? 'Please try again later.',
+          true,
+          true
+        )
+        dispatch(authenticateComplete())
+        discordWindow.close()
+      } else if (valueReceived.successMessage) {
+        setModal(
+          valueReceived.successMessage ?? 'Please try again later.',
+          false,
+          true
+        )
         dispatch(authenticateComplete())
         discordWindow.close()
       } else if (valueReceived.error) {
@@ -184,7 +199,7 @@ const SignUp = () => {
               uppercase and lowercase letter
             </div>
             <GeneralButton
-              onSubmit={register}
+              onClick={register}
               loading={signingUp}
               title={'Complete Sign Up'}
               bgColor={
@@ -195,7 +210,7 @@ const SignUp = () => {
 
           <div className="wflex-col mb-[1rem] flex w-[27.4rem] items-center rounded-[1.5rem] border border-[#50545A] px-4 py-[1.1rem]">
             <GeneralButton
-              onSubmit={generateDiscordUrl}
+              onClick={generateDiscordUrl}
               loading={gettingDiscordUrl}
               title={'Sign Up With Discord'}
               bgColor={'bg-blue-600 hover:bg-blue-700'}
@@ -216,7 +231,7 @@ const SignUp = () => {
               <GeneralButton
                 hasBorder
                 isWhite
-                onSubmit={loginInstead}
+                onClick={loginInstead}
                 title={'Login'}
                 bgColor={'bg-black hover:bg-gray-900'}
               />

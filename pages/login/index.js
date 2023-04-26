@@ -70,7 +70,7 @@ const Login = (props) => {
         setModal('You have successfully signed in', false, true)
         setTimeout(function () {
           Router.push('/')
-        }, 1000)
+        }, 3000)
       } else if (res.payload.message) {
         setModal(res.payload.message, true, true)
       }
@@ -128,35 +128,63 @@ const Login = (props) => {
 
     const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
 
-    window.addEventListener('message', receiveMessage, false)
+    if (!discordWindow) {
+      setModal(
+        'Popup is blocked. Please disable it or use a different browser',
+        true,
+        true
+      )
+      dispatch(authenticateComplete())
+    } else {
+      window.addEventListener('message', receiveMessage, false)
 
-    function receiveMessage(event) {
-      const valueReceived = event.data
-      console.log(valueReceived)
-      if (valueReceived.payload) {
-        const intervalId = setInterval(async () => {
+      function receiveMessage(event) {
+        if (event.origin !== 'http://localhost:3000') {
+          return
+        }
+
+        const valueReceived = event.data
+        if (valueReceived.payload) {
+          const intervalId = setInterval(async () => {
+            clearInterval(intervalId)
+            if (valueReceived.payload.ok) {
+              setModal('You have successfully signed in', false, true)
+              Router.reload()
+            } else if (valueReceived.payload.message) {
+              setModal(valueReceived.payload.message, true, true)
+            }
+          }, 1000)
+          dispatch(authenticateComplete())
+          discordWindow.close()
+        } else if (valueReceived.errorMessage) {
+          setModal(
+            valueReceived.errorMessage ?? 'Please try again later.',
+            true,
+            true
+          )
+          dispatch(authenticateComplete())
+          discordWindow.close()
+        } else if (valueReceived.successMessage) {
+          setModal(
+            valueReceived.successMessage ?? 'Please try again later.',
+            false,
+            true
+          )
+          dispatch(authenticateComplete())
+          discordWindow.close()
+        } else if (valueReceived.error) {
+          setModal(valueReceived.error ?? 'Please try again later.', true, true)
+          dispatch(authenticateComplete())
+          discordWindow.close()
+        }
+      }
+      const intervalId = setInterval(async () => {
+        if (discordWindow.closed) {
           clearInterval(intervalId)
-          if (valueReceived.payload.ok) {
-            setModal('You have successfully signed in', false, true)
-            Router.reload()
-          } else if (valueReceived.payload.message) {
-            setModal(valueReceived.payload.message, true, true)
-          }
-        }, 1000)
-        dispatch(authenticateComplete())
-        discordWindow.close()
-      } else if (valueReceived.error) {
-        setModal(valueReceived.error ?? 'Please try again later.', true, true)
-        dispatch(authenticateComplete())
-        discordWindow.close()
-      }
+          dispatch(authenticateComplete())
+        }
+      }, 1000)
     }
-    const intervalId = setInterval(async () => {
-      if (discordWindow.closed) {
-        clearInterval(intervalId)
-        dispatch(authenticateComplete())
-      }
-    }, 1000)
   }
 
   const setModal = (message, error, show) => {
@@ -206,7 +234,7 @@ const Login = (props) => {
                 />
 
                 <GeneralButton
-                  onSubmit={getPasswordReset}
+                  onClick={getPasswordReset}
                   loading={gettingUrl}
                   title={'Confirm'}
                   bgColor={
@@ -216,7 +244,7 @@ const Login = (props) => {
               </form>
               <div className={'flex w-[27.4rem] px-4'}>
                 <GeneralButton
-                  onSubmit={() => setIsForgetPass(false)}
+                  onClick={() => setIsForgetPass(false)}
                   title={'Back'}
                   bgColor={'bg-black hover:bg-gray-900'}
                   isWhite
@@ -245,7 +273,7 @@ const Login = (props) => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <GeneralButton
-                  onSubmit={login}
+                  onClick={login}
                   loading={signingIn}
                   title={'Login'}
                   bgColor={
@@ -258,7 +286,7 @@ const Login = (props) => {
             border border-[#50545A] px-4 py-[1.1rem]"
               >
                 <GeneralButton
-                  onSubmit={generateDiscordUrl}
+                  onClick={generateDiscordUrl}
                   loading={gettingDiscordUrl}
                   title={'Login With Discord'}
                   bgColor={'bg-blue-600 hover:bg-blue-700'}
@@ -278,7 +306,7 @@ const Login = (props) => {
               <div className="mb-[1rem] text-[1.6rem]">or</div>
               <div className={'flex w-[27.4rem] px-4'}>
                 <GeneralButton
-                  onSubmit={signupInstead}
+                  onClick={signupInstead}
                   title={'Signup'}
                   bgColor={'bg-black hover:bg-gray-900'}
                   isWhite

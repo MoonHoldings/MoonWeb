@@ -46,12 +46,12 @@ const Layout = ({ children }) => {
       <ContextProvider>
         {/* <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect> */}
-        {innerWidth < 600 &&
+        {/* {innerWidth < 600 &&
         (router.pathname === '/login' || router.pathname === '/signup') ? (
           ''
         ) : (
           <Navbar />
-        )}
+        )} */}
         <div>{children}</div>
         {/* </WalletProvider>
       </ConnectionProvider> */}
