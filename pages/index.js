@@ -39,7 +39,7 @@ const Index = (props) => {
           <div className={'flex flex-row'}>
             <div className={'mr-4 w-[12.2rem]'}>
               <GeneralButton
-                onSubmit={signupInstead}
+                onClick={signupInstead}
                 title={'Signup'}
                 bgColor={
                   'bg-gradient-to-b from-teal-400 to-teal-300 hover:from-teal-500 hover:to-teal-400'
@@ -50,7 +50,7 @@ const Index = (props) => {
               <GeneralButton
                 hasBorder
                 isWhite
-                onSubmit={loginInstead}
+                onClick={loginInstead}
                 title={'Login'}
                 bgColor={'bg-black hover:bg-gray-900'}
               />

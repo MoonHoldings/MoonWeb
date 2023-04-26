@@ -29,20 +29,27 @@ const ResetPassword = (props) => {
     useMutation(UPDATE_PASSWORD)
 
   useEffect(() => {
-    if (!props.cookieValue) {
-      Router.push('/login')
+    if (!props.jid) {
+      handlerPageRoute('/login')
     }
-  }, [dispatch, props.cookieValue])
+  }, [dispatch, props.jid])
 
   useEffect(() => {
     dispatch(authenticateComplete())
   }, [dispatch, updatingPassword])
 
+  const handlerPageRoute = (page) => {
+    Router.push('/')
+  }
   const submit = async (event) => {
-    dispatch(authenticatePending())
     event.preventDefault()
+    dispatch(authenticatePending())
     if (newPassword.length == 0 || confirmPassword.length == 0) {
       setModal('Please fill up all fields', true, true)
+      dispatch(authenticateComplete())
+    } else if (newPassword != confirmPassword) {
+      setModal('Passwords do not match', true, true)
+      dispatch(authenticateComplete())
     } else {
       try {
         const res = await updatePassword({
@@ -51,21 +58,25 @@ const ResetPassword = (props) => {
 
         if (res.data) {
           setModal('You have successfully updated your password', false, true)
-          Router.push('/')
+          setTimeout(function () {
+            handlerPageRoute('/')
+          }, 3000)
         } else if (res.payload.message) {
           setModal(res.payload.message, true, true)
         }
       } catch (error) {
         setModal(error.message, true, true)
         if (error.message == 'Invalid token') {
-          Router.push('/')
+          setTimeout(function () {
+            handlerPageRoute('/')
+          }, 3000)
         }
       }
     }
   }
 
   const loginInstead = () => {
-    Router.push('/login')
+    handlerPageRoute('/login')
   }
 
   const setModal = (message, error, show) => {
@@ -101,7 +112,7 @@ const ResetPassword = (props) => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <GeneralButton
-              onSubmit={submit}
+              onClick={submit}
               loading={loading}
               title={'Submit'}
               bgColor={
@@ -154,10 +165,13 @@ export const getServerSideProps = async (context) => {
     ?.split('; ')
     .find((row) => row.startsWith('jid='))
     .split('=')[1]
+  const jid = cookieValue ? cookieValue.split('=')[1] : null
 
-  return {
-    props: {
-      cookieValue,
-    },
-  }
+  if (jid)
+    return {
+      props: {
+        jid,
+      },
+    }
+  else return { props: {} }
 }
