@@ -452,7 +452,7 @@ const BorrowModal = () => {
               {renderBorrowButton()}
             </div>
             <div className="mt-6 flex w-full justify-center text-[1.35rem]">
-              Repay {parseFloat(interest) + bestOfferSolNum} in{' '}
+              Repay {(parseFloat(interest) + bestOfferSolNum).toFixed(2)} in{' '}
               {orderBook?.duration} days
             </div>
             {txLink && (
