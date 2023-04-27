@@ -39,7 +39,7 @@ const ResetPassword = (props) => {
   }, [dispatch, updatingPassword])
 
   const handlerPageRoute = (page) => {
-    Router.push('/')
+    Router.push(page)
   }
   const submit = async (event) => {
     event.preventDefault()
@@ -164,7 +164,6 @@ export const getServerSideProps = async (context) => {
   const cookieValue = context.req.headers.cookie
     ?.split('; ')
     .find((row) => row.startsWith('jid='))
-    .split('=')[1]
   const jid = cookieValue ? cookieValue.split('=')[1] : null
 
   if (jid)
