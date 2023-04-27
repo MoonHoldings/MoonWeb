@@ -13,6 +13,7 @@ import {
 } from 'redux/reducers/sharkifyLendSlice'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RevokeOfferModal from 'components/modals/RevokeOfferModal'
+import RepayModal from 'components/modals/RepayModal'
 import OrderBookTable from 'components/defi-loans/OrderBookTable'
 import { GET_ORDER_BOOKS } from 'utils/queries'
 import { useLazyQuery } from '@apollo/client'
@@ -79,6 +80,7 @@ const Borrow = () => {
     <SidebarsLayout>
       <BorrowModal />
       <RevokeOfferModal />
+      <RepayModal />
       <LoanDetailsModal />
       <div className="pb-[4rem] pt-[2rem] md:order-2">
         <Header

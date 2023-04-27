@@ -1,23 +1,23 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeRevokeOfferModalOpen } from 'redux/reducers/utilSlice'
+import { changeRepayModalOpen } from 'redux/reducers/utilSlice'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
-import createAnchorProvider, { connection } from 'utils/createAnchorProvider'
+import createAnchorProvider from 'utils/createAnchorProvider'
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { createSharkyClient } from '@sharkyfi/client'
 import mergeClasses from 'utils/mergeClasses'
 
-const RevokeOfferModal = () => {
+const RepayModal = () => {
   const dispatch = useDispatch()
 
   const wallet = useWallet()
 
-  const { revokeOfferModalOpen } = useSelector((state) => state.util)
-  const { orderBook, revokeLoan } = useSelector((state) => state.sharkifyLend)
+  const { repayModalOpen } = useSelector((state) => state.util)
+  const { repayLoan } = useSelector((state) => state.sharkifyLend)
 
   const [isSuccess, setIsSuccess] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -25,7 +25,7 @@ const RevokeOfferModal = () => {
   const [txLink, setTxLink] = useState(null)
 
   const onClose = () => {
-    dispatch(changeRevokeOfferModalOpen(false))
+    dispatch(changeRepayModalOpen(false))
     setIsSubmitting(false)
     setFailMessage(null)
     setIsSuccess(false)
@@ -48,7 +48,7 @@ const RevokeOfferModal = () => {
     setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
   }
 
-  const revokeOffer = async () => {
+  const repay = async () => {
     try {
       setIsSubmitting(true)
       const provider = createAnchorProvider(wallet)
@@ -57,7 +57,7 @@ const RevokeOfferModal = () => {
 
       const result = await sharkyClient.fetchLoan({
         program,
-        loanPubKey: new PublicKey(revokeLoan?.pubKey),
+        loanPubKey: new PublicKey(repayLoan?.pubKey),
       })
 
       if (!result) {
@@ -66,16 +66,21 @@ const RevokeOfferModal = () => {
         return
       }
 
-      if (!('offered' in result)) {
-        setFailMessage('Loan is already taken, and cannot be revoked')
+      if (!('taken' in result)) {
+        setFailMessage('Loan is not in taken state, so cannot be repaid')
         setIsSubmitting(false)
         return
       }
 
-      const loan = result.offered
-      const { sig } = await loan.rescind({
+      const loan = result.taken
+      const { orderBook } = await sharkyClient.fetchOrderBook({
         program,
-        onTransactionUpdate: console.dir,
+        orderBookPubKey: loan.data.orderBook,
+      })
+
+      const { sig } = await loan.repay({
+        program,
+        orderBook,
       })
 
       await waitTransactionConfirmation(sig)
@@ -86,15 +91,15 @@ const RevokeOfferModal = () => {
     }
   }
 
-  const renderRevokeOfferButton = () => {
+  const renderRepayButton = () => {
     return (
       <button
         type="button"
         className="flex items-center justify-center rounded rounded-xl border-2 border-white bg-gradient-to-b from-[#61D9EB] to-[#63EDD0] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-[#15181B]"
         disabled={isSubmitting}
-        onClick={isSuccess ? onClose : revokeOffer}
+        onClick={isSuccess ? onClose : repay}
       >
-        <span>{isSuccess ? 'Close' : 'Revoke Offer'}</span>
+        <span>{isSuccess ? 'Close' : 'Repay'}</span>
         {isSubmitting && (
           <svg
             aria-hidden="true"
@@ -147,7 +152,7 @@ const RevokeOfferModal = () => {
           <h1 className="text-[2.1rem] font-bold">SUCCESS!</h1>
         ) : (
           <h1 className="text-[2.1rem] font-bold">
-            {revokeLoan?.orderBook?.nftList?.collectionName}
+            {repayLoan?.orderBook?.nftList?.collectionName}
           </h1>
         )}
       </motion.div>
@@ -155,7 +160,7 @@ const RevokeOfferModal = () => {
   }
 
   const renderOrderBookInfo = () => {
-    const duration = Math.floor(revokeLoan?.orderBook?.duration / 86400)
+    const duration = Math.floor(repayLoan?.orderBook?.duration / 86400)
 
     return (
       <>
@@ -165,13 +170,11 @@ const RevokeOfferModal = () => {
           <p>Floor</p>
         </div>
         <div className="mt-4 flex w-full justify-between text-3xl">
-          <p className="text-[#11AF22]">
-            {revokeLoan?.orderBook?.apyAfterFee}%
-          </p>
+          <p className="text-[#11AF22]">{repayLoan?.orderBook?.apyAfterFee}%</p>
           <p>{duration}d</p>
           <p>
-            {revokeLoan?.orderBook?.nftList?.floorPriceSol
-              ? toCurrencyFormat(revokeLoan?.orderBook?.nftList?.floorPriceSol)
+            {repayLoan?.orderBook?.nftList?.floorPriceSol
+              ? toCurrencyFormat(repayLoan?.orderBook?.nftList?.floorPriceSol)
               : 'No Data'}
           </p>
         </div>
@@ -179,25 +182,14 @@ const RevokeOfferModal = () => {
     )
   }
 
-  const renderStatus = () => {
-    return (
-      <div className="flex justify-between">
-        <p className="text-2xl">Status</p>
-        <div className="flex">
-          <p className="ml-2 text-2xl">Seeking Borrowers</p>
-        </div>
-      </div>
-    )
-  }
-
-  const renderOfferAmount = () => {
+  const renderRepayAmount = () => {
     return (
       <div className="mt-4 flex justify-between">
-        <p className="text-2xl">Offer Amount</p>
+        <p className="text-2xl">Amount owed</p>
         <div className="flex">
           <Image src="/images/svgs/sol.svg" width={16} height={16} alt="" />
           <p className="ml-2 text-2xl">
-            {toCurrencyFormat(revokeLoan?.principalLamports / LAMPORTS_PER_SOL)}
+            {(repayLoan?.totalOwedLamports / LAMPORTS_PER_SOL).toFixed(3)}
           </p>
         </div>
       </div>
@@ -205,7 +197,7 @@ const RevokeOfferModal = () => {
   }
 
   return (
-    revokeOfferModalOpen && (
+    repayModalOpen && (
       <motion.div
         initial={{ opacity: 0, scale: 1 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -215,7 +207,7 @@ const RevokeOfferModal = () => {
       >
         <Overlay onClose={onClose} />
         <div className="relative flex flex-col justify-center md:block">
-          {revokeLoan?.orderBook?.nftList?.collectionImage && (
+          {repayLoan?.orderBook?.nftList?.collectionImage && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -230,7 +222,7 @@ const RevokeOfferModal = () => {
                   'rounded-full',
                   'border'
                 )}
-                src={revokeLoan?.orderBook?.nftList?.collectionImage}
+                src={repayLoan?.orderBook?.nftList?.collectionImage}
                 width={0}
                 height={0}
                 alt=""
@@ -248,10 +240,9 @@ const RevokeOfferModal = () => {
             {renderTitle()}
             {renderOrderBookInfo()}
             <div className="my-8 border border-white opacity-10" />
-            {renderStatus()}
-            {renderOfferAmount()}
+            {renderRepayAmount()}
             <div className="mt-6 flex w-full justify-center">
-              {renderRevokeOfferButton()}
+              {renderRepayButton()}
             </div>
             {txLink && (
               <div className="flex w-full justify-center">
@@ -286,4 +277,4 @@ const Overlay = ({ onClose }) => {
   )
 }
 
-export default RevokeOfferModal
+export default RepayModal

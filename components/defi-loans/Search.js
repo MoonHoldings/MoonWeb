@@ -29,7 +29,7 @@ const Search = ({ onSearch, onChange, initialValue }) => {
   }
 
   return (
-    <div className="relative sticky top-20 mt-6 flex items-center rounded-xl bg-[#0C0D0F] p-7 md:top-0">
+    <div className="relative sticky top-20 z-50 mt-6 flex items-center rounded-xl bg-[#0C0D0F] p-7 md:top-0">
       <span className="absolute inset-y-0 left-0 flex items-center pl-12">
         <Image src="/images/svgs/search.svg" alt="" width="15" height="15" />
       </span>

@@ -103,6 +103,11 @@ const LoanDetailsModal = () => {
 
   const renderTakenLoans = () => {
     return activeLoans?.getLoans?.data?.map((loan, index) => {
+      const fee =
+        ((loan.totalOwedLamports - loan.principalLamports) *
+          loan.orderBook.feePermillicentage) /
+        100_000
+
       return (
         <div
           className="flex justify-around border-b border-b-white border-opacity-25"
@@ -121,7 +126,9 @@ const LoanDetailsModal = () => {
             </div>
             <div className="mx-6">{'>'}</div>
             <div className="flex items-center">
-              {toCurrencyFormat(loan.principalLamports / LAMPORTS_PER_SOL)}
+              {toCurrencyFormat(
+                (loan.totalOwedLamports - fee) / LAMPORTS_PER_SOL
+              )}
               <Image
                 className="ml-3 h-[1.7rem] w-[1.7rem]"
                 src="/images/svgs/sol.svg"
