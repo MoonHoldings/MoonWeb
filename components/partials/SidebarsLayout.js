@@ -11,6 +11,11 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import mergeClasses from 'utils/mergeClasses'
+import LendModal from 'components/modals/LendModal'
+import BorrowModal from 'components/modals/BorrowModal'
+import RevokeOfferModal from 'components/modals/RevokeOfferModal'
+import LoanDetailsModal from 'components/modals/LoanDetailsModal'
+import RepayModal from 'components/modals/RepayModal'
 
 const SidebarsLayout = ({ children }) => {
   const router = useRouter()
@@ -39,12 +44,24 @@ const SidebarsLayout = ({ children }) => {
   const windowResize = () => {
     setInnerWidth(window.innerWidth)
   }
+
+  const renderModals = () => {
+    return (
+      <>
+        <LendModal />
+        <BorrowModal />
+        <RevokeOfferModal />
+        <LoanDetailsModal />
+        <RepayModal />
+      </>
+    )
+  }
+
   return (
     <>
       <AnimatePresence>
         {addWalletModalOpen && <AddWalletModal />}
       </AnimatePresence>
-
       <div
         className={mergeClasses(
           'min-h-screen',
@@ -88,7 +105,7 @@ const SidebarsLayout = ({ children }) => {
             )}
           </>
         )}
-
+        {renderModals()}
         {children}
       </div>
     </>
