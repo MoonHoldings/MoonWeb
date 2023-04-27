@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import Header from 'components/defi-loans/Header'
 import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Search from 'components/defi-loans/Search'
-import BorrowModal from 'components/modals/BorrowModal'
 import { changeLoanDetailsModalOpen } from 'redux/reducers/utilSlice'
 import { setOrderBooks } from 'redux/reducers/sharkifySlice'
 import {
@@ -11,9 +10,6 @@ import {
   setLoanDetails,
   search,
 } from 'redux/reducers/sharkifyLendSlice'
-import LoanDetailsModal from 'components/modals/LoanDetailsModal'
-import RevokeOfferModal from 'components/modals/RevokeOfferModal'
-import RepayModal from 'components/modals/RepayModal'
 import OrderBookTable from 'components/defi-loans/OrderBookTable'
 import { GET_ORDER_BOOKS } from 'utils/queries'
 import { useLazyQuery } from '@apollo/client'
@@ -78,10 +74,6 @@ const Borrow = () => {
 
   return (
     <SidebarsLayout>
-      <BorrowModal />
-      <RevokeOfferModal />
-      <RepayModal />
-      <LoanDetailsModal />
       <div className="pb-[4rem] pt-[2rem] md:order-2">
         <Header
           title="Borrow"
