@@ -7,6 +7,7 @@ const Redirect = (props) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    console.log(props)
     if (props.jid) {
       async function fetchData() {
         const res = await dispatch(refreshAccessToken())
@@ -40,7 +41,7 @@ export const getServerSideProps = async (context) => {
   const cookieValue = context.req.headers.cookie
     ?.split('; ')
     .find((row) => row.startsWith('jid='))
-
+  console.log(cookieValue)
   //getting error Message
   const eMessage = context.req.headers.cookie
     ?.split('; ')
