@@ -11,14 +11,13 @@ import {
   changeRepayModalOpen,
 } from 'redux/reducers/utilSlice'
 import mergeClasses from 'utils/mergeClasses'
-import { MY_LOANS, MY_OFFERS } from 'utils/queries'
+import { MY_HISTORICAL_OFFERS, MY_LOANS, MY_OFFERS } from 'utils/queries'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { setRevokeLoan, setRepayLoan } from 'redux/reducers/sharkifyLendSlice'
 import calculateLendInterest from 'utils/calculateLendInterest'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
-import toCurrencyFormat from 'utils/toCurrencyFormat'
-import { addSeconds, differenceInSeconds, format } from 'date-fns'
+import { addSeconds, differenceInSeconds } from 'date-fns'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -32,6 +31,38 @@ const RightSideBar = () => {
     useLazyQuery(MY_OFFERS)
   const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
     useLazyQuery(MY_LOANS)
+  const [
+    getMyHistoricalOffers,
+    { data: myHistoricalOffers, loading: loadingHistoricalOffers },
+  ] = useLazyQuery(MY_HISTORICAL_OFFERS)
+  const [
+    getMyHistoricalLoans,
+    { data: myHistoricalLoans, loading: loadingHistoricalLoans },
+  ] = useLazyQuery(MY_HISTORICAL_OFFERS)
+
+  useEffect(() => {
+    if (publicKey && !loadingHistoricalOffers) {
+      getMyHistoricalOffers({
+        variables: {
+          lender: publicKey.toBase58(),
+          // lender: 'DqabcUFkt9UvV9wDEtK59nySRPhy71n3JuFkCcw854vL',
+        },
+        pollInterval: 0,
+      })
+    }
+  }, [publicKey, loadingHistoricalOffers, getMyHistoricalOffers])
+
+  useEffect(() => {
+    if (publicKey && !loadingHistoricalLoans) {
+      getMyHistoricalLoans({
+        variables: {
+          borrower: publicKey.toBase58(),
+          // borrower: 'DqabcUFkt9UvV9wDEtK59nySRPhy71n3JuFkCcw854vL',
+        },
+        pollInterval: 0,
+      })
+    }
+  }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
 
   useEffect(() => {
     if (publicKey && !loadingOffers) {
@@ -40,6 +71,7 @@ const RightSideBar = () => {
           args: {
             filter: {
               lenderWallet: publicKey.toBase58(),
+              // lenderWallet: 'DqabcUFkt9UvV9wDEtK59nySRPhy71n3JuFkCcw854vL',
               type: 'offered',
             },
           },
@@ -157,7 +189,7 @@ const RightSideBar = () => {
 
   const renderOffers = () => {
     return (
-      <div className="mt-8 flex w-full flex-col">
+      <div className="flex w-full flex-col">
         {myOffers?.getLoans?.data?.map((offer, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
             <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
@@ -174,7 +206,7 @@ const RightSideBar = () => {
               )}
             </div>
             <div className="ml-5 flex flex-1 flex-col">
-              <div className="text-[1.6rem]">
+              <div className="text-[1.5rem]">
                 {offer?.orderBook?.nftList?.collectionName}
               </div>
               <div className="mt-2 flex text-[1.25rem]">
@@ -222,6 +254,162 @@ const RightSideBar = () => {
     )
   }
 
+  const renderHistoricalActiveOffers = () => {
+    return (
+      <div className="flex w-full flex-col">
+        {myHistoricalOffers?.getHistoricalLoansByUser
+          ?.filter?.((offer) => offer.status === 'Active')
+          ?.map((offer, index) => (
+            <div className="relative mb-6 flex items-center px-3" key={index}>
+              <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
+                <div
+                  className={mergeClasses(
+                    'flex',
+                    'items-center justify-center rounded-full bg-white',
+                    offer.status === 'Active' ? 'h-[3.5rem]' : 'h-[5rem]',
+                    offer.status === 'Active' ? 'w-[3.5rem]' : 'w-[5rem]'
+                  )}
+                >
+                  {offer?.collectionImage && (
+                    <Image
+                      className="h-full w-full rounded-full"
+                      src={offer?.collectionImage}
+                      unoptimized
+                      style={{ objectFit: 'cover' }}
+                      width={0}
+                      height={0}
+                      alt=""
+                    />
+                  )}
+                </div>
+                {offer.status === 'Active' && (
+                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
+                    {offer.remainingDays} Days Remaining
+                  </div>
+                )}
+                {offer.status !== 'Active' && (
+                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
+                    {offer.status}{' '}
+                    {offer.status === 'Repaid'
+                      ? offer.repayElapsedTime
+                      : offer.foreclosedElapsedTime}
+                  </div>
+                )}
+              </div>
+              <div className="ml-5 flex flex-1 flex-col">
+                <div className="text-[1.5rem]">{offer?.collectionName}</div>
+                <div className="mt-2 flex text-[1.25rem]">
+                  <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
+                    <p>{offer.amountOffered.toFixed(2)}</p>
+                    <p>Offer</p>
+                  </div>
+                  <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
+                    <p>{offer.offerInterest.toFixed(4)}</p>
+                    <p>Interest</p>
+                  </div>
+                  <div className="flex flex-1 flex-col items-center">
+                    <p>{offer?.apy}%</p>
+                    <p>APY</p>
+                  </div>
+                </div>
+              </div>
+              {/* <button
+                className="absolute left-0 top-0 h-full w-full rounded-lg border border-green-500 bg-green-600 bg-opacity-80 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
+                onClick={() => {
+                  // dispatch(setRevokeLoan(offer))
+                  // dispatch(changeRevokeOfferModalOpen(true))
+                }}
+              >
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-[1.8rem] font-medium text-white">
+                    View Details
+                  </span>
+                </div>
+              </button> */}
+            </div>
+          ))}
+      </div>
+    )
+  }
+
+  const renderHistoricalNotActiveOffers = () => {
+    return (
+      <div className="flex w-full flex-col">
+        {myHistoricalOffers?.getHistoricalLoansByUser
+          ?.filter?.((offer) => offer.status !== 'Active')
+          ?.map((offer, index) => (
+            <div className="relative mb-6 flex items-center px-3" key={index}>
+              <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
+                <div
+                  className={mergeClasses(
+                    'flex',
+                    'items-center justify-center rounded-full bg-white',
+                    offer.status === 'Active' ? 'h-[3.5rem]' : 'h-[5rem]',
+                    offer.status === 'Active' ? 'w-[3.5rem]' : 'w-[5rem]'
+                  )}
+                >
+                  {offer?.collectionImage && (
+                    <Image
+                      className="h-full w-full rounded-full"
+                      src={offer?.collectionImage}
+                      unoptimized
+                      style={{ objectFit: 'cover' }}
+                      width={0}
+                      height={0}
+                      alt=""
+                    />
+                  )}
+                </div>
+                {offer.status === 'Active' && (
+                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
+                    {offer.remainingDays} Days Remaining
+                  </div>
+                )}
+                {offer.status !== 'Active' && (
+                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
+                    {offer.status}{' '}
+                    {offer.status === 'Repaid'
+                      ? offer.repayElapsedTime
+                      : offer.foreclosedElapsedTime}
+                  </div>
+                )}
+              </div>
+              <div className="ml-5 flex flex-1 flex-col">
+                <div className="text-[1.5rem]">{offer?.collectionName}</div>
+                <div className="mt-2 flex text-[1.25rem]">
+                  <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
+                    <p>{offer.amountOffered.toFixed(2)}</p>
+                    <p>Offer</p>
+                  </div>
+                  <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
+                    <p>{offer.offerInterest.toFixed(4)}</p>
+                    <p>Interest</p>
+                  </div>
+                  <div className="flex flex-1 flex-col items-center">
+                    <p>{offer?.apy}%</p>
+                    <p>APY</p>
+                  </div>
+                </div>
+              </div>
+              {/* <button
+                className="absolute left-0 top-0 h-full w-full rounded-lg border border-green-500 bg-green-600 bg-opacity-80 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
+                onClick={() => {
+                  // dispatch(setRevokeLoan(offer))
+                  // dispatch(changeRevokeOfferModalOpen(true))
+                }}
+              >
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-[1.8rem] font-medium text-white">
+                    View Details
+                  </span>
+                </div>
+              </button> */}
+            </div>
+          ))}
+      </div>
+    )
+  }
+
   const renderLoans = () => {
     const getRemainingDays = (loan) => {
       const startTime = new Date(loan.start * 1000)
@@ -235,7 +423,7 @@ const RightSideBar = () => {
     }
 
     return (
-      <div className="mt-8 flex w-full flex-col">
+      <div className="flex w-full flex-col">
         {myLoans?.getLoans?.data?.map((loan, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
             <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
@@ -257,7 +445,7 @@ const RightSideBar = () => {
               </div>
             </div>
             <div className="ml-6 flex flex-1 flex-col">
-              <div className="text-[1.6rem]">
+              <div className="text-[1.5rem]">
                 {loan?.orderBook?.nftList?.collectionName}
               </div>
               <div className="mt-2 flex text-[1.25rem]">
@@ -298,6 +486,70 @@ const RightSideBar = () => {
                 </span>
               </div>
             </button>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const renderHistoricalLoans = () => {
+    return (
+      <div className="flex w-full flex-col">
+        {myHistoricalLoans?.getHistoricalLoansByUser?.map((loan, index) => (
+          <div className="relative mb-6 flex items-center px-3" key={index}>
+            <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
+              <div className="flex h-[3.5rem] w-[3.5rem] items-center justify-center rounded-full bg-white">
+                {loan?.collectionImage && (
+                  <Image
+                    className="h-full w-full rounded-full"
+                    src={loan?.collectionImage}
+                    unoptimized
+                    style={{ objectFit: 'cover' }}
+                    width={0}
+                    height={0}
+                    alt=""
+                  />
+                )}
+              </div>
+              {loan.status !== 'Active' && (
+                <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
+                  {loan.status}{' '}
+                  {loan.status === 'Repaid'
+                    ? loan.repayElapsedTime
+                    : loan.foreclosedElapsedTime}
+                </div>
+              )}
+            </div>
+            <div className="ml-6 flex flex-1 flex-col">
+              <div className="text-[1.5rem]">{loan?.collectionName}</div>
+              <div className="mt-2 flex text-[1.25rem]">
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
+                  <p>{loan.amountTaken.toFixed(2)}</p>
+                  <p>Borrowed</p>
+                </div>
+                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
+                  <p>{loan.borrowInterest.toFixed(3)}</p>
+                  <p>Interest</p>
+                </div>
+                <div className="flex flex-1 flex-col items-center px-3">
+                  <p>{(loan.amountTaken + loan.borrowInterest).toFixed(3)}</p>
+                  <p>Repay</p>
+                </div>
+              </div>
+            </div>
+            {/* <button
+                className="absolute left-0 top-0 h-full w-full rounded-lg border border-red-500 bg-red-600 bg-opacity-80 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
+                onClick={() => {
+                  dispatch(setRepayLoan(loan))
+                  dispatch(changeRepayModalOpen(true))
+                }}
+              >
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-[1.8rem] font-medium text-white">
+                    Repay Loan
+                  </span>
+                </div>
+              </button> */}
           </div>
         ))}
       </div>
@@ -357,8 +609,16 @@ const RightSideBar = () => {
                 </>
               )}
               {publicKey && renderTabs()}
+              <div className="mt-8" />
+              {publicKey &&
+                activeTab === 'offers' &&
+                renderHistoricalActiveOffers()}
               {publicKey && activeTab === 'offers' && renderOffers()}
+              {publicKey &&
+                activeTab === 'offers' &&
+                renderHistoricalNotActiveOffers()}
               {publicKey && activeTab === 'loans' && renderLoans()}
+              {publicKey && activeTab === 'loans' && renderHistoricalLoans()}
             </div>
           </div>
         </motion.div>
