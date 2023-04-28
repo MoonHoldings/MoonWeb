@@ -26,6 +26,42 @@ export const MY_OFFERS = gql`
   }
 `
 
+export const MY_HISTORICAL_OFFERS = gql`
+  query GetHistoricalLoansByUser($lender: String, $borrower: String) {
+    getHistoricalLoansByUser(lender: $lender, borrower: $borrower) {
+      offerBlocktime
+      cancelBlocktime
+      takenBlocktime
+      repayBlocktime
+      defaultBlocktime
+      extendBlocktime
+      orderBook
+      loan
+      newLoan
+      amountOffered
+      lender
+      borrower
+      collateralMint
+      helloMoonCollectionId
+      tokenMint
+      amountTaken
+      loanDurationSeconds
+      amountRepayed
+      isRepayEscrow
+      isDefaultEscrow
+      offerInterest
+      apy
+      collectionName
+      collectionImage
+      status
+      remainingDays
+      foreclosedElapsedTime
+      repayElapsedTime
+      borrowInterest
+    }
+  }
+`
+
 export const MY_LOANS = gql`
   query MyLoans($args: GetLoansArgs) {
     getLoans(args: $args) {
