@@ -55,6 +55,13 @@ const SidebarsLayout = ({ children }) => {
         <RevokeOfferModal />
         <LoanDetailsModal />
         <RepayModal />
+        <AnimatePresence>
+          {walletsModalOpen && <WalletsModal />}
+        </AnimatePresence>
+        {(addAddressStatus === 'loading' ||
+          fetchingNftDataStatus === 'loading') && <LoadingModal />}
+        {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
+        {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
       </>
     )
   }
@@ -108,6 +115,7 @@ const SidebarsLayout = ({ children }) => {
             )}
           </>
         )}
+
         {renderModals()}
         {children}
       </div>
