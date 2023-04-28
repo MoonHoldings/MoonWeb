@@ -36,6 +36,8 @@ const SidebarsLayout = ({ children }) => {
     refreshWalletsStatus,
   } = useSelector((state) => state.wallet)
 
+  const { modalLoading } = useSelector((state) => state.auth)
+
   useEffect(() => {
     setInnerWidth(window.innerWidth)
     window.addEventListener('resize', windowResize)
@@ -92,7 +94,8 @@ const SidebarsLayout = ({ children }) => {
         </AnimatePresence>
 
         {(addAddressStatus === 'loading' ||
-          fetchingNftDataStatus === 'loading') && <LoadingModal />}
+          fetchingNftDataStatus === 'loading' ||
+          modalLoading) && <LoadingModal showMessage={modalLoading} />}
         {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
         {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
 

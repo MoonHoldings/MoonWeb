@@ -67,7 +67,7 @@ const Login = (props) => {
       )
 
       if (res.payload.email) {
-        setModal('You have successfully signed in', false, true)
+        setModal('Successfully Logged in! Redirecting...', false, true)
         setTimeout(function () {
           Router.push('/nfts')
         }, 3000)
@@ -148,7 +148,7 @@ const Login = (props) => {
           const intervalId = setInterval(async () => {
             clearInterval(intervalId)
             if (valueReceived.payload.ok) {
-              setModal('You have successfully signed in', false, true)
+              setModal('Successfully Logged in! Redirecting...', false, true)
               Router.reload()
             } else if (valueReceived.payload.message) {
               setModal(valueReceived.payload.message, true, true)

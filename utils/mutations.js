@@ -21,3 +21,8 @@ export const UPDATE_PASSWORD = gql`
     updatePassword(password: $password)
   }
 `
+export const LOGOUT_USER = gql`
+  mutation Mutation {
+    logout
+  }
+`

@@ -5,6 +5,12 @@ import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
 import { MOON_HOLDINGS } from 'app/constants/copy'
+import { LOGOUT_USER } from 'utils/mutations'
+import { useMutation } from '@apollo/client'
+import {
+  authenticateComplete,
+  authenticatePending,
+} from 'redux/reducers/authSlice'
 
 const LeftSideBar = () => {
   const router = useRouter()
@@ -18,6 +24,8 @@ const LeftSideBar = () => {
     leftArrowClick()
     router.push(`/${url}`)
   }
+
+  const [logOut, { loading: loggingOut }] = useMutation(LOGOUT_USER)
 
   // xl:max-h-[calc(100%-1.5rem)]
   return (
@@ -124,6 +132,28 @@ const LeftSideBar = () => {
               Lend & Borrow
             </button>
           </li>
+          <li className="hidden px-[1.6rem] xl:block">
+            <button
+              onClick={async () => {
+                dispatch(authenticatePending())
+                const res = await logOut()
+                dispatch(authenticateComplete())
+                if (res.data.logout) {
+                  handleClick('login')
+                }
+              }}
+              className="flex h-[4.1rem] w-full items-center text-[#666666]"
+            >
+              <Image
+                className="mr-[1rem] h-[2.5rem] w-[2.5rem]"
+                src="/images/svgs/exit.svg"
+                alt="Taxes"
+                width={25}
+                height={25}
+              />
+              Logout
+            </button>
+          </li>
           {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
               <Image
@@ -178,16 +208,7 @@ const LeftSideBar = () => {
               Settings
             </button>
           </li>
-          <li className="hidden px-[1.6rem] xl:block">
-            <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <Image
-                className="mr-[1rem] h-[2.5rem] w-[2.5rem]"
-                src="/images/svgs/exit.svg"
-                alt="Taxes"
-              />
-              Logout
-            </button>
-          </li> */}
+      */}
         </ul>
       </div>
 
