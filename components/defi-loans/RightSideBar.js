@@ -17,8 +17,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { setRevokeLoan, setRepayLoan } from 'redux/reducers/sharkifyLendSlice'
 import calculateLendInterest from 'utils/calculateLendInterest'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
-import toCurrencyFormat from 'utils/toCurrencyFormat'
-import { addSeconds, differenceInSeconds, format } from 'date-fns'
+import { addSeconds, differenceInSeconds } from 'date-fns'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
