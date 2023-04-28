@@ -139,10 +139,6 @@ const Login = (props) => {
       window.addEventListener('message', receiveMessage, false)
 
       function receiveMessage(event) {
-        if (event.origin !== 'http://localhost:3000') {
-          return
-        }
-
         const valueReceived = event.data
         if (valueReceived.payload) {
           const intervalId = setInterval(async () => {
