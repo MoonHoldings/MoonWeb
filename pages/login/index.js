@@ -69,7 +69,7 @@ const Login = (props) => {
       if (res.payload.email) {
         setModal('You have successfully signed in', false, true)
         setTimeout(function () {
-          Router.push('/')
+          Router.push('/nfts')
         }, 3000)
       } else if (res.payload.message) {
         setModal(res.payload.message, true, true)
