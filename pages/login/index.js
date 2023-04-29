@@ -9,6 +9,7 @@ import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 import {
   authenticateComplete,
   authenticatePending,
+  discordAuthenticationComplete,
 } from 'redux/reducers/authSlice'
 import { GENERATE_DISCORD_URL, GET_PASSWORD_RESET } from 'utils/queries.js'
 
@@ -65,12 +66,11 @@ const Login = (props) => {
           password,
         })
       )
-
-      if (res.payload.email) {
+      if (res.payload.username) {
         setModal('Successfully Logged in! Redirecting...', false, true)
         setTimeout(function () {
           Router.push('/nfts')
-        }, 3000)
+        }, 2000)
       } else if (res.payload.message) {
         setModal(res.payload.message, true, true)
       }
@@ -138,19 +138,25 @@ const Login = (props) => {
     } else {
       window.addEventListener('message', receiveMessage, false)
 
-      function receiveMessage(event) {
+      async function receiveMessage(event) {
         const valueReceived = event.data
         if (valueReceived.payload) {
           const intervalId = setInterval(async () => {
             clearInterval(intervalId)
             if (valueReceived.payload.ok) {
               setModal('Successfully Logged in! Redirecting...', false, true)
-              Router.reload()
+              setTimeout(function () {
+                Router.push('/nfts')
+              }, 2000)
             } else if (valueReceived.payload.message) {
               setModal(valueReceived.payload.message, true, true)
             }
           }, 1000)
-          dispatch(authenticateComplete())
+          await dispatch(
+            discordAuthenticationComplete({
+              username: valueReceived.payload.username ?? null,
+            })
+          )
           discordWindow.close()
         } else if (valueReceived.errorMessage) {
           setModal(
@@ -158,7 +164,7 @@ const Login = (props) => {
             true,
             true
           )
-          dispatch(authenticateComplete())
+          await dispatch(authenticateComplete())
           discordWindow.close()
         } else if (valueReceived.successMessage) {
           setModal(
@@ -166,18 +172,18 @@ const Login = (props) => {
             false,
             true
           )
-          dispatch(authenticateComplete())
+          await dispatch(authenticateComplete())
           discordWindow.close()
         } else if (valueReceived.error) {
           setModal(valueReceived.error ?? 'Please try again later.', true, true)
-          dispatch(authenticateComplete())
+          await dispatch(authenticateComplete())
           discordWindow.close()
         }
       }
       const intervalId = setInterval(async () => {
         if (discordWindow.closed) {
           clearInterval(intervalId)
-          dispatch(authenticateComplete())
+          await dispatch(authenticateComplete())
         }
       }, 1000)
     }

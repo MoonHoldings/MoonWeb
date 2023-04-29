@@ -7,10 +7,6 @@ import Router from 'next/router'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'
 
 const Index = (props) => {
-  useEffect(() => {
-    console.log(props.isLoggedIn)
-  }, [])
-
   const loginInstead = () => {
     Router.push('/login')
   }

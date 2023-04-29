@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import Router from 'next/router'
+import { useRouter } from 'next/router'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useLazyQuery, useMutation } from '@apollo/client'
@@ -8,6 +8,7 @@ import { MOON_HOLDINGS } from 'app/constants/copy'
 import {
   authenticateComplete,
   authenticatePending,
+  discordAuthenticationComplete,
 } from 'redux/reducers/authSlice'
 import { REGISTER_USER } from 'utils/mutations'
 import { GENERATE_DISCORD_URL } from 'utils/queries.js'
@@ -19,6 +20,7 @@ import BannerModal from 'components/modals/BannerModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
 
 const SignUp = () => {
+  const router = useRouter()
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -47,10 +49,10 @@ const SignUp = () => {
         true
       )
       setTimeout(function () {
-        Router.push('/login')
+        router.push('/login')
       }, 1000)
     }
-  }, [signUpData, dispatch])
+  }, [signUpData, dispatch, router])
 
   const register = async (event) => {
     event.preventDefault()
@@ -94,19 +96,25 @@ const SignUp = () => {
 
     window.addEventListener('message', receiveMessage, false)
 
-    function receiveMessage(event) {
+    async function receiveMessage(event) {
       const valueReceived = event.data
       if (valueReceived.payload) {
         const intervalId = setInterval(async () => {
           clearInterval(intervalId)
           if (valueReceived.payload.ok) {
             setModal('Successfully Logged in! Redirecting...', false, true)
-            Router.reload()
+            setTimeout(function () {
+              router.push('/nfts')
+            }, 2000)
           } else if (valueReceived.payload.message) {
             setModal(valueReceived.payload.message, true, true)
           }
         }, 1000)
-        dispatch(authenticateComplete())
+        await dispatch(
+          discordAuthenticationComplete({
+            username: valueReceived.payload.username ?? null,
+          })
+        )
         discordWindow.close()
       } else if (valueReceived.errorMessage) {
         setModal(
@@ -114,7 +122,7 @@ const SignUp = () => {
           true,
           true
         )
-        dispatch(authenticateComplete())
+        await dispatch(authenticateComplete())
         discordWindow.close()
       } else if (valueReceived.successMessage) {
         setModal(
@@ -126,20 +134,21 @@ const SignUp = () => {
         discordWindow.close()
       } else if (valueReceived.error) {
         setModal(valueReceived.error ?? 'Please try again later.', true, true)
-        dispatch(authenticateComplete())
+        await dispatch(authenticateComplete())
         discordWindow.close()
       }
     }
     const intervalId = setInterval(async () => {
       if (discordWindow.closed) {
         clearInterval(intervalId)
-        dispatch(authenticateComplete())
+
+        await dispatch(authenticateComplete())
       }
     }, 1000)
   }
 
   const loginInstead = () => {
-    Router.push('/login')
+    router.push('/login')
   }
 
   return (
@@ -148,13 +157,10 @@ const SignUp = () => {
         <div className="form z-30 flex h-screen flex-col items-center justify-center bg-gray-900 pl-8 pt-8 md:w-1/2">
           <div className="absolute left-0 top-0 pl-8 pt-8">
             <div
-              onClick={() => Router.push('/')}
+              onClick={() => router.push('/')}
               className="block flex items-center self-start hover:cursor-pointer md:hidden lg:block lg:flex"
             >
-              <div
-                onClick={() => Router.push('/')}
-                className=" flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]"
-              >
+              <div className=" flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
                 <Image
                   className="h-[1.8Rem] w-[1.8Rem] xl:h-[3rem] xl:w-[3rem]"
                   src="/images/svgs/moon-holdings-logo-white.svg"
@@ -257,17 +263,6 @@ const SignUp = () => {
               and rewarding.
             </p>
           </div>
-          <footer className="fixed bottom-0 flex hidden h-64 w-full bg-gray-900 md:block">
-            <div className="h-full w-full ">
-              <Image
-                src="/images/gifs/moon-holdings-banner-wide.gif"
-                alt=""
-                height={0}
-                width={0}
-                className=" h-full w-2/3 "
-              />
-            </div>
-          </footer>
         </div>
       </div>
       <BannerModal
