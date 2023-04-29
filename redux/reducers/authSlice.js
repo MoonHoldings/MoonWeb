@@ -7,6 +7,7 @@ import { LOGIN_USER } from 'utils/mutations'
 const initialState = {
   loading: false,
   modalLoading: false,
+  username: null,
 }
 
 export const loginUser = createAsyncThunk(
@@ -23,7 +24,7 @@ export const loginUser = createAsyncThunk(
       const user = res.data.login
 
       if (user) {
-        return { email: user.email, jid: user.accessToken }
+        return { username: user.username }
       }
     } catch (error) {
       return error
@@ -45,7 +46,6 @@ export const refreshAccessToken = createAsyncThunk(
           withCredentials: true,
         }
       )
-
       if (res.data) {
         return res.data
       } else {
@@ -67,6 +67,15 @@ const authSlice = createSlice({
     authenticateComplete(state, action) {
       state.modalLoading = false
     },
+    logout(state, action) {
+      state.username = null
+    },
+    discordAuthenticationComplete(state, action) {
+      console.log('HUUUYYYYY')
+      console.log(action)
+      state.modalLoading = false
+      state.username = action.payload.username
+    },
   },
 
   extraReducers(builder) {
@@ -75,6 +84,7 @@ const authSlice = createSlice({
         state.loading = true
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.username = action.payload.username ?? null
         state.loading = false
       })
       .addCase(refreshAccessToken.pending, (state, action) => {
@@ -86,6 +96,11 @@ const authSlice = createSlice({
   },
 })
 
-export const { authenticatePending, authenticateComplete } = authSlice.actions
+export const {
+  authenticatePending,
+  authenticateComplete,
+  logout,
+  discordAuthenticationComplete,
+} = authSlice.actions
 
 export default authSlice.reducer

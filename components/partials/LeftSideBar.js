@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
 import { MOON_HOLDINGS } from 'app/constants/copy'
@@ -10,6 +10,7 @@ import { useMutation } from '@apollo/client'
 import {
   authenticateComplete,
   authenticatePending,
+  logout,
 } from 'redux/reducers/authSlice'
 
 const LeftSideBar = () => {
@@ -26,6 +27,8 @@ const LeftSideBar = () => {
   }
 
   const [logOut, { loading: loggingOut }] = useMutation(LOGOUT_USER)
+
+  const { username } = useSelector((state) => state.auth)
 
   // xl:max-h-[calc(100%-1.5rem)]
   return (
@@ -135,10 +138,11 @@ const LeftSideBar = () => {
           <li className="hidden px-[1.6rem] xl:block">
             <button
               onClick={async () => {
-                dispatch(authenticatePending())
+                await dispatch(authenticatePending())
                 const res = await logOut()
-                dispatch(authenticateComplete())
+                await dispatch(authenticateComplete())
                 if (res.data.logout) {
+                  await dispatch(logout())
                   handleClick('login')
                 }
               }}
@@ -234,9 +238,7 @@ const LeftSideBar = () => {
         <div className="mx-[1.7rem] mb-[1.7rem] flex h-[7.4rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] xl:mx-[1.5rem] xl:w-[calc(100%-3rem)] xl:px-[0.8rem]">
           <div className="flex items-center">
             <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
-            <div className="text-[1.4rem] text-white">
-              {/* Consistent Brave Bull */}
-            </div>
+            <div className="text-[1.4rem] text-white">{username}</div>
           </div>
           <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
             <Image
