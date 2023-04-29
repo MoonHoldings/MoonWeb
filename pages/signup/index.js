@@ -88,7 +88,7 @@ const SignUp = () => {
 
   const openDiscordWindow = (discordUrl) => {
     const windowFeatures =
-      'height=800,width=800,resizable=yes,scrollbars=yes,status=yes'
+      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
 
     const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
 
