@@ -18,6 +18,7 @@ import { setRevokeLoan, setRepayLoan } from 'redux/reducers/sharkifyLendSlice'
 import calculateLendInterest from 'utils/calculateLendInterest'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
 import { addSeconds, differenceInSeconds } from 'date-fns'
+import ProgressIndicator from './ProgressIndicator'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -298,16 +299,10 @@ const RightSideBar = () => {
               </div>
               <div className="ml-5 flex flex-1 flex-col">
                 {offer.status === 'Active' && (
-                  <div className="mb-2 h-[0.85rem] w-full rounded-md bg-[#dddddd]">
-                    <div
-                      className={mergeClasses(
-                        'h-full',
-                        'rounded-md',
-                        'bg-[#62EAD2]'
-                      )}
-                      style={{ width: offer.daysPercentProgress + '%' }}
-                    />
-                  </div>
+                  <ProgressIndicator
+                    className="mb-2"
+                    percentValue={offer.daysPercentProgress}
+                  />
                 )}
                 <div className="mb-2 text-[1.5rem]">
                   {offer?.collectionName}
@@ -464,16 +459,10 @@ const RightSideBar = () => {
               </div>
             </div>
             <div className="ml-6 flex flex-1 flex-col">
-              <div className="mb-2 h-[0.85rem] w-full rounded-md bg-[#dddddd]">
-                <div
-                  className={mergeClasses(
-                    'h-full',
-                    'rounded-md',
-                    'bg-[#62EAD2]'
-                  )}
-                  style={{ width: getDaysPercentProgress(loan) + '%' }}
-                />
-              </div>
+              <ProgressIndicator
+                className="mb-2"
+                percentValue={getDaysPercentProgress(loan)}
+              />
               <div className="text-[1.5rem]">
                 {loan?.orderBook?.nftList?.collectionName}
               </div>
