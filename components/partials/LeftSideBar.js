@@ -235,12 +235,12 @@ const LeftSideBar = () => {
             15
           </div>
         </div> */}
-        <div className="mx-[1.7rem] mb-[1.7rem] flex h-[7.4rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] xl:mx-[1.5rem] xl:w-[calc(100%-3rem)] xl:px-[0.8rem]">
-          <div className="flex items-center">
-            <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
-            <div className="text-[1.4rem] text-white">{username}</div>
+        <div className="mx-[1.5rem] mb-[1.7rem] flex h-[7.4rem] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem]">
+          <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
+          <div className="flex-1 overflow-hidden truncate text-[1.2rem] text-white">
+            {username}
           </div>
-          <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
+          <button className="ml-[1rem] flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
             <Image
               className="h-[1.5rem] w-[1.5rem]"
               src="/images/svgs/gear.svg"
