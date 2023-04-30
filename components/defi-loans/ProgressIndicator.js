@@ -5,7 +5,7 @@ const ProgressIndicator = ({ percentValue, className }) => {
   return (
     <div
       className={mergeClasses(
-        'h-[0.8rem] w-full rounded-md bg-[#dddddd]',
+        'h-[0.7rem] w-full rounded-md bg-[#dddddd]',
         className
       )}
     >
