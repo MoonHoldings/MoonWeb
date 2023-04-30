@@ -71,8 +71,6 @@ const authSlice = createSlice({
       state.username = null
     },
     discordAuthenticationComplete(state, action) {
-      console.log('HUUUYYYYY')
-      console.log(action)
       state.modalLoading = false
       state.username = action.payload.username
     },

@@ -21,3 +21,4 @@ export const RPC_URL = process.env.NEXT_PUBLIC_RPC
 export const HELLO_MOON_RPC_URL = `${process.env.NEXT_PUBLIC_HELLO_MOON_RPC}?apiKey=${HELLO_MOON_KEY}`
 export const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL
 export const SUPERUSER_KEY = process.env.NEXT_PUBLIC_SUPERUSER_KEY
+export const LANDING_SITE = process.env.NEXT_PUBLIC_LANDING_SITE
