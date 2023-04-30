@@ -34,3 +34,9 @@ export const CREATE_LOANS = gql`
     }
   }
 `
+
+export const DELETE_LOAN_BY_PUBKEY = gql`
+  mutation DeleteLoanByPubKey($pubKey: String!) {
+    deleteLoanByPubKey(pubKey: $pubKey)
+  }
+`
