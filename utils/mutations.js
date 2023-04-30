@@ -25,3 +25,12 @@ export const LOGOUT_USER = gql`
     logout
   }
 `
+
+export const CREATE_LOANS = gql`
+  mutation CreateLoans($loans: [CreateLoan!]!) {
+    createLoans(loans: $loans) {
+      id
+      pubKey
+    }
+  }
+`
