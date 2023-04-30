@@ -5,14 +5,12 @@ const TextBlink = ({ text, className }) => {
   const [currentText, setCurrentText] = useState('')
 
   useEffect(() => {
-    if (text !== currentText) {
-      if (solPriceRef.current && currentText !== text) {
-        solPriceRef.current.classList.add('price-blink')
+    if (solPriceRef.current && text !== currentText) {
+      solPriceRef.current.classList.add('price-blink')
 
-        setTimeout(() => {
-          solPriceRef?.current?.classList?.remove('price-blink')
-        }, 500)
-      }
+      setTimeout(() => {
+        solPriceRef?.current?.classList?.remove('price-blink')
+      }, 500)
     }
 
     setCurrentText(text)

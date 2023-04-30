@@ -1,5 +1,5 @@
-import SidebarsLayout from 'components/nft/SidebarsLayout'
-import NFTCard from 'components/partials/NFTCard'
+import SidebarsLayout from 'components/partials/SidebarsLayout'
+import NFTCard from 'components/nft/NFTCard'
 import { useRouter } from 'next/router'
 import React from 'react'
 import Image from 'next/image'
@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { Tooltip } from 'flowbite-react'
+import { Tooltip } from 'antd'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 
@@ -107,23 +107,24 @@ const Index = () => {
                 </div>
               </div>
               <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
-                content={
+                color="#1F2126"
+                title={
                   <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
                     {formatFloorPriceUsd()}
                   </span>
                 }
-                placement="bottom"
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUsd())
                     ? 'hover'
                     : null
                 }
               >
-                <TextBlink
-                  className="bold ml-4 text-[1.5rem] md:text-[2rem]"
-                  text={formatShortFloorPriceUsd()}
-                />
+                <div>
+                  <TextBlink
+                    className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                    text={formatShortFloorPriceUsd()}
+                  />
+                </div>
               </Tooltip>
             </div>
 
@@ -143,23 +144,24 @@ const Index = () => {
                 </div>
               </div>
               <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
-                content={
+                color="#1F2126"
+                title={
                   <span className="flex h-full items-center text-[1.5rem] md:text-[2rem]">
                     {formatFloorPriceUsdTotal()}
                   </span>
                 }
-                placement="bottom"
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUsdTotal())
                     ? 'hover'
                     : null
                 }
               >
-                <TextBlink
-                  className="bold ml-4 text-[1.5rem] md:text-[2rem]"
-                  text={formatShortFloorPriceUsdTotal()}
-                />
+                <div>
+                  <TextBlink
+                    className="bold ml-4 text-[1.5rem] md:text-[2rem]"
+                    text={formatShortFloorPriceUsdTotal()}
+                  />
+                </div>
               </Tooltip>
             </div>
           </div>

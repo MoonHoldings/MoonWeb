@@ -1,10 +1,18 @@
 import React from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
 import { MOON_HOLDINGS } from 'app/constants/copy'
+import { LOGOUT_USER } from 'utils/mutations'
+import { useMutation } from '@apollo/client'
+import {
+  authenticateComplete,
+  authenticatePending,
+  logout,
+} from 'redux/reducers/authSlice'
+import { LANDING_SITE } from 'app/constants/api'
 
 const LeftSideBar = () => {
   const router = useRouter()
@@ -15,8 +23,13 @@ const LeftSideBar = () => {
   }
 
   const handleClick = (url) => {
+    leftArrowClick()
     router.push(`/${url}`)
   }
+
+  const [logOut, { loading: loggingOut }] = useMutation(LOGOUT_USER)
+
+  const { username } = useSelector((state) => state.auth)
 
   // xl:max-h-[calc(100%-1.5rem)]
   return (
@@ -28,7 +41,7 @@ const LeftSideBar = () => {
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Header */}
-      <div className="mt-[1rem] mb-[4.6rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
+      <div className="mb-[4.6rem] mt-[1rem] flex h-[4.6rem] justify-between px-[1.7rem] xl:mb-[2rem] xl:px-[1.5rem]">
         <button
           onClick={leftArrowClick}
           id="btn-left-sidebar-arrow"
@@ -92,7 +105,9 @@ const LeftSideBar = () => {
             <button
               id="btn-nft-portfolio"
               onClick={() => handleClick('nfts')}
-              className="flex h-[4.1rem] w-full items-center text-[#FFFFFF]"
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('nfts') ? '#62EAD2' : '#FFFFFF'
+              }]`}
             >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
@@ -102,6 +117,46 @@ const LeftSideBar = () => {
                 alt="NFTs"
               />
               NFTs
+            </button>
+          </li>
+          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+            <button
+              onClick={() => handleClick('defi-loans/lend')}
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('defi-loans') ? '#62EAD2' : '#FFFFFF'
+              }]`}
+            >
+              <Image
+                className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
+                src={'/images/sharky-white.png'}
+                alt="Dashboard"
+                width={25}
+                height={25}
+              />
+              Lend & Borrow
+            </button>
+          </li>
+          <li className="hidden px-[1.6rem] xl:block">
+            <button
+              onClick={async () => {
+                await dispatch(authenticatePending())
+                const res = await logOut()
+                await dispatch(authenticateComplete())
+                if (res.data.logout) {
+                  router.push(LANDING_SITE)
+                  await dispatch(logout())
+                }
+              }}
+              className="flex h-[4.1rem] w-full items-center text-[#666666]"
+            >
+              <Image
+                className="mr-[1rem] h-[2.5rem] w-[2.5rem]"
+                src="/images/svgs/exit.svg"
+                alt="Taxes"
+                width={25}
+                height={25}
+              />
+              Logout
             </button>
           </li>
           {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
@@ -158,16 +213,7 @@ const LeftSideBar = () => {
               Settings
             </button>
           </li>
-          <li className="hidden px-[1.6rem] xl:block">
-            <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
-              <Image
-                className="mr-[1rem] h-[2.5rem] w-[2.5rem]"
-                src="/images/svgs/exit.svg"
-                alt="Taxes"
-              />
-              Logout
-            </button>
-          </li> */}
+      */}
         </ul>
       </div>
 
@@ -190,14 +236,12 @@ const LeftSideBar = () => {
             15
           </div>
         </div> */}
-        <div className="mx-[1.7rem] mb-[1.7rem] flex h-[7.4rem] w-[calc(100%-3.4rem)] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] xl:mx-[1.5rem] xl:w-[calc(100%-3rem)] xl:px-[0.8rem]">
-          <div className="flex items-center">
-            <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
-            <div className="text-[1.4rem] text-white">
-              {/* Consistent Brave Bull */}
-            </div>
+        <div className="mx-[1.5rem] mb-[1.7rem] flex h-[7.4rem] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem]">
+          <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
+          <div className="flex-1 overflow-hidden truncate text-[1.2rem] text-white">
+            {username}
           </div>
-          <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
+          <button className="ml-[1rem] flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
             <Image
               className="h-[1.5rem] w-[1.5rem]"
               src="/images/svgs/gear.svg"

@@ -47,7 +47,9 @@ const Layout = ({ children }) => {
         {/* <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect> */}
         {innerWidth < 600 &&
-        (router.pathname === '/login' || router.pathname === '/signup') ? (
+        (router.pathname === '/login' ||
+          router.pathname === '/signup' ||
+          router.pathname === '/') ? (
           ''
         ) : (
           <Navbar />

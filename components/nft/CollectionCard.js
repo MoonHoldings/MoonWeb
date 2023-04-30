@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import axios from 'axios'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { Tooltip } from 'flowbite-react'
+import { Tooltip } from 'antd'
 
 import {
   insertCurrentCollection,
@@ -14,8 +14,8 @@ import {
 import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
-import TextBlink from './TextBlink'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
+import TextBlink from 'components/partials/TextBlink'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
@@ -50,8 +50,8 @@ const CollectionCard = ({ collection, index }) => {
             )
           }
         }
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        console.log(error)
       }
     }
   }
@@ -156,39 +156,38 @@ const CollectionCard = ({ collection, index }) => {
         </div>
         {shouldRenderFloorPrice && (
           <div className="items-center xl:flex xl:justify-between">
-            <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
-              <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
-                content={
-                  <span className="text-[1.5rem]">{formatFloorPrice()}</span>
-                }
-                placement="bottom"
-                trigger={
-                  isShortCurrencyFormat(formatShortFloorPrice())
-                    ? 'hover'
-                    : null
-                }
-              >
+            <Tooltip
+              color="#1F2126"
+              title={
+                <span className="text-[1.5rem]">{formatFloorPrice()}</span>
+              }
+              trigger={
+                isShortCurrencyFormat(formatShortFloorPrice()) ? 'hover' : null
+              }
+            >
+              <div className="mb-[0.4rem] flex items-center text-[1.3rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
                 {renderFloorPrice()}
-              </Tooltip>
-            </div>
+              </div>
+            </Tooltip>
+
             {solUsdPrice && (
               <Tooltip
-                className="rounded-xl py-[1.5rem] px-[2rem]"
-                content={
-                  <span className="text-[1.5rem]">{formatFloorPriceUSD()}</span>
+                color="#1F2126"
+                title={
+                  <span className="text-[1.6rem]">{formatFloorPriceUSD()}</span>
                 }
-                placement="bottom"
                 trigger={
                   isShortCurrencyFormat(formatShortFloorPriceUSD())
                     ? 'hover'
                     : null
                 }
               >
-                <TextBlink
-                  text={formatShortFloorPriceUSD()}
-                  className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
-                />
+                <div>
+                  <TextBlink
+                    text={formatShortFloorPriceUSD()}
+                    className="mb-[0.4rem] text-[1.3rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.8rem]"
+                  />
+                </div>
               </Tooltip>
             )}
           </div>

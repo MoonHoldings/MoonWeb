@@ -1,94 +1,104 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { SERVER_URL } from 'app/constants/api'
 import axios from 'axios'
+import client from 'utils/apollo-client'
+import { LOGIN_USER } from 'utils/mutations'
 
 const initialState = {
-  loginType: '',
-  signUpSuccess: null,
-  loginSuccess: null,
-  error: null,
-  user: null,
+  loading: false,
+  modalLoading: false,
+  username: null,
 }
 
-export const signup = createAsyncThunk('auth/signup', async (creds) => {
-  try {
-    const response = await axios.post(`${SERVER_URL}/register`, creds, {
-      headers: { 'Content-Type': 'application/json' },
-    })
+export const loginUser = createAsyncThunk(
+  'auth/login',
+  async ({ email, password }) => {
+    try {
+      const res = await client.mutate({
+        mutation: LOGIN_USER,
+        variables: {
+          email: email,
+          password: password,
+        },
+      })
+      const user = res.data.login
 
-    return response.data
-  } catch (error) {
-    return {
-      success: false,
-      message: error,
+      if (user) {
+        return { username: user.username }
+      }
+    } catch (error) {
+      return error
     }
   }
-})
+)
 
-export const login = createAsyncThunk('auth/login', async (creds) => {
-  try {
-    const response = await axios.post(`${SERVER_URL}/login`, creds, {
-      withCredentials: true,
-      headers: { 'Content-Type': 'application/json' },
-    })
-
-    return response.data
-  } catch (error) {
-    return {
-      success: false,
-      message: error,
+export const refreshAccessToken = createAsyncThunk(
+  '/refresh_token',
+  async () => {
+    try {
+      const res = await axios.post(
+        `${SERVER_URL}/refresh_token`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      )
+      if (res.data) {
+        return res.data
+      } else {
+        return false
+      }
+    } catch (error) {
+      return error
     }
   }
-})
-
-export const getUser = createAsyncThunk('auth/getUser', async () => {
-  try {
-    const response = await axios({
-      method: 'GET',
-      url: `${SERVER_URL}/get-user`,
-      withCredentials: true,
-    })
-
-    return response.data
-  } catch (error) {
-    return {
-      success: false,
-      message: error,
-    }
-  }
-})
+)
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    changeLoginType(state, action) {
-      state.loginType = action.payload
+    authenticatePending(state, action) {
+      state.modalLoading = true
+    },
+    authenticateComplete(state, action) {
+      state.modalLoading = false
+    },
+    logout(state, action) {
+      state.username = null
+    },
+    discordAuthenticationComplete(state, action) {
+      state.modalLoading = false
+      state.username = action.payload.username
     },
   },
+
   extraReducers(builder) {
     builder
-      .addCase(signup.fulfilled, (state, action) => {
-        state.signUpSuccess = action.payload.success
+      .addCase(loginUser.pending, (state, action) => {
+        state.loading = true
       })
-      .addCase(signup.rejected, (state, action) => {
-        state.signUpSuccess = false
-        state.error = action.payload
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.username = action.payload.username ?? null
+        state.loading = false
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loginSuccess = action.payload.success
-        state.user = action.payload.user
+      .addCase(refreshAccessToken.pending, (state, action) => {
+        state.loading = true
       })
-      .addCase(login.rejected, (state, action) => {
-        state.signUpSuccess = false
-        state.error = action.payload
-      })
-      .addCase(getUser.fulfilled, (state, action) => {
-        state.user = action.payload.user
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
+        state.loading = false
       })
   },
 })
 
-export const { changeLoginType } = authSlice.actions
+export const {
+  authenticatePending,
+  authenticateComplete,
+  logout,
+  discordAuthenticationComplete,
+} = authSlice.actions
 
 export default authSlice.reducer

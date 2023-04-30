@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
 import { createWrapper } from 'next-redux-wrapper'
 
@@ -6,15 +6,26 @@ import authSlice from './reducers/authSlice'
 import utilSlice from './reducers/utilSlice'
 import walletSlice from './reducers/walletSlice'
 import cryptoSlice from './reducers/cryptoSlice'
+import sharkifySlice from './reducers/sharkifySlice'
+import sharkifyLendSlice from './reducers/sharkifyLendSlice'
 
 const reducer = combineReducers({
   auth: authSlice,
   util: utilSlice,
   wallet: walletSlice,
   crypto: cryptoSlice,
+  sharkify: sharkifySlice,
+  sharkifyLend: sharkifyLendSlice,
 })
 
-const makeConfiguredStore = (reducer) => configureStore({ reducer })
+const makeConfiguredStore = (reducer) =>
+  configureStore({
+    reducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
+  })
 
 const makeStore = () => {
   const isServer = typeof window === 'undefined'
@@ -28,7 +39,7 @@ const makeStore = () => {
 
     const persistConfig = {
       key: 'root',
-      whitelist: ['auth', 'util', 'wallet', 'crypto'],
+      whitelist: ['auth', 'wallet', 'crypto', 'util', 'sharkifyLend'],
       storage,
     }
 

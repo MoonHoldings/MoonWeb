@@ -7,6 +7,7 @@ import {
 } from '@pythnetwork/client'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeSolUsdPrice } from 'redux/reducers/cryptoSlice'
+import { useRouter } from 'next/router'
 
 const PYTHNET_CLUSTER_NAME = 'pythnet'
 const connection = new Connection(getPythClusterApiUrl(PYTHNET_CLUSTER_NAME))
@@ -18,29 +19,32 @@ const feeds = [new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG')]
 function useSolUsdPrice() {
   const dispatch = useDispatch()
   const { solUsdPrice } = useSelector((state) => state.crypto)
+  const router = useRouter()
 
   useEffect(() => {
-    const pythConnection = new PythConnection(
-      connection,
-      pythPublicKey,
-      'confirmed',
-      feeds
-    )
+    if (router.pathname.includes('nfts')) {
+      const pythConnection = new PythConnection(
+        connection,
+        pythPublicKey,
+        'confirmed',
+        feeds
+      )
 
-    pythConnection.onPriceChangeVerbose((_productAccount, priceAccount) => {
-      const price = priceAccount.accountInfo.data
+      pythConnection.onPriceChangeVerbose((_productAccount, priceAccount) => {
+        const price = priceAccount.accountInfo.data
 
-      if (price.price !== solUsdPrice) {
-        dispatch(changeSolUsdPrice(price.price))
+        if (price.price !== solUsdPrice) {
+          dispatch(changeSolUsdPrice(price.price))
+        }
+      })
+
+      pythConnection.start()
+
+      return () => {
+        pythConnection.stop()
       }
-    })
-
-    pythConnection.start()
-
-    return () => {
-      pythConnection.stop()
     }
-  }, [dispatch, solUsdPrice])
+  }, [dispatch, solUsdPrice, router.pathname])
 
   return null
 }

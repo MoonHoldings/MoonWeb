@@ -163,7 +163,7 @@ const bulkFetchCollectionMetadata = async (addresses) => {
   return results
 }
 
-const fetchHelloMoonCollectionIds = async (addresses) => {
+export const fetchHelloMoonCollectionIds = async (addresses) => {
   const { data: collectionIdResponse } = await axios.post(
     `${HELLO_MOON_URL}/nft/collection/mints`,
     {
@@ -173,6 +173,18 @@ const fetchHelloMoonCollectionIds = async (addresses) => {
   )
 
   return collectionIdResponse
+}
+
+export const fetchFloorPrice = async (id) => {
+  const res = await axios.post(
+    `${HELLO_MOON_URL}/nft/collection/floorprice`,
+    {
+      helloMoonCollectionId: id,
+    },
+    AXIOS_CONFIG_HELLO_MOON_KEY
+  )
+
+  return res?.data?.data?.length ? res?.data?.data[0] : undefined
 }
 
 export const refreshFloorPrices = createAsyncThunk(
@@ -186,15 +198,7 @@ export const refreshFloorPrices = createAsyncThunk(
       .map((c) => c.helloMoonCollectionId)
 
     const promises = helloMoonCollectionIds.map(async (id) => {
-      const res = await axios.post(
-        `${HELLO_MOON_URL}/nft/collection/floorprice`,
-        {
-          helloMoonCollectionId: id,
-        },
-        AXIOS_CONFIG_HELLO_MOON_KEY
-      )
-
-      return res?.data?.data?.length ? res?.data?.data[0] : undefined
+      return fetchFloorPrice(id)
     })
 
     const floorPrices = await Promise.allSettled(promises)
@@ -677,13 +681,11 @@ export const insertSingleNFT = createAsyncThunk(
       for (let i = 0; i < collNfts.length; i++) {
         const response = await axios.get(`${collNfts[i].metadata_uri}`)
         const res = response.data
-        console.log('>>> res', res)
         mappedNfts.push({
           ...collNfts[i],
           image: res.image,
           attributes: res.attributes,
           collection: res.collection,
-          // Add Attributes & Info { name, collection.name }
         })
       }
 

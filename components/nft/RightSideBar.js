@@ -28,8 +28,8 @@ import {
 } from 'app/constants/copy'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
-import TextBlink from './TextBlink'
-import { Tooltip } from 'flowbite-react'
+import TextBlink from 'components/partials/TextBlink'
+import { Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 
@@ -210,19 +210,13 @@ const RightSideBar = () => {
   const renderRefreshWallet = () => {
     return (
       <Tooltip
-        content={REFRESH_WALLETS_TITLE}
-        className="rounded-xl py-[1.5rem] px-[2rem]"
-        placement="bottom"
-        theme={{
-          content: 'text-[1.3rem]',
-          target:
-            'hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] text-white px-[1.6rem] hover:border-[#62EAD2]',
-        }}
+        color="#1F2126"
+        title={<span className="text-[1.5rem]">{REFRESH_WALLETS_TITLE}</span>}
       >
         <button
           type="button"
           onClick={refreshWalletsAndFloorPrice}
-          className="w-full"
+          className='hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2]'
         >
           <div className="flex h-[4.1rem] w-full items-center justify-center">
             <p className="mr-4 text-[1.9rem]">↻</p>
@@ -360,37 +354,33 @@ const RightSideBar = () => {
           <div className="mr-[1.2rem] h-[10rem] w-[10rem] rounded-full bg-black md:h-[9.1rem] md:w-[9.1rem]"></div>
           <div className="total-value flex h-[8.6rem] flex-col items-end">
             <Tooltip
-              className="rounded-xl py-[1.5rem] px-[2rem]"
-              content={
-                <span className="flex h-full items-center text-[2rem]">
+              color="#1F2126"
+              title={
+                <span className="flex h-full items-center text-[2rem] text-white">
                   {getPortfolioValueUsd()}
                 </span>
               }
-              placement="left"
-              trigger={
-                isShortCurrencyFormat(getShortPortfolioValueUsd())
-                  ? 'hover'
-                  : null
-              }
+              trigger={'hover'}
             >
-              <TextBlink
-                text={getShortPortfolioValueUsd()}
-                className="text-[3.2rem] text-white xl:text-[2.8rem]"
-              />
+              <div>
+                <TextBlink
+                  text={getShortPortfolioValueUsd()}
+                  className="text-[3.2rem] text-white xl:text-[2.8rem]"
+                />
+              </div>
             </Tooltip>
             <Tooltip
-              className="rounded-xl py-[1.5rem] px-[2rem]"
-              content={
-                <span className="flex h-full items-center text-[2rem]">
+              color="#1F2126"
+              title={
+                <span className="flex h-full items-center text-[2rem] text-white">
                   {getPortfolioValue()}
                 </span>
               }
-              placement="left"
               trigger={
                 isShortCurrencyFormat(getShortPortfolioValue()) ? 'hover' : null
               }
             >
-              <div className="flex items-center text-[3.2rem] xl:text-[2.8rem]">
+              <div className="flex items-center text-[3.2rem] text-white xl:text-[2.8rem]">
                 {getShortPortfolioValue()}
                 <Image
                   className="ml-2 inline h-[2rem] w-[2rem] xl:h-[2rem] xl:w-[2rem]"
@@ -510,14 +500,14 @@ const RightSideBar = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
+      className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
       initial={{ x: '101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
       {/* Desktop View = buttons section */}
-      <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mt-4 md:mb-[1.6rem] md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
+      <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
         {MENUS[currentMenu]}
       </div>
 
@@ -573,7 +563,7 @@ const RightSideBar = () => {
       {allWallets.length > 0 && (
         <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
           <div className="header mb-[2rem] flex justify-between">
-            <h1 className="text-[1.4rem]">{CONNECTED_WALLETS}</h1>
+            <h1 className="text-[1.4rem] text-white">{CONNECTED_WALLETS}</h1>
             <button
               onClick={seeAllOrLessWallets}
               className="text-[1.4rem] font-bold text-[#61DAEA]"
