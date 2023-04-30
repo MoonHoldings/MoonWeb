@@ -297,8 +297,22 @@ const RightSideBar = () => {
                 )}
               </div>
               <div className="ml-5 flex flex-1 flex-col">
-                <div className="text-[1.5rem]">{offer?.collectionName}</div>
-                <div className="mt-2 flex text-[1.25rem]">
+                {offer.status === 'Active' && (
+                  <div className="mb-2 h-[0.85rem] w-full rounded-md bg-[#dddddd]">
+                    <div
+                      className={mergeClasses(
+                        'h-full',
+                        'rounded-md',
+                        'bg-[#62EAD2]'
+                      )}
+                      style={{ width: offer.daysPercentProgress + '%' }}
+                    />
+                  </div>
+                )}
+                <div className="mb-2 text-[1.5rem]">
+                  {offer?.collectionName}
+                </div>
+                <div className="flex text-[1.25rem]">
                   <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
                     <p>{offer.amountOffered.toFixed(2)}</p>
                     <p>Offer</p>
@@ -422,6 +436,11 @@ const RightSideBar = () => {
       return Math.floor(remainingDays)
     }
 
+    const getDaysPercentProgress = (loan) => {
+      const currentUnixTime = Math.floor(Date.now() / 1000)
+      return ((currentUnixTime - loan.start) / loan.duration) * 100
+    }
+
     return (
       <div className="flex w-full flex-col">
         {myLoans?.getLoans?.data?.map((loan, index) => (
@@ -445,6 +464,16 @@ const RightSideBar = () => {
               </div>
             </div>
             <div className="ml-6 flex flex-1 flex-col">
+              <div className="mb-2 h-[0.85rem] w-full rounded-md bg-[#dddddd]">
+                <div
+                  className={mergeClasses(
+                    'h-full',
+                    'rounded-md',
+                    'bg-[#62EAD2]'
+                  )}
+                  style={{ width: getDaysPercentProgress(loan) + '%' }}
+                />
+              </div>
               <div className="text-[1.5rem]">
                 {loan?.orderBook?.nftList?.collectionName}
               </div>
