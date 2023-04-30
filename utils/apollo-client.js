@@ -5,6 +5,7 @@ import encrypt from './encrypt'
 
 const httpLink = createHttpLink({
   uri: GRAPHQL_URL,
+  credentials: 'include',
 })
 
 const authLink = setContext((_, { headers }) => {
@@ -21,7 +22,6 @@ const authLink = setContext((_, { headers }) => {
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
-  credentials: 'include',
 })
 
 export default client
