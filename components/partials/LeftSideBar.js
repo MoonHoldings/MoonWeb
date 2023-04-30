@@ -12,6 +12,7 @@ import {
   authenticatePending,
   logout,
 } from 'redux/reducers/authSlice'
+import { LANDING_SITE } from 'app/constants/api'
 
 const LeftSideBar = () => {
   const router = useRouter()
@@ -142,8 +143,8 @@ const LeftSideBar = () => {
                 const res = await logOut()
                 await dispatch(authenticateComplete())
                 if (res.data.logout) {
+                  router.push(LANDING_SITE)
                   await dispatch(logout())
-                  handleClick('login')
                 }
               }}
               className="flex h-[4.1rem] w-full items-center text-[#666666]"
