@@ -58,6 +58,7 @@ export const MY_HISTORICAL_OFFERS = gql`
       foreclosedElapsedTime
       repayElapsedTime
       borrowInterest
+      daysPercentProgress
     }
   }
 `
