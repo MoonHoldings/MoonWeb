@@ -40,3 +40,12 @@ export const DELETE_LOAN_BY_PUBKEY = gql`
     deleteLoanByPubKey(pubKey: $pubKey)
   }
 `
+
+export const BORROW_LOAN = gql`
+  mutation BorrowLoan($borrowedLoan: BorrowLoan!) {
+    borrowLoan(borrowedLoan: $borrowedLoan) {
+      id
+      pubKey
+    }
+  }
+`
