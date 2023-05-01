@@ -1,4 +1,4 @@
-import { Router } from 'next/router'
+import Router from 'next/router'
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { refreshAccessToken } from 'redux/reducers/authSlice'
@@ -7,27 +7,31 @@ const Redirect = (props) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (props.jid) {
-      async function fetchData() {
-        const res = await dispatch(refreshAccessToken())
-        if (res) {
-          window.opener.postMessage(res, '*')
+    if (window.opener != null) {
+      if (props.jid) {
+        async function fetchData() {
+          const res = await dispatch(refreshAccessToken())
+          if (res) {
+            window.opener.postMessage(res, '*')
+          }
         }
-      }
 
-      fetchData()
-    }
-    if (props.errorMessage) {
-      window.opener.postMessage(
-        { errorMessage: decodeURIComponent(props.errorMessage) },
-        '*'
-      )
-    }
-    if (props.successMessage) {
-      window.opener.postMessage(
-        { successMessage: decodeURIComponent(props.successMessage) },
-        '*'
-      )
+        fetchData()
+      }
+      if (props.errorMessage) {
+        window.opener.postMessage(
+          { errorMessage: decodeURIComponent(props.errorMessage) },
+          '*'
+        )
+      }
+      if (props.successMessage) {
+        window.opener.postMessage(
+          { successMessage: decodeURIComponent(props.successMessage) },
+          '*'
+        )
+      }
+    } else {
+      Router.push('/login')
     }
   }, [dispatch, props])
 
