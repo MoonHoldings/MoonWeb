@@ -325,6 +325,7 @@ const BorrowModal = () => {
 
       setIsSuccess(true)
       setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
+      setSelectedNft(null)
       notification.open({
         closeIcon: (
           <svg
