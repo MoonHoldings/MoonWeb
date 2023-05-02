@@ -208,7 +208,10 @@ const BorrowModal = () => {
             'p-3'
           )}
           disabled={ownedNft?.mint === selectedNft?.mint}
-          onClick={() => setSelectedNft(ownedNft)}
+          onClick={() => {
+            setIsSuccess(false)
+            setSelectedNft(ownedNft)
+          }}
         >
           <Image
             className="h-full w-full rounded rounded-2xl"
@@ -354,6 +357,7 @@ const BorrowModal = () => {
   const borrow = async () => {
     setIsSubmitting(true)
     setFailMessage(null)
+    setIsSuccess(false)
 
     const provider = createAnchorProvider(wallet)
     const sharkyClient = createSharkyClient(provider)
