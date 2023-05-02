@@ -29,7 +29,10 @@ const BorrowModal = () => {
   const [failMessage, setFailMessage] = useState(null)
   const [txLink, setTxLink] = useState(null)
   const [getBestOffer, { data, loading }] = useLazyQuery(
-    GET_BEST_OFFER_FOR_BORROW
+    GET_BEST_OFFER_FOR_BORROW,
+    {
+      fetchPolicy: 'no-cache',
+    }
   )
   const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
     useLazyQuery(MY_LOANS)
