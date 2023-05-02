@@ -293,7 +293,7 @@ export const refreshWallets = createAsyncThunk(
 
         if (!oldCollection) {
           if (address) {
-            if (collectionMetaDataHash[address] === undefined) continue
+            // if (collectionMetaDataHash[address] === undefined) continue
 
             if (collectionMetaDataHash[address]?.name) {
               collectionName = collectionMetaDataHash[address]?.name
@@ -457,7 +457,7 @@ export const addAddress = createAsyncThunk(
             let address = nft?.collection?.address
 
             if (address) {
-              if (collectionMetaDataHash[address] === undefined) continue
+              // if (collectionMetaDataHash[address] === undefined) continue
 
               if (collectionMetaDataHash[address]?.name) {
                 collectionName = collectionMetaDataHash[address]?.name
