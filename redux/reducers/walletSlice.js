@@ -283,7 +283,7 @@ export const refreshWallets = createAsyncThunk(
     try {
       for (let i = 0; i < flattenedNfts.length; i++) {
         let nft = flattenedNfts[i]
-        let collectionName = nft?.collection?.name || nft?.collection?.address
+        let collectionName = nft?.collection?.name || nft.name.split('#')[0]
         let collectionImage = nft.image_uri
 
         let address = nft?.collection?.address
@@ -309,7 +309,7 @@ export const refreshWallets = createAsyncThunk(
         }
 
         if (collectionName === undefined) {
-          collectionName = nft.name
+          collectionName = nft.name.split('#')[0]
         }
 
         // If new collection
