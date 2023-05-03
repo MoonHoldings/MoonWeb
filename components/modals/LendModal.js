@@ -128,6 +128,8 @@ const LendModal = () => {
   }
 
   const placeOffer = async () => {
+    setIsSuccess(false)
+
     const provider = createAnchorProvider(wallet)
     const sharkyClient = createSharkyClient(provider)
     const { program } = sharkyClient

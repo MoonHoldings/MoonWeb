@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Header from 'components/defi-loans/Header'
-import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Search from 'components/defi-loans/Search'
 import { changeLoanDetailsModalOpen } from 'redux/reducers/utilSlice'
 import { setOrderBooks } from 'redux/reducers/sharkifySlice'
@@ -29,7 +28,7 @@ const Borrow = () => {
 
   useEffect(() => {
     dispatch(search(''))
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     getOrderBooks({
@@ -73,16 +72,14 @@ const Borrow = () => {
   }
 
   return (
-    <SidebarsLayout>
-      <div className="pb-[4rem] pt-[2rem] md:order-2">
-        <Header
-          title="Borrow"
-          description="Instantly take a loan against your NFTs. Escrow-free loans allows you to keep the collateral NFT in your wallet. When you accept a loan offer, a secure contract is created, freezing the NFT in-wallet. Not repaying by the due date means the lender can repossess your NFT. Successfully pay the loan in full by the expiration date to automatically thaw the NFT."
-        />
-        <Search onChange={(text) => dispatch(search(text))} />
-        <OrderBookTable onClickRow={onClickRow} loading={loading} />
-      </div>
-    </SidebarsLayout>
+    <div className="pb-[4rem] pt-[2rem] md:order-2">
+      <Header
+        title="Borrow"
+        description="Instantly take a loan against your NFTs. Escrow-free loans allows you to keep the collateral NFT in your wallet. When you accept a loan offer, a secure contract is created, freezing the NFT in-wallet. Not repaying by the due date means the lender can repossess your NFT. Successfully pay the loan in full by the expiration date to automatically thaw the NFT."
+      />
+      <Search onChange={(text) => dispatch(search(text))} />
+      <OrderBookTable onClickRow={onClickRow} loading={loading} />
+    </div>
   )
 }
 

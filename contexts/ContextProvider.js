@@ -1,4 +1,3 @@
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import {
   ConnectionProvider,
   WalletProvider,
@@ -17,16 +16,8 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { useMemo } from 'react'
 import { Get } from '../utils/solanaAdapterNetwork'
-// import { AutoConnectProvider, useAutoConnect } from './AutoConnectProvider'
-// import {
-//   NetworkConfigurationProvider,
-//   useNetworkConfiguration,
-// } from './NetworkConfigurationProvider'
 
 const WalletContextProvider = ({ children }) => {
-  // const { autoConnect } = useAutoConnect()
-  // const { networkConfiguration } = useNetworkConfiguration()
-  // const network = networkConfiguration
   const network = 'mainnet-beta'
   const endpoint = useMemo(() => Get.clusterUrl(network), [network])
 
@@ -55,13 +46,5 @@ const WalletContextProvider = ({ children }) => {
 }
 
 export const ContextProvider = ({ children }) => {
-  return (
-    <>
-      {/* <NetworkConfigurationProvider> */}
-      {/* <AutoConnectProvider> */}
-      <WalletContextProvider>{children}</WalletContextProvider>
-      {/* </AutoConnectProvider> */}
-      {/* </NetworkConfigurationProvider> */}
-    </>
-  )
+  return <WalletContextProvider>{children}</WalletContextProvider>
 }
