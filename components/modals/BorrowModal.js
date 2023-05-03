@@ -347,7 +347,7 @@ const BorrowModal = () => {
         className: 'bg-[#191C20] text-white',
         description: `Done! You've taken out a ${bestOfferSol} SOL loan, in a few seconds
             this will reflect in your history`,
-        duration: 60,
+        duration: 5,
         placement: 'top',
         message: <p className="text-white">Success</p>,
       })
