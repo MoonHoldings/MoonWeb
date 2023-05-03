@@ -62,6 +62,8 @@ const SignUp = () => {
       confirmPassword.length == 0
     ) {
       setModal('Please fill up all fields', true, true)
+    } else if (password != confirmPassword) {
+      setModal('Passwords do not match', true, true)
     } else {
       try {
         await signUp({
