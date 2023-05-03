@@ -545,7 +545,7 @@ const RightSideBar = () => {
   return (
     <AnimatePresence initial={false}>
       <motion.div
-        className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-[calc(100vh-3rem)]"
+        className="fixed left-0 top-0 z-[51] h-full w-full md:sticky md:top-8 md:order-3 md:mb-[1.5rem] md:h-[calc(100vh-3rem)]"
         initial={{ x: '101%' }}
         animate={{ x: '0%' }}
         exit={{ x: '101%' }}
@@ -553,7 +553,7 @@ const RightSideBar = () => {
       >
         {lendRightSideBarOpen && (
           <motion.div
-            className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem]"
+            className="fixed left-0 top-0 z-[51] h-full w-full md:sticky md:order-3 md:mb-[1.5rem]"
             initial={{ x: '100%' }}
             animate={{ x: '0%' }}
             exit={{ x: '100%' }}
