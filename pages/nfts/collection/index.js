@@ -11,6 +11,7 @@ import TextBlink from 'components/partials/TextBlink'
 import { Tooltip } from 'antd'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
+import shrinkAddress from 'utils/shrinkAddress'
 
 const Index = () => {
   const router = useRouter()
@@ -82,12 +83,14 @@ const Index = () => {
           </div>
           <div className="flex items-center text-[2.2rem] md:text-[2.9rem]">
             &gt;
-            <span className="ml-4">{currentCollection.name}</span>
+            <span className="ml-4">
+              {shrinkAddress(currentCollection.name)}
+            </span>
           </div>
         </div>
         <p className="text-[1.6rem]">
           You have <span>{currentCollection?.nfts?.length}</span>{' '}
-          {currentCollection.name} NFTs
+          {shrinkAddress(currentCollection.name)} NFTs
         </p>
         {currentCollection.floorPrice && (
           <div className="mt-8 flex items-center justify-between">

@@ -8,6 +8,7 @@ import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Attribute from 'components/nft/AttributeBox'
 
 import toCurrencyFormat from 'utils/toCurrencyFormat'
+import shrinkAddress from 'utils/shrinkAddress'
 
 const Nft = () => {
   const router = useRouter()
@@ -37,21 +38,23 @@ const Nft = () => {
   return (
     <SidebarsLayout>
       <div className="py-[2rem] md:order-2">
-        <div className="flex items-center text-center">
+        <div className="flex items-center break-words text-center">
           <div
             onClick={() => handleClick('nfts')}
-            className="cursor mr-4 text-[2rem] underline"
+            className="cursor mr-4 text-[1.8rem] underline md:text-[2rem]"
           >
             NFT Portfolio
           </div>
           <div
             onClick={() => handleClick('nfts/collection')} // TODO < need to dynamically load previous collection
-            className="cursor mr-4 flex items-center text-[2rem]"
+            className="cursor mr-4 flex items-center text-[1.8rem] md:text-[2rem]"
           >
             &gt;
-            <span className="ml-4  underline">{currentCollection.name}</span>
+            <span className="ml-4 underline">
+              {shrinkAddress(currentCollection.name)}
+            </span>
           </div>
-          <div className="flex items-center text-[2.9rem]">
+          <div className="flex items-center text-[2.2rem] md:text-[2.9rem]">
             &gt;
             <span className="ml-4">{name}</span>
           </div>
@@ -77,7 +80,7 @@ const Nft = () => {
               </div>
               <div className="mt-[2rem] flex flex-row justify-between">
                 <span className="mr-16">Collection</span>
-                <span>{currentCollection.name}</span>
+                <span>{shrinkAddress(currentCollection.name)}</span>
               </div>
               <div className="mt-[2rem] flex flex-row justify-between">
                 <span className="mr-16">Floor Price</span>

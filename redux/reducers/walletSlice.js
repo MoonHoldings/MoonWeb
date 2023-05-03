@@ -283,7 +283,7 @@ export const refreshWallets = createAsyncThunk(
     try {
       for (let i = 0; i < flattenedNfts.length; i++) {
         let nft = flattenedNfts[i]
-        let collectionName = nft?.collection?.name || nft?.collection?.address
+        let collectionName = nft?.collection?.name || nft.name.split('#')[0]
         let collectionImage = nft.image_uri
 
         let address = nft?.collection?.address
@@ -293,7 +293,7 @@ export const refreshWallets = createAsyncThunk(
 
         if (!oldCollection) {
           if (address) {
-            if (collectionMetaDataHash[address] === undefined) continue
+            // if (collectionMetaDataHash[address] === undefined) continue
 
             if (collectionMetaDataHash[address]?.name) {
               collectionName = collectionMetaDataHash[address]?.name
@@ -309,7 +309,7 @@ export const refreshWallets = createAsyncThunk(
         }
 
         if (collectionName === undefined) {
-          collectionName = 'unknown'
+          collectionName = nft.name.split('#')[0]
         }
 
         // If new collection
@@ -450,14 +450,13 @@ export const addAddress = createAsyncThunk(
 
           for (let i = 0; i < nfts.length; i++) {
             let nft = nfts[i]
-            let collectionName =
-              nft?.collection?.name || nft?.collection?.address
+            let collectionName = nft?.collection?.name || nft.name.split('#')[0]
             let collectionImage = nft.image_uri
 
             let address = nft?.collection?.address
 
             if (address) {
-              if (collectionMetaDataHash[address] === undefined) continue
+              // if (collectionMetaDataHash[address] === undefined) continue
 
               if (collectionMetaDataHash[address]?.name) {
                 collectionName = collectionMetaDataHash[address]?.name
@@ -469,7 +468,7 @@ export const addAddress = createAsyncThunk(
             }
 
             if (collectionName === undefined) {
-              collectionName = 'unknown'
+              collectionName = nft.name.split('#')[0]
             }
 
             if (collectionHash[collectionName] === undefined) {

@@ -14,6 +14,8 @@ import { createSharkyClient } from '@sharkyfi/client'
 import mergeClasses from 'utils/mergeClasses'
 import TextBlink from 'components/partials/TextBlink'
 import calculateLendInterest from 'utils/calculateLendInterest'
+import { useMutation } from '@apollo/client'
+import { CREATE_LOANS } from 'utils/mutations'
 
 const MAX_OFFERS = 4
 
@@ -31,6 +33,8 @@ const LendModal = () => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [failMessage, setFailMessage] = useState(null)
   const [txLink, setTxLink] = useState(null)
+
+  const [createLoans] = useMutation(CREATE_LOANS)
 
   const methods = useForm({
     defaultValues: {
@@ -75,7 +79,7 @@ const LendModal = () => {
     reset()
   }
 
-  const waitTransactionConfirmation = async (tx) => {
+  const waitTransactionConfirmation = async (tx, loans) => {
     const provider = createAnchorProvider(wallet)
 
     const confirmedTransaction = await provider.connection.confirmTransaction(
@@ -86,6 +90,15 @@ const LendModal = () => {
     if (confirmedTransaction.value.err) {
       setFailMessage(`Transaction failed: ${confirmedTransaction.value.err}`)
     } else {
+      // Call create loans mutation
+      try {
+        await createLoans({
+          variables: { loans },
+        })
+      } catch (error) {
+        console.log(error)
+      }
+
       getBalance()
       setIsSuccess(true)
       setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
@@ -107,7 +120,7 @@ const LendModal = () => {
         type: 'success',
         className: 'bg-[#191C20] text-white',
         description: `Done! You've offered a ${orderBook?.duration} day loan, in a few seconds this will reflect in your history`,
-        duration: 60,
+        duration: 5,
         placement: 'top',
         message: <p className="text-white">Success</p>,
       })
@@ -127,15 +140,31 @@ const LendModal = () => {
     const { offerAmount } = getValues()
 
     try {
-      const { sig } = await orderBookInfo.offerLoan({
+      const { sig, offeredLoans } = await orderBookInfo.offerLoan({
         program,
         principalLamports: parseFloat(offerAmount) * LAMPORTS_PER_SOL,
         onTransactionUpdate: console.dir,
         count: numLoanOffers,
       })
+      const loansToCreate = offeredLoans.map((loan) => ({
+        pubKey: loan.pubKey.toBase58(),
+        version: loan.data.version,
+        principalLamports: loan.data.principalLamports.toNumber(),
+        valueTokenMint: loan.data.valueTokenMint.toBase58(),
+        supportsFreezingCollateral: loan.supportsFreezingCollateral,
+        isCollateralFrozen: loan.isCollateralFrozen,
+        isHistorical: loan.isHistorical,
+        isForeclosable: loan.isForeclosable('mainnet'),
+        state: loan.state,
+        duration:
+          loan.data.loanState?.offer?.offer.termsSpec.time?.duration?.toNumber(),
+        lenderWallet: loan.data.loanState.offer?.offer.lenderWallet.toBase58(),
+        offerTime: loan.data.loanState.offer?.offer.offerTime?.toNumber(),
+        orderBook: loan.data.orderBook.toBase58(),
+      }))
 
       // Check if the transaction was successful
-      await waitTransactionConfirmation(sig)
+      await waitTransactionConfirmation(sig, loansToCreate)
     } catch (error) {
       console.log(error)
     }

@@ -10,10 +10,11 @@ import mergeClasses from 'utils/mergeClasses'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import createAnchorProvider from 'utils/createAnchorProvider'
 import { Tooltip, notification } from 'antd'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { GET_BEST_OFFER_FOR_BORROW, MY_LOANS } from 'utils/queries'
 import Link from 'next/link'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
+import { BORROW_LOAN } from 'utils/mutations'
 
 const BorrowModal = () => {
   const dispatch = useDispatch()
@@ -28,7 +29,10 @@ const BorrowModal = () => {
   const [failMessage, setFailMessage] = useState(null)
   const [txLink, setTxLink] = useState(null)
   const [getBestOffer, { data, loading }] = useLazyQuery(
-    GET_BEST_OFFER_FOR_BORROW
+    GET_BEST_OFFER_FOR_BORROW,
+    {
+      fetchPolicy: 'no-cache',
+    }
   )
   const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
     useLazyQuery(MY_LOANS)
@@ -46,6 +50,7 @@ const BorrowModal = () => {
     orderBook?.apy
   )
   interest = interest < 0.01 ? interest.toFixed(3) : interest.toFixed(2)
+  const [borrowLoan] = useMutation(BORROW_LOAN)
 
   const floorPriceSol = orderBook?.floorPriceSol
     ? orderBook?.floorPriceSol
@@ -203,7 +208,10 @@ const BorrowModal = () => {
             'p-3'
           )}
           disabled={ownedNft?.mint === selectedNft?.mint}
-          onClick={() => setSelectedNft(ownedNft)}
+          onClick={() => {
+            setIsSuccess(false)
+            setSelectedNft(ownedNft)
+          }}
         >
           <Image
             className="h-full w-full rounded rounded-2xl"
@@ -301,7 +309,7 @@ const BorrowModal = () => {
     )
   }
 
-  const waitTransactionConfirmation = async (tx) => {
+  const waitTransactionConfirmation = async (tx, loan) => {
     const provider = createAnchorProvider(wallet)
 
     const confirmedTransaction = await provider.connection.confirmTransaction(
@@ -312,8 +320,15 @@ const BorrowModal = () => {
     if (confirmedTransaction.value.err) {
       setFailMessage(`Transaction failed: ${confirmedTransaction.value.err}`)
     } else {
+      try {
+        await borrowLoan({ variables: { borrowedLoan: loan } })
+      } catch (error) {
+        console.log(error)
+      }
+
       setIsSuccess(true)
       setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
+      setSelectedNft(null)
       notification.open({
         closeIcon: (
           <svg
@@ -332,7 +347,7 @@ const BorrowModal = () => {
         className: 'bg-[#191C20] text-white',
         description: `Done! You've taken out a ${bestOfferSol} SOL loan, in a few seconds
             this will reflect in your history`,
-        duration: 60,
+        duration: 5,
         placement: 'top',
         message: <p className="text-white">Success</p>,
       })
@@ -342,6 +357,7 @@ const BorrowModal = () => {
   const borrow = async () => {
     setIsSubmitting(true)
     setFailMessage(null)
+    setIsSuccess(false)
 
     const provider = createAnchorProvider(wallet)
     const sharkyClient = createSharkyClient(provider)
@@ -402,9 +418,23 @@ const BorrowModal = () => {
           nftListIndex: selectedNft?.nftListIndex,
           skipFreezingCollateral: !isFreezable,
         })
+        const loanToBorrow = {
+          pubKey: takenLoan.pubKey.toBase58(),
+          nftCollateralMint:
+            takenLoan.data.loanState.taken?.taken.nftCollateralMint.toBase58(),
+          lenderNoteMint:
+            takenLoan.data.loanState.taken?.taken.lenderNoteMint.toBase58(),
+          borrowerNoteMint:
+            takenLoan.data.loanState.taken?.taken.borrowerNoteMint.toBase58(),
+          apy: takenLoan.data.loanState.taken?.taken.apy.fixed?.apy,
+          start:
+            takenLoan.data.loanState.taken?.taken.terms.time?.start?.toNumber(),
+          totalOwedLamports:
+            takenLoan.data.loanState.taken?.taken.terms.time?.totalOwedLamports?.toNumber(),
+        }
 
         // Check if the transaction was successful
-        await waitTransactionConfirmation(sig)
+        await waitTransactionConfirmation(sig, loanToBorrow)
       } catch (e) {
         if (e.sig) {
           setFailMessage(`Error taking loan (sig: ${e.sig})`)

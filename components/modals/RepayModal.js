@@ -10,6 +10,8 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { createSharkyClient } from '@sharkyfi/client'
 import mergeClasses from 'utils/mergeClasses'
+import { DELETE_LOAN_BY_PUBKEY } from 'utils/mutations'
+import { useMutation } from '@apollo/client'
 
 const RepayModal = () => {
   const dispatch = useDispatch()
@@ -24,6 +26,8 @@ const RepayModal = () => {
   const [failMessage, setFailMessage] = useState(null)
   const [txLink, setTxLink] = useState(null)
 
+  const [deleteLoanByPubKey] = useMutation(DELETE_LOAN_BY_PUBKEY)
+
   const onClose = () => {
     dispatch(changeRepayModalOpen(false))
     setIsSubmitting(false)
@@ -32,7 +36,7 @@ const RepayModal = () => {
     setTxLink(null)
   }
 
-  const waitTransactionConfirmation = async (tx) => {
+  const waitTransactionConfirmation = async (tx, pubKey) => {
     const provider = createAnchorProvider(wallet)
 
     const confirmedTransaction = await provider.connection.confirmTransaction(
@@ -42,8 +46,15 @@ const RepayModal = () => {
 
     if (confirmedTransaction.value.err) {
       setFailMessage(`Transaction failed: ${confirmedTransaction.value.err}`)
+      return
     }
 
+    // Call delete loan
+    try {
+      await deleteLoanByPubKey({ variables: { pubKey } })
+    } catch (error) {
+      console.log(error)
+    }
     setIsSuccess(true)
     setTxLink(`https://solana.fm/tx/${tx}?cluster=mainnet-qn1`)
   }
@@ -83,7 +94,7 @@ const RepayModal = () => {
         orderBook,
       })
 
-      await waitTransactionConfirmation(sig)
+      await waitTransactionConfirmation(sig, loan.pubKey.toBase58())
       setIsSubmitting(false)
     } catch (error) {
       console.log(error)
