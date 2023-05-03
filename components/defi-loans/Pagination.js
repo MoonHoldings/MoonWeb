@@ -171,7 +171,7 @@ const Pagination = ({ totalItems, disabled = false }) => {
           'border',
           'border-[#434343]',
           'text-xl',
-          pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
+          lastPage === currentPage ? 'bg-[#262626]' : 'bg-[#141414]'
         )}
         onClick={() => dispatch(changePage(lastPage))}
         disabled={currentPage === lastPage || disabled}

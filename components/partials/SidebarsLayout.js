@@ -66,61 +66,76 @@ const SidebarsLayout = ({ children }) => {
     )
   }
 
-  return (
-    <>
-      <AnimatePresence>
-        {addWalletModalOpen && <AddWalletModal />}
-      </AnimatePresence>
-      <div
-        className={mergeClasses(
-          'min-h-screen',
-          'px-[1.7rem]',
-          'pt-[4.6rem]',
-          'xl:mx-auto',
-          'xl:grid',
-          lendRightSideBarOpen || !router.pathname.includes('defi-loans')
-            ? 'xl:grid-cols-[28.8rem_auto_30.8rem]'
-            : 'xl:grid-cols-[28.8rem_auto_1rem]',
-          'xl:items-start',
-          'xl:gap-[3.2rem]',
-          'xl:pt-[2rem]'
-        )}
-      >
-        <AnimatePresence initial={false}>
-          {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
-          {rightSideBarOpen &&
-            innerWidth < 1280 &&
-            router.pathname.includes('nfts') && <NftRightSideBar />}
-          {lendRightSideBarOpen &&
-            innerWidth < 1280 &&
-            router.pathname.includes('defi-loans') && <DefiLoansRightSideBar />}
-        </AnimatePresence>
+  const noSidebarPaths = [
+    '/login',
+    '/signup',
+    '/',
+    '/reset-password',
+    '/redirect',
+  ]
+  const shouldRenderSidebars = !noSidebarPaths.includes(router.pathname)
 
+  if (shouldRenderSidebars) {
+    return (
+      <>
         <AnimatePresence>
-          {walletsModalOpen && <WalletsModal />}
+          {addWalletModalOpen && <AddWalletModal />}
         </AnimatePresence>
+        <div
+          className={mergeClasses(
+            'min-h-screen',
+            'px-[1.7rem]',
+            'pt-[4.6rem]',
+            'xl:mx-auto',
+            'xl:grid',
+            lendRightSideBarOpen || !router.pathname.includes('defi-loans')
+              ? 'xl:grid-cols-[28.8rem_auto_30.8rem]'
+              : 'xl:grid-cols-[28.8rem_auto_1rem]',
+            'xl:items-start',
+            'xl:gap-[3.2rem]',
+            'xl:pt-[2rem]'
+          )}
+        >
+          <AnimatePresence initial={false}>
+            {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
+            {rightSideBarOpen &&
+              innerWidth < 1280 &&
+              router.pathname.includes('nfts') && <NftRightSideBar />}
+            {lendRightSideBarOpen &&
+              innerWidth < 1280 &&
+              router.pathname.includes('defi-loans') && (
+                <DefiLoansRightSideBar />
+              )}
+          </AnimatePresence>
 
-        {(addAddressStatus === 'loading' ||
-          fetchingNftDataStatus === 'loading' ||
-          modalLoading) && <LoadingModal showMessage={modalLoading} />}
-        {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
-        {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
+          <AnimatePresence>
+            {walletsModalOpen && <WalletsModal />}
+          </AnimatePresence>
 
-        {innerWidth > 1280 && (
-          <>
-            <LeftSideBar />
-            {router.pathname.includes('nfts') && <NftRightSideBar />}
-            {router.pathname.includes('defi-loans') && (
-              <DefiLoansRightSideBar />
-            )}
-          </>
-        )}
+          {(addAddressStatus === 'loading' ||
+            fetchingNftDataStatus === 'loading' ||
+            modalLoading) && <LoadingModal showMessage={modalLoading} />}
+          {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
+          {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
 
-        {renderModals()}
-        {children}
-      </div>
-    </>
-  )
+          {innerWidth > 1280 && (
+            <>
+              <LeftSideBar />
+              {router.pathname.includes('nfts') && <NftRightSideBar />}
+              {router.pathname.includes('defi-loans') && (
+                <DefiLoansRightSideBar />
+              )}
+            </>
+          )}
+
+          {renderModals()}
+          {children}
+        </div>
+      </>
+    )
+  } else {
+    return children
+  }
 }
 
 export default SidebarsLayout

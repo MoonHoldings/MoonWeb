@@ -500,7 +500,7 @@ const RightSideBar = () => {
 
   return (
     <motion.div
-      className="fixed left-0 top-0 z-[51] h-full w-full md:static md:order-3 md:mb-[1.5rem] md:h-auto"
+      className="fixed left-0 top-0 z-[51] h-full w-full md:sticky md:top-8 md:order-3 md:mb-[1.5rem] md:h-auto"
       initial={{ x: '101%' }}
       animate={{ x: '0%' }}
       exit={{ x: '101%' }}

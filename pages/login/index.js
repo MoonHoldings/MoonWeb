@@ -67,10 +67,7 @@ const Login = (props) => {
         })
       )
       if (res.payload.username) {
-        setModal('Successfully Logged in! Redirecting...', false, true)
-        setTimeout(function () {
-          Router.push('/nfts')
-        }, 2000)
+        Router.push('/nfts')
       } else if (res.payload.message) {
         setModal(res.payload.message, true, true)
       }
@@ -144,10 +141,7 @@ const Login = (props) => {
           const intervalId = setInterval(async () => {
             clearInterval(intervalId)
             if (valueReceived.payload.ok) {
-              setModal('Successfully Logged in! Redirecting...', false, true)
-              setTimeout(function () {
-                Router.push('/nfts')
-              }, 2000)
+              Router.push('/nfts')
             } else if (valueReceived.payload.message) {
               setModal(valueReceived.payload.message, true, true)
             }
