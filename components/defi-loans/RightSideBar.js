@@ -32,6 +32,12 @@ const RightSideBar = () => {
   const { lendRightSideBarOpen } = useSelector((state) => state.util)
   const { activeTab } = useSelector((state) => state.sharkifyLend)
 
+  useEffect(() => {
+    if (!activeTab?.length) {
+      dispatch(setActiveTab('offers'))
+    }
+  }, [activeTab, dispatch])
+
   const [getMyOffers, { data: myOffers, loading: loadingOffers }] =
     useLazyQuery(MY_OFFERS)
   const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
