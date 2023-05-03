@@ -62,6 +62,8 @@ const SignUp = () => {
       confirmPassword.length == 0
     ) {
       setModal('Please fill up all fields', true, true)
+    } else if (password != confirmPassword) {
+      setModal('Passwords do not match', true, true)
     } else {
       try {
         await signUp({
@@ -102,10 +104,7 @@ const SignUp = () => {
         const intervalId = setInterval(async () => {
           clearInterval(intervalId)
           if (valueReceived.payload.ok) {
-            setModal('Successfully Logged in! Redirecting...', false, true)
-            setTimeout(function () {
-              router.push('/nfts')
-            }, 2000)
+            router.push('/nfts')
           } else if (valueReceived.payload.message) {
             setModal(valueReceived.payload.message, true, true)
           }
@@ -200,10 +199,6 @@ const SignUp = () => {
               placeholder="Confirm Password"
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <div className=" mb-[1rem] text-[1.2rem] text-[#A6A6A6]">
-              Minimum 8 characters long, at least 1 special, 1 number, and 1
-              uppercase and lowercase letter
-            </div>
             <GeneralButton
               onClick={register}
               loading={signingUp}

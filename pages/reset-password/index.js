@@ -111,10 +111,6 @@ const ResetPassword = (props) => {
               placeholder="Confirm New Password"
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <div className=" mb-[1rem] text-[1.2rem] text-[#A6A6A6]">
-              Minimum 8 characters long, at least 1 special, 1 number, and 1
-              uppercase and lowercase letter
-            </div>
             <GeneralButton
               onClick={submit}
               loading={loading}
