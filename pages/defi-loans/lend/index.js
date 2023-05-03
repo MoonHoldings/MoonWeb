@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Header from 'components/defi-loans/Header'
-import SidebarsLayout from 'components/partials/SidebarsLayout'
 import Search from 'components/defi-loans/Search'
 import { changeLoanDetailsModalOpen } from 'redux/reducers/utilSlice'
 import { setOrderBooks } from 'redux/reducers/sharkifySlice'
@@ -69,20 +68,18 @@ const Lend = () => {
   }
 
   return (
-    <SidebarsLayout>
-      <div className="pb-[4rem] pt-[2rem] md:order-2">
-        <Header
-          title="Lend"
-          description="Browse collections below, and name your price. The current best offer
+    <div className="pb-[4rem] pt-[2rem] md:order-2">
+      <Header
+        title="Lend"
+        description="Browse collections below, and name your price. The current best offer
           will be shown to borrowers. To take your offer, they lock in an NFT
           from that collection to use as collateral. You will be repaid at the
           end of the loan, plus interest. If they fail to repay, you get to keep
           the NFT."
-        />
-        <Search onChange={(text) => dispatch(search(text))} />
-        <OrderBookTable onClickRow={onClickRow} loading={loading} />
-      </div>
-    </SidebarsLayout>
+      />
+      <Search onChange={(text) => dispatch(search(text))} />
+      <OrderBookTable onClickRow={onClickRow} loading={loading} />
+    </div>
   )
 }
 

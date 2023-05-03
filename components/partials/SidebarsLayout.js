@@ -86,7 +86,7 @@ const SidebarsLayout = ({ children }) => {
           'xl:pt-[2rem]'
         )}
       >
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
           {rightSideBarOpen &&
             innerWidth < 1280 &&
