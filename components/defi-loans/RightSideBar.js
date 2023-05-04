@@ -110,9 +110,10 @@ const RightSideBar = () => {
   }
 
   const shrinkText = (text) => {
-    const firstSlice = text.slice(0, 3)
-    const lastSlice = text.slice(-3)
-    return `${firstSlice}...${lastSlice}`
+    // const firstSlice = text.slice(0, 3)
+    // const lastSlice = text.slice(-3)
+    // return `${firstSlice}...${lastSlice}`
+    return text.substring(0, 5)
   }
 
   const renderConnectWallet = () => {

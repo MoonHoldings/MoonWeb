@@ -11,6 +11,7 @@ const initialState = {
   revokeOfferModalOpen: false,
   repayModalOpen: false,
   loanDetailsModalOpen: false,
+  coinModalOpen: false,
 }
 
 const utilSlice = createSlice({
@@ -47,6 +48,9 @@ const utilSlice = createSlice({
     changeLoanDetailsModalOpen(state, action) {
       state.loanDetailsModalOpen = action.payload
     },
+    changeCoinModalOpen(state, action) {
+      state.coinModalOpen = action.payload
+    },
   },
 })
 
@@ -61,6 +65,7 @@ export const {
   changeRevokeOfferModalOpen,
   changeRepayModalOpen,
   changeLoanDetailsModalOpen,
+  changeCoinModalOpen,
 } = utilSlice.actions
 
 export default utilSlice.reducer
