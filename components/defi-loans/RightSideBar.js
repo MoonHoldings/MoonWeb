@@ -84,7 +84,7 @@ const RightSideBar = () => {
             },
           },
         },
-        pollInterval: 500,
+        pollInterval: 1000,
       })
     }
   }, [publicKey, loadingOffers, getMyOffers])
@@ -100,7 +100,7 @@ const RightSideBar = () => {
             },
           },
         },
-        pollInterval: 500,
+        pollInterval: 1000,
       })
     }
   }, [publicKey, loadingMyLoans, getMyLoans])
