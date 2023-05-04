@@ -37,7 +37,7 @@ const LoanDetailsModal = () => {
           },
         },
       },
-      pollInterval: 10000,
+      pollInterval: 60_000,
     })
   }, [loanDetails, getOrderBookActiveLoans])
 
@@ -59,7 +59,7 @@ const LoanDetailsModal = () => {
           },
         },
       },
-      pollInterval: 10000,
+      pollInterval: 60_000,
     })
   }, [loanDetails, getOrderBookOffers])
 

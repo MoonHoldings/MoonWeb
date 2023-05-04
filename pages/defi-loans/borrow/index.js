@@ -49,7 +49,6 @@ const Borrow = () => {
           isBorrowPage: true,
         },
       },
-      pollInterval: 1000,
     })
   }, [pageIndex, sortOrder, sortOption, searchString, getOrderBooks, publicKey])
 
