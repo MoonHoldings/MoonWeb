@@ -45,7 +45,6 @@ const Lend = () => {
           },
         },
       },
-      pollInterval: 1000,
     })
   }, [pageIndex, sortOrder, sortOption, searchString, getOrderBooks])
 

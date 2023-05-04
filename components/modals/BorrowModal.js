@@ -71,30 +71,6 @@ const BorrowModal = () => {
     }
   }, [wallet.publicKey, loadingMyLoans, getMyLoans])
 
-  useEffect(() => {
-    if (orderBook && !loading) {
-      getBestOffer({
-        variables: {
-          args: {
-            pagination: {
-              limit: 1,
-              offset: 0,
-            },
-            filter: {
-              type: 'offered',
-              orderBookId: orderBook?.id,
-            },
-            sort: {
-              order: 'DESC',
-              type: 'amount',
-            },
-          },
-        },
-        pollInterval: 1000,
-      })
-    }
-  }, [orderBook, getBestOffer, loading])
-
   const onClose = () => {
     dispatch(changeBorrowModalOpen(false))
     setSelectedNft(null)

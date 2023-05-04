@@ -57,7 +57,7 @@ const RightSideBar = () => {
         variables: {
           lender: publicKey.toBase58(),
         },
-        pollInterval: 0,
+        pollInterval: 3_600_000,
       })
     }
   }, [publicKey, loadingHistoricalOffers, getMyHistoricalOffers])
@@ -68,7 +68,7 @@ const RightSideBar = () => {
         variables: {
           borrower: publicKey.toBase58(),
         },
-        pollInterval: 0,
+        pollInterval: 3_600_000,
       })
     }
   }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
