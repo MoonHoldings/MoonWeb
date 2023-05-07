@@ -1,43 +1,62 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import mergeClasses from 'utils/mergeClasses'
-import { useDispatch } from 'react-redux'
 import Pagination from './Pagination'
 import { useRouter } from 'next/router'
-import axios from 'axios'
+import { LOAN_SUMMARY } from 'utils/queries'
+import { useWallet } from '@solana/wallet-adapter-react'
+import HistoryRow from './HistoryRow'
+import { useLazyQuery } from '@apollo/client'
 
 const HistoryTable = ({ onClickRow, loading }) => {
-  const [previousPaginationToken, setPreviousPaginationToken] = useState(null)
-  const [nextPaginationToken, setNextPaginationToken] = useState(null)
-  const dispatch = useDispatch()
+  const { publicKey } = useWallet()
+  const [paginationIndex, setPaginationIndex] = useState(-1)
+  const [paginationTokens, setPaginationTokens] = useState([])
   const router = useRouter()
-  const history = []
 
-  // const { orderBooks, totalOrderBooks } = useSelector((state) => state.sharkify)
-  // const { sortOption, sortOrder } = useSelector((state) => state.sharkifyLend)
+  const [getLoanSummary, { data: loanSummary, loading: loadingLoanSummary }] =
+    useLazyQuery(LOAN_SUMMARY)
 
   const isLendPage = router.pathname.includes('lend')
-  const totalItems = 0
 
-  const COLUMNS = ['Collection', 'Offer', 'Interest', 'APY', 'Status']
+  useEffect(() => {
+    if (publicKey && !loadingLoanSummary) {
+      const wallet = publicKey?.toBase58()
 
-  const fetchLoans = async () => {
-    const { data } = await axios.post(
-      `${HELLO_MOON_URL}/sharky/loan-summary`,
-      {
-        limit: 100,
-        paginationToken: paginationToken,
-      },
-      AXIOS_CONFIG_HELLO_MOON_KEY
-    )
-
-    if (data.paginationToken) {
-      if (nextPaginationToken) {
-        setPreviousPaginationToken(nextPaginationToken)
+      if (isLendPage) {
+        getLoanSummary({
+          variables: {
+            lender: wallet,
+            paginationToken: paginationTokens[paginationIndex],
+          },
+        })
+      } else {
+        getLoanSummary({
+          variables: {
+            borrower: wallet,
+            paginationToken: paginationTokens[paginationIndex],
+          },
+        })
       }
-
-      setNextPaginationToken(data.paginationToken)
     }
-  }
+  }, [
+    loadingLoanSummary,
+    publicKey,
+    isLendPage,
+    getLoanSummary,
+    paginationTokens,
+    paginationIndex,
+  ])
+
+  useEffect(() => {
+    const token = loanSummary?.getLoanSummary?.paginationToken
+
+    if (token && !paginationTokens.includes(token)) {
+      setPaginationTokens((prevTokens) => [...prevTokens, token])
+    }
+  }, [loanSummary, paginationTokens])
+
+  const totalItems = 0
+  const COLUMNS = ['Collection', 'Offer', 'Interest', 'APY', 'Status']
 
   const renderColumns = () => {
     return COLUMNS.map((column, index) => (
@@ -76,10 +95,25 @@ const HistoryTable = ({ onClickRow, loading }) => {
   return (
     <>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination totalItems={totalItems} disabled={loading} />
+        <Pagination
+          totalItems={totalItems}
+          disabled={loadingLoanSummary}
+          onNext={() => {
+            if (paginationIndex + 1 < paginationTokens.length) {
+              setPaginationIndex((index) => index + 1)
+            }
+          }}
+          onPrevious={() => {
+            if (paginationIndex > -1) {
+              setPaginationIndex((index) => index - 1)
+            }
+          }}
+          previousDisabled={paginationIndex === -1}
+          nextDisabled={paginationIndex === paginationTokens.length - 1}
+        />
       </div>
-      <div className={mergeClasses(!loading && 'overflow-x-auto')}>
-        {loading ? (
+      <div className={mergeClasses(!loadingLoanSummary && 'overflow-x-auto')}>
+        {loadingLoanSummary ? (
           <div className="mt-12 flex w-full justify-center">
             <svg
               aria-hidden="true"
@@ -104,14 +138,8 @@ const HistoryTable = ({ onClickRow, loading }) => {
               <tr>{renderColumns()}</tr>
             </thead>
             <tbody>
-              {history?.map((orderBook, index) => (
-                // <OrderBookRow
-                //   orderBook={orderBook}
-                //   onClickRow={onClickRow}
-                //   key={index}
-                //   loading={loading}
-                // />
-                <div key={index}>Row</div>
+              {loanSummary?.getLoanSummary?.data?.map((data, index) => (
+                <HistoryRow history={data} key={index} />
               ))}
             </tbody>
           </table>

@@ -1,6 +1,11 @@
 import React from 'react'
 import Image from 'next/image'
-import { SortOrder, setSortOption } from 'redux/reducers/sharkifyLendSlice'
+import {
+  SortOrder,
+  nextPage,
+  previousPage,
+  setSortOption,
+} from 'redux/reducers/sharkifyLendSlice'
 import OrderBookRow from './OrderBookRow'
 import mergeClasses from 'utils/mergeClasses'
 import { useDispatch, useSelector } from 'react-redux'
@@ -70,6 +75,9 @@ const OrderBookTable = ({ onClickRow, loading }) => {
           pageIndex={pageIndex}
           pageSize={pageSize}
           totalItems={totalItems}
+          onPrevious={() => dispatch(previousPage())}
+          onNext={() => dispatch(nextPage({ length: totalItems }))}
+          previousDisabled={pageIndex === 0}
         />
       </div>
       <div className={mergeClasses(!loading && 'overflow-x-auto')}>

@@ -63,7 +63,7 @@ const Header = ({ title, description }) => {
           </Link>
         </div>
         <Link
-          href="lend/history"
+          href={`${isLend ? 'lend' : 'borrow'}/history`}
           className={mergeClasses(
             'inline-flex',
             'items-center',
