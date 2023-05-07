@@ -1,37 +1,62 @@
-import React from 'react'
-import Image from 'next/image'
-import {
-  SortOrder,
-  nextPage,
-  previousPage,
-  setSortOption,
-} from 'redux/reducers/sharkifyLendSlice'
-import OrderBookRow from './OrderBookRow'
+import React, { useEffect, useState } from 'react'
 import mergeClasses from 'utils/mergeClasses'
-import { useDispatch, useSelector } from 'react-redux'
 import Pagination from './Pagination'
 import { useRouter } from 'next/router'
+import { LOAN_SUMMARY } from 'utils/queries'
+import { useWallet } from '@solana/wallet-adapter-react'
+import HistoryRow from './HistoryRow'
+import { useLazyQuery } from '@apollo/client'
 
-const OrderBookTable = ({ onClickRow, loading }) => {
-  const dispatch = useDispatch()
+const HistoryTable = ({ onClickRow, loading }) => {
+  const { publicKey } = useWallet()
+  const [paginationIndex, setPaginationIndex] = useState(-1)
+  const [paginationTokens, setPaginationTokens] = useState([])
   const router = useRouter()
 
-  const { orderBooks, totalOrderBooks } = useSelector((state) => state.sharkify)
-  const { sortOption, sortOrder, pageIndex, pageSize } = useSelector(
-    (state) => state.sharkifyLend
-  )
+  const [getLoanSummary, { data: loanSummary, loading: loadingLoanSummary }] =
+    useLazyQuery(LOAN_SUMMARY)
 
   const isLendPage = router.pathname.includes('lend')
-  const totalItems = totalOrderBooks
 
-  const COLUMNS = [
-    'Collection',
-    'Total Pool',
-    'Best Offer',
-    isLendPage ? 'APY' : 'Interest',
-    'Duration',
-    'Action',
-  ]
+  useEffect(() => {
+    if (publicKey && !loadingLoanSummary) {
+      const wallet = publicKey?.toBase58()
+
+      if (isLendPage) {
+        getLoanSummary({
+          variables: {
+            lender: wallet,
+            paginationToken: paginationTokens[paginationIndex],
+          },
+        })
+      } else {
+        getLoanSummary({
+          variables: {
+            borrower: wallet,
+            paginationToken: paginationTokens[paginationIndex],
+          },
+        })
+      }
+    }
+  }, [
+    loadingLoanSummary,
+    publicKey,
+    isLendPage,
+    getLoanSummary,
+    paginationTokens,
+    paginationIndex,
+  ])
+
+  useEffect(() => {
+    const token = loanSummary?.getLoanSummary?.paginationToken
+
+    if (token && !paginationTokens.includes(token)) {
+      setPaginationTokens((prevTokens) => [...prevTokens, token])
+    }
+  }, [loanSummary, paginationTokens])
+
+  const totalItems = 0
+  const COLUMNS = ['Collection', 'Offer', 'Interest', 'APY', 'Status']
 
   const renderColumns = () => {
     return COLUMNS.map((column, index) => (
@@ -42,10 +67,10 @@ const OrderBookTable = ({ onClickRow, loading }) => {
         {column !== 'Action' ? (
           <button
             className="flex items-center"
-            onClick={() => dispatch(setSortOption(column))}
+            // onClick={() => dispatch(setSortOption(column))}
           >
             {column}
-            <Image
+            {/* <Image
               className={mergeClasses(
                 'ml-4',
                 sortOrder === SortOrder.DESC &&
@@ -58,7 +83,7 @@ const OrderBookTable = ({ onClickRow, loading }) => {
               alt=""
               width="10"
               height="10"
-            />
+            /> */}
           </button>
         ) : (
           'Action'
@@ -71,17 +96,24 @@ const OrderBookTable = ({ onClickRow, loading }) => {
     <>
       <div className="my-8 flex w-full items-center justify-end">
         <Pagination
-          disabled={loading}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
           totalItems={totalItems}
-          onPrevious={() => dispatch(previousPage())}
-          onNext={() => dispatch(nextPage({ length: totalItems }))}
-          previousDisabled={pageIndex === 0}
+          disabled={loadingLoanSummary}
+          onNext={() => {
+            if (paginationIndex + 1 < paginationTokens.length) {
+              setPaginationIndex((index) => index + 1)
+            }
+          }}
+          onPrevious={() => {
+            if (paginationIndex > -1) {
+              setPaginationIndex((index) => index - 1)
+            }
+          }}
+          previousDisabled={paginationIndex === -1}
+          nextDisabled={paginationIndex === paginationTokens.length - 1}
         />
       </div>
-      <div className={mergeClasses(!loading && 'overflow-x-auto')}>
-        {loading ? (
+      <div className={mergeClasses(!loadingLoanSummary && 'overflow-x-auto')}>
+        {loadingLoanSummary ? (
           <div className="mt-12 flex w-full justify-center">
             <svg
               aria-hidden="true"
@@ -106,28 +138,18 @@ const OrderBookTable = ({ onClickRow, loading }) => {
               <tr>{renderColumns()}</tr>
             </thead>
             <tbody>
-              {orderBooks?.map((orderBook, index) => (
-                <OrderBookRow
-                  orderBook={orderBook}
-                  onClickRow={onClickRow}
-                  key={index}
-                  loading={loading}
-                />
+              {loanSummary?.getLoanSummary?.data?.map((data, index) => (
+                <HistoryRow history={data} key={index} />
               ))}
             </tbody>
           </table>
         )}
       </div>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination
-          disabled={loading}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          totalItems={totalItems}
-        />
+        <Pagination totalItems={totalItems} disabled={loading} />
       </div>
     </>
   )
 }
 
-export default OrderBookTable
+export default HistoryTable
