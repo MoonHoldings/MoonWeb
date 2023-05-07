@@ -22,7 +22,9 @@ const Lend = () => {
     sortOption,
     sortOrder,
   } = useSelector((state) => state.sharkifyLend)
-  const [getOrderBooks, { loading, data }] = useLazyQuery(GET_ORDER_BOOKS)
+  const [getOrderBooks, { loading, data }] = useLazyQuery(GET_ORDER_BOOKS, {
+    fetchPolicy: 'no-cache',
+  })
 
   useEffect(() => {
     dispatch(search(''))

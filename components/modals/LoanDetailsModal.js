@@ -15,9 +15,13 @@ const LoanDetailsModal = () => {
   const [
     getOrderBookActiveLoans,
     { loading: loadingActiveLoans, data: activeLoans },
-  ] = useLazyQuery(GET_ORDER_BOOK_ACTIVE)
+  ] = useLazyQuery(GET_ORDER_BOOK_ACTIVE, {
+    fetchPolicy: 'no-cache',
+  })
   const [getOrderBookOffers, { loading: loadingOffers, data: offers }] =
-    useLazyQuery(GET_ORDER_BOOK_OFFERS)
+    useLazyQuery(GET_ORDER_BOOK_OFFERS, {
+      fetchPolicy: 'no-cache',
+    })
 
   useEffect(() => {
     getOrderBookActiveLoans({
