@@ -28,12 +28,10 @@ const BorrowModal = () => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [failMessage, setFailMessage] = useState(null)
   const [txLink, setTxLink] = useState(null)
-  const [getBestOffer, { data, loading }] = useLazyQuery(
-    GET_BEST_OFFER_FOR_BORROW,
-    {
+  const [getBestOffer, { data, loading, stopPolling, startPolling }] =
+    useLazyQuery(GET_BEST_OFFER_FOR_BORROW, {
       fetchPolicy: 'no-cache',
-    }
-  )
+    })
   const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
     useLazyQuery(MY_LOANS)
   const bestOffer = data?.getLoans?.data[0]
@@ -72,7 +70,7 @@ const BorrowModal = () => {
   }, [wallet.publicKey, loadingMyLoans, getMyLoans])
 
   useEffect(() => {
-    if (orderBook && !loading) {
+    if (orderBook && !loading && borrowModalOpen) {
       getBestOffer({
         variables: {
           args: {
@@ -93,7 +91,20 @@ const BorrowModal = () => {
         pollInterval: 1000,
       })
     }
-  }, [orderBook, getBestOffer, loading])
+
+    if (!borrowModalOpen) {
+      stopPolling()
+    } else {
+      startPolling()
+    }
+  }, [
+    orderBook,
+    getBestOffer,
+    loading,
+    borrowModalOpen,
+    stopPolling,
+    startPolling,
+  ])
 
   const onClose = () => {
     dispatch(changeBorrowModalOpen(false))

@@ -24,7 +24,9 @@ const Borrow = () => {
     sortOrder,
   } = useSelector((state) => state.sharkifyLend)
   const { publicKey } = useWallet()
-  const [getOrderBooks, { loading, data }] = useLazyQuery(GET_ORDER_BOOKS)
+  const [getOrderBooks, { loading, data }] = useLazyQuery(GET_ORDER_BOOKS, {
+    fetchPolicy: 'no-cache',
+  })
 
   useEffect(() => {
     dispatch(search(''))
@@ -49,7 +51,6 @@ const Borrow = () => {
           isBorrowPage: true,
         },
       },
-      pollInterval: 1000,
     })
   }, [pageIndex, sortOrder, sortOption, searchString, getOrderBooks, publicKey])
 
