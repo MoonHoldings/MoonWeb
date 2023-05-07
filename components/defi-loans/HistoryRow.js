@@ -26,7 +26,7 @@ const HistoryRow = ({ history }) => {
       </td>
       <td className="px-6 py-6">
         <div className="flex items-center">
-          <p>{history.amountOffered}</p>{' '}
+          <p>{history.amountOffered.toFixed(4)}</p>{' '}
           <Image
             className="ml-3 h-[1.6rem] w-[1.6rem]"
             src="/images/svgs/sol.svg"

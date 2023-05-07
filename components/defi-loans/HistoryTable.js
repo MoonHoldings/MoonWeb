@@ -92,25 +92,29 @@ const HistoryTable = ({ onClickRow, loading }) => {
     ))
   }
 
+  const renderPagination = () => (
+    <Pagination
+      totalItems={totalItems}
+      disabled={loadingLoanSummary}
+      onNext={() => {
+        if (paginationIndex + 1 < paginationTokens.length) {
+          setPaginationIndex((index) => index + 1)
+        }
+      }}
+      onPrevious={() => {
+        if (paginationIndex > -1) {
+          setPaginationIndex((index) => index - 1)
+        }
+      }}
+      previousDisabled={paginationIndex === -1}
+      nextDisabled={paginationIndex === paginationTokens.length - 1}
+    />
+  )
+
   return (
     <>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination
-          totalItems={totalItems}
-          disabled={loadingLoanSummary}
-          onNext={() => {
-            if (paginationIndex + 1 < paginationTokens.length) {
-              setPaginationIndex((index) => index + 1)
-            }
-          }}
-          onPrevious={() => {
-            if (paginationIndex > -1) {
-              setPaginationIndex((index) => index - 1)
-            }
-          }}
-          previousDisabled={paginationIndex === -1}
-          nextDisabled={paginationIndex === paginationTokens.length - 1}
-        />
+        {renderPagination()}
       </div>
       <div className={mergeClasses(!loadingLoanSummary && 'overflow-x-auto')}>
         {loadingLoanSummary ? (
@@ -146,7 +150,7 @@ const HistoryTable = ({ onClickRow, loading }) => {
         )}
       </div>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination totalItems={totalItems} disabled={loading} />
+        {renderPagination()}
       </div>
     </>
   )
