@@ -117,24 +117,24 @@ const LoanDetailsModal = () => {
           className="flex justify-around border-b border-b-white border-opacity-25"
           key={index}
         >
-          <div className="flex flex-1 justify-center bg-[#101113] py-5 text-[1.6rem]">
+          <div className="flex flex-1 items-center justify-center bg-[#101113] py-5 text-[1.3rem] sm:text-[1.6rem]">
             <div className="flex items-center">
               {toCurrencyFormat(loan.principalLamports / LAMPORTS_PER_SOL)}
               <Image
-                className="ml-3 h-[1.7rem] w-[1.7rem]"
+                className="ml-2 h-[1.5rem] w-[1.5rem] sm:ml-3 sm:h-[1.7rem] sm:w-[1.7rem]"
                 src="/images/svgs/sol.svg"
                 width={24}
                 height={24}
                 alt=""
               />
             </div>
-            <div className="mx-6">{'>'}</div>
+            <div className="mx-3 sm:mx-6">{'>'}</div>
             <div className="flex items-center">
               {toCurrencyFormat(
                 (loan.totalOwedLamports - fee) / LAMPORTS_PER_SOL
               )}
               <Image
-                className="ml-3 h-[1.7rem] w-[1.7rem]"
+                className="ml-2 h-[1.5rem] w-[1.5rem] sm:ml-3 sm:h-[1.7rem] sm:w-[1.7rem]"
                 src="/images/svgs/sol.svg"
                 width={24}
                 height={24}
@@ -142,7 +142,7 @@ const LoanDetailsModal = () => {
               />
             </div>
           </div>
-          <div className="flex flex-1 justify-center bg-[#212327] py-5 text-[1.6rem]">
+          <div className="flex flex-1 justify-center bg-[#212327] py-5 text-[1.3rem] sm:text-[1.6rem]">
             {formatElapsedTime(loan.start)}
           </div>
         </div>
@@ -157,11 +157,11 @@ const LoanDetailsModal = () => {
           className="flex justify-around border-b border-b-white border-opacity-25"
           key={index}
         >
-          <div className="flex flex-1 justify-center bg-[#101113] py-5 text-[1.6rem]">
+          <div className="flex flex-1 items-center justify-center bg-[#101113] py-5 text-[1.3rem] sm:text-[1.6rem]">
             <div className="flex items-center">
               {toCurrencyFormat(loan.principalLamports / LAMPORTS_PER_SOL)}
               <Image
-                className="ml-3 h-[1.7rem] w-[1.7rem]"
+                className="ml-2 h-[1.5rem] w-[1.5rem] sm:ml-3 sm:h-[1.7rem] sm:w-[1.7rem]"
                 src="/images/svgs/sol.svg"
                 width={24}
                 height={24}
@@ -169,7 +169,7 @@ const LoanDetailsModal = () => {
               />
             </div>
           </div>
-          <div className="flex flex-1 justify-center bg-[#212327] py-5 text-[1.6rem]">
+          <div className="flex flex-1 justify-center bg-[#212327] py-5 text-[1.3rem] sm:text-[1.6rem]">
             {formatElapsedTime(loan.offerTime)}
           </div>
         </div>
@@ -193,13 +193,13 @@ const LoanDetailsModal = () => {
               {loanDetails?.collectionName}
             </span>
           </div>
-          <div className="mt-6 flex w-full justify-between bg-[#34383D] py-6">
-            <div className="flex flex-1 justify-center text-[1.4rem]">
+          <div className="mt-6 flex w-full items-center justify-between bg-[#34383D] py-6">
+            <div className="flex flex-1 justify-center text-[1.2rem] sm:text-[1.4rem]">
               Active Lenders (
               <div className="flex items-center">
                 {toCurrencyFormat(activeLoans?.getLoans?.totalActive ?? 0)}
                 <Image
-                  className="ml-3 h-[1.7rem] w-[1.7rem]"
+                  className="ml-3 h-[1.5rem] w-[1.5rem] sm:h-[1.7rem] sm:w-[1.7rem]"
                   src="/images/svgs/sol.svg"
                   width={24}
                   height={24}
@@ -208,23 +208,23 @@ const LoanDetailsModal = () => {
               </div>
               )
             </div>
-            <div className="flex flex-1 justify-center text-[1.4rem]">
+            <div className="flex flex-1 justify-center text-[1.2rem] sm:text-[1.4rem]">
               Taken
             </div>
           </div>
           <div className="flex flex-col ">{renderTakenLoans()}</div>
           {moreTakenLoansCount > 0 && (
-            <div className="flex w-full justify-center bg-[#101113] py-6 text-[1.4rem]">
+            <div className="flex w-full justify-center bg-[#101113] py-6 text-[1.2rem] sm:text-[1.4rem]">
               More ({moreTakenLoansCount})
             </div>
           )}
           <div className="flex w-full justify-between bg-[#34383D] py-6">
-            <div className="flex flex-1 justify-center text-[1.4rem]">
+            <div className="flex flex-1 justify-center text-[1.2rem] sm:text-[1.4rem]">
               Active Offers (
               <div className="flex items-center">
                 {toCurrencyFormat(activeLoans?.getLoans?.totalOffers ?? 0)}
                 <Image
-                  className="ml-3 h-[1.7rem] w-[1.7rem]"
+                  className="ml-3 h-[1.5rem] w-[1.5rem] sm:h-[1.7rem] sm:w-[1.7rem]"
                   src="/images/svgs/sol.svg"
                   width={24}
                   height={24}
@@ -233,13 +233,13 @@ const LoanDetailsModal = () => {
               </div>
               )
             </div>
-            <div className="flex flex-1 justify-center text-[1.4rem]">
+            <div className="flex flex-1 justify-center text-[1.2rem] sm:text-[1.4rem]">
               Offer Made
             </div>
           </div>
           <div className="flex flex-col">{renderOffers()}</div>
           {moreActiveOffersCount > 0 ? (
-            <div className="flex w-full justify-center rounded-b-[1.25rem] bg-[#101113] py-6 text-[1.4rem]">
+            <div className="flex w-full justify-center rounded-b-[1.25rem] bg-[#101113] py-6 text-[1.2rem] sm:text-[1.4rem]">
               More ({moreActiveOffersCount})
             </div>
           ) : (

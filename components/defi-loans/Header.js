@@ -13,7 +13,13 @@ const Header = ({ title, description }) => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Image src="/images/svgs/sharky.svg" alt="" width="120" height="120" />
+        <Image
+          src="/images/svgs/sharky.svg"
+          alt=""
+          width="0"
+          height="0"
+          className="w-[8rem] md:w-[12rem]"
+        />
         <div className="rounded-[30px] bg-[#191C20] p-4">
           <Link
             href="lend"
@@ -26,7 +32,8 @@ const Header = ({ title, description }) => {
               'border-transparent',
               'py-1.5',
               'px-4',
-              'text-[1.4rem]',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
               isLend && 'bg-[#3C434B]'
@@ -45,7 +52,8 @@ const Header = ({ title, description }) => {
               'border-transparent',
               'py-1.5',
               'px-4',
-              'text-[1.4rem]',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
               isBorrow && 'bg-[#3C434B]'
@@ -54,7 +62,27 @@ const Header = ({ title, description }) => {
             Borrow
           </Link>
         </div>
-        <div className="hidden md:block" />
+        <Link
+          href={`${isLend ? 'lend' : 'borrow'}/history`}
+          className={mergeClasses(
+            'inline-flex',
+            'items-center',
+            'justify-center',
+            'rounded-xl',
+            'border',
+            'border-transparent',
+            'py-3.5',
+            'px-5',
+            'md:text-[1.4rem]',
+            'text-[1.2rem]',
+            'text-white',
+            'focus:outline-none',
+            'bg-[#25282C]',
+            'mr-6'
+          )}
+        >
+          View History
+        </Link>
       </div>
       <h1 className="text-[3rem]">{title}</h1>
       <p className="text-[1.6rem] opacity-60">{description}</p>
