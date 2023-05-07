@@ -7,43 +7,43 @@ import {
 } from 'redux/reducers/sharkifyLendSlice'
 import mergeClasses from 'utils/mergeClasses'
 
-const Pagination = ({ totalItems, disabled = false }) => {
+const Pagination = ({ disabled = false, pageIndex, pageSize, totalItems }) => {
   const dispatch = useDispatch()
-  const { pageIndex, pageSize } = useSelector((state) => state.sharkifyLend)
-  const { orderBooks } = useSelector((state) => state.sharkify)
 
   const lastPage = Math.ceil(totalItems / pageSize)
   const currentPage = Math.floor(pageIndex / pageSize) + 1
 
   return (
     <div className="flex items-center">
-      <button
-        type="button"
-        className={mergeClasses(
-          'flex',
-          'h-14',
-          'px-5',
-          'mr-4',
-          'items-center',
-          'justify-center',
-          'rounded-sm',
-          'border',
-          'border-[#434343]',
-          'text-xl',
-          pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
-        )}
-        onClick={() => dispatch(changePage(1))}
-        disabled={pageIndex === 0 || disabled}
-      >
-        First Page
-      </button>
+      {pageSize && (
+        <button
+          type="button"
+          className={mergeClasses(
+            'flex',
+            'h-14',
+            'px-5',
+            'mr-4',
+            'items-center',
+            'justify-center',
+            'rounded-sm',
+            'border',
+            'border-[#434343]',
+            'text-xl',
+            pageIndex === 0 ? 'bg-[#262626]' : 'bg-[#141414]'
+          )}
+          onClick={() => dispatch(changePage(1))}
+          disabled={pageIndex === 0 || disabled}
+        >
+          First Page
+        </button>
+      )}
       <button
         type="button"
         className={mergeClasses(
           'flex',
           'h-14',
           'w-14',
-          'mr-4',
+          pageSize ? 'mr-4' : 'mr-2',
           'items-center',
           'justify-center',
           'rounded-sm',
@@ -66,9 +66,11 @@ const Pagination = ({ totalItems, disabled = false }) => {
           height="8"
         />
       </button>
-      <span className="text-[1.4rem]">
-        {currentPage} / {lastPage}
-      </span>
+      {pageSize && (
+        <span className="text-[1.4rem]">
+          {currentPage} / {lastPage}
+        </span>
+      )}
       {/* <button
         type="button"
         className={mergeClasses(
@@ -136,7 +138,7 @@ const Pagination = ({ totalItems, disabled = false }) => {
           'flex',
           'h-14',
           'w-14',
-          'mx-4',
+          pageSize ? 'mx-4' : 'mx-2',
           'items-center',
           'justify-center',
           'rounded-sm',
@@ -158,26 +160,27 @@ const Pagination = ({ totalItems, disabled = false }) => {
           height="8"
         />
       </button>
-      <button
-        type="button"
-        className={mergeClasses(
-          'flex',
-          'h-14',
-          'px-5',
-          'mr-4',
-          'items-center',
-          'justify-center',
-          'rounded-sm',
-          'border',
-          'border-[#434343]',
-          'text-xl',
-          lastPage === currentPage ? 'bg-[#262626]' : 'bg-[#141414]'
-        )}
-        onClick={() => dispatch(changePage(lastPage))}
-        disabled={currentPage === lastPage || disabled}
-      >
-        Last Page
-      </button>
+      {pageSize && (
+        <button
+          type="button"
+          className={mergeClasses(
+            'flex',
+            'h-14',
+            'px-5',
+            'items-center',
+            'justify-center',
+            'rounded-sm',
+            'border',
+            'border-[#434343]',
+            'text-xl',
+            lastPage === currentPage ? 'bg-[#262626]' : 'bg-[#141414]'
+          )}
+          onClick={() => dispatch(changePage(lastPage))}
+          disabled={currentPage === lastPage || disabled}
+        >
+          Last Page
+        </button>
+      )}
     </div>
   )
 }

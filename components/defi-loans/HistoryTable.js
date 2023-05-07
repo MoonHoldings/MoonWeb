@@ -1,32 +1,43 @@
-import React from 'react'
-import Image from 'next/image'
-import { SortOrder, setSortOption } from 'redux/reducers/sharkifyLendSlice'
-import OrderBookRow from './OrderBookRow'
+import React, { useState } from 'react'
 import mergeClasses from 'utils/mergeClasses'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Pagination from './Pagination'
 import { useRouter } from 'next/router'
+import axios from 'axios'
 
-const OrderBookTable = ({ onClickRow, loading }) => {
+const HistoryTable = ({ onClickRow, loading }) => {
+  const [previousPaginationToken, setPreviousPaginationToken] = useState(null)
+  const [nextPaginationToken, setNextPaginationToken] = useState(null)
   const dispatch = useDispatch()
   const router = useRouter()
+  const history = []
 
-  const { orderBooks, totalOrderBooks } = useSelector((state) => state.sharkify)
-  const { sortOption, sortOrder, pageIndex, pageSize } = useSelector(
-    (state) => state.sharkifyLend
-  )
+  // const { orderBooks, totalOrderBooks } = useSelector((state) => state.sharkify)
+  // const { sortOption, sortOrder } = useSelector((state) => state.sharkifyLend)
 
   const isLendPage = router.pathname.includes('lend')
-  const totalItems = totalOrderBooks
+  const totalItems = 0
 
-  const COLUMNS = [
-    'Collection',
-    'Total Pool',
-    'Best Offer',
-    isLendPage ? 'APY' : 'Interest',
-    'Duration',
-    'Action',
-  ]
+  const COLUMNS = ['Collection', 'Offer', 'Interest', 'APY', 'Status']
+
+  const fetchLoans = async () => {
+    const { data } = await axios.post(
+      `${HELLO_MOON_URL}/sharky/loan-summary`,
+      {
+        limit: 100,
+        paginationToken: paginationToken,
+      },
+      AXIOS_CONFIG_HELLO_MOON_KEY
+    )
+
+    if (data.paginationToken) {
+      if (nextPaginationToken) {
+        setPreviousPaginationToken(nextPaginationToken)
+      }
+
+      setNextPaginationToken(data.paginationToken)
+    }
+  }
 
   const renderColumns = () => {
     return COLUMNS.map((column, index) => (
@@ -37,10 +48,10 @@ const OrderBookTable = ({ onClickRow, loading }) => {
         {column !== 'Action' ? (
           <button
             className="flex items-center"
-            onClick={() => dispatch(setSortOption(column))}
+            // onClick={() => dispatch(setSortOption(column))}
           >
             {column}
-            <Image
+            {/* <Image
               className={mergeClasses(
                 'ml-4',
                 sortOrder === SortOrder.DESC &&
@@ -53,7 +64,7 @@ const OrderBookTable = ({ onClickRow, loading }) => {
               alt=""
               width="10"
               height="10"
-            />
+            /> */}
           </button>
         ) : (
           'Action'
@@ -65,12 +76,7 @@ const OrderBookTable = ({ onClickRow, loading }) => {
   return (
     <>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination
-          disabled={loading}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          totalItems={totalItems}
-        />
+        <Pagination totalItems={totalItems} disabled={loading} />
       </div>
       <div className={mergeClasses(!loading && 'overflow-x-auto')}>
         {loading ? (
@@ -98,28 +104,24 @@ const OrderBookTable = ({ onClickRow, loading }) => {
               <tr>{renderColumns()}</tr>
             </thead>
             <tbody>
-              {orderBooks?.map((orderBook, index) => (
-                <OrderBookRow
-                  orderBook={orderBook}
-                  onClickRow={onClickRow}
-                  key={index}
-                  loading={loading}
-                />
+              {history?.map((orderBook, index) => (
+                // <OrderBookRow
+                //   orderBook={orderBook}
+                //   onClickRow={onClickRow}
+                //   key={index}
+                //   loading={loading}
+                // />
+                <div key={index}>Row</div>
               ))}
             </tbody>
           </table>
         )}
       </div>
       <div className="my-8 flex w-full items-center justify-end">
-        <Pagination
-          disabled={loading}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          totalItems={totalItems}
-        />
+        <Pagination totalItems={totalItems} disabled={loading} />
       </div>
     </>
   )
 }
 
-export default OrderBookTable
+export default HistoryTable
