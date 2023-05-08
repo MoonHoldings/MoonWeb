@@ -104,7 +104,8 @@ const SidebarsLayout = ({ children }) => {
             {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
             {rightSideBarOpen &&
               innerWidth < 1280 &&
-              router.pathname.includes('nfts') && <NftRightSideBar />}
+              (router.pathname.includes('nfts') ||
+                router.pathname.includes('crypto')) && <NftRightSideBar />}
             {lendRightSideBarOpen &&
               innerWidth < 1280 &&
               router.pathname.includes('defi-loans') && (
