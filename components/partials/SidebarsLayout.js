@@ -16,6 +16,7 @@ import BorrowModal from 'components/modals/BorrowModal'
 import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RepayModal from 'components/modals/RepayModal'
+import CoinModal from 'components/modals/CoinModal'
 
 const SidebarsLayout = ({ children }) => {
   const router = useRouter()
@@ -38,6 +39,8 @@ const SidebarsLayout = ({ children }) => {
 
   const { modalLoading } = useSelector((state) => state.auth)
 
+  const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
+
   useEffect(() => {
     setInnerWidth(window.innerWidth)
     window.addEventListener('resize', windowResize)
@@ -56,6 +59,7 @@ const SidebarsLayout = ({ children }) => {
         <LoanDetailsModal />
         <RepayModal />
         <AnimatePresence>
+          <CoinModal />
           {walletsModalOpen && <WalletsModal />}
         </AnimatePresence>
         {(addAddressStatus === 'loading' ||
@@ -114,14 +118,18 @@ const SidebarsLayout = ({ children }) => {
 
           {(addAddressStatus === 'loading' ||
             fetchingNftDataStatus === 'loading' ||
-            modalLoading) && <LoadingModal showMessage={modalLoading} />}
+            modalLoading ||
+            portfolioLoading) && (
+            <LoadingModal showMessage={modalLoading || portfolioLoading} />
+          )}
           {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
           {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
 
           {innerWidth > 1280 && (
             <>
               <LeftSideBar />
-              {router.pathname.includes('nfts') && <NftRightSideBar />}
+              {(router.pathname.includes('nfts') ||
+                router.pathname.includes('crypto')) && <NftRightSideBar />}
               {router.pathname.includes('defi-loans') && (
                 <DefiLoansRightSideBar />
               )}

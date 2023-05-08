@@ -14,11 +14,15 @@ const Index = (props) => {
   const signupInstead = () => {
     Router.push('/signup')
   }
+
   return (
     <div className="flex h-screen w-full flex-col pt-8">
       <div className="flex justify-center md:mx-8 md:justify-between">
         <div className="flex hidden items-center self-start hover:cursor-pointer md:block lg:block lg:flex">
-          <div className="flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
+          <div
+            onClick={test}
+            className="flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]"
+          >
             <Image
               className="h-[1.8Rem] w-[1.8Rem] xl:h-[3rem] xl:w-[3rem]"
               src="/images/svgs/moon-holdings-logo-white.svg"
