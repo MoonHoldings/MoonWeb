@@ -42,7 +42,7 @@ const CryptoSquare = ({ crypto, handleCoinClick }) => {
   return (
     <div
       onClick={handleCoinClick}
-      className="cursor relative flex min-h-[24rem] min-h-min max-w-[23.8rem] flex-col overflow-hidden rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] md:max-w-[28rem]  xl:hover:border-[#62EAD2]"
+      className="cursor relative flex min-h-[24rem] max-w-[23.8rem] flex-col overflow-hidden rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] md:max-w-[28rem]  xl:hover:border-[#62EAD2]"
     >
       <div className="headline mb-[1.6rem] flex gap-[.6rem]">
         <Image src={crypto.svg} width={17} height={17} alt="btc" />

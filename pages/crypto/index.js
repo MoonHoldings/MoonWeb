@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
 
 import assetsManifest from 'cryptocurrency-icons/manifest.json'
+import Header from 'components/defi-loans/Header'
 
 const Crypto = () => {
   const dispatch = useDispatch()
@@ -108,7 +109,7 @@ const Crypto = () => {
     dispatch(changeCoinModalOpen(true))
   }
 
-  return (
+  return myCoins.length > 0 ? (
     <div className="text-white md:order-2">
       <h1 className="mb-[2.6rem] text-[2.8rem]">{CRYPTO_PORTFOLIO}</h1>
       <div className="barchart flex rounded-[1rem] bg-[#1C1F25] p-[0.5rem]">
@@ -130,6 +131,12 @@ const Crypto = () => {
           />
         ))}
       </div>
+    </div>
+  ) : (
+    <div className="pb-[4rem] pt-[2rem] md:order-2">
+      <p className="text-[1.6rem] opacity-60">
+        {'There are no coins added to your portfolio yet.'}
+      </p>
     </div>
   )
 }
