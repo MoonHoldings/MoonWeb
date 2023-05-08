@@ -81,10 +81,8 @@ const CoinModal = () => {
       })
       if (res.data.addUserCoin) {
         const newArray = [...coinArray]
-
         const newLastItem = res.data.addUserCoin
         newArray.push(newLastItem)
-        console.log(newArray)
         setCoinArray(newArray)
       }
     } catch (error) {
@@ -97,7 +95,11 @@ const CoinModal = () => {
   }
 
   const closeCoinModal = () => {
+    setWallet('')
+    setHoldings('')
     setShowAddRow(false)
+    setSelectedCoin(null)
+    setSelectedItem(null)
     dispatch(changeCoinModalOpen(false))
     dispatch(
       populatePortfolioCoins({

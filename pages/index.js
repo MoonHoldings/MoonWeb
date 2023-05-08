@@ -5,15 +5,8 @@ import Image from 'next/image'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import Router from 'next/router'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'
-import { useLazyQuery } from '@apollo/client'
-import { GET_USER_PORTFOLIO } from 'utils/queries'
-import { useDispatch } from 'react-redux'
 
 const Index = (props) => {
-  const dispatch = useDispatch()
-  const [getMyPortfolio, { loading: loadingOffers }] =
-    useLazyQuery(GET_USER_PORTFOLIO)
-
   const loginInstead = () => {
     Router.push('/login')
   }
@@ -22,10 +15,6 @@ const Index = (props) => {
     Router.push('/signup')
   }
 
-  const test = async () => {
-    const res = await getMyPortfolio()
-    console.log(res)
-  }
   return (
     <div className="flex h-screen w-full flex-col pt-8">
       <div className="flex justify-center md:mx-8 md:justify-between">

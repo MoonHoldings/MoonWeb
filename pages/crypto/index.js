@@ -12,8 +12,9 @@ import {
   populatePortfolioCoins,
 } from 'redux/reducers/portfolioSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { PublicKey } from '@solana/web3.js'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
+
+import assetsManifest from 'cryptocurrency-icons/manifest.json'
 
 const Crypto = () => {
   const dispatch = useDispatch()
@@ -46,15 +47,31 @@ const Crypto = () => {
             }
           }
         })
+        const withPrice = await getCoinPrices(updatedMyCoins)
 
-        const data = await getCoinPrices(updatedMyCoins)
-        setIsSet(true)
-        const withPrice = updatedMyCoins.map((myCoin, index) => {
-          return { ...myCoin, price: data[index] }
+        const coin = withPrice.map((myCoin) => {
+          const userCoin = assetsManifest.find(
+            (coin) => coin.symbol === myCoin.symbol
+          )
+
+          if (userCoin) {
+            return {
+              ...myCoin,
+              svg: require(`cryptocurrency-icons/svg/color/${userCoin.symbol.toLowerCase()}.svg`),
+              color: userCoin.color,
+            }
+          } else {
+            return {
+              ...myCoin,
+              svg: require('cryptocurrency-icons/svg/color/generic.svg'),
+              color: '#62EAD2',
+            }
+          }
         })
+        setIsSet(true)
 
         setMyCoins(
-          withPrice.sort((a, b) => b.holdings * b.price - a.holdings * a.price)
+          coin.sort((a, b) => b.holdings * b.price - a.holdings * a.price)
         )
 
         dispatch(loadingPortfolio(false))

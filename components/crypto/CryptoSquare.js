@@ -42,15 +42,10 @@ const CryptoSquare = ({ crypto, handleCoinClick }) => {
   return (
     <div
       onClick={handleCoinClick}
-      className="cursor relative flex min-h-[23.8rem] min-h-min max-w-[23.8rem] flex-col overflow-hidden rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] md:max-w-[28rem]  xl:hover:border-[#62EAD2]"
+      className="cursor relative flex min-h-[24rem] min-h-min max-w-[23.8rem] flex-col overflow-hidden rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] md:max-w-[28rem]  xl:hover:border-[#62EAD2]"
     >
       <div className="headline mb-[1.6rem] flex gap-[.6rem]">
-        <Image
-          src="/images/svgs/btc-sample.svg"
-          width={17}
-          height={17}
-          alt="btc"
-        />
+        <Image src={crypto.svg} width={17} height={17} alt="btc" />
         <span className="text-[1.4rem]">{crypto.name}</span>
       </div>
       <div className="value-box absolute left-[50%] top-[50%] flex -translate-x-[50%] -translate-y-[50%] flex-col items-center">
@@ -67,7 +62,6 @@ const CryptoSquare = ({ crypto, handleCoinClick }) => {
           ${totalValue(crypto.holdings, crypto.price)}
         </div>
         <div className="pct-dollar flex justify-center">
-          {/* <div className="mr-2 text-[#62EAD2]">+0.45%</div> */}
           <div>{`$${crypto.price}`}</div>
         </div>
       </div>
