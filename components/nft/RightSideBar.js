@@ -10,6 +10,7 @@ import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
   changeWalletsModalOpen,
+  changeCoinModalOpen,
 } from 'redux/reducers/utilSlice'
 
 import {
@@ -32,6 +33,7 @@ import TextBlink from 'components/partials/TextBlink'
 import { Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
+import { SearchInput } from 'components/forms/SearchInput'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -406,6 +408,7 @@ const RightSideBar = () => {
           </div>
         </div>
         <ul className="dashboard-menu text-[1.4rem]">
+          <SearchInput />
           {renderConnectWallet()}
           {renderAddAddress()}
           {renderRefreshWallet()}

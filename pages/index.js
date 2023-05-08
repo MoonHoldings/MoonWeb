@@ -5,8 +5,15 @@ import Image from 'next/image'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import Router from 'next/router'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'
+import { useLazyQuery } from '@apollo/client'
+import { GET_USER_PORTFOLIO } from 'utils/queries'
+import { useDispatch } from 'react-redux'
 
 const Index = (props) => {
+  const dispatch = useDispatch()
+  const [getMyPortfolio, { loading: loadingOffers }] =
+    useLazyQuery(GET_USER_PORTFOLIO)
+
   const loginInstead = () => {
     Router.push('/login')
   }
@@ -14,11 +21,19 @@ const Index = (props) => {
   const signupInstead = () => {
     Router.push('/signup')
   }
+
+  const test = async () => {
+    const res = await getMyPortfolio()
+    console.log(res)
+  }
   return (
     <div className="flex h-screen w-full flex-col pt-8">
       <div className="flex justify-center md:mx-8 md:justify-between">
         <div className="flex hidden items-center self-start hover:cursor-pointer md:block lg:block lg:flex">
-          <div className="flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]">
+          <div
+            onClick={test}
+            className="flex h-[2.3rem] w-[2.3rem] items-center justify-center xl:h-[4rem] xl:w-[4rem]"
+          >
             <Image
               className="h-[1.8Rem] w-[1.8Rem] xl:h-[3rem] xl:w-[3rem]"
               src="/images/svgs/moon-holdings-logo-white.svg"

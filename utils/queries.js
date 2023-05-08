@@ -230,3 +230,27 @@ export const GET_PASSWORD_RESET = gql`
     getPasswordResetUrl(email: $email)
   }
 `
+
+export const GET_USER_PORTFOLIO = gql`
+  query GetUserPortfolioCoins {
+    getUserPortfolioCoins {
+      holdings
+      id
+      name
+      symbol
+      walletName
+    }
+  }
+`
+
+export const GET_USER_PORTFOLIO_BY_SYMBOL = gql`
+  query GetUserPortfolioCoinsBySymbol($symbol: String!) {
+    getUserPortfolioCoinsBySymbol(symbol: $symbol) {
+      holdings
+      id
+      name
+      symbol
+      walletName
+    }
+  }
+`

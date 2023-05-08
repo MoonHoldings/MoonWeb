@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 
-const SingleBar = ({ crypto, dummyCryptos, index }) => {
+const SingleBar = ({ crypto, myCoins, index }) => {
   const chartRef = useRef(null)
   const [barWidth, setBarWidth] = useState(0)
   const [isTooltip, setIsTooltip] = useState(false)
@@ -8,7 +8,6 @@ const SingleBar = ({ crypto, dummyCryptos, index }) => {
   useEffect(() => {
     const div = chartRef.current
     const { width } = div.getBoundingClientRect()
-
     setBarWidth(width)
   }, [])
 
@@ -20,12 +19,10 @@ const SingleBar = ({ crypto, dummyCryptos, index }) => {
 
   const pct = (holding, price) => {
     let valueSum = 0
-    dummyCryptos.forEach((crypto) => {
-      valueSum += crypto.holding * crypto.price
+    myCoins.forEach((crypto) => {
+      valueSum += crypto.holdings * crypto.price
     })
-
     const thePct = (holding * price * 100) / valueSum
-
     return thePct
   }
 
@@ -36,26 +33,25 @@ const SingleBar = ({ crypto, dummyCryptos, index }) => {
       onMouseOver={barHover}
       onMouseOut={barHover}
       style={{
-        background: crypto.colors.background[0],
-        color: crypto.colors.text,
-        width: pct(crypto.holding, crypto.price) + '%',
-        borderRight:
-          index !== dummyCryptos.length - 1 && '0.01px solid #000000',
+        background: crypto.color,
+        color: 'black',
+        width: pct(crypto.holdings, crypto.price) + '%',
+        borderRight: index !== myCoins.length - 1 && '0.01px solid #000000',
         borderTopLeftRadius: index === 0 && '0.5rem',
-        borderTopRightRadius: index === dummyCryptos.length - 1 && '0.5rem',
-        borderBottomRightRadius: index === dummyCryptos.length - 1 && '0.5rem',
+        borderTopRightRadius: index === myCoins.length - 1 && '0.5rem',
+        borderBottomRightRadius: index === myCoins.length - 1 && '0.5rem',
         borderBottomLeftRadius: index === 0 && '0.5rem',
       }}
     >
       {/* {Math.round(barWidth)} */}
       {barWidth > 20 ? (
         <>
-          <div className="text-center text-[1.4rem] font-[600]">
-            <span>{Math.round(pct(crypto.holding, crypto.price))}</span>
+          <div className="text-center text-[1.4rem] font-[600] hover:pointer-events-none">
+            <span>{Math.round(pct(crypto.holdings, crypto.price))}</span>
             <span className="font-[300]">%</span>
           </div>
           <div className="text-[1.4rem] font-[300] leading-[1.4rem]">
-            {crypto.id}
+            {crypto.symbol}
           </div>
         </>
       ) : (
@@ -63,10 +59,12 @@ const SingleBar = ({ crypto, dummyCryptos, index }) => {
           {isTooltip && (
             <div className="small-bar relative bottom-[6rem] rounded-[0.4rem] bg-[#464646] p-[0.5rem] text-[1rem] text-[#fff]">
               <div className="text-center font-[600]">
-                <span>{Math.round(pct(crypto.holding, crypto.price))}</span>
+                <span>{Math.round(pct(crypto.holdings, crypto.price))}</span>
                 <span className="font-[300]">%</span>
               </div>
-              <div className=" font-[300] leading-[1.4rem]">{crypto.id}</div>
+              <div className=" font-[300] leading-[1.4rem]">
+                {crypto.symbol}
+              </div>
             </div>
           )}
         </>

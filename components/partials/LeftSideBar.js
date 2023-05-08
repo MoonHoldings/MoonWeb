@@ -97,16 +97,23 @@ const LeftSideBar = () => {
         </button> */}
         <hr className="mb-[1rem] h-[0.2rem] w-full rounded border-0 bg-black xl:mb-[2rem]" />
         <ul className="dashboard-menu">
-          {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
-            <button className="flex h-[4.1rem] w-full items-center text-[#62EAD2]">
+          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+            <button
+              onClick={() => handleClick('crypto')}
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('crypto') ? '#62EAD2' : '#FFFFFF'
+              }]`}
+            >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/crypto.svg"
                 alt="Crypto"
+                width={40}
+                height={40}
               />
               Crypto
             </button>
-          </li> */}
+          </li>
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button
               id="btn-nft-portfolio"
