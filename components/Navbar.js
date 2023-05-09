@@ -23,7 +23,6 @@ const Navbar = () => {
   }
 
   const clickWallet = () => {
-    console.log('hey')
     if (
       router.pathname.includes('nfts') ||
       router.pathname.includes('crypto')

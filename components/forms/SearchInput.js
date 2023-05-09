@@ -87,7 +87,10 @@ export const SearchInput = (props) => {
         </svg>
       </label>
       <input
-        className="text-14px block h-full w-full appearance-none rounded-xl border border-black bg-gray-900 pl-16 pt-2 placeholder-white focus:text-teal-200 focus:placeholder-teal-200 focus:outline-none focus:ring-1 focus:ring-teal-200 "
+        disabled={props.loading}
+        className={`text-14px block h-full w-full appearance-none rounded-xl border border-black bg-gray-900 pl-16 pt-2 placeholder-white focus:text-teal-200 focus:placeholder-teal-200 focus:outline-none focus:ring-1 focus:ring-teal-200 ${
+          props.loading ? 'opacity-50' : ''
+        }`}
         type="text"
         placeholder="Search Coins"
         value={filter === '' ? '' : filter}

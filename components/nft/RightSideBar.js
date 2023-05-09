@@ -48,6 +48,8 @@ const RightSideBar = () => {
   )
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
+  const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
+
   useEffect(() => {
     if (publicKey && !disconnecting) {
       addWallet()
@@ -95,19 +97,11 @@ const RightSideBar = () => {
 
   const removeSingleWallet = (wallet) => {
     dispatch(removeWallet(wallet))
-
-    if (router.pathname !== '/nfts') {
-      router.push('/nfts')
-    }
   }
 
   const disconnectWallets = async () => {
     dispatch(removeAllWallets())
     disconnect()
-
-    if (router.pathname !== '/nfts') {
-      router.push('/nfts')
-    }
   }
 
   const disconnectCurrentWallet = () => {
@@ -408,7 +402,7 @@ const RightSideBar = () => {
           </div>
         </div>
         <ul className="dashboard-menu text-[1.4rem]">
-          <SearchInput />
+          <SearchInput loading={portfolioLoading} />
           {renderConnectWallet()}
           {renderAddAddress()}
           {renderRefreshWallet()}

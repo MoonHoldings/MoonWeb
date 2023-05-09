@@ -231,6 +231,12 @@ export const GET_PASSWORD_RESET = gql`
   }
 `
 
+export const RESEND_EMAIL_CONFIRMATION = gql`
+  query Query($email: String!) {
+    resendEmailConfirmation(email: $email)
+  }
+`
+
 export const GET_USER_PORTFOLIO = gql`
   query GetUserPortfolioCoins {
     getUserPortfolioCoins {
