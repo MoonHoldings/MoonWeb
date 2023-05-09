@@ -104,6 +104,24 @@ const LeftSideBar = () => {
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button
               id="btn-nft-portfolio"
+              onClick={() => handleClick('dashboard')}
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('dashboard') ? '#62EAD2' : '#FFFFFF'
+              }]`}
+            >
+              <Image
+                className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
+                src="/images/svgs/image.svg"
+                width={25}
+                height={21}
+                alt="NFTs"
+              />
+              Dashboard
+            </button>
+          </li>
+          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+            <button
+              id="btn-nft-portfolio"
               onClick={() => handleClick('nfts')}
               className={`flex h-[4.1rem] w-full items-center text-[${
                 router.pathname.includes('nfts') ? '#62EAD2' : '#FFFFFF'
