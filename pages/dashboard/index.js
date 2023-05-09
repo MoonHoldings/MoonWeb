@@ -98,88 +98,96 @@ const Dashboard = () => {
       </div>
       <div className="mt-6 text-[2.6rem]">Performance</div>
       <div className="mt-6 flex w-full flex-col sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
-          <div className="flex w-full">
-            <div className="rounded-md bg-[#13c29614] p-6">
-              <Image
-                className="h-[3rem] w-[3rem]"
-                src="/images/svgs/dashboard-crypto-icon.svg"
-                alt=""
-                width="0"
-                height="0"
-              />
+        <div className="flex w-full">
+          <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
+            <div className="flex w-full">
+              <div className="rounded-md bg-[#13c29614] p-6">
+                <Image
+                  className="h-[3rem] w-[3rem]"
+                  src="/images/svgs/dashboard-crypto-icon.svg"
+                  alt=""
+                  width="0"
+                  height="0"
+                />
+              </div>
+              <div className="ml-5">
+                <p className="text-[1.8rem]">Crypto</p>
+                <p className="text-[1.6rem] text-[#637381]">This week</p>
+              </div>
             </div>
-            <div className="ml-5">
-              <p className="text-[1.8rem]">Crypto</p>
-              <p className="text-[1.6rem] text-[#637381]">This week</p>
-            </div>
-          </div>
-          <div className="mt-4 text-[2.5rem] font-bold">$390,000</div>
-          <div className="text-[2.4rem] font-bold text-[#637381]">
-            Ξ 209.00321543
-          </div>
-        </div>
-        <div className="ml-6 mr-3 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
-          <div className="flex w-full">
-            <div className="rounded-md bg-[#3056d314] p-6">
-              <Image
-                className="h-[3rem] w-[3rem]"
-                src="/images/svgs/dashboard-nft-icon.svg"
-                alt=""
-                width="0"
-                height="0"
-              />
-            </div>
-            <div className="ml-5">
-              <p className="text-[1.8rem]">NFT</p>
-              <p className="text-[1.6rem] text-[#637381]">This week</p>
+            <div className="mt-4 text-[2.5rem] font-bold">$390,000</div>
+            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="text-[2.4rem] font-bold text-[#637381]">
+              Ξ 209.00321543
             </div>
           </div>
-          <div className="mt-4 text-[2.5rem] font-bold">$57,000</div>
-          <div className="text-[2.4rem] font-bold text-[#637381]">
-            Ξ 209.00321543
-          </div>
-        </div>
-        <div className="ml-3 mr-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
-          <div className="flex w-full">
-            <div className="rounded-md bg-[#f2994a14] p-6">
-              <Image
-                className="h-[3rem] w-[3rem]"
-                src="/images/svgs/dashboard-loans-icon.svg"
-                alt=""
-                width="0"
-                height="0"
-              />
+          <div className="ml-6 mr-0 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:mr-3">
+            <div className="flex w-full">
+              <div className="rounded-md bg-[#3056d314] p-6">
+                <Image
+                  className="h-[3rem] w-[3rem]"
+                  src="/images/svgs/dashboard-nft-icon.svg"
+                  alt=""
+                  width="0"
+                  height="0"
+                />
+              </div>
+              <div className="ml-5">
+                <p className="text-[1.8rem]">NFT</p>
+                <p className="text-[1.6rem] text-[#637381]">This week</p>
+              </div>
             </div>
-            <div className="ml-5">
-              <p className="text-[1.8rem]">Loans</p>
-              <p className="text-[1.6rem] text-[#637381]">This week</p>
+            <div className="mt-4 text-[2.5rem] font-bold">$57,000</div>
+            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="text-[2.4rem] font-bold text-[#637381]">
+              Ξ 209.00321543
             </div>
-          </div>
-          <div className="mt-4 text-[2.5rem] font-bold">$113,000</div>
-          <div className="text-[2.4rem] font-bold text-[#637381]">
-            Ξ 209.00321543
           </div>
         </div>
-        <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
-          <div className="flex w-full">
-            <div className="rounded-md bg-[#9b51e014] p-6">
-              <Image
-                className="h-[3rem] w-[3rem]"
-                src="/images/svgs/dashboard-borrow-icon.svg"
-                alt=""
-                width="0"
-                height="0"
-              />
+        <div className="mt-4 flex w-full sm:mt-0">
+          <div className="mr-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:ml-3">
+            <div className="flex w-full">
+              <div className="rounded-md bg-[#f2994a14] p-6">
+                <Image
+                  className="h-[3rem] w-[3rem]"
+                  src="/images/svgs/dashboard-loans-icon.svg"
+                  alt=""
+                  width="0"
+                  height="0"
+                />
+              </div>
+              <div className="ml-5">
+                <p className="text-[1.8rem]">Loans</p>
+                <p className="text-[1.6rem] text-[#637381]">This week</p>
+              </div>
             </div>
-            <div className="ml-5">
-              <p className="text-[1.8rem]">Borrow</p>
-              <p className="text-[1.6rem] text-[#637381]">This week</p>
+            <div className="mt-4 text-[2.5rem] font-bold">$113,000</div>
+            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="text-[2.4rem] font-bold text-[#637381]">
+              Ξ 209.00321543
             </div>
           </div>
-          <div className="mt-4 text-[2.5rem] font-bold">$12,033</div>
-          <div className="text-[2.4rem] font-bold text-[#637381]">
-            Ξ 209.00321543
+          <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
+            <div className="flex w-full">
+              <div className="rounded-md bg-[#9b51e014] p-6">
+                <Image
+                  className="h-[3rem] w-[3rem]"
+                  src="/images/svgs/dashboard-borrow-icon.svg"
+                  alt=""
+                  width="0"
+                  height="0"
+                />
+              </div>
+              <div className="ml-5">
+                <p className="text-[1.8rem]">Borrow</p>
+                <p className="text-[1.6rem] text-[#637381]">This week</p>
+              </div>
+            </div>
+            <div className="mt-4 text-[2.5rem] font-bold">$12,033</div>
+            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="text-[2.4rem] font-bold text-[#637381]">
+              Ξ 209.00321543
+            </div>
           </div>
         </div>
       </div>
@@ -190,18 +198,16 @@ const Dashboard = () => {
           <div className="ml-3 h-full w-[21%] bg-[#F2994A]" />
           <div className="ml-3 h-full w-[13%] bg-[#EF4123]" />
         </div>
-        <div className="mt-8 flex justify-between text-[2.4rem]">
+        <div className="mt-8 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Total Networth</p>
-          <p>$547,967</p>
-          <p>$547,967</p>
-          <p>0.39%</p>
+          <p className="font-medium">$547,967</p>
+          <p className="text-[#45CB85]">0.39%</p>
           <p>Ξ 293.65862808</p>
         </div>
-        <div className="mt-6 flex justify-between text-[2.4rem]">
+        <div className="mt-6 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Liquid Networth</p>
-          <p>$447,000</p>
-          <p>$547,967</p>
-          <p>0.189%</p>
+          <p className="font-medium">$447,000</p>
+          <p className="text-[#45CB85]">0.189%</p>
           <p>Ξ 239.54983922</p>
         </div>
       </div>
