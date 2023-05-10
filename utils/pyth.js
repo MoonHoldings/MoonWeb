@@ -25,12 +25,11 @@ export async function getCoinPrice(pythKey) {
 export async function getCoinPrices(pythKeys) {
   const assetPrices = []
   try {
-    const newArray = pythCoins.map((obj) => {
+    const newArray = pythKeys.map((obj) => {
       return new PublicKey(obj.key)
     })
 
     const data = await pythClient.getAssetPricesFromAccounts(newArray)
-
     const withPrice = pythKeys.map((myCoin, index) => {
       return { ...myCoin, price: data[index].price }
     })
