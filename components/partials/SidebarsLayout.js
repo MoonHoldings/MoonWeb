@@ -77,7 +77,9 @@ const SidebarsLayout = ({ children }) => {
   ]
   const shouldRenderSidebars = !noSidebarPaths.includes(router.pathname)
   const shouldRenderNftRightSidebar =
-    router.pathname.includes('nfts') || router.pathname.includes('dashboard')
+    router.pathname.includes('nfts') ||
+    router.pathname.includes('dashboard') ||
+    router.pathname.includes('crypto')
 
   if (shouldRenderSidebars) {
     return (
