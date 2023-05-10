@@ -76,7 +76,6 @@ const Login = (props) => {
           password,
         })
       )
-      console.log(res)
       if (res.payload.username) {
         Router.push('/nfts')
       } else if (res.payload.message) {
@@ -220,9 +219,11 @@ const Login = (props) => {
 
   const resendEmail = async () => {
     handleComplete(true)
-    if (email || discordEmail) {
+    let finalEmail = discordEmail ? discordEmail : email ? email : false
+
+    if (discordEmail) {
       try {
-        const res = await resend({ variables: { email } })
+        const res = await resend({ variables: { email: finalEmail } })
         if (res.error) {
           setModal(res.error.message, true, true)
         } else {
@@ -233,8 +234,10 @@ const Login = (props) => {
           )
         }
       } catch (error) {
-        setModal(error.message, true, true)
+        setModal(error.message, true, false)
       }
+    } else {
+      setModal('Email is not found. Please try again.', true, true)
     }
     handleComplete(false)
   }

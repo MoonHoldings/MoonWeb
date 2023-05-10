@@ -65,7 +65,7 @@ export const getServerSideProps = async (context) => {
     ?.split('; ')
     .find((row) => row.startsWith('email='))
   const userEmail = email ? email.split('=')[1] : null
-  console.log(email)
+
   if (cookieValue) {
     const jid = cookieValue.split('=')[1]
     return {
