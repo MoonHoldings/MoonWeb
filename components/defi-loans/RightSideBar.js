@@ -201,24 +201,26 @@ const RightSideBar = () => {
       <div className="flex w-full flex-col">
         {myOffers?.getLoans?.data?.map((offer, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
-            <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
-              {offer?.orderBook?.nftList?.collectionImage && (
-                <Image
-                  className="h-full w-full rounded-full"
-                  src={offer?.orderBook?.nftList?.collectionImage}
-                  unoptimized
-                  style={{ objectFit: 'cover' }}
-                  width={0}
-                  height={0}
-                  alt=""
-                />
-              )}
+            <div className="flex flex-col items-center justify-center xl:w-[8rem]">
+              <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
+                {offer?.orderBook?.nftList?.collectionImage && (
+                  <Image
+                    className="h-full w-full rounded-full"
+                    src={offer?.orderBook?.nftList?.collectionImage}
+                    unoptimized
+                    style={{ objectFit: 'cover' }}
+                    width={0}
+                    height={0}
+                    alt=""
+                  />
+                )}
+              </div>
             </div>
             <div className="ml-5 flex flex-1 flex-col">
               <div className="text-[1.5rem]">
                 {offer?.orderBook?.nftList?.collectionName}
               </div>
-              <div className="mt-2 flex text-[1.25rem]">
+              <div className="mt-2 flex text-[1.35rem]">
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
                   <p>
                     {toShortCurrencyFormat(
@@ -227,7 +229,7 @@ const RightSideBar = () => {
                   </p>
                   <p>Offer</p>
                 </div>
-                <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
+                <div className="flex flex-1 flex-col items-center px-2">
                   <p>
                     {calculateLendInterest(
                       offer?.principalLamports / LAMPORTS_PER_SOL,
@@ -238,10 +240,10 @@ const RightSideBar = () => {
                   </p>
                   <p>Interest</p>
                 </div>
-                <div className="flex flex-1 flex-col items-center">
+                {/* <div className="flex flex-1 flex-col items-center">
                   <p>{offer?.orderBook?.apyAfterFee}%</p>
                   <p>APY</p>
-                </div>
+                </div> */}
               </div>
             </div>
             <button
@@ -270,7 +272,7 @@ const RightSideBar = () => {
           ?.filter?.((offer) => offer.status === 'Active')
           ?.map((offer, index) => (
             <div className="relative mb-6 flex items-center px-3" key={index}>
-              <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
+              <div className="flex flex-col items-center justify-center xl:max-w-[8rem]">
                 <div
                   className={mergeClasses(
                     'flex',
@@ -315,19 +317,19 @@ const RightSideBar = () => {
                 <div className="mb-2 text-[1.5rem]">
                   {offer?.collectionName}
                 </div>
-                <div className="flex text-[1.25rem]">
+                <div className="flex text-[1.35rem]">
                   <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
                     <p>{offer.amountOffered.toFixed(2)}</p>
                     <p>Offer</p>
                   </div>
-                  <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
+                  <div className="flex flex-1 flex-col items-center px-2">
                     <p>{offer.offerInterest.toFixed(4)}</p>
                     <p>Interest</p>
                   </div>
-                  <div className="flex flex-1 flex-col items-center">
+                  {/* <div className="flex flex-1 flex-col items-center">
                     <p>{offer?.apy}%</p>
                     <p>APY</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -343,7 +345,7 @@ const RightSideBar = () => {
           ?.filter?.((offer) => offer.status !== 'Active')
           ?.map((offer, index) => (
             <div className="relative mb-6 flex items-center px-3" key={index}>
-              <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
+              <div className="flex flex-col items-center justify-center xl:max-w-[8rem]">
                 <div
                   className={mergeClasses(
                     'flex',
@@ -380,19 +382,33 @@ const RightSideBar = () => {
               </div>
               <div className="ml-5 flex flex-1 flex-col">
                 <div className="text-[1.5rem]">{offer?.collectionName}</div>
-                <div className="mt-2 flex text-[1.25rem]">
+                <div className="mt-2 flex text-[1.35rem]">
                   <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
-                    <p>{offer.amountOffered.toFixed(2)}</p>
+                    <p
+                      className={mergeClasses(
+                        offer.status === 'Repaid' && 'text-[#45CB85]',
+                        offer.status === 'Foreclosed' && 'text-[#EF4123]'
+                      )}
+                    >
+                      {offer.amountOffered.toFixed(2)}
+                    </p>
                     <p>Offer</p>
                   </div>
-                  <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-2">
-                    <p>{offer.offerInterest.toFixed(4)}</p>
+                  <div className="flex flex-1 flex-col items-center px-2">
+                    <p
+                      className={mergeClasses(
+                        offer.status === 'Repaid' && 'text-[#45CB85]',
+                        offer.status === 'Foreclosed' && 'text-[#EF4123]'
+                      )}
+                    >
+                      {offer.offerInterest.toFixed(4)}
+                    </p>
                     <p>Interest</p>
                   </div>
-                  <div className="flex flex-1 flex-col items-center">
+                  {/* <div className="flex flex-1 flex-col items-center">
                     <p>{offer?.apy}%</p>
                     <p>APY</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
