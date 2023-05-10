@@ -1,3 +1,4 @@
+import numeral from 'numeral'
 import React, { useRef, useEffect, useState } from 'react'
 
 const SingleBar = ({ crypto, myCoins, index }) => {
@@ -12,9 +13,7 @@ const SingleBar = ({ crypto, myCoins, index }) => {
   }, [])
 
   const barHover = () => {
-    if (barWidth < 21) {
-      setIsTooltip((prev) => !prev)
-    }
+    setIsTooltip((prev) => !prev)
   }
 
   const pct = (holding, price) => {
@@ -24,6 +23,10 @@ const SingleBar = ({ crypto, myCoins, index }) => {
     })
     const thePct = (holding * price * 100) / valueSum
     return thePct
+  }
+  const totalValue = (holding, price) => {
+    const value = holding * price
+    return numeral(value).format('0,0.00')
   }
 
   return (
@@ -44,9 +47,16 @@ const SingleBar = ({ crypto, myCoins, index }) => {
       }}
     >
       {/* {Math.round(barWidth)} */}
-      {barWidth > 20 ? (
+      {barWidth > 35 ? (
         <>
-          <div className="text-center text-[1.4rem] font-[600] hover:pointer-events-none">
+          {isTooltip && (
+            <div className="fixed mb-36 rounded-[0.4rem] bg-[#464646] p-[0.5rem] text-[1rem] text-[#fff]">
+              <div className="text-center font-[600]">
+                <span>${totalValue(crypto.holdings, crypto.price)}</span>
+              </div>
+            </div>
+          )}
+          <div className=" text-[1.4rem] font-[600] hover:pointer-events-none">
             <span>{Math.round(pct(crypto.holdings, crypto.price))}</span>
             <span className="font-[300]">%</span>
           </div>
@@ -59,8 +69,7 @@ const SingleBar = ({ crypto, myCoins, index }) => {
           {isTooltip && (
             <div className="small-bar relative bottom-[6rem] rounded-[0.4rem] bg-[#464646] p-[0.5rem] text-[1rem] text-[#fff]">
               <div className="text-center font-[600]">
-                <span>{Math.round(pct(crypto.holdings, crypto.price))}</span>
-                <span className="font-[300]">%</span>
+                <span>${totalValue(crypto.holdings, crypto.price)}</span>
               </div>
               <div className=" font-[300] leading-[1.4rem]">
                 {crypto.symbol}

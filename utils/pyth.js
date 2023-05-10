@@ -22,6 +22,14 @@ export async function getCoinPrice(pythKey) {
   return assetPrices
 }
 
+function formatPrice(price) {
+  if (price < 1) {
+    return price.toFixed(6)
+  } else {
+    return price.toFixed(4)
+  }
+}
+
 export async function getCoinPrices(pythKeys) {
   const assetPrices = []
   try {
@@ -31,7 +39,7 @@ export async function getCoinPrices(pythKeys) {
 
     const data = await pythClient.getAssetPricesFromAccounts(newArray)
     const withPrice = pythKeys.map((myCoin, index) => {
-      return { ...myCoin, price: data[index].price }
+      return { ...myCoin, price: formatPrice(data[index].price) }
     })
     return withPrice
   } catch (error) {
@@ -88,19 +96,17 @@ export const pythCoins = [
     name: 'Cosmos Hub',
     key: 'CrCpTerNqtZvqLcKqz1k13oVeXV9WkMD2zA9hBKXrsbN',
   },
-
-  {
-    symbol: 'BNB',
-    name: 'BNB',
-    key: '4CkQJBxhU8EZ2UjhigbtdaPbpTe6mqf811fipYBFbSYN',
-  },
   {
     symbol: 'BTC',
     name: 'Bitcoin',
     key: 'GVXRSBjFk6e6J3NbVPXohDJetcTjaeeuykUpbQF8UoMU',
     color: '#F7931A',
   },
-
+  {
+    symbol: 'BNB',
+    name: 'BNB',
+    key: '4CkQJBxhU8EZ2UjhigbtdaPbpTe6mqf811fipYBFbSYN',
+  },
   {
     symbol: 'BCH',
     name: 'Binance-Peg Bitcoin Cash',
@@ -208,6 +214,12 @@ export const pythCoins = [
     name: 'Polygon',
     key: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
   },
+  {
+    symbol: 'SOL',
+    name: 'Solana',
+    key: 'H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG',
+    color: '#BC12EC',
+  },
 
   {
     symbol: 'MSOL',
@@ -275,13 +287,6 @@ export const pythCoins = [
     key: 'Bt1hEbY62aMriY1SyQqbeZbm8VmSbQVGBFzSzMuVNWzN',
   },
   {
-    symbol: 'SOL',
-    name: 'Solana',
-    key: 'H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG',
-    color: '#BC12EC',
-  },
-
-  {
     symbol: 'SLND',
     name: 'Solend',
     key: 'HkGEau5xY1e8REXUFbwvWWvyJGywkgiAZZFpryyraWqJ',
@@ -290,12 +295,6 @@ export const pythCoins = [
     symbol: 'SNY',
     name: 'Synthetify',
     key: 'BkN8hYgRjhyH5WNBQfDV73ivvdqNKfonCMhiYVJ1D9n9',
-  },
-
-  {
-    symbol: 'USTC',
-    name: 'TerraClassicUSD',
-    key: 'H8DvrfSaRfUyP1Ytse1exGf7VSinLWtmKNNaBhA4as9P',
   },
   {
     symbol: 'USDC',
@@ -307,7 +306,11 @@ export const pythCoins = [
     name: 'Tether',
     key: '3vxLXJqLqF3JG5TCbYycbKWRBbCJQLxQmBGCkyqEEefL',
   },
-
+  {
+    symbol: 'USTC',
+    name: 'TerraClassicUSD',
+    key: 'H8DvrfSaRfUyP1Ytse1exGf7VSinLWtmKNNaBhA4as9P',
+  },
   {
     symbol: 'ZBC',
     name: 'Zebec Protocol',

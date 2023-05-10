@@ -277,7 +277,7 @@ const LeftSideBar = () => {
             onMouseLeave={toggleMenu}
           >
             <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
-            <div className="flex-1 overflow-hidden truncate font-inter text-[1.5rem]  font-medium text-white">
+            <div className="flex-1 overflow-hidden truncate font-inter text-[1.2rem]  font-medium text-white">
               {username}
             </div>
 

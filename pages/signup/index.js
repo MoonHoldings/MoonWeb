@@ -18,7 +18,6 @@ import {
 } from 'utils/queries.js'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'
 
-import client from 'utils/apollo-client'
 import LoadingModal from 'components/modals/LoadingModal'
 import BannerModal from 'components/modals/BannerModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
@@ -34,10 +33,16 @@ const SignUp = () => {
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
-  const [signUp, { loading: signingUp, data: signUpData }] =
-    useMutation(REGISTER_USER)
+  const [signUp, { loading: signingUp, data: signUpData }] = useMutation(
+    REGISTER_USER,
+    {
+      fetchPolicy: 'no-cache',
+    }
+  )
   const [discordAuth, { loading: gettingDiscordUrl, data: discordData }] =
-    useLazyQuery(GENERATE_DISCORD_URL)
+    useLazyQuery(GENERATE_DISCORD_URL, {
+      fetchPolicy: 'no-cache',
+    })
 
   const [resend] = useLazyQuery(RESEND_EMAIL_CONFIRMATION, {
     fetchPolicy: 'no-cache',
@@ -92,7 +97,6 @@ const SignUp = () => {
   const generateDiscordUrl = async () => {
     dispatch(authenticatePending())
     setDiscordEmail('')
-    await client.resetStore()
     const res = await discordAuth()
 
     if (res.data) {
