@@ -278,7 +278,7 @@ const LeftSideBar = () => {
           >
             <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
             <div className="flex-1 overflow-hidden truncate font-inter text-[1.5rem]  font-medium text-white">
-              ConsistentBraveBull
+              {username}
             </div>
 
             <button className="ml-[1rem] flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">

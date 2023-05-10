@@ -25,6 +25,12 @@ export const getServerSidePropsWithAuth = async (context) => {
     .find((row) => row.startsWith('message='))
   const successMessage = message ? message.split('=')[1] : null
 
+  //getting success Messages
+  const email = context.req.headers.cookie
+    ?.split('; ')
+    .find((row) => row.startsWith('email='))
+  const userEmail = email ? email.split('=')[1] : null
+
   if (cookieValue) {
     const aid = cookieValue.split('=')[1]
     if (publicUrls.includes(context.resolvedUrl) && aid)
@@ -39,7 +45,7 @@ export const getServerSidePropsWithAuth = async (context) => {
     }
   } else {
     if (publicUrls.includes(context.resolvedUrl) || context.resolvedUrl == '/')
-      return { props: { errorMessage, successMessage } }
+      return { props: { errorMessage, successMessage, userEmail } }
     else {
       return {
         redirect: {

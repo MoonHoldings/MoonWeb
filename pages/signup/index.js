@@ -7,11 +7,15 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 import { MOON_HOLDINGS } from 'app/constants/copy'
 import {
   authenticateComplete,
+  authenticateLoading,
   authenticatePending,
   discordAuthenticationComplete,
 } from 'redux/reducers/authSlice'
 import { REGISTER_USER } from 'utils/mutations'
-import { GENERATE_DISCORD_URL } from 'utils/queries.js'
+import {
+  GENERATE_DISCORD_URL,
+  RESEND_EMAIL_CONFIRMATION,
+} from 'utils/queries.js'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'
 
 import client from 'utils/apollo-client'
@@ -23,6 +27,7 @@ const SignUp = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
+  const [discordEmail, setDiscordEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [message, setMessage] = useState('')
@@ -33,6 +38,10 @@ const SignUp = () => {
     useMutation(REGISTER_USER)
   const [discordAuth, { loading: gettingDiscordUrl, data: discordData }] =
     useLazyQuery(GENERATE_DISCORD_URL)
+
+  const [resend] = useLazyQuery(RESEND_EMAIL_CONFIRMATION, {
+    fetchPolicy: 'no-cache',
+  })
 
   const { modalLoading } = useSelector((state) => state.auth)
 
@@ -82,6 +91,7 @@ const SignUp = () => {
   }
   const generateDiscordUrl = async () => {
     dispatch(authenticatePending())
+    setDiscordEmail('')
     await client.resetStore()
     const res = await discordAuth()
 
@@ -96,58 +106,106 @@ const SignUp = () => {
 
     const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
 
-    window.addEventListener('message', receiveMessage, false)
-
-    async function receiveMessage(event) {
-      const valueReceived = event.data
-      if (valueReceived.payload) {
-        const intervalId = setInterval(async () => {
-          clearInterval(intervalId)
-          if (valueReceived.payload.ok) {
-            router.push('/nfts')
-          } else if (valueReceived.payload.message) {
-            setModal(valueReceived.payload.message, true, true)
+    if (!discordWindow) {
+      setModal(
+        'Popup is blocked. Please disable it or use a different browser',
+        true,
+        true
+      )
+      dispatch(authenticateComplete())
+    } else {
+      try {
+        window.addEventListener('message', receiveMessage, false)
+        async function receiveMessage(event) {
+          const valueReceived = event.data
+          if (valueReceived.payload) {
+            const intervalId = setInterval(async () => {
+              clearInterval(intervalId)
+              if (valueReceived.payload.ok) {
+                router.push('/nfts')
+              } else if (valueReceived.payload.message) {
+                setModal(valueReceived.payload.message, true, true)
+              }
+            }, 1000)
+            await dispatch(
+              discordAuthenticationComplete({
+                username: valueReceived.payload.username ?? null,
+              })
+            )
+            discordWindow.close()
+          } else if (valueReceived.errorMessage) {
+            setModal(
+              valueReceived.errorMessage ?? 'Please try again later.',
+              true,
+              true
+            )
+            await dispatch(authenticateComplete())
+            discordWindow.close()
+          } else if (valueReceived.successMessage) {
+            setModal(
+              valueReceived.successMessage ?? 'Please try again later.',
+              false,
+              true
+            )
+            await dispatch(authenticateComplete())
+            discordWindow.close()
+            if (valueReceived.email) {
+              setDiscordEmail(valueReceived.email)
+            }
+          } else if (valueReceived.error) {
+            setModal(
+              valueReceived.error ?? 'Please try again later.',
+              true,
+              true
+            )
+            await dispatch(authenticateComplete())
+            discordWindow.close()
           }
-        }, 1000)
-        await dispatch(
-          discordAuthenticationComplete({
-            username: valueReceived.payload.username ?? null,
-          })
-        )
-        discordWindow.close()
-      } else if (valueReceived.errorMessage) {
-        setModal(
-          valueReceived.errorMessage ?? 'Please try again later.',
-          true,
-          true
-        )
-        await dispatch(authenticateComplete())
-        discordWindow.close()
-      } else if (valueReceived.successMessage) {
-        setModal(
-          valueReceived.successMessage ?? 'Please try again later.',
-          false,
-          true
-        )
+        }
+      } catch (error) {
+        setModal(error.message ?? 'Please try again later.', true, true)
         dispatch(authenticateComplete())
         discordWindow.close()
-      } else if (valueReceived.error) {
-        setModal(valueReceived.error ?? 'Please try again later.', true, true)
-        await dispatch(authenticateComplete())
-        discordWindow.close()
       }
+      const intervalId = setInterval(async () => {
+        if (discordWindow.closed) {
+          clearInterval(intervalId)
+          await dispatch(authenticateComplete())
+        }
+      }, 1000)
     }
-    const intervalId = setInterval(async () => {
-      if (discordWindow.closed) {
-        clearInterval(intervalId)
-
-        await dispatch(authenticateComplete())
-      }
-    }, 1000)
   }
 
   const loginInstead = () => {
     router.push('/login')
+  }
+
+  function handleComplete(isComplete) {
+    dispatch(authenticateLoading(isComplete))
+  }
+
+  const resendEmail = async () => {
+    handleComplete(true)
+    if (discordEmail) {
+      try {
+        const res = await resend({ variables: { email: discordEmail } })
+        console.log(res)
+        if (res.error) {
+          setModal(res.error.message, true, true)
+        } else {
+          setModal(
+            'Successfully resent link to your email. Please check your inbox.',
+            false,
+            true
+          )
+        }
+      } catch (error) {
+        setModal(error.message, true, true)
+      }
+    } else {
+      setModal('Email is not found. Please try again.', true, true)
+    }
+    handleComplete(false)
   }
 
   return (
@@ -261,6 +319,7 @@ const SignUp = () => {
         </div>
       </div>
       <BannerModal
+        resendEmail={resendEmail}
         showModal={showModal}
         message={message}
         hasError={error}
