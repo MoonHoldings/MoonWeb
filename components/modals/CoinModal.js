@@ -217,7 +217,7 @@ const CoinModal = () => {
                 <div className="w-1/3 text-end">
                   <button
                     onClick={onSave}
-                    className="w-full rounded-[1rem] bg-green-500 px-2 py-1 hover:bg-green-600 focus:outline-none"
+                    className="w-3/4 rounded-[1rem] bg-green-500 px-2 py-1 hover:bg-green-600 focus:outline-none"
                   >
                     Save
                   </button>

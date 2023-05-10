@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import numeral from 'numeral'
 
-const CryptoSquare = ({ crypto, handleCoinClick }) => {
+const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
   const totalValue = (holding, price) => {
     const value = holding * price
     return numeral(value).format('0,0.00')
@@ -40,9 +40,12 @@ const CryptoSquare = ({ crypto, handleCoinClick }) => {
     }
   }
   return (
-    <div
+    <button
+      disabled={loading}
       onClick={handleCoinClick}
-      className="cursor relative flex min-h-[24rem] max-w-[23.8rem] flex-col overflow-hidden rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] md:max-w-[28rem]  xl:hover:border-[#62EAD2]"
+      className={`relative flex min-h-[24rem] max-w-[23.8rem] flex-col overflow-hidden rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white ${
+        !loading && 'cursor hover:border-[#62EAD2] active:border-[#62EAD2]'
+      } md:max-w-[28rem]`}
     >
       <div className="headline mb-[1.6rem] flex gap-[.6rem]">
         <Image src={crypto.svg} width={17} height={17} alt="btc" />
@@ -65,7 +68,7 @@ const CryptoSquare = ({ crypto, handleCoinClick }) => {
           <div>{`$${crypto.price}`}</div>
         </div>
       </div>
-    </div>
+    </button>
   )
 }
 

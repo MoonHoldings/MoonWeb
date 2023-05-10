@@ -19,8 +19,6 @@ import {
 } from 'utils/queries.js'
 
 import { useLazyQuery } from '@apollo/client'
-
-import client from '../../utils/apollo-client'
 import BannerModal from 'components/modals/BannerModal'
 import LoadingModal from 'components/modals/LoadingModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
@@ -41,11 +39,19 @@ const Login = (props) => {
     (state) => state.auth
   )
 
-  const [discordAuth, { loading: gettingDiscordUrl }] =
-    useLazyQuery(GENERATE_DISCORD_URL)
+  const [discordAuth, { loading: gettingDiscordUrl }] = useLazyQuery(
+    GENERATE_DISCORD_URL,
+    {
+      fetchPolicy: 'no-cache',
+    }
+  )
 
-  const [getPasswordResetUrl, { loading: gettingUrl }] =
-    useLazyQuery(GET_PASSWORD_RESET)
+  const [getPasswordResetUrl, { loading: gettingUrl }] = useLazyQuery(
+    GET_PASSWORD_RESET,
+    {
+      fetchPolicy: 'no-cache',
+    }
+  )
 
   const [resend] = useLazyQuery(RESEND_EMAIL_CONFIRMATION, {
     fetchPolicy: 'no-cache',
@@ -93,7 +99,6 @@ const Login = (props) => {
     try {
       dispatch(authenticatePending())
       setDiscordEmail('')
-      await client.resetStore()
       const res = await discordAuth()
 
       if (res.data) {

@@ -109,7 +109,7 @@ export const SearchInput = (props) => {
                   handleCoinClick(coin)
                 }}
                 className="cursor-pointer px-4 py-3 text-teal-200 hover:bg-gray-800"
-                key={coin.price}
+                key={coin.symbol}
               >
                 {coin.symbol} - {coin.name}
               </li>
