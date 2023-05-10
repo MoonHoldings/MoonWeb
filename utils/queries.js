@@ -220,6 +220,24 @@ export const GET_BEST_OFFER_FOR_BORROW = gql`
   }
 `
 
+export const GET_TOTAL_LENDS = gql`
+  query GetTotalLendsByAddress($address: String!) {
+    getTotalLendsByAddress(address: $address) {
+      total
+      interest
+    }
+  }
+`
+
+export const GET_TOTAL_BORROWS = gql`
+  query GetTotalBorrowsByAddress($address: String!) {
+    getTotalBorrowsByAddress(address: $address) {
+      total
+      interest
+    }
+  }
+`
+
 export const GENERATE_DISCORD_URL = gql`
   query GenerateDiscordUrl {
     generateDiscordUrl

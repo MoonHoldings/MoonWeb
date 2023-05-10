@@ -39,6 +39,10 @@ body {
   color: white;
 }
 
+.ant-spin-dot-item {
+  background-color: #57c0cf !important;
+}
+
 .upper {
   text-transform: uppercase;
 }
