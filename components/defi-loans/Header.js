@@ -1,14 +1,47 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Spin } from 'antd'
+import { useLazyQuery } from '@apollo/client'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
 import mergeClasses from 'utils/mergeClasses'
+import { GET_TOTAL_BORROWS, GET_TOTAL_LENDS } from 'utils/queries'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const Header = ({ title, description }) => {
   const router = useRouter()
+  const { publicKey } = useWallet()
 
   const isLend = router.pathname.includes('lend')
   const isBorrow = router.pathname.includes('borrow')
+
+  const [getTotalLends, { loading: loadingLends, data: lendData }] =
+    useLazyQuery(GET_TOTAL_LENDS)
+  const [getTotalBorrows, { loading: loadingBorrows, data: borrowData }] =
+    useLazyQuery(GET_TOTAL_BORROWS)
+
+  useEffect(() => {
+    if (!loadingLends && publicKey && isLend) {
+      getTotalLends({
+        variables: {
+          address: publicKey.toBase58(),
+        },
+        pollInterval: 60_000,
+      })
+    }
+  }, [loadingLends, publicKey, getTotalLends, isLend])
+
+  useEffect(() => {
+    if (!loadingBorrows && publicKey && isBorrow) {
+      getTotalBorrows({
+        variables: {
+          address: publicKey.toBase58(),
+        },
+        pollInterval: 60_000,
+      })
+    }
+  }, [loadingBorrows, publicKey, getTotalBorrows, isBorrow])
 
   return (
     <>
@@ -84,7 +117,39 @@ const Header = ({ title, description }) => {
           View History
         </Link>
       </div>
-      <h1 className="text-[3rem]">{title}</h1>
+      <div className="flex w-full items-center justify-between">
+        <h1 className="text-[3rem]">{title}</h1>
+        <div className="flex">
+          <div className="flex items-center text-[2.2rem]">
+            SOL {isLend ? 'lent' : 'borrowed'}
+            {loadingLends || loadingBorrows ? (
+              <Spin className="ml-3" />
+            ) : (
+              <span className="ml-2 text-[2.5rem] text-[#57C0CF]">
+                {toCurrencyFormat(
+                  isLend
+                    ? lendData?.getTotalLendsByAddress?.total
+                    : borrowData?.getTotalBorrowsByAddress?.total
+                )}
+              </span>
+            )}
+          </div>
+          <div className="ml-4 flex items-center text-[2.2rem]">
+            Interest
+            {loadingLends || loadingBorrows ? (
+              <Spin className="ml-3" />
+            ) : (
+              <span className="ml-2 text-[2.5rem] text-[#FED007]">
+                {toCurrencyFormat(
+                  isLend
+                    ? lendData?.getTotalLendsByAddress?.interest
+                    : borrowData?.getTotalBorrowsByAddress?.interest
+                )}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
       <p className="text-[1.6rem] opacity-60">{description}</p>
     </>
   )
