@@ -1,3 +1,4 @@
+import { Tooltip } from 'antd'
 import numeral from 'numeral'
 import React, { useRef, useEffect, useState } from 'react'
 
@@ -32,7 +33,7 @@ const SingleBar = ({ crypto, myCoins, index }) => {
   return (
     <div
       ref={chartRef}
-      className="flex h-[5.5rem] flex-col items-center justify-center"
+      className="flex h-[5.5rem] cursor-default flex-col items-center justify-center"
       onMouseOver={barHover}
       onMouseOut={barHover}
       style={{
@@ -48,22 +49,29 @@ const SingleBar = ({ crypto, myCoins, index }) => {
     >
       {/* {Math.round(barWidth)} */}
       {barWidth > 35 ? (
-        <>
-          {isTooltip && (
+        <Tooltip
+          color="#1F2126"
+          title={
+            <span className="text-[1.5rem]">
+              ${totalValue(crypto.holdings, crypto.price)}
+            </span>
+          }
+        >
+          {/* {isTooltip && (
             <div className="fixed mb-36 rounded-[0.4rem] bg-[#464646] p-[0.5rem] text-[1rem] text-[#fff]">
               <div className="text-center font-[600]">
                 <span>${totalValue(crypto.holdings, crypto.price)}</span>
               </div>
             </div>
-          )}
-          <div className=" text-[1.4rem] font-[600] hover:pointer-events-none">
+          )} */}
+          <div className="text-[1.4rem] font-[600]">
             <span>{Math.round(pct(crypto.holdings, crypto.price))}</span>
             <span className="font-[300]">%</span>
           </div>
           <div className="text-[1.4rem] font-[300] leading-[1.4rem]">
             {crypto.symbol}
           </div>
-        </>
+        </Tooltip>
       ) : (
         <>
           {isTooltip && (
