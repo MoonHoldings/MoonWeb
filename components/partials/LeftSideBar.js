@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,6 +30,13 @@ const LeftSideBar = () => {
   const [logOut, { loading: loggingOut }] = useMutation(LOGOUT_USER)
   const { username } = useSelector((state) => state.auth)
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  // xl:max-h-[calc(100%-1.5rem)]
   return (
     <motion.div
       className="fixed left-0 top-0 z-[51] h-full w-full bg-[#191C20] md:sticky md:top-8 md:order-1 md:h-[calc(100vh-3rem)] md:w-[28.8rem] md:rounded-[2rem]"
@@ -99,17 +106,23 @@ const LeftSideBar = () => {
 
         <hr className="mb-[1rem] h-[0.2rem] w-full rounded border-0 bg-black xl:mb-[2rem]" />
         <ul className="dashboard-menu">
-          {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
-            <button className="flex h-[4.1rem] w-full items-center text-[#62EAD2]">
+          <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
+            <button
+              onClick={() => handleClick('crypto')}
+              className={`flex h-[4.1rem] w-full items-center text-[${
+                router.pathname.includes('crypto') ? '#62EAD2' : '#FFFFFF'
+              }]`}
+            >
               <Image
                 className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
                 src="/images/svgs/crypto.svg"
                 alt="Crypto"
+                width={40}
+                height={40}
               />
               Crypto
             </button>
-          </li> */}
-
+          </li>
           <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button
               id="btn-nft-portfolio"
@@ -145,7 +158,7 @@ const LeftSideBar = () => {
               Lend & Borrow
             </button>
           </li>
-          <li className="hidden px-[1.6rem] xl:block">
+          {/* <li className="hidden px-[1.6rem] xl:block">
             <button
               onClick={async () => {
                 await dispatch(authenticatePending())
@@ -167,7 +180,7 @@ const LeftSideBar = () => {
               />
               Logout
             </button>
-          </li>
+          </li> */}
           {/* <li className="mb-[1rem] px-[1.6rem] xl:mb-[2rem]">
             <button className="flex h-[4.1rem] w-full items-center text-[#666666]">
               <Image
@@ -245,7 +258,7 @@ const LeftSideBar = () => {
             15
           </div>
         </div> */}
-        <div className="mx-[1.5rem] mb-[1.7rem] flex h-[7.4rem] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem]">
+        {/* <div className="mx-[1.5rem] mb-[1.7rem] flex h-[7.4rem] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem]">
           <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
           <div className="flex-1 overflow-hidden truncate text-[1.2rem] text-white">
             {username}
@@ -259,6 +272,76 @@ const LeftSideBar = () => {
               alt=""
             />
           </button>
+        </div> */}
+        <div
+          className={`relative mx-[1.5rem] hover:cursor-pointer  ${
+            isMenuOpen ? 'rounded-b-[1rem] bg-black' : ''
+          }`}
+        >
+          <div
+            className={`mb-[1.7rem] flex h-[7.4rem] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] transition-colors duration-300 ${
+              isMenuOpen ? 'bg-[#383C42]' : ''
+            }`}
+            onMouseEnter={toggleMenu}
+            onMouseLeave={toggleMenu}
+          >
+            <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
+            <div className="flex-1 overflow-hidden truncate font-inter text-[1.5rem]  font-medium text-white">
+              {username}
+            </div>
+
+            <button className="ml-[1rem] flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[1rem] bg-[#191C20] xl:hidden">
+              <Image
+                className="h-[1.5rem] w-[1.5rem]"
+                src="/images/svgs/gear.svg"
+                width={16}
+                height={16}
+                alt=""
+              />
+            </button>
+            {isMenuOpen && (
+              <div
+                className="absolute bottom-full left-0 w-full overflow-hidden rounded-t-[1rem] bg-black px-4 py-4 opacity-100 transition-opacity duration-300 ease-in"
+                style={{ maxHeight: '15rem' }}
+              >
+                <button
+                  onClick={{}}
+                  disabled
+                  className="flex h-[4.1rem] w-full items-center px-4 text-[1.5rem] text-white hover:rounded-[1rem] hover:bg-[#383C42] disabled:opacity-50 disabled:hover:bg-[#383C42]"
+                >
+                  <Image
+                    className="mr-[0.8rem] h-[2rem] w-[2rem]"
+                    src="/images/svgs/gear.svg"
+                    alt="Taxes"
+                    width={10}
+                    height={10}
+                  />
+                  Settings
+                </button>
+                <button
+                  onClick={async () => {
+                    await dispatch(authenticatePending())
+                    const res = await logOut()
+                    await dispatch(authenticateComplete())
+                    if (res.data.logout) {
+                      router.push(LANDING_SITE)
+                      await dispatch(logout())
+                    }
+                  }}
+                  className="flex h-[4.1rem] w-full items-center px-4 text-[1.5rem] text-white hover:rounded-[1rem] hover:bg-[#383C42]"
+                >
+                  <Image
+                    className="mr-[0.8rem] h-[2rem] w-[2rem]"
+                    src="/images/svgs/logout.svg"
+                    alt="Taxes"
+                    width={10}
+                    height={10}
+                  />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>

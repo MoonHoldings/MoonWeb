@@ -14,6 +14,7 @@ const Index = (props) => {
   const signupInstead = () => {
     Router.push('/signup')
   }
+
   return (
     <div className="flex h-screen w-full flex-col pt-8">
       <div className="flex justify-center md:mx-8 md:justify-between">

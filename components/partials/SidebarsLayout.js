@@ -16,6 +16,7 @@ import BorrowModal from 'components/modals/BorrowModal'
 import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RepayModal from 'components/modals/RepayModal'
+import CoinModal from 'components/modals/CoinModal'
 
 const SidebarsLayout = ({ children }) => {
   const router = useRouter()
@@ -56,6 +57,7 @@ const SidebarsLayout = ({ children }) => {
         <LoanDetailsModal />
         <RepayModal />
         <AnimatePresence>
+          <CoinModal />
           {walletsModalOpen && <WalletsModal />}
         </AnimatePresence>
         {(addAddressStatus === 'loading' ||

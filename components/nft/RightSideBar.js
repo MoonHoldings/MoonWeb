@@ -10,6 +10,7 @@ import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
   changeWalletsModalOpen,
+  changeCoinModalOpen,
 } from 'redux/reducers/utilSlice'
 
 import {
@@ -32,6 +33,7 @@ import TextBlink from 'components/partials/TextBlink'
 import { Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
+import { SearchInput } from 'components/forms/SearchInput'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -45,6 +47,8 @@ const RightSideBar = () => {
     (state) => state.wallet
   )
   const { solUsdPrice } = useSelector((state) => state.crypto)
+
+  const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
 
   useEffect(() => {
     if (publicKey && !disconnecting) {
@@ -93,19 +97,11 @@ const RightSideBar = () => {
 
   const removeSingleWallet = (wallet) => {
     dispatch(removeWallet(wallet))
-
-    if (router.pathname !== '/nfts') {
-      router.push('/nfts')
-    }
   }
 
   const disconnectWallets = async () => {
     dispatch(removeAllWallets())
     disconnect()
-
-    if (router.pathname !== '/nfts') {
-      router.push('/nfts')
-    }
   }
 
   const disconnectCurrentWallet = () => {
@@ -136,9 +132,10 @@ const RightSideBar = () => {
   }
 
   const shrinkText = (text) => {
-    const firstSlice = text.slice(0, 3)
-    const lastSlice = text.slice(-3)
-    return `${firstSlice}...${lastSlice}`
+    // const firstSlice = text.slice(0, 3)
+    // const lastSlice = text.slice(-3)
+    // return `${firstSlice}...${lastSlice}`
+    return text.substring(0, 5)
   }
 
   const refreshWalletsAndFloorPrice = async () => {
@@ -405,6 +402,7 @@ const RightSideBar = () => {
           </div>
         </div>
         <ul className="dashboard-menu text-[1.4rem]">
+          <SearchInput loading={portfolioLoading} />
           {renderConnectWallet()}
           {renderAddAddress()}
           {renderRefreshWallet()}
@@ -440,29 +438,35 @@ const RightSideBar = () => {
             </div>
             <ul className="all-wallets mb-[2rem] mt-10 grid gap-[1rem]">
               {allWallets.map((wallet, index) => (
-                <li
-                  key={index}
-                  className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
-                >
-                  <Image
-                    className="mr-[1rem] h-[2rem] w-[2rem]"
-                    src="/images/svgs/wallet-white.svg"
-                    width="20"
-                    height="20"
-                    alt="NFTs"
-                  />
-                  {shrinkText(`${wallet}`)}
+                <li key={index}>
                   <button
+                    type="button"
                     onClick={
                       wallet === publicKey?.toBase58()
                         ? disconnectCurrentWallet
                         : () => removeSingleWallet(wallet)
                     }
-                    className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
+                    className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
                   >
-                    <span className="relative bottom-[0.1rem] font-poppins">
-                      x
-                    </span>
+                    <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+                      <Image
+                        className="mr-[1rem] h-[2rem] w-[2rem]"
+                        src="/images/svgs/wallet-white.svg"
+                        width="20"
+                        height="20"
+                        alt="NFTs"
+                      />
+                      {shrinkText(`${wallet}`)}
+                    </div>
+                    <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+                      <Image
+                        className="h-[0.8rem] w-[0.8rem] rotate-45"
+                        src="/images/svgs/+.svg"
+                        width="11"
+                        height="11"
+                        alt="plus sign"
+                      />
+                    </div>
                   </button>
                 </li>
               ))}
@@ -577,29 +581,35 @@ const RightSideBar = () => {
           {/* <ul className="all-wallets mb-[2rem] grid grid-cols-2 gap-[1rem]"> */}
           <ul className="all-wallets mb-[2rem] grid gap-[1rem]">
             {allWallets.map((wallet, index) => (
-              <li
-                key={index}
-                className="single-wallet-btn relative flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
-              >
-                <Image
-                  className="mr-[1rem] h-[2rem] w-[2rem]"
-                  src="/images/svgs/wallet-white.svg"
-                  width="20"
-                  height="20"
-                  alt="NFTs"
-                />
-                {shrinkText(`${wallet}`)}
+              <li key={index}>
                 <button
+                  type="button"
                   onClick={
                     wallet === publicKey?.toBase58()
                       ? disconnectCurrentWallet
                       : () => removeSingleWallet(wallet)
                   }
-                  className="remove-wallet-btn absolute -right-[0.5rem] -top-[0.5rem] hidden h-[2rem] w-[2rem] rounded-full bg-[#0000008b] "
+                  className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
                 >
-                  <span className="relative bottom-[0.1rem] font-poppins">
-                    x
-                  </span>
+                  <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+                    <Image
+                      className="mr-[1rem] h-[2rem] w-[2rem]"
+                      src="/images/svgs/wallet-white.svg"
+                      width="20"
+                      height="20"
+                      alt="NFTs"
+                    />
+                    {shrinkText(`${wallet}`)}
+                  </div>
+                  <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+                    <Image
+                      className="h-[0.8rem] w-[0.8rem] rotate-45"
+                      src="/images/svgs/+.svg"
+                      width="11"
+                      height="11"
+                      alt="plus sign"
+                    />
+                  </div>
                 </button>
               </li>
             ))}

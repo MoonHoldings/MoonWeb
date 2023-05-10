@@ -1,8 +1,14 @@
 import Image from 'next/image'
+import mergeClasses from 'utils/mergeClasses'
 
 const HistoryRow = ({ history }) => {
   return (
-    <tr className="cursor-pointer bg-transparent text-[1.5rem] font-medium hover:bg-[#013C40]">
+    <tr
+      className={mergeClasses(
+        'cursor-pointer bg-transparent text-[1.5rem] font-medium hover:bg-[#013C40]',
+        history.status === 'Canceled' && 'opacity-[20%]'
+      )}
+    >
       <td className="px-6 py-6">
         <div className="flex items-center">
           <div className="flex h-[4rem] w-[4rem] items-center justify-center rounded-full bg-white">

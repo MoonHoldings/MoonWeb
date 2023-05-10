@@ -23,7 +23,10 @@ const Navbar = () => {
   }
 
   const clickWallet = () => {
-    if (router.pathname.includes('nfts')) {
+    if (
+      router.pathname.includes('nfts') ||
+      router.pathname.includes('crypto')
+    ) {
       dispatch(changeRightSideBarOpen(!rightSideBarOpen))
     } else {
       dispatch(changeLendRightSidebarOpen(!lendRightSideBarOpen))
@@ -38,12 +41,14 @@ const Navbar = () => {
         style={{
           order:
             (router.pathname.includes('/nfts') ||
-              router.pathname.includes('defi-loans')) &&
+              router.pathname.includes('defi-loans') ||
+              router.pathname.includes('crypto')) &&
             '2',
         }}
       >
         {router.pathname.includes('/nfts') ||
-        router.pathname.includes('defi-loans') ? (
+        router.pathname.includes('defi-loans') ||
+        router.pathname.includes('crypto') ? (
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white">
             <Image
               className="h-[1.3rem] w-[1.3rem]"
@@ -74,7 +79,8 @@ const Navbar = () => {
         style={{
           order:
             (router.pathname.includes('/nfts') ||
-              router.pathname.includes('defi-loans')) &&
+              router.pathname.includes('defi-loans') ||
+              router.pathname.includes('crypto')) &&
             '1',
         }}
       >
@@ -88,14 +94,16 @@ const Navbar = () => {
       </button>
 
       {(router.pathname.includes('/nfts') ||
-        router.pathname.includes('/defi-loans')) && (
+        router.pathname.includes('/defi-loans') ||
+        router.pathname.includes('crypto')) && (
         <button
           id="btn-wallet-mobile"
           onClick={clickWallet}
           style={{
             order:
               (router.pathname.includes('/nfts') ||
-                router.pathname.includes('defi-loans')) &&
+                router.pathname.includes('defi-loans') ||
+                router.pathname.includes('crypto')) &&
               '3',
           }}
         >

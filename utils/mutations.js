@@ -49,3 +49,21 @@ export const BORROW_LOAN = gql`
     }
   }
 `
+
+export const ADD_USER_COIN = gql`
+  mutation Mutation($coinData: CoinData!) {
+    addUserCoin(coinData: $coinData) {
+      id
+      name
+      symbol
+      walletName
+      holdings
+    }
+  }
+`
+
+export const DELETE_USER_COIN = gql`
+  mutation Mutation($coinData: CoinData!) {
+    deleteUserCoin(coinData: $coinData)
+  }
+`

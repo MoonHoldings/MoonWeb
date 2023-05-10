@@ -67,6 +67,9 @@ const authSlice = createSlice({
     authenticateComplete(state, action) {
       state.modalLoading = false
     },
+    authenticateLoading(state, action) {
+      state.modalLoading = action.payload
+    },
     logout(state, action) {
       state.username = null
     },
@@ -99,6 +102,7 @@ export const {
   authenticateComplete,
   logout,
   discordAuthenticationComplete,
+  authenticateLoading,
 } = authSlice.actions
 
 export default authSlice.reducer
