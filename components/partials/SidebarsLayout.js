@@ -76,6 +76,8 @@ const SidebarsLayout = ({ children }) => {
     '/redirect',
   ]
   const shouldRenderSidebars = !noSidebarPaths.includes(router.pathname)
+  const shouldRenderNftRightSidebar =
+    router.pathname.includes('nfts') || router.pathname.includes('dashboard')
 
   if (shouldRenderSidebars) {
     return (
@@ -102,8 +104,7 @@ const SidebarsLayout = ({ children }) => {
             {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
             {rightSideBarOpen &&
               innerWidth < 1280 &&
-              (router.pathname.includes('nfts') ||
-                router.pathname.includes('crypto')) && <NftRightSideBar />}
+              shouldRenderNftRightSidebar && <NftRightSideBar />}
             {lendRightSideBarOpen &&
               innerWidth < 1280 &&
               router.pathname.includes('defi-loans') && (
@@ -124,8 +125,7 @@ const SidebarsLayout = ({ children }) => {
           {innerWidth > 1280 && (
             <>
               <LeftSideBar />
-              {(router.pathname.includes('nfts') ||
-                router.pathname.includes('crypto')) && <NftRightSideBar />}
+              {shouldRenderNftRightSidebar && <NftRightSideBar />}
               {router.pathname.includes('defi-loans') && (
                 <DefiLoansRightSideBar />
               )}
