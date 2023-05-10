@@ -28,10 +28,8 @@ const LeftSideBar = () => {
   }
 
   const [logOut, { loading: loggingOut }] = useMutation(LOGOUT_USER)
-
   const { username } = useSelector((state) => state.auth)
 
-  // xl:max-h-[calc(100%-1.5rem)]
   return (
     <motion.div
       className="fixed left-0 top-0 z-[51] h-full w-full bg-[#191C20] md:sticky md:top-8 md:order-1 md:h-[calc(100vh-3rem)] md:w-[28.8rem] md:rounded-[2rem]"
@@ -82,28 +80,19 @@ const LeftSideBar = () => {
 
       {/* Menu Options */}
       <div className="sidebar-menu px-[1.7rem] text-[1.4rem] font-medium xl:px-[1.5rem]">
-        {/* <button className="mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] text-[#666666] xl:mb-[2rem]">
-          <Image
-            className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
-            src="/images/svgs/dashboard.svg"
-            alt="Dashboard"
-          />
-          Dashboard
-        </button> */}
-
         <button
           id="btn-nft-portfolio"
           onClick={() => handleClick('dashboard')}
           className={`mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] xl:mb-[2rem] text-[${
-            router.pathname.includes('dashboard') ? '#62EAD2' : '#FFFFFF'
+            router.pathname.includes('dashboard') ? '#62EAD2' : '#666666'
           }]`}
         >
           <Image
             className="mr-[1rem] h-[2.1rem] w-[2.1rem] xl:h-[2.5rem] xl:w-[2.5rem]"
-            src="/images/svgs/dashboard-icon.svg"
-            width={25}
-            height={21}
-            alt="NFTs"
+            src="/images/svgs/dashboard.svg"
+            alt="Dashboard"
+            width={0}
+            height={0}
           />
           Dashboard
         </button>
