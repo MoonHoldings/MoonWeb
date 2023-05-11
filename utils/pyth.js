@@ -109,7 +109,7 @@ export const pythCoins = [
   },
   {
     symbol: 'BCH',
-    name: 'Binance-Peg Bitcoin Cash',
+    name: 'Bitcoin Cash',
     key: '5ALDzwcRJfSyGdGyhP3kP628aqBNHZzLuVww7o9kdspe',
   },
   {
@@ -206,7 +206,7 @@ export const pythCoins = [
 
   {
     symbol: 'LTC',
-    name: 'Binance-Peg Litecoin',
+    name: 'Litecoin',
     key: '8RMnV1eD55iqUFJLMguPkYBkq8DCtx81XcmAja93LvRR',
   },
   {

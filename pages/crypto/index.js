@@ -7,6 +7,7 @@ import { GET_USER_PORTFOLIO, GET_USER_PORTFOLIO_BY_SYMBOL } from 'utils/queries'
 import { useLazyQuery } from '@apollo/client'
 
 import { getCoinPrices, pythCoins } from 'utils/pyth'
+import { coinStyles } from 'utils/coinStyles'
 import {
   loadingPortfolio,
   populatePortfolioCoins,
@@ -44,7 +45,6 @@ const Crypto = () => {
             return {
               ...myCoin,
               key: userCoin.key,
-              color: userCoin.color ? userCoin.color : '#016F9E',
             }
           }
         })
@@ -54,19 +54,14 @@ const Crypto = () => {
           const userCoin = assetsManifest.find(
             (coin) => coin.symbol === myCoin.symbol
           )
+          const coinStyle = coinStyles.find((coin) => coin.id === myCoin.symbol)
 
-          if (userCoin) {
-            return {
-              ...myCoin,
-              svg: require(`cryptocurrency-icons/svg/color/${userCoin.symbol.toLowerCase()}.svg`),
-              color: userCoin.color,
-            }
-          } else {
-            return {
-              ...myCoin,
-              svg: require('cryptocurrency-icons/svg/color/generic.svg'),
-              color: '#62EAD2',
-            }
+          return {
+            ...myCoin,
+            svg: userCoin
+              ? require(`cryptocurrency-icons/svg/color/${userCoin.symbol.toLowerCase()}.svg`)
+              : require('cryptocurrency-icons/svg/color/generic.svg'),
+            color: coinStyle ? coinStyle.colors.text : '#62EAD2',
           }
         })
         setIsSet(true)
