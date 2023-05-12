@@ -39,7 +39,7 @@ const Crypto = () => {
       if (!loadingUserCoins && userCoins && !isSet) {
         const updatedMyCoins = userCoins.getUserPortfolioCoins.map((myCoin) => {
           const userCoin = pythCoins.find(
-            (coin) => coin.symbol === myCoin.symbol
+            (coin) => coin.symbol.toLowerCase() === myCoin.symbol.toLowerCase()
           )
           if (userCoin) {
             return {
