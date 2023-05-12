@@ -70,7 +70,7 @@ const CoinModal = () => {
       name: coinName,
       symbol: coinSymbol,
       walletName: wallet,
-      holdings: parseInt(holdings),
+      holdings: parseFloat(holdings),
     }
 
     try {

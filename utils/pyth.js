@@ -24,7 +24,7 @@ export async function getCoinPrice(pythKey) {
 
 function formatPrice(price) {
   if (price < 1) {
-    return price.toFixed(6)
+    return price.toFixed(10)
   } else {
     return price.toFixed(4)
   }
@@ -38,6 +38,7 @@ export async function getCoinPrices(pythKeys) {
     })
 
     const data = await pythClient.getAssetPricesFromAccounts(newArray)
+
     const withPrice = pythKeys.map((myCoin, index) => {
       return { ...myCoin, price: formatPrice(data[index].price) }
     })
