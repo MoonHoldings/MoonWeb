@@ -11,7 +11,7 @@ const SingleBar = ({ crypto, myCoins, index }) => {
     const div = chartRef.current
     const { width } = div.getBoundingClientRect()
     setBarWidth(width)
-  }, [])
+  }, [barWidth, chartRef, myCoins])
 
   const barHover = () => {
     setIsTooltip((prev) => !prev)
