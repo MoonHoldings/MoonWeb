@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
-import { populatePortfolioCoins } from 'redux/reducers/portfolioSlice'
+import {
+  populatePortfolioCoins,
+  reloadPortfolio,
+} from 'redux/reducers/portfolioSlice'
 import { useMutation } from '@apollo/client'
 import { ADD_USER_COIN, DELETE_USER_COIN } from 'utils/mutations'
 
@@ -59,6 +62,7 @@ const CoinModal = () => {
           (coin) => coin.id !== selectedCoin.id
         )
         setCoinArray(updatedCoinArray)
+        dispatch(reloadPortfolio(true))
       }
     } catch (error) {
       console.log(error)
@@ -84,6 +88,7 @@ const CoinModal = () => {
         const newLastItem = res.data.addUserCoin
         newArray.push(newLastItem)
         setCoinArray(newArray)
+        dispatch(reloadPortfolio(true))
       }
     } catch (error) {
       console.log(error.message)
@@ -148,13 +153,13 @@ const CoinModal = () => {
           </div>
           <div className="max-h-[24rem] overflow-y-auto" ref={containerRef}>
             <div class="flex w-full items-center justify-between px-[2rem] py-[1rem] text-[1.5rem]">
-              <div class="w-1/3 ">
+              <div class="w-1/3 pl-2">
                 <span>Wallet</span>
               </div>
-              <div class="w-1/3 text-center">
+              <div class="w-1/3 pl-2">
                 <span>Holdings</span>
               </div>
-              <div class="w-1/3 text-end">
+              <div class="w-1/3 ">
                 <span>Value</span>
               </div>
             </div>
@@ -178,13 +183,13 @@ const CoinModal = () => {
                       if (!showAddRow) handleItemClick(index, coin)
                     }}
                   >
-                    <div className="w-1/3 overflow-hidden truncate">
+                    <div className="w-1/3 overflow-hidden truncate pl-2">
                       <span>{coin.walletName}</span>
                     </div>
-                    <div className="w-1/3 overflow-hidden truncate text-center">
+                    <div className="w-1/3 overflow-hidden truncate pl-2">
                       <span>{coin.holdings}</span>
                     </div>
-                    <div className="w-1/3 overflow-hidden truncate text-end">
+                    <div className="w-1/3 overflow-hidden truncate ">
                       <span>{`$${(coin.holdings * coinPrice).toLocaleString(
                         'en-US'
                       )}`}</span>
@@ -199,25 +204,29 @@ const CoinModal = () => {
                   </div>
                 )}
             {showAddRow && (
-              <div className="flex w-full items-center justify-between rounded-b-[0.5rem] border border-black bg-[#191C20] px-[2rem] py-[1rem] text-[1.5rem]">
-                <input
-                  type="text"
-                  placeholder="Wallet Name"
-                  className="w-1/3 bg-transparent focus:outline-none"
-                  value={wallet}
-                  onChange={(e) => setWallet(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Holdings"
-                  className="w-1/3 bg-transparent text-center focus:outline-none"
-                  value={holdings}
-                  onChange={(e) => setHoldings(e.target.value)}
-                />
-                <div className="w-1/3 text-end">
+              <div className="flex w-full rounded-[0.5rem] border border-black bg-[#191C20] px-[2rem] py-2 text-[1.5rem]">
+                <div className="w-1/3">
+                  <input
+                    type="text"
+                    placeholder="Wallet"
+                    className="w-3/4 rounded-[0.5rem] bg-[#25282C] py-3 pl-2 focus:outline-none"
+                    value={wallet}
+                    onChange={(e) => setWallet(e.target.value)}
+                  />
+                </div>
+                <div className="w-1/3 ">
+                  <input
+                    type="number"
+                    placeholder="Holdings"
+                    className="w-3/4 rounded-[0.5rem] bg-[#25282C] py-3 pl-2 focus:outline-none"
+                    value={holdings}
+                    onChange={(e) => setHoldings(e.target.value)}
+                  />
+                </div>
+                <div className="w-1/3 ">
                   <button
                     onClick={onSave}
-                    className="w-3/4 rounded-[1rem] bg-green-500 px-2 py-1 hover:bg-green-600 focus:outline-none"
+                    className="w-3/4 rounded-[1rem] bg-green-500 px-2 py-3 hover:bg-green-600 focus:outline-none"
                   >
                     Save
                   </button>
@@ -243,7 +252,7 @@ const CoinModal = () => {
             <button
               onClick={handleAddCoin}
               id="btn-add-wallet"
-              class="spinner ml-2 h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500] hover:bg-[#4A1A7C]"
+              class="spinner  h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500] hover:bg-[#4A1A7C]"
             >
               {!showAddRow ? 'ADD WALLET' : 'Cancel'}
             </button>
