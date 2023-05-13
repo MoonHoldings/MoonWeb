@@ -11,6 +11,7 @@ import { coinStyles } from 'utils/coinStyles'
 import {
   loadingPortfolio,
   populatePortfolioCoins,
+  reloadPortfolio,
 } from 'redux/reducers/portfolioSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
@@ -23,7 +24,9 @@ const Crypto = () => {
   const [isSet, setIsSet] = useState(false)
 
   const { coinModalOpen } = useSelector((state) => state.util)
-  const { loading: loadingPage } = useSelector((state) => state.portfolio)
+  const { loading: loadingPage, reload } = useSelector(
+    (state) => state.portfolio
+  )
 
   const [getUserPort, { data: userCoins, loading: loadingUserCoins }] =
     useLazyQuery(GET_USER_PORTFOLIO, {
@@ -78,12 +81,13 @@ const Crypto = () => {
   }, [userCoins, loadingUserCoins, isSet, myCoins, dispatch])
 
   useEffect(() => {
-    if (!coinModalOpen) {
+    if (!coinModalOpen || reload) {
       dispatch(loadingPortfolio(true))
       getUserPort()
       setIsSet(false)
+      dispatch(reloadPortfolio(false))
     }
-  }, [coinModalOpen, getUserPort, dispatch])
+  }, [coinModalOpen, getUserPort, dispatch, reload])
 
   const handleCoinClick = async (coin) => {
     dispatch(loadingPortfolio(true))

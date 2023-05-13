@@ -6,6 +6,7 @@ const initialState = {
   coinName: null,
   coinPrice: 0.0,
   loading: false,
+  reload: false,
 }
 
 const portfolioSlice = createSlice({
@@ -15,7 +16,9 @@ const portfolioSlice = createSlice({
     loadingPortfolio(state, action) {
       state.loading = action.payload
     },
-
+    reloadPortfolio(state, action) {
+      state.reload = action.payload
+    },
     populatePortfolioCoins(state, action) {
       state.coins = action.payload.coins
       state.coinSymbol = action.payload.symbol
@@ -25,7 +28,7 @@ const portfolioSlice = createSlice({
   },
 })
 
-export const { populatePortfolioCoins, loadingPortfolio } =
+export const { populatePortfolioCoins, loadingPortfolio, reloadPortfolio } =
   portfolioSlice.actions
 
 export default portfolioSlice.reducer
