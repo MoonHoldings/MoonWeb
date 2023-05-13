@@ -117,8 +117,8 @@ const Dashboard = () => {
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$390,000</div>
             <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
-            <div className="text-[2.4rem] font-bold text-[#637381]">
-              Ξ 209.00321543
+            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+              Ξ {(209.00321543).toFixed(4)}
             </div>
           </div>
           <div className="ml-6 mr-0 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:mr-3">
@@ -139,8 +139,8 @@ const Dashboard = () => {
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$57,000</div>
             <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
-            <div className="text-[2.4rem] font-bold text-[#637381]">
-              Ξ 209.00321543
+            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+              Ξ {(209.00321543).toFixed(4)}
             </div>
           </div>
         </div>
@@ -163,8 +163,8 @@ const Dashboard = () => {
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$113,000</div>
             <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
-            <div className="text-[2.4rem] font-bold text-[#637381]">
-              Ξ 209.00321543
+            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+              Ξ {(209.00321543).toFixed(4)}
             </div>
           </div>
           <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
@@ -185,8 +185,8 @@ const Dashboard = () => {
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$12,033</div>
             <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
-            <div className="text-[2.4rem] font-bold text-[#637381]">
-              Ξ 209.00321543
+            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+              Ξ {(209.00321543).toFixed(4)}
             </div>
           </div>
         </div>
@@ -204,12 +204,12 @@ const Dashboard = () => {
           <p className="text-[#45CB85]">0.39%</p>
           <p>Ξ 293.65862808</p>
         </div>
-        <div className="mt-6 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
+        {/* <div className="mt-6 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Liquid Networth</p>
           <p className="font-medium">$447,000</p>
           <p className="text-[#45CB85]">0.189%</p>
           <p>Ξ 239.54983922</p>
-        </div>
+        </div> */}
       </div>
       <div className=" mt-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
         <p className="text-[2rem]">NFT Portfolio Allocation chart</p>

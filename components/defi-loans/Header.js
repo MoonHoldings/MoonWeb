@@ -117,15 +117,15 @@ const Header = ({ title, description }) => {
           View History
         </Link>
       </div>
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-[3rem]">{title}</h1>
-        <div className="flex">
-          <div className="flex items-center text-[2.2rem]">
+      <div className="flex w-full items-end justify-between">
+        <h1 className="text-[2.5rem] sm:text-[3rem]">{title}</h1>
+        <div className="flex items-center">
+          <div className="flex items-center text-[1.8rem] sm:text-[2.2rem]">
             SOL {isLend ? 'lent' : 'borrowed'}
             {loadingLends || loadingBorrows ? (
               <Spin className="ml-3" />
             ) : (
-              <span className="ml-2 text-[2.5rem] text-[#57C0CF]">
+              <span className="ml-2 text-[2.1rem] text-[#57C0CF] sm:text-[2.5rem]">
                 {toCurrencyFormat(
                   isLend
                     ? lendData?.getTotalLendsByAddress?.total
@@ -134,12 +134,12 @@ const Header = ({ title, description }) => {
               </span>
             )}
           </div>
-          <div className="ml-4 flex items-center text-[2.2rem]">
+          <div className="ml-4 flex items-center text-[1.8rem] sm:text-[2.2rem]">
             Interest
             {loadingLends || loadingBorrows ? (
               <Spin className="ml-3" />
             ) : (
-              <span className="ml-2 text-[2.5rem] text-[#FED007]">
+              <span className="ml-2 text-[2.1rem] text-[#FED007] sm:text-[2.5rem]">
                 {toCurrencyFormat(
                   isLend
                     ? lendData?.getTotalLendsByAddress?.interest
@@ -150,7 +150,7 @@ const Header = ({ title, description }) => {
           </div>
         </div>
       </div>
-      <p className="text-[1.6rem] opacity-60">{description}</p>
+      <p className="text-[1.4rem] opacity-60 sm:text-[1.6rem]">{description}</p>
     </>
   )
 }
