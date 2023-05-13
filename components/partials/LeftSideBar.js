@@ -91,7 +91,7 @@ const LeftSideBar = () => {
           id="btn-nft-portfolio"
           onClick={() => handleClick('dashboard')}
           className={`mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] xl:mb-[2rem] text-[${
-            router.pathname.includes('dashboard') ? '#62EAD2' : '#666666'
+            router.pathname.includes('dashboard') ? '#62EAD2' : '#FFFFFF'
           }]`}
         >
           <Image
