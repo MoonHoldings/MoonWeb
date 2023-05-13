@@ -51,10 +51,10 @@ const RightSideBar = () => {
   const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
 
   useEffect(() => {
-    if (publicKey && !disconnecting) {
+    if (publicKey && !disconnecting && router.pathname.includes('nfts')) {
       addWallet()
     }
-  }, [publicKey, addWallet, disconnecting])
+  }, [publicKey, addWallet, disconnecting, router])
 
   useEffect(() => {
     function handleResize() {
