@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 import dynamic from 'next/dynamic'
+import mergeClasses from 'utils/mergeClasses'
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -77,10 +78,72 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col pb-[4rem] pt-[2rem] sm:pt-0 md:order-2">
-      <div class="relative h-[20rem] w-full overflow-hidden rounded-2xl bg-gradient-to-t from-[#3B5049] via-[#0089a07d] to-[#0089a07d] p-6">
+      <div class="relative flex h-[20rem] w-full items-start justify-between overflow-hidden rounded-2xl bg-gradient-to-t from-[#3B5049] via-[#0089a07d] to-[#0089a07d] p-6">
         <p className="text-[2.2rem] sm:text-[2.4rem]">
           Welcome to MoonHoldings
         </p>
+        <div className="rounded-[30px] bg-[#191C20] p-4">
+          <button
+            type="button"
+            className={mergeClasses(
+              'inline-flex',
+              'items-center',
+              'justify-center',
+              'rounded-[30px]',
+              'border',
+              'border-transparent',
+              'py-1.5',
+              'px-4',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
+              'text-white',
+              'focus:outline-none',
+              true && 'bg-[#3C434B]'
+            )}
+          >
+            SOL
+          </button>
+          <button
+            type="button"
+            className={mergeClasses(
+              'inline-flex',
+              'items-center',
+              'justify-center',
+              'rounded-[30px]',
+              'border',
+              'border-transparent',
+              'py-1.5',
+              'px-4',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
+              'text-white',
+              'focus:outline-none',
+              false && 'bg-[#3C434B]'
+            )}
+          >
+            BTC
+          </button>
+          <button
+            type="button"
+            className={mergeClasses(
+              'inline-flex',
+              'items-center',
+              'justify-center',
+              'rounded-[30px]',
+              'border',
+              'border-transparent',
+              'py-1.5',
+              'px-4',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
+              'text-white',
+              'focus:outline-none',
+              false && 'bg-[#3C434B]'
+            )}
+          >
+            ETH
+          </button>
+        </div>
         <Image
           className="absolute bottom-[50%] left-[50%] h-12 w-12 sm:h-14 sm:w-14"
           src="/images/svgs/moon-holdings-logo.svg"
@@ -96,7 +159,71 @@ const Dashboard = () => {
           height="0"
         />
       </div>
-      <div className="mt-6 text-[2.6rem]">Performance</div>
+      <div className="mt-6 flex items-center justify-between text-[2.6rem]">
+        Performance
+        <div className="flex h-auto rounded-[30px] bg-[#191C20] p-4">
+          <button
+            type="button"
+            className={mergeClasses(
+              'inline-flex',
+              'items-center',
+              'justify-center',
+              'rounded-[30px]',
+              'border',
+              'border-transparent',
+              'py-1.5',
+              'px-5',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
+              'text-white',
+              'focus:outline-none',
+              true && 'bg-[#3C434B]'
+            )}
+          >
+            1D
+          </button>
+          <button
+            type="button"
+            className={mergeClasses(
+              'inline-flex',
+              'items-center',
+              'justify-center',
+              'rounded-[30px]',
+              'border',
+              'border-transparent',
+              'py-1.5',
+              'px-5',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
+              'text-white',
+              'focus:outline-none',
+              false && 'bg-[#3C434B]'
+            )}
+          >
+            1W
+          </button>
+          <button
+            type="button"
+            className={mergeClasses(
+              'inline-flex',
+              'items-center',
+              'justify-center',
+              'rounded-[30px]',
+              'border',
+              'border-transparent',
+              'py-1.5',
+              'px-5',
+              'md:text-[1.4rem]',
+              'text-[1.2rem]',
+              'text-white',
+              'focus:outline-none',
+              false && 'bg-[#3C434B]'
+            )}
+          >
+            1M
+          </button>
+        </div>
+      </div>
       <div className="mt-6 flex w-full flex-col sm:flex-row">
         <div className="flex w-full">
           <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
