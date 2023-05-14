@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
 import mergeClasses from 'utils/mergeClasses'
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
