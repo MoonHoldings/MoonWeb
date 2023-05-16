@@ -127,13 +127,14 @@ const CoinModal = () => {
 
   const onEdit = async () => {
     const coinData = {
+      id: parseInt(selectedCoin.id),
       name: coinName,
       symbol: coinSymbol,
       walletName: editWallet,
       holdings: parseFloat(editHoldings),
+      walletId: selectedCoin.walletId,
     }
 
-    console.log(selectedItem)
     try {
       const res = await editUserCoin({
         variables: {
@@ -147,8 +148,6 @@ const CoinModal = () => {
           walletName: coinData.walletName,
           holdings: coinData.holdings,
         }
-        console.log(coinData.walletName)
-        console.log(newArray[selectedItem].walletName)
 
         setCoinArray(newArray)
         dispatch(reloadPortfolio(true))
