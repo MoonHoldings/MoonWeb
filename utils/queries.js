@@ -259,12 +259,13 @@ export const GET_USER_PORTFOLIO = gql`
   query Query {
     getUserPortfolioCoins {
       holdings
-      walletName
-      walletAddress
-      verified
-      symbol
-      name
       id
+      name
+      symbol
+      verified
+      walletAddress
+      walletName
+      walletId
     }
   }
 `
@@ -276,8 +277,10 @@ export const GET_USER_PORTFOLIO_BY_SYMBOL = gql`
       id
       name
       symbol
+      verified
       walletName
       walletAddress
+      walletId
     }
   }
 `
