@@ -67,3 +67,21 @@ export const DELETE_USER_COIN = gql`
     deleteUserCoin(coinData: $coinData)
   }
 `
+
+export const ADD_USER_WALLET = gql`
+  mutation AddUserWallet($verified: Boolean!, $wallet: String!) {
+    addUserWallet(verified: $verified, wallet: $wallet)
+  }
+`
+
+export const REMOVE_USER_WALLET = gql`
+  mutation RemoveUserWallet($wallet: String!) {
+    removeUserWallet(wallet: $wallet)
+  }
+`
+
+export const REMOVE_ALL_USER_WALLETS = gql`
+  mutation Mutation {
+    removeAllUserWallets
+  }
+`

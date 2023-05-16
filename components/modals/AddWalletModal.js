@@ -1,26 +1,20 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { PublicKey } from '@solana/web3.js'
+import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 
-import {
-  changeAddWalletModalOpen,
-  changeRightSideBarOpen,
-} from 'redux/reducers/utilSlice'
-import {
-  addAddress,
-  changeAddAddressStatus,
-  refreshFloorPrices,
-} from 'redux/reducers/walletSlice'
 import { ADD_WALLET } from 'app/constants/copy'
+import { ADD_USER_WALLET } from 'utils/mutations'
+import { useMutation } from '@apollo/client'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
   const [walletAddress, setWalletAddress] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const { allWallets, addAddressStatus } = useSelector((state) => state.wallet)
-  const { addWalletModalOpen } = useSelector((state) => state.util)
+  const [addUserWallet, { loading: addingUserWallet }] =
+    useMutation(ADD_USER_WALLET)
 
   const closeModal = () => {
     dispatch(changeAddWalletModalOpen(false))
@@ -43,39 +37,23 @@ const AddWalletModal = () => {
       return
     }
 
-    const record = allWallets.find((wallet) => walletAddress === wallet)
+    const res = await addUserWallet({
+      variables: { verified: false, wallet: walletAddress },
+    })
 
-    if (!record) {
-      await dispatch(
-        addAddress({
-          walletAddress,
-          callback: () => dispatch(changeRightSideBarOpen(false)),
-        })
-      )
-
-      dispatch(refreshFloorPrices())
-    } else {
-      dispatch(changeAddWalletModalOpen(false))
+    if (!res?.data?.addUserWallet) {
+      setErrorMessage('Invalid wallet address')
+      return
     }
 
-    if (addAddressStatus === 'successful' && addWalletModalOpen === true) {
-      dispatch(changeAddWalletModalOpen(false))
-    }
-
-    // dispatch(changeAddWalletModalOpen(false))
+    dispatch(changeAddWalletModalOpen(false))
   }
+
   const handleWalletAddressInput = (event) => {
     if (event.key === 'Enter') {
       addWallet()
     }
   }
-
-  useEffect(() => {
-    if (addAddressStatus === 'successful' && addWalletModalOpen === true) {
-      dispatch(changeAddWalletModalOpen(false))
-      dispatch(changeAddAddressStatus('idle'))
-    }
-  }, [addWalletModalOpen, addAddressStatus, dispatch])
 
   return (
     <motion.div
@@ -100,7 +78,6 @@ const AddWalletModal = () => {
           </button>
         </div>
 
-        {/* Search bar */}
         <div className="search mb-[1rem] grid h-[3.766rem] grid-cols-[1.6rem_auto] items-center gap-[0.8rem] rounded-[0.8rem] border-[1px] border-[#61DAE9] bg-[#25282C] px-[1.6rem] text-[1.4rem] xl:h-[6.4rem]">
           <Image
             className="h-[1.6rem] w-[1.6rem]"
@@ -121,10 +98,10 @@ const AddWalletModal = () => {
         <button
           id="btn-add-wallet"
           onClick={addWallet}
-          disabled={addAddressStatus === 'loading' ? 'disabled' : undefined}
+          disabled={addingUserWallet}
           className="spinner h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500]"
         >
-          {addAddressStatus === 'loading' ? (
+          {addingUserWallet ? (
             <>
               <div
                 className="mr-[1rem] inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
@@ -141,7 +118,7 @@ const AddWalletModal = () => {
           )}
         </button>
         {errorMessage.length > 0 && (
-          <p className="mt-2 text-[1.5rem]">{errorMessage}</p>
+          <p className="mt-2 text-[1.5rem] text-red-500">{errorMessage}</p>
         )}
       </div>
     </motion.div>

@@ -278,3 +278,13 @@ export const GET_USER_PORTFOLIO_BY_SYMBOL = gql`
     }
   }
 `
+
+export const GET_USER_WALLETS = gql`
+  query GetUserWallets($type: String!) {
+    getUserWallets(type: $type) {
+      id
+      address
+      verified
+    }
+  }
+`
