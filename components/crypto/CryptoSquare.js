@@ -8,6 +8,15 @@ const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
     return numeral(value).format('0,0.00')
   }
 
+  function formatNumber(value) {
+    const formattedValue = value.toFixed(2)
+
+    if (formattedValue.includes('.') && !formattedValue.endsWith('0')) {
+      return formattedValue
+    }
+
+    return parseFloat(formattedValue).toString()
+  }
   const formattedHolding = (holding) => {
     const length = holding
       .toString()
@@ -17,24 +26,27 @@ const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
     if (length > 7) {
       return numeral(holding).format('0a')
     } else {
-      return numeral(holding).format('0,0')
+      if (holding % 1 == 0) return numeral(holding).format('0,0')
+      else return formatNumber(holding)
     }
   }
 
   const numSize = (num) => {
-    const length = num
+    const length = formatNumber(num)
       .toString()
       .split('')
       .filter((n) => n !== ',').length
 
     if (length === 4) {
+      return 4 + 'rem'
+    } else if (length === 3) {
       return 6 + 'rem'
     } else if (length === 5) {
       return 5 + 'rem'
     } else if (length === 6) {
       return 4 + 'rem'
-    } else if (length === 7) {
-      return 3 + 'rem'
+    } else if (length >= 7) {
+      return 5 + 'rem'
     } else {
       return 7.5 + 'rem'
     }

@@ -11,7 +11,7 @@ const SingleBar = ({ crypto, myCoins, index }) => {
     const div = chartRef.current
     const { width } = div.getBoundingClientRect()
     setBarWidth(width)
-  }, [])
+  }, [barWidth, chartRef, myCoins])
 
   const barHover = () => {
     setIsTooltip((prev) => !prev)
@@ -38,7 +38,7 @@ const SingleBar = ({ crypto, myCoins, index }) => {
       onMouseOut={barHover}
       style={{
         background: crypto.color,
-        color: 'white',
+        color: crypto.color == '#FFFFFF' ? 'black' : 'white',
         width: pct(crypto.holdings, crypto.price) + '%',
         borderRight: index !== myCoins.length - 1 && '0.01px solid #000000',
         borderTopLeftRadius: index === 0 && '0.5rem',

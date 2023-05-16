@@ -7,9 +7,11 @@ import { GET_USER_PORTFOLIO, GET_USER_PORTFOLIO_BY_SYMBOL } from 'utils/queries'
 import { useLazyQuery } from '@apollo/client'
 
 import { getCoinPrices, pythCoins } from 'utils/pyth'
+import { coinStyles } from 'utils/coinStyles'
 import {
   loadingPortfolio,
   populatePortfolioCoins,
+  reloadPortfolio,
 } from 'redux/reducers/portfolioSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
@@ -22,7 +24,9 @@ const Crypto = () => {
   const [isSet, setIsSet] = useState(false)
 
   const { coinModalOpen } = useSelector((state) => state.util)
-  const { loading: loadingPage } = useSelector((state) => state.portfolio)
+  const { loading: loadingPage, reload } = useSelector(
+    (state) => state.portfolio
+  )
 
   const [getUserPort, { data: userCoins, loading: loadingUserCoins }] =
     useLazyQuery(GET_USER_PORTFOLIO, {
@@ -38,13 +42,12 @@ const Crypto = () => {
       if (!loadingUserCoins && userCoins && !isSet) {
         const updatedMyCoins = userCoins.getUserPortfolioCoins.map((myCoin) => {
           const userCoin = pythCoins.find(
-            (coin) => coin.symbol === myCoin.symbol
+            (coin) => coin.symbol.toLowerCase() === myCoin.symbol.toLowerCase()
           )
           if (userCoin) {
             return {
               ...myCoin,
               key: userCoin.key,
-              color: userCoin.color ? userCoin.color : '#016F9E',
             }
           }
         })
@@ -54,19 +57,14 @@ const Crypto = () => {
           const userCoin = assetsManifest.find(
             (coin) => coin.symbol === myCoin.symbol
           )
+          const coinStyle = coinStyles.find((coin) => coin.id === myCoin.symbol)
 
-          if (userCoin) {
-            return {
-              ...myCoin,
-              svg: require(`cryptocurrency-icons/svg/color/${userCoin.symbol.toLowerCase()}.svg`),
-              color: userCoin.color,
-            }
-          } else {
-            return {
-              ...myCoin,
-              svg: require('cryptocurrency-icons/svg/color/generic.svg'),
-              color: '#62EAD2',
-            }
+          return {
+            ...myCoin,
+            svg: userCoin
+              ? require(`cryptocurrency-icons/svg/color/${userCoin.symbol.toLowerCase()}.svg`)
+              : require('cryptocurrency-icons/svg/color/generic.svg'),
+            color: coinStyle ? coinStyle.colors.text : '#62EAD2',
           }
         })
         setIsSet(true)
@@ -83,12 +81,13 @@ const Crypto = () => {
   }, [userCoins, loadingUserCoins, isSet, myCoins, dispatch])
 
   useEffect(() => {
-    if (!coinModalOpen) {
+    if (!coinModalOpen || reload) {
       dispatch(loadingPortfolio(true))
       getUserPort()
       setIsSet(false)
+      dispatch(reloadPortfolio(false))
     }
-  }, [coinModalOpen, getUserPort, dispatch])
+  }, [coinModalOpen, getUserPort, dispatch, reload])
 
   const handleCoinClick = async (coin) => {
     dispatch(loadingPortfolio(true))

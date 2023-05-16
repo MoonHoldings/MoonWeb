@@ -24,7 +24,7 @@ export async function getCoinPrice(pythKey) {
 
 function formatPrice(price) {
   if (price < 1) {
-    return price.toFixed(6)
+    return price.toFixed(10)
   } else {
     return price.toFixed(4)
   }
@@ -38,6 +38,7 @@ export async function getCoinPrices(pythKeys) {
     })
 
     const data = await pythClient.getAssetPricesFromAccounts(newArray)
+
     const withPrice = pythKeys.map((myCoin, index) => {
       return { ...myCoin, price: formatPrice(data[index].price) }
     })
@@ -109,7 +110,7 @@ export const pythCoins = [
   },
   {
     symbol: 'BCH',
-    name: 'Binance-Peg Bitcoin Cash',
+    name: 'Bitcoin Cash',
     key: '5ALDzwcRJfSyGdGyhP3kP628aqBNHZzLuVww7o9kdspe',
   },
   {
@@ -206,7 +207,7 @@ export const pythCoins = [
 
   {
     symbol: 'LTC',
-    name: 'Binance-Peg Litecoin',
+    name: 'Litecoin',
     key: '8RMnV1eD55iqUFJLMguPkYBkq8DCtx81XcmAja93LvRR',
   },
   {

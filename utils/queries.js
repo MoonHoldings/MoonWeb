@@ -256,13 +256,16 @@ export const RESEND_EMAIL_CONFIRMATION = gql`
 `
 
 export const GET_USER_PORTFOLIO = gql`
-  query GetUserPortfolioCoins {
+  query Query {
     getUserPortfolioCoins {
       holdings
       id
       name
       symbol
+      verified
+      walletAddress
       walletName
+      walletId
     }
   }
 `
@@ -274,7 +277,10 @@ export const GET_USER_PORTFOLIO_BY_SYMBOL = gql`
       id
       name
       symbol
+      verified
       walletName
+      walletAddress
+      walletId
     }
   }
 `

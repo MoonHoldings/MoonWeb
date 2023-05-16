@@ -4,9 +4,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
-import { populatePortfolioCoins } from 'redux/reducers/portfolioSlice'
+import {
+  populatePortfolioCoins,
+  reloadPortfolio,
+} from 'redux/reducers/portfolioSlice'
 import { useMutation } from '@apollo/client'
-import { ADD_USER_COIN, DELETE_USER_COIN } from 'utils/mutations'
+import {
+  ADD_USER_COIN,
+  DELETE_USER_COIN,
+  DELETE_USER_COIN_BY_SYMBOL,
+  EDIT_USER_COIN,
+} from 'utils/mutations'
 
 const CoinModal = () => {
   const dispatch = useDispatch()
@@ -22,8 +30,13 @@ const CoinModal = () => {
   const [holdings, setHoldings] = useState('')
   const [showAddRow, setShowAddRow] = useState(false)
 
+  const [editWallet, setEditWallet] = useState('')
+  const [editHoldings, setEditHoldings] = useState('')
+
   const [addUserCoin] = useMutation(ADD_USER_COIN)
+  const [editUserCoin] = useMutation(EDIT_USER_COIN)
   const [deleteUserCoin] = useMutation(DELETE_USER_COIN)
+  const [deleteUserCoinBySymbol] = useMutation(DELETE_USER_COIN_BY_SYMBOL)
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -39,13 +52,13 @@ const CoinModal = () => {
     setShowAddRow(!showAddRow)
   }
 
-  const handleRemoveCoin = async () => {
+  const handleRemoveCoin = async (item) => {
     const coinData = {
-      id: parseInt(selectedCoin.id),
-      name: selectedCoin.name,
-      symbol: selectedCoin.symbol,
-      walletName: selectedCoin.walletName,
-      holdings: parseInt(selectedCoin.holdings),
+      id: parseInt(item.id),
+      name: item.name,
+      symbol: item.symbol,
+      walletName: item.walletName,
+      holdings: parseInt(item.holdings),
     }
 
     try {
@@ -55,10 +68,27 @@ const CoinModal = () => {
         },
       })
       if (res.data.deleteUserCoin) {
-        const updatedCoinArray = coinArray.filter(
-          (coin) => coin.id !== selectedCoin.id
-        )
+        const updatedCoinArray = coinArray.filter((coin) => coin.id !== item.id)
         setCoinArray(updatedCoinArray)
+        dispatch(reloadPortfolio(true))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleRemoveAllCoins = async () => {
+    try {
+      const res = await deleteUserCoinBySymbol({
+        variables: {
+          symbol: coinSymbol,
+        },
+      })
+
+      if (res.data.deleteUserCoinBySymbol) {
+        const updatedCoinArray = []
+        setCoinArray(updatedCoinArray)
+        dispatch(reloadPortfolio(true))
       }
     } catch (error) {
       console.log(error)
@@ -70,7 +100,7 @@ const CoinModal = () => {
       name: coinName,
       symbol: coinSymbol,
       walletName: wallet,
-      holdings: parseInt(holdings),
+      holdings: parseFloat(holdings),
     }
 
     try {
@@ -84,6 +114,7 @@ const CoinModal = () => {
         const newLastItem = res.data.addUserCoin
         newArray.push(newLastItem)
         setCoinArray(newArray)
+        dispatch(reloadPortfolio(true))
       }
     } catch (error) {
       console.log(error.message)
@@ -92,6 +123,43 @@ const CoinModal = () => {
     setWallet('')
     setHoldings('')
     setShowAddRow(false)
+  }
+
+  const onEdit = async () => {
+    const coinData = {
+      id: parseInt(selectedCoin.id),
+      name: coinName,
+      symbol: coinSymbol,
+      walletName: editWallet,
+      holdings: parseFloat(editHoldings),
+      walletId: selectedCoin.walletId,
+    }
+
+    try {
+      const res = await editUserCoin({
+        variables: {
+          coinData,
+        },
+      })
+      if (res.data.editUserCoin) {
+        const newArray = [...coinArray]
+        newArray[selectedItem] = {
+          ...newArray[selectedItem],
+          walletName: coinData.walletName,
+          holdings: coinData.holdings,
+        }
+
+        setCoinArray(newArray)
+        dispatch(reloadPortfolio(true))
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+
+    setEditWallet('')
+    setEditHoldings('')
+    setSelectedItem(null)
+    setSelectedCoin(null)
   }
 
   const closeCoinModal = () => {
@@ -121,6 +189,181 @@ const CoinModal = () => {
     }
   }
 
+  const addRowComponent = () => {
+    return (
+      <div className="flex w-full rounded-[0.5rem] border border-black bg-[#174146] px-[2rem] py-4 text-[1.5rem]">
+        <div className="w-1/3">
+          <input
+            type="text"
+            placeholder="Wallet"
+            className="w-3/4 rounded-[0.5rem] bg-[#25282C] py-2 pl-2 focus:outline-none"
+            value={wallet}
+            onChange={(e) => setWallet(e.target.value)}
+          />
+        </div>
+        <div className="w-1/3 ">
+          <input
+            type="number"
+            placeholder="Holdings"
+            className="w-3/4 rounded-[0.5rem] bg-[#25282C] py-2 pl-2 focus:outline-none"
+            value={holdings}
+            onChange={(e) => setHoldings(e.target.value)}
+          />
+        </div>
+        <div className="flex w-1/3 items-center justify-between">
+          <button
+            onClick={onSave}
+            className="w-3/4 rounded-[1rem] bg-green-500 px-2 py-2 hover:bg-green-600 focus:outline-none"
+          >
+            Save
+          </button>
+
+          <button
+            onClick={() => {
+              if (selectedItem != null) handleItemClick(selectedItem)
+              if (showAddRow) setShowAddRow(false)
+            }}
+            className="ml-2 h-7 w-7"
+          >
+            <Image
+              src="/images/svgs/cross-btn.svg"
+              alt="cross button"
+              width={20}
+              height={20}
+              className="h-full w-full object-cover object-center"
+            />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const editRowComponent = (coin) => {
+    return (
+      <div className="flex w-full rounded-[0.5rem] border border-black bg-[#174146] px-[2rem] py-4 text-[1.5rem]">
+        <div className="w-1/3">
+          <input
+            type="text"
+            placeholder="Wallet"
+            className="w-3/4 rounded-[0.5rem] bg-[#25282C] py-2 pl-2 focus:outline-none"
+            value={editWallet}
+            onChange={(e) => {
+              setEditWallet(e.target.value)
+            }}
+          />
+        </div>
+        <div className="w-1/3 ">
+          <input
+            type="number"
+            placeholder="Holdings"
+            className="w-3/4 rounded-[0.5rem] bg-[#25282C] py-2 pl-2 focus:outline-none"
+            value={editHoldings}
+            onChange={(e) => setEditHoldings(e.target.value)}
+          />
+        </div>
+        <div className="flex w-1/3 items-center justify-between">
+          <button
+            onClick={onEdit}
+            className="w-3/4 rounded-[1rem] bg-green-500 px-2 py-2 hover:bg-green-600 focus:outline-none"
+          >
+            Save
+          </button>
+
+          <button
+            onClick={() => {
+              if (selectedItem != null) handleItemClick(selectedItem)
+              if (showAddRow) setShowAddRow(false)
+            }}
+            className="ml-2 h-7 w-7"
+          >
+            <Image
+              src="/images/svgs/cross-btn.svg"
+              alt="cross button"
+              width={20}
+              height={20}
+              className="h-full w-full object-cover object-center"
+            />
+          </button>
+        </div>
+      </div>
+    )
+  }
+  const coinComponent = (index, coin) => {
+    return (
+      <div
+        key={index}
+        className={`flex w-full items-center justify-between border border-black bg-[#191C20] px-[2rem] py-[1rem] text-[1.5rem]  ${
+          index === 0 && 'rounded-tl-[0.5rem] rounded-tr-[0.5rem]'
+        } ${
+          index === coinArray.length - 1 &&
+          'rounded-bl-[0.5rem] rounded-br-[0.5rem] '
+        } ${index !== 0 && 'border-t-[0]'} ${
+          selectedItem === index && 'bg-[#383C42] '
+        }${
+          showAddRow || selectedItem != null
+            ? 'pointer-events-none opacity-50'
+            : 'hover:cursor-pointer hover:bg-[#383C42]'
+        }`}
+      >
+        <div className="flex w-full flex-row ">
+          <div className="w-1/3 overflow-hidden truncate pl-2">
+            <span>
+              {coin.walletName
+                ? coin.walletName
+                : coin.walletAddress
+                ? coin.walletAddress.substring(0, 5)
+                : ''}
+            </span>
+          </div>
+          <div className="w-1/3 overflow-hidden truncate pl-2">
+            <span>{coin.holdings}</span>
+          </div>
+          <div className="flex w-1/3 flex-row justify-between">
+            <div className="w-60 overflow-hidden truncate">
+              <span>{`$${(coin.holdings * coinPrice).toLocaleString(
+                'en-US'
+              )}`}</span>
+            </div>
+            <div className="flex flex-row items-center justify-center">
+              <button
+                disabled={showAddRow || selectedItem != null}
+                onClick={() => {
+                  handleRemoveCoin(coin)
+                }}
+                className="mr-2 h-7 w-7"
+              >
+                <Image
+                  src="/images/svgs/cross-btn.svg"
+                  alt="cross button"
+                  width={20}
+                  height={20}
+                  className="h-full w-full object-cover object-center"
+                />
+              </button>
+              <button
+                disabled={showAddRow || selectedItem != null}
+                onClick={() => {
+                  setEditWallet(coin.walletName)
+                  setEditHoldings(coin.holdings)
+                  handleItemClick(index, coin)
+                }}
+                className="ml-2 h-7 w-7"
+              >
+                <Image
+                  src="/images/svgs/edit-btn.svg"
+                  alt="cross button"
+                  width={20}
+                  height={20}
+                  className="h-full w-full object-cover object-center"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     coinModalOpen && (
       <motion.div
@@ -147,50 +390,23 @@ const CoinModal = () => {
             </button>
           </div>
           <div className="max-h-[24rem] overflow-y-auto" ref={containerRef}>
-            <div class="flex w-full items-center justify-between px-[2rem] py-[1rem] text-[1.5rem]">
-              <div class="w-1/3 ">
+            <div className="flex w-full items-center justify-between px-[2rem] py-[1rem] text-[1.5rem]">
+              <div className="w-1/3 pl-2">
                 <span>Wallet</span>
               </div>
-              <div class="w-1/3 text-center">
+              <div className="w-1/3 pl-2">
                 <span>Holdings</span>
               </div>
-              <div class="w-1/3 text-end">
+              <div className="w-1/3 ">
                 <span>Value</span>
               </div>
             </div>
             {coinArray.length > 0
-              ? coinArray.map((coin, index) => (
-                  <div
-                    key={index}
-                    className={`flex w-full items-center justify-between border border-black bg-[#191C20] px-[2rem] py-[1rem] text-[1.5rem]  ${
-                      index === 0 && 'rounded-tl-[0.5rem] rounded-tr-[0.5rem]'
-                    } ${
-                      index === coinArray.length - 1 &&
-                      'rounded-bl-[0.5rem] rounded-br-[0.5rem] '
-                    } ${index !== 0 && 'border-t-[0]'} ${
-                      selectedItem === index && 'bg-[#383C42] '
-                    }${
-                      showAddRow
-                        ? 'pointer-events-none cursor-not-allowed opacity-50'
-                        : 'hover:cursor-pointer hover:bg-[#383C42]'
-                    }`}
-                    onClick={() => {
-                      if (!showAddRow) handleItemClick(index, coin)
-                    }}
-                  >
-                    <div className="w-1/3 overflow-hidden truncate">
-                      <span>{coin.walletName}</span>
-                    </div>
-                    <div className="w-1/3 overflow-hidden truncate text-center">
-                      <span>{coin.holdings}</span>
-                    </div>
-                    <div className="w-1/3 overflow-hidden truncate text-end">
-                      <span>{`$${(coin.holdings * coinPrice).toLocaleString(
-                        'en-US'
-                      )}`}</span>
-                    </div>
-                  </div>
-                ))
+              ? coinArray.map((coin, index) =>
+                  selectedItem == index
+                    ? editRowComponent(coin)
+                    : coinComponent(index, coin)
+                )
               : !showAddRow && (
                   <div
                     className={`flex w-full items-center justify-center bg-[#191C20] px-[2rem] py-[1rem] text-center text-[1.5rem]`}
@@ -198,42 +414,19 @@ const CoinModal = () => {
                     You have no wallets for this coin added in your portfolio.
                   </div>
                 )}
-            {showAddRow && (
-              <div className="flex w-full items-center justify-between rounded-b-[0.5rem] border border-black bg-[#191C20] px-[2rem] py-[1rem] text-[1.5rem]">
-                <input
-                  type="text"
-                  placeholder="Wallet Name"
-                  className="w-1/3 bg-transparent focus:outline-none"
-                  value={wallet}
-                  onChange={(e) => setWallet(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Holdings"
-                  className="w-1/3 bg-transparent text-center focus:outline-none"
-                  value={holdings}
-                  onChange={(e) => setHoldings(e.target.value)}
-                />
-                <div className="w-1/3 text-end">
-                  <button
-                    onClick={onSave}
-                    className="w-3/4 rounded-[1rem] bg-green-500 px-2 py-1 hover:bg-green-600 focus:outline-none"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            )}
+            {showAddRow && addRowComponent()}
           </div>
 
-          <div className="mt-4 flex flex-row items-center ">
+          <div className="mt-8 flex flex-row items-center ">
             {coinArray.length > 0 && (
               <button
-                disabled={selectedItem == null}
-                onClick={handleRemoveCoin}
+                disabled={selectedItem != null || showAddRow}
+                onClick={handleRemoveAllCoins}
                 id="btn-add-wallet"
-                className={`spinner mr-2 h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#E05E28] text-center text-[1.4rem] font-[500] hover:cursor-pointer hover:bg-[#D04922] ${
-                  !(selectedItem == null) ? '' : 'cursor-not-allowed opacity-50'
+                className={`spinner mr-2 h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#E05E28] text-center text-[1.4rem] font-[500]  ${
+                  !(selectedItem != null || showAddRow)
+                    ? 'hover:bg-[#D04922]'
+                    : 'cursor-not-allowed opacity-50'
                 }`}
               >
                 REMOVE {coinSymbol}
@@ -241,11 +434,17 @@ const CoinModal = () => {
             )}
 
             <button
+              disabled={selectedItem != null || showAddRow}
               onClick={handleAddCoin}
               id="btn-add-wallet"
-              class="spinner ml-2 h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500] hover:bg-[#4A1A7C]"
+              class={`spinner  h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500] 
+              ${
+                !(selectedItem != null || showAddRow)
+                  ? 'hover:bg-[#4A1A7C] '
+                  : 'cursor-not-allowed opacity-50'
+              }`}
             >
-              {!showAddRow ? 'ADD WALLET' : 'Cancel'}
+              ADD WALLET
             </button>
           </div>
         </div>
