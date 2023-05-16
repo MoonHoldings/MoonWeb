@@ -5,14 +5,13 @@ import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-
+import { useMutation, useQuery } from '@apollo/client'
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
   changeWalletsModalOpen,
   changeCoinModalOpen,
 } from 'redux/reducers/utilSlice'
-
 import {
   addAddress,
   removeAllWallets,
@@ -20,20 +19,24 @@ import {
   refreshWallets,
   refreshFloorPrices,
 } from 'redux/reducers/walletSlice'
-
 import {
   ADD_WALLET_ADDRESS,
   CONNECTED_WALLETS,
   REFRESH_WALLETS,
   REFRESH_WALLETS_TITLE,
 } from 'app/constants/copy'
-
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { Tooltip } from 'antd'
+import { Spin, Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
+import {
+  ADD_USER_WALLET,
+  REMOVE_ALL_USER_WALLETS,
+  REMOVE_USER_WALLET,
+} from 'utils/mutations'
+import { GET_USER_WALLETS } from 'utils/queries'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -48,13 +51,31 @@ const RightSideBar = () => {
   )
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
+  const [addUserWallet, { loading: addingUserWallet }] =
+    useMutation(ADD_USER_WALLET)
+  const [removeUserWallet, { loading: removingUserWallet }] =
+    useMutation(REMOVE_USER_WALLET)
+  const [removeAllUserWallets, { loading: removingAllUserWallets }] =
+    useMutation(REMOVE_ALL_USER_WALLETS)
+
+  const { data: userWalletsData } = useQuery(GET_USER_WALLETS, {
+    variables: {
+      type: 'Auto',
+    },
+    pollInterval: 1000,
+  })
+  const userWallets = userWalletsData?.getUserWallets ?? []
+
   const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
 
   useEffect(() => {
-    if (publicKey && !disconnecting && router.pathname.includes('nfts')) {
-      addWallet()
+    const shouldCallAddWallet =
+      router.pathname.includes('nfts') || router.pathname.includes('crypto')
+
+    if (publicKey && !disconnecting && shouldCallAddWallet) {
+      addConnectedWallet()
     }
-  }, [publicKey, addWallet, disconnecting, router])
+  }, [publicKey, addConnectedWallet, disconnecting, router])
 
   useEffect(() => {
     function handleResize() {
@@ -74,18 +95,13 @@ const RightSideBar = () => {
     }
   }, [isMobile, currentMenu])
 
-  const addWallet = useCallback(async () => {
+  const addConnectedWallet = useCallback(async () => {
     if (publicKey) {
-      const record = allWallets.find(
-        (wallet) => publicKey.toBase58() === wallet
-      )
-
-      if (!record) {
-        await dispatch(addAddress({ walletAddress: publicKey.toBase58() }))
-        dispatch(refreshFloorPrices())
-      }
+      await addUserWallet({
+        variables: { verified: true, wallet: publicKey.toBase58() },
+      })
     }
-  }, [publicKey, allWallets, dispatch])
+  }, [publicKey, addUserWallet])
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
@@ -95,12 +111,14 @@ const RightSideBar = () => {
     dispatch(changeWalletsModalOpen(true))
   }
 
-  const removeSingleWallet = (wallet) => {
-    dispatch(removeWallet(wallet))
+  const removeSingleWallet = async (wallet) => {
+    await removeUserWallet({ variables: { wallet } })
+    // dispatch(removeWallet(wallet))
   }
 
   const disconnectWallets = async () => {
-    dispatch(removeAllWallets())
+    if (userWallets.length) await removeAllUserWallets()
+
     disconnect()
   }
 
@@ -120,6 +138,7 @@ const RightSideBar = () => {
 
   const seeAllOrLessWallets = () => {
     const walletNum = allWallets.length
+
     if (walletNum === 4) {
       setAllWallets([1, 2, 3, 4, 5, 6, 7])
     } else {
@@ -132,9 +151,6 @@ const RightSideBar = () => {
   }
 
   const shrinkText = (text) => {
-    // const firstSlice = text.slice(0, 3)
-    // const lastSlice = text.slice(-3)
-    // return `${firstSlice}...${lastSlice}`
     return text.substring(0, 5)
   }
 
@@ -159,7 +175,8 @@ const RightSideBar = () => {
             height="20"
             alt="Crypto"
           />
-          {publicKey ? shrinkText(publicKey.toBase58()) : 'Connect Wallet'}
+          {publicKey ? shrinkText(publicKey.toBase58()) : 'Connect Wallet'}{' '}
+          {addingUserWallet && <Spin className="ml-3" />}
         </div>
         <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
@@ -442,9 +459,9 @@ const RightSideBar = () => {
                   <button
                     type="button"
                     onClick={
-                      wallet === publicKey?.toBase58()
+                      wallet.address === publicKey?.toBase58()
                         ? disconnectCurrentWallet
-                        : () => removeSingleWallet(wallet)
+                        : () => removeSingleWallet(wallet.address)
                     }
                     className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
                   >
@@ -502,6 +519,88 @@ const RightSideBar = () => {
     ),
   }
 
+  const renderConnectedWallets = () => {
+    return (
+      userWallets?.length > 0 && (
+        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
+          <div className="header mb-[2rem] flex justify-between">
+            <h1 className="text-[1.4rem] text-white">{CONNECTED_WALLETS}</h1>
+            <button
+              onClick={seeAllOrLessWallets}
+              className="text-[1.4rem] font-bold text-[#61DAEA]"
+            >
+              {allWallets.length > 4 ? 'See All' : ''}
+            </button>
+          </div>
+
+          <ul className="all-wallets mb-[2rem] grid gap-[1rem]">
+            {userWallets?.map((wallet, index) => (
+              <li key={index}>
+                <button
+                  type="button"
+                  onClick={
+                    wallet.address === publicKey?.toBase58()
+                      ? disconnectCurrentWallet
+                      : () => removeSingleWallet(wallet.address)
+                  }
+                  className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
+                >
+                  <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+                    <Image
+                      className="mr-[1rem] h-[2rem] w-[2rem]"
+                      src="/images/svgs/wallet-white.svg"
+                      width="20"
+                      height="20"
+                      alt="NFTs"
+                    />
+                    {shrinkText(`${wallet.address}`)}
+                    {removingUserWallet && <Spin className="ml-3" />}
+                  </div>
+                  <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+                    <Image
+                      className="h-[0.8rem] w-[0.8rem] rotate-45"
+                      src="/images/svgs/+.svg"
+                      width="11"
+                      height="11"
+                      alt="plus sign"
+                    />
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            type="button"
+            onClick={disconnectWallets}
+            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
+          >
+            <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+              <Image
+                className="mr-[1rem] h-[2rem] w-[2rem]"
+                src="/images/svgs/wallet-white.svg"
+                width="20"
+                height="20"
+                alt="NFTs"
+              />
+              Disconnect Wallets
+              {removingAllUserWallets && <Spin className="ml-3" />}
+            </div>
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+              <Image
+                className="h-[0.8rem] w-[0.8rem] rotate-45"
+                src="/images/svgs/+.svg"
+                width="11"
+                height="11"
+                alt="plus sign"
+              />
+            </div>
+          </button>
+        </div>
+      )
+    )
+  }
+
   return (
     <motion.div
       className="fixed left-0 top-0 z-[51] h-full w-full md:sticky md:top-8 md:order-3 md:mb-[1.5rem] md:h-auto"
@@ -510,7 +609,6 @@ const RightSideBar = () => {
       exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
-      {/* Desktop View = buttons section */}
       <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
         {MENUS[currentMenu]}
       </div>
@@ -563,85 +661,7 @@ const RightSideBar = () => {
         </div>
       </div> */}
 
-      {/* Connected Wallets */}
-      {allWallets.length > 0 && (
-        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
-          <div className="header mb-[2rem] flex justify-between">
-            <h1 className="text-[1.4rem] text-white">{CONNECTED_WALLETS}</h1>
-            <button
-              onClick={seeAllOrLessWallets}
-              className="text-[1.4rem] font-bold text-[#61DAEA]"
-            >
-              {allWallets.length > 4 ? 'See All' : ''}
-            </button>
-          </div>
-
-          {/* All Wallets */}
-          {/* Commenting out grid-cols-2, we use this once we have at least 6 wallets */}
-          {/* <ul className="all-wallets mb-[2rem] grid grid-cols-2 gap-[1rem]"> */}
-          <ul className="all-wallets mb-[2rem] grid gap-[1rem]">
-            {allWallets.map((wallet, index) => (
-              <li key={index}>
-                <button
-                  type="button"
-                  onClick={
-                    wallet === publicKey?.toBase58()
-                      ? disconnectCurrentWallet
-                      : () => removeSingleWallet(wallet)
-                  }
-                  className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
-                >
-                  <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
-                    <Image
-                      className="mr-[1rem] h-[2rem] w-[2rem]"
-                      src="/images/svgs/wallet-white.svg"
-                      width="20"
-                      height="20"
-                      alt="NFTs"
-                    />
-                    {shrinkText(`${wallet}`)}
-                  </div>
-                  <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-                    <Image
-                      className="h-[0.8rem] w-[0.8rem] rotate-45"
-                      src="/images/svgs/+.svg"
-                      width="11"
-                      height="11"
-                      alt="plus sign"
-                    />
-                  </div>
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <button
-            type="button"
-            onClick={disconnectWallets}
-            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
-          >
-            <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
-              <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/wallet-white.svg"
-                width="20"
-                height="20"
-                alt="NFTs"
-              />
-              Disconnect Wallets
-            </div>
-            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-              <Image
-                className="h-[0.8rem] w-[0.8rem] rotate-45"
-                src="/images/svgs/+.svg"
-                width="11"
-                height="11"
-                alt="plus sign"
-              />
-            </div>
-          </button>
-        </div>
-      )}
+      {renderConnectedWallets()}
     </motion.div>
   )
 }
