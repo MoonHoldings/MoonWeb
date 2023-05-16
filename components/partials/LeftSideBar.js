@@ -282,8 +282,8 @@ const LeftSideBar = () => {
             className={`mb-[1.7rem] flex h-[7.4rem] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] transition-colors duration-300 ${
               isMenuOpen ? 'bg-[#383C42]' : ''
             }`}
-            // onMouseEnter={toggleMenu}
-            // onMouseLeave={toggleMenu}
+            onMouseEnter={toggleMenu}
+            onMouseLeave={() => setIsMenuOpen(false)}
             onClick={toggleMenu}
           >
             <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
