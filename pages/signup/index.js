@@ -95,89 +95,71 @@ const SignUp = () => {
     setError(error)
   }
   const generateDiscordUrl = async () => {
+    const windowFeatures =
+      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
+    let discordWindow = window.open('', '_blank', windowFeatures)
     dispatch(authenticatePending())
     setDiscordEmail('')
     const res = await discordAuth()
 
     if (res.data) {
-      openDiscordWindow(res.data.generateDiscordUrl)
+      openDiscordWindow(res.data.generateDiscordUrl, discordWindow)
     }
   }
 
-  const openDiscordWindow = (discordUrl) => {
-    const windowFeatures =
-      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
-
-    const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
-
-    if (!discordWindow) {
-      setModal(
-        'Popup is blocked. Please disable it or use a different browser',
-        true,
-        true
-      )
-      dispatch(authenticateComplete())
-    } else {
-      try {
-        window.addEventListener('message', receiveMessage, false)
-        async function receiveMessage(event) {
-          const valueReceived = event.data
-          if (valueReceived.payload) {
-            const intervalId = setInterval(async () => {
-              clearInterval(intervalId)
-              if (valueReceived.payload.ok) {
-                router.push('/nfts')
-              } else if (valueReceived.payload.message) {
-                setModal(valueReceived.payload.message, true, true)
-              }
-            }, 1000)
-            await dispatch(
+  const openDiscordWindow = (discordUrl, discordWindow) => {
+    discordWindow.location.href = discordUrl
+    try {
+      window.addEventListener('message', receiveMessage, false)
+      async function receiveMessage(event) {
+        const valueReceived = event.data
+        if (valueReceived.payload) {
+          if (valueReceived.payload.ok) {
+            router.push('/nfts')
+            discordWindow.close()
+            dispatch(
               discordAuthenticationComplete({
                 username: valueReceived.payload.username ?? null,
               })
             )
-            discordWindow.close()
-          } else if (valueReceived.errorMessage) {
-            setModal(
-              valueReceived.errorMessage ?? 'Please try again later.',
-              true,
-              true
-            )
-            await dispatch(authenticateComplete())
-            discordWindow.close()
-          } else if (valueReceived.successMessage) {
-            setModal(
-              valueReceived.successMessage ?? 'Please try again later.',
-              false,
-              true
-            )
-            await dispatch(authenticateComplete())
-            discordWindow.close()
-            if (valueReceived.email) {
-              setDiscordEmail(valueReceived.email)
-            }
-          } else if (valueReceived.error) {
-            setModal(
-              valueReceived.error ?? 'Please try again later.',
-              true,
-              true
-            )
-            await dispatch(authenticateComplete())
-            discordWindow.close()
+          } else if (valueReceived.payload.message) {
+            setModal(valueReceived.payload.message, true, true)
           }
+        } else if (valueReceived.errorMessage) {
+          discordWindow.close()
+          setModal(
+            valueReceived.errorMessage ?? 'Please try again later.',
+            true,
+            true
+          )
+        } else if (valueReceived.successMessage) {
+          discordWindow.close()
+          setModal(
+            valueReceived.successMessage ?? 'Please try again later.',
+            false,
+            true
+          )
+          if (valueReceived.email) {
+            discordWindow.close()
+            setDiscordEmail(valueReceived.email)
+          }
+        } else if (valueReceived.error) {
+          discordWindow.close()
+          setModal(valueReceived.error ?? 'Please try again later.', true, true)
         }
-      } catch (error) {
-        setModal(error.message ?? 'Please try again later.', true, true)
-        dispatch(authenticateComplete())
-        discordWindow.close()
       }
-      const intervalId = setInterval(async () => {
-        if (discordWindow.closed) {
-          clearInterval(intervalId)
-          await dispatch(authenticateComplete())
-        }
-      }, 1000)
+    } catch (error) {
+      setModal(error.message ?? 'Please try again later.', true, true)
+      dispatch(authenticateComplete())
+      discordWindow.close()
     }
+
+    const intervalId = setInterval(async () => {
+      if (discordWindow.closed) {
+        clearInterval(intervalId)
+        dispatch(authenticateComplete())
+      }
+    }, 1000)
   }
 
   const loginInstead = () => {

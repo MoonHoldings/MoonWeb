@@ -307,7 +307,13 @@ const CoinModal = () => {
       >
         <div className="flex w-full flex-row ">
           <div className="w-1/3 overflow-hidden truncate pl-2">
-            <span>{coin.walletName}</span>
+            <span>
+              {coin.walletName
+                ? coin.walletName
+                : coin.walletAddress
+                ? coin.walletAddress.substring(0, 5)
+                : ''}
+            </span>
           </div>
           <div className="w-1/3 overflow-hidden truncate pl-2">
             <span>{coin.holdings}</span>
