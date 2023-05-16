@@ -282,8 +282,9 @@ const LeftSideBar = () => {
             className={`mb-[1.7rem] flex h-[7.4rem] items-center justify-between rounded-[1rem] bg-[#242E37] px-[1.4rem] transition-colors duration-300 ${
               isMenuOpen ? 'bg-[#383C42]' : ''
             }`}
-            onMouseEnter={toggleMenu}
-            onMouseLeave={toggleMenu}
+            // onMouseEnter={toggleMenu}
+            // onMouseLeave={toggleMenu}
+            onClick={toggleMenu}
           >
             <div className="mr-[1rem] h-[5rem] w-[5rem] rounded-full bg-black" />
             <div className="flex-1 overflow-hidden truncate font-inter text-[1.2rem]  font-medium text-white">
@@ -305,7 +306,6 @@ const LeftSideBar = () => {
                 style={{ maxHeight: '15rem' }}
               >
                 <button
-                  onClick={{}}
                   disabled
                   className="flex h-[4.1rem] w-full items-center px-4 text-[1.5rem] text-white hover:rounded-[1rem] hover:bg-[#383C42] disabled:opacity-50 disabled:hover:bg-[#383C42]"
                 >
