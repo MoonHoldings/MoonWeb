@@ -9,12 +9,9 @@ const initialState = {
   refreshWalletsStatus: 'idle',
   refreshFloorPriceStatus: 'idle',
   fetchingNftDataStatus: 'idle',
-  addingSingleNftStatus: 'idle',
-  allWallets: [],
   collections: [],
   currentCollection: {},
   currentNft: {},
-  singleNFT: {},
 }
 
 const walletSlice = createSlice({

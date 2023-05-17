@@ -41,9 +41,7 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
-  const { allWallets, addAddressStatus, collections } = useSelector(
-    (state) => state.wallet
-  )
+  const { addAddressStatus, collections } = useSelector((state) => state.wallet)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const [addUserWallet, { loading: addingUserWallet }] =
@@ -138,15 +136,15 @@ const RightSideBar = () => {
     }
   }
 
-  const seeAllOrLessWallets = () => {
-    const walletNum = allWallets.length
+  // const seeAllOrLessWallets = () => {
+  //   const walletNum = allWallets.length
 
-    if (walletNum === 4) {
-      setAllWallets([1, 2, 3, 4, 5, 6, 7])
-    } else {
-      setAllWallets(allWallets.slice(0, 4))
-    }
-  }
+  //   if (walletNum === 4) {
+  //     setAllWallets([1, 2, 3, 4, 5, 6, 7])
+  //   } else {
+  //     setAllWallets(allWallets.slice(0, 4))
+  //   }
+  // }
 
   const leftArrowClick = () => {
     dispatch(changeRightSideBarOpen(false))
@@ -262,7 +260,7 @@ const RightSideBar = () => {
             height="20"
             alt="Dashboard"
           />
-          {CONNECTED_WALLETS} ({allWallets?.length})
+          {CONNECTED_WALLETS} ({userWallets?.length})
         </div>
         <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
@@ -460,7 +458,7 @@ const RightSideBar = () => {
               <div />
             </div>
             <ul className="all-wallets mb-[2rem] mt-10 grid gap-[1rem]">
-              {allWallets.map((wallet, index) => (
+              {userWallets.map((wallet, index) => (
                 <li key={index}>
                   <button
                     type="button"
@@ -479,7 +477,8 @@ const RightSideBar = () => {
                         height="20"
                         alt="NFTs"
                       />
-                      {shrinkText(`${wallet}`)}
+                      {shrinkText(`${wallet.address}`)}
+                      {removingUserWallet && <Spin className="ml-3" />}
                     </div>
                     <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
                       <Image
@@ -532,10 +531,10 @@ const RightSideBar = () => {
           <div className="header mb-[2rem] flex justify-between">
             <h1 className="text-[1.4rem] text-white">{CONNECTED_WALLETS}</h1>
             <button
-              onClick={seeAllOrLessWallets}
+              // onClick={seeAllOrLessWallets}
               className="text-[1.4rem] font-bold text-[#61DAEA]"
             >
-              {allWallets.length > 4 ? 'See All' : ''}
+              {userWallets.length > 4 ? 'See All' : ''}
             </button>
           </div>
 
