@@ -13,10 +13,15 @@ import {
   WELCOME_MOON_HOLDINGS,
 } from 'app/constants/copy'
 import { getServerSidePropsWithAuth } from '../../utils/withAuth'
+import { fetchUserNfts } from 'redux/reducers/walletSlice'
 
 const Nfts = () => {
   const dispatch = useDispatch()
-  const { collections, allWallets } = useSelector((state) => state.wallet)
+  const { collections } = useSelector((state) => state.wallet)
+
+  useEffect(() => {
+    dispatch(fetchUserNfts())
+  }, [dispatch])
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
@@ -26,7 +31,7 @@ const Nfts = () => {
     dispatch(changeWalletsModalOpen(true))
   }
 
-  return allWallets?.length === 0 ? (
+  return collections.length === 0 ? (
     <div className="welcome-message mt-[10rem] text-[1.6rem] font-semibold text-white md:order-2 md:mt-[15rem]">
       <h1 className="text-[2.2rem] font-bold">{WELCOME_MOON_HOLDINGS}</h1>
       <p className="mb-[2rem]">{START_CONNECTING_WALLETS}</p>

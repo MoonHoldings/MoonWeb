@@ -102,3 +102,9 @@ export const EDIT_USER_COIN = gql`
     }
   }
 `
+
+export const REFRESH_USER_WALLETS = gql`
+  mutation Mutation {
+    refreshUserWallets
+  }
+`

@@ -12,8 +12,9 @@ const Nft = () => {
   const { currentNft, currentCollection } = useSelector((state) => state.wallet)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
-  const image = currentNft.image_uri
-  const name = currentNft.name?.length ? currentNft.name : currentNft.symbol
+  const image = currentNft.image
+  const name = currentNft?.name || currentNft?.symbol
+  const attributes = JSON.parse(currentNft.attributesArray)
 
   const handleClick = (url) => router.push(`/${url}`)
 
@@ -42,7 +43,7 @@ const Nft = () => {
           NFT Portfolio
         </div>
         <div
-          onClick={() => handleClick('nfts/collection')} // TODO < need to dynamically load previous collection
+          onClick={() => handleClick('nfts/collection')}
           className="cursor mr-4 flex items-center text-[1.8rem] md:text-[2rem]"
         >
           &gt;
@@ -94,12 +95,11 @@ const Nft = () => {
               </span>
             </div>
           </div>
-          {/* TODO need to reload currentNft */}
-          {currentNft?.attributes_array?.length > 0 && (
+          {attributes?.length > 0 && (
             <h1 className="mb-[2rem] mt-[2rem] text-[2rem]">Attributes</h1>
           )}
           <div className="grid grid-cols-2 gap-x-[2rem] gap-y-[2rem] sm:grid-cols-3 sm:gap-x-[1.3rem] sm:gap-y-[1.5rem] xl:grid-cols-3">
-            {currentNft.attributes_array?.map((attr, i) => (
+            {attributes?.map((attr, i) => (
               <Attribute key={i} attribute={attr} />
             ))}
           </div>

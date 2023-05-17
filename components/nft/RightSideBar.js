@@ -12,13 +12,7 @@ import {
   changeWalletsModalOpen,
   changeCoinModalOpen,
 } from 'redux/reducers/utilSlice'
-import {
-  addAddress,
-  removeAllWallets,
-  removeWallet,
-  refreshWallets,
-  refreshFloorPrices,
-} from 'redux/reducers/walletSlice'
+import { fetchUserNfts } from 'redux/reducers/walletSlice'
 import {
   ADD_WALLET_ADDRESS,
   CONNECTED_WALLETS,
@@ -33,6 +27,7 @@ import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
 import {
   ADD_USER_WALLET,
+  REFRESH_USER_WALLETS,
   REMOVE_ALL_USER_WALLETS,
   REMOVE_USER_WALLET,
 } from 'utils/mutations'
@@ -53,6 +48,8 @@ const RightSideBar = () => {
 
   const [addUserWallet, { loading: addingUserWallet }] =
     useMutation(ADD_USER_WALLET)
+  const [refreshUserWallets, { loading: refreshingUserWallets }] =
+    useMutation(REFRESH_USER_WALLETS)
   const [removeUserWallet, { loading: removingUserWallet }] =
     useMutation(REMOVE_USER_WALLET)
   const [removeAllUserWallets, { loading: removingAllUserWallets }] =
@@ -100,8 +97,9 @@ const RightSideBar = () => {
       await addUserWallet({
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
+      dispatch(fetchUserNfts())
     }
-  }, [publicKey, addUserWallet])
+  }, [addUserWallet, dispatch, publicKey])
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
@@ -113,11 +111,14 @@ const RightSideBar = () => {
 
   const removeSingleWallet = async (wallet) => {
     await removeUserWallet({ variables: { wallet } })
-    // dispatch(removeWallet(wallet))
+    dispatch(fetchUserNfts())
   }
 
   const disconnectWallets = async () => {
-    if (userWallets.length) await removeAllUserWallets()
+    if (userWallets.length) {
+      await removeAllUserWallets()
+      dispatch(fetchUserNfts())
+    }
 
     disconnect()
   }
@@ -129,6 +130,7 @@ const RightSideBar = () => {
 
   const seeAllOrLessExchanges = () => {
     const exchangeNum = allExchanges.length
+
     if (exchangeNum === 3) {
       setAllExchanges([1, 2, 3, 4, 5, 6, 7])
     } else {
@@ -155,8 +157,10 @@ const RightSideBar = () => {
   }
 
   const refreshWalletsAndFloorPrice = async () => {
-    await dispatch(refreshWallets())
-    dispatch(refreshFloorPrices())
+    if (userWallets.length) {
+      await refreshUserWallets()
+      dispatch(fetchUserNfts())
+    }
   }
 
   const renderConnectWallet = () => {
@@ -230,11 +234,13 @@ const RightSideBar = () => {
         <button
           type="button"
           onClick={refreshWalletsAndFloorPrice}
-          className='hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2]'
+          className='hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-center rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2]'
+          disabled={refreshingUserWallets}
         >
-          <div className="flex h-[4.1rem] w-full items-center justify-center">
+          <div className="flex w-full items-center justify-center">
             <p className="mr-4 text-[1.9rem]">↻</p>
             {REFRESH_WALLETS}
+            {refreshingUserWallets && <Spin className="ml-3" />}
           </div>
         </button>
       </Tooltip>

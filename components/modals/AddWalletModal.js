@@ -8,6 +8,7 @@ import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 import { ADD_WALLET } from 'app/constants/copy'
 import { ADD_USER_WALLET } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
+import { fetchUserNfts } from 'redux/reducers/walletSlice'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
@@ -45,6 +46,8 @@ const AddWalletModal = () => {
       setErrorMessage('Invalid wallet address')
       return
     }
+
+    dispatch(fetchUserNfts())
 
     dispatch(changeAddWalletModalOpen(false))
   }
