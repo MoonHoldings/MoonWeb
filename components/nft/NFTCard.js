@@ -10,7 +10,8 @@ const NFT = ({ nft, floorPrice }) => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const image = nft.image_uri
+  const image = nft.image
+  const name = nft?.name || nft?.symbol
 
   const nftClick = () => {
     dispatch(populateCurrentNft(nft))
@@ -45,9 +46,9 @@ const NFT = ({ nft, floorPrice }) => {
 
       <div className="details">
         <div className="xl:mb-[1.2rem] xl:flex xl:justify-between">
-          {nft.name ? (
+          {name ? (
             <h1 className="mb-[0.4rem] text-[1.2rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
-              {nft.name}
+              {name}
             </h1>
           ) : (
             <div className="mb-[0.4rem]" />

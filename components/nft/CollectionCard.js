@@ -7,7 +7,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Tooltip } from 'antd'
 
 import {
-  insertCurrentCollection,
+  populateCurrentCollection,
   updateCollectionFloorPrice,
 } from 'redux/reducers/walletSlice'
 
@@ -93,7 +93,7 @@ const CollectionCard = ({ collection, index }) => {
 
   const collectionClick = async () => {
     if (collection.nfts) {
-      await dispatch(insertCurrentCollection({ collection }))
+      dispatch(populateCurrentCollection(collection))
       router.push('/nfts/collection')
     }
   }

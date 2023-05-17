@@ -294,3 +294,24 @@ export const GET_USER_WALLETS = gql`
     }
   }
 `
+
+export const GET_USER_NFTS = gql`
+  query GetUserNfts {
+    getUserNfts {
+      mint
+      attributes
+      attributesArray
+      owner
+      name
+      symbol
+      image
+      description
+      collection {
+        mint
+        name
+        image
+        floorPrice
+      }
+    }
+  }
+`
