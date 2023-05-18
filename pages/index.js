@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import { GeneralButton } from 'components/forms/GeneralButton'
 import Image from 'next/image'
-import { MOON_HOLDINGS } from 'app/constants/copy'
+import { MOON_HOLDINGS } from 'application/constants/copy'
 import Router from 'next/router'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'
 

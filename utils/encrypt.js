@@ -1,4 +1,4 @@
-import { CRYPTO_SECRET } from 'app/constants/api'
+import { CRYPTO_SECRET } from 'application/constants/api'
 import CryptoJS from 'crypto-js'
 
 const encrypt = (tobeEncrypted) => {

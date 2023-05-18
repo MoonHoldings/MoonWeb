@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { changeLeftSideBarOpen } from 'redux/reducers/utilSlice'
-import { MOON_HOLDINGS } from 'app/constants/copy'
+import { MOON_HOLDINGS } from 'application/constants/copy'
 import { LOGOUT_USER } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
 import {
@@ -12,7 +12,7 @@ import {
   authenticatePending,
   logout,
 } from 'redux/reducers/authSlice'
-import { LANDING_SITE } from 'app/constants/api'
+import { LANDING_SITE } from 'application/constants/api'
 
 const LeftSideBar = () => {
   const router = useRouter()

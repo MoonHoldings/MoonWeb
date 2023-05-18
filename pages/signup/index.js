@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import { MOON_HOLDINGS } from 'app/constants/copy'
+import { MOON_HOLDINGS } from 'application/constants/copy'
 import {
   authenticateComplete,
   authenticateLoading,

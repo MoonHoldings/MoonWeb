@@ -22,8 +22,8 @@ import { useLazyQuery } from '@apollo/client'
 import BannerModal from 'components/modals/BannerModal'
 import LoadingModal from 'components/modals/LoadingModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
-import { MOON_HOLDINGS } from 'app/constants/copy'
-import { NEXT_WEBAPP_URL } from 'app/constants/api'
+import { MOON_HOLDINGS } from 'application/constants/copy'
+import { NEXT_WEBAPP_URL } from 'application/constants/api'
 
 const Login = (props) => {
   const dispatch = useDispatch()

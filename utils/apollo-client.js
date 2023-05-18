@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
-import { GRAPHQL_URL, SUPERUSER_KEY } from 'app/constants/api'
+import { GRAPHQL_URL, SUPERUSER_KEY } from 'application/constants/api'
 import encrypt from './encrypt'
 
 const httpLink = createHttpLink({

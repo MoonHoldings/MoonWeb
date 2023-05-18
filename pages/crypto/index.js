@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CRYPTO_PORTFOLIO } from 'app/constants/copy'
+import { CRYPTO_PORTFOLIO } from 'application/constants/copy'
 import CryptoSquare from 'components/crypto/CryptoSquare'
 import SingleBar from 'components/crypto/SingleBar'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'

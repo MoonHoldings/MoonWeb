@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { PublicKey } from '@solana/web3.js'
 import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
 
-import { ADD_WALLET } from 'app/constants/copy'
+import { ADD_WALLET } from 'application/constants/copy'
 import { ADD_USER_WALLET } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
 import { fetchUserNfts } from 'redux/reducers/walletSlice'
