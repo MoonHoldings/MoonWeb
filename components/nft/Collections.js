@@ -1,6 +1,6 @@
 import React from 'react'
 import CollectionCard from './CollectionCard'
-import { NFT_PORTFOLIO } from 'app/constants/copy'
+import { NFT_PORTFOLIO } from 'application/constants/copy'
 
 const Collections = ({ collections }) => {
   const totalNftCount = collections.reduce(

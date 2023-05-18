@@ -11,7 +11,7 @@ import {
   PLEASE_SELECT,
   START_CONNECTING_WALLETS,
   WELCOME_MOON_HOLDINGS,
-} from 'app/constants/copy'
+} from 'application/constants/copy'
 import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 import { fetchUserNfts } from 'redux/reducers/walletSlice'
 

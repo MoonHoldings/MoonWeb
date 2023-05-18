@@ -18,7 +18,7 @@ import {
   CONNECTED_WALLETS,
   REFRESH_WALLETS,
   REFRESH_WALLETS_TITLE,
-} from 'app/constants/copy'
+} from 'application/constants/copy'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
 import { Spin, Tooltip } from 'antd'

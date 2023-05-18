@@ -1,5 +1,8 @@
 import { createSharkyClient, enabledOrderBooks } from '@sharkyfi/client'
-import { AXIOS_CONFIG_HELLO_MOON_KEY, HELLO_MOON_URL } from 'app/constants/api'
+import {
+  AXIOS_CONFIG_HELLO_MOON_KEY,
+  HELLO_MOON_URL,
+} from 'application/constants/api'
 import createAnchorProvider from 'utils/createAnchorProvider'
 import collectionNames from 'utils/collectionNames.json'
 import axios from 'axios'

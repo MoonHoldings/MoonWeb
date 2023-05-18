@@ -1,5 +1,5 @@
 import React from 'react'
-import { MOON_HOLDINGS } from 'app/constants/copy'
+import { MOON_HOLDINGS } from 'application/constants/copy'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'

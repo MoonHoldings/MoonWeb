@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { SERVER_URL } from 'app/constants/api'
+import { SERVER_URL } from 'application/constants/api'
 import axios from 'axios'
 import client from 'utils/apollo-client'
 import { LOGIN_USER } from 'utils/mutations'
