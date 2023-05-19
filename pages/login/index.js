@@ -356,8 +356,8 @@ const Login = (props) => {
             <Image
               src="/images/gifs/moon-holdings-banner-wide.gif"
               alt=""
-              height={0}
-              width={0}
+              height={10}
+              width={10}
               className=" h-full w-full "
             />
           </div>
