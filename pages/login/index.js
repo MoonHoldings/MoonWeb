@@ -354,7 +354,7 @@ const Login = (props) => {
         <footer className="h-84 fixed bottom-0 flex hidden   w-full bg-gray-900 md:block">
           <div className="h-full w-full ">
             <Image
-              src="/images/gifs/moon-holdings-banner-wide.gif"
+              src="/images/moon-holdings-banner-wide.gif"
               alt=""
               height={10}
               width={10}
