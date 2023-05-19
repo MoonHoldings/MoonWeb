@@ -79,7 +79,7 @@ const Index = (props) => {
 
       <div className="bottom-0 h-64 justify-center self-center md:w-3/4">
         <Image
-          src="/images/gifs/moon-holdings-banner-wide.gif"
+          src="/images/gifs/moon-holdings-banner-cropped.gif"
           alt=""
           height={0}
           width={0}
