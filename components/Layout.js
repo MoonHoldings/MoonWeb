@@ -18,10 +18,9 @@ const Layout = ({ children }) => {
 
   return (
     <ContextProvider>
-      {innerWidth < 600 &&
-      (router.pathname === '/login' ||
-        router.pathname === '/signup' ||
-        router.pathname === '/') ? (
+      {router.pathname === '/login' ||
+      router.pathname === '/signup' ||
+      router.pathname === '/' ? (
         ''
       ) : (
         <Navbar />

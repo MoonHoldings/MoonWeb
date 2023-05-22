@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import { GeneralButton } from 'components/forms/GeneralButton'
 import Image from 'next/image'
-import { MOON_HOLDINGS } from 'app/constants/copy'
+import { MOON_HOLDINGS } from 'application/constants/copy'
 import Router from 'next/router'
 import { getServerSidePropsWithAuth } from 'utils/withAuth'
 
@@ -14,6 +14,7 @@ const Index = (props) => {
   const signupInstead = () => {
     Router.push('/signup')
   }
+
   return (
     <div className="flex h-screen w-full flex-col pt-8">
       <div className="flex justify-center md:mx-8 md:justify-between">
@@ -78,7 +79,7 @@ const Index = (props) => {
 
       <div className="bottom-0 h-64 justify-center self-center md:w-3/4">
         <Image
-          src="/images/gifs/moon-holdings-banner-wide.gif"
+          src="/images/gifs/moon-holdings-banner-cropped.gif"
           alt=""
           height={0}
           width={0}

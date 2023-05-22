@@ -49,3 +49,62 @@ export const BORROW_LOAN = gql`
     }
   }
 `
+
+export const ADD_USER_COIN = gql`
+  mutation Mutation($coinData: CoinData!) {
+    addUserCoin(coinData: $coinData) {
+      id
+      name
+      symbol
+      walletName
+      holdings
+    }
+  }
+`
+
+export const DELETE_USER_COIN = gql`
+  mutation Mutation($coinData: CoinData!) {
+    deleteUserCoin(coinData: $coinData)
+  }
+`
+export const DELETE_USER_COIN_BY_SYMBOL = gql`
+  mutation Mutation($symbol: String!) {
+    deleteUserCoinBySymbol(symbol: $symbol)
+  }
+`
+
+export const ADD_USER_WALLET = gql`
+  mutation AddUserWallet($verified: Boolean!, $wallet: String!) {
+    addUserWallet(verified: $verified, wallet: $wallet)
+  }
+`
+
+export const REMOVE_USER_WALLET = gql`
+  mutation RemoveUserWallet($wallet: String!) {
+    removeUserWallet(wallet: $wallet)
+  }
+`
+
+export const REMOVE_ALL_USER_WALLETS = gql`
+  mutation Mutation {
+    removeAllUserWallets
+  }
+`
+
+export const EDIT_USER_COIN = gql`
+  mutation Mutation($coinData: CoinData!) {
+    editUserCoin(coinData: $coinData) {
+      id
+      name
+      symbol
+      walletName
+      holdings
+    }
+  }
+`
+
+export const REFRESH_USER_WALLETS = gql`
+  mutation Mutation {
+    refreshUserWallets
+  }
+`

@@ -9,22 +9,26 @@ import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 import {
   authenticateComplete,
   authenticatePending,
+  authenticateLoading,
   discordAuthenticationComplete,
 } from 'redux/reducers/authSlice'
-import { GENERATE_DISCORD_URL, GET_PASSWORD_RESET } from 'utils/queries.js'
+import {
+  GENERATE_DISCORD_URL,
+  GET_PASSWORD_RESET,
+  RESEND_EMAIL_CONFIRMATION,
+} from 'utils/queries.js'
 
 import { useLazyQuery } from '@apollo/client'
-
-import client from '../../utils/apollo-client'
 import BannerModal from 'components/modals/BannerModal'
 import LoadingModal from 'components/modals/LoadingModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
-import { MOON_HOLDINGS } from 'app/constants/copy'
-import { NEXT_WEBAPP_URL } from 'app/constants/api'
+import { MOON_HOLDINGS } from 'application/constants/copy'
+import { NEXT_WEBAPP_URL } from 'application/constants/api'
 
 const Login = (props) => {
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
+  const [discordEmail, setDiscordEmail] = useState('')
   const [forgetEmail, setForgetEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
@@ -35,11 +39,23 @@ const Login = (props) => {
     (state) => state.auth
   )
 
-  const [discordAuth, { loading: gettingDiscordUrl }] =
-    useLazyQuery(GENERATE_DISCORD_URL)
+  const [discordAuth, { loading: gettingDiscordUrl }] = useLazyQuery(
+    GENERATE_DISCORD_URL,
+    {
+      fetchPolicy: 'no-cache',
+    }
+  )
 
-  const [getPasswordResetUrl, { loading: gettingUrl }] =
-    useLazyQuery(GET_PASSWORD_RESET)
+  const [getPasswordResetUrl, { loading: gettingUrl }] = useLazyQuery(
+    GET_PASSWORD_RESET,
+    {
+      fetchPolicy: 'no-cache',
+    }
+  )
+
+  const [resend] = useLazyQuery(RESEND_EMAIL_CONFIRMATION, {
+    fetchPolicy: 'no-cache',
+  })
 
   useEffect(() => {
     dispatch(authenticateComplete())
@@ -69,6 +85,7 @@ const Login = (props) => {
       if (res.payload.username) {
         Router.push('/nfts')
       } else if (res.payload.message) {
+        console.log(res.payload.message)
         setModal(res.payload.message, true, true)
       }
     }
@@ -79,22 +96,25 @@ const Login = (props) => {
   }
 
   const generateDiscordUrl = async () => {
+    const windowFeatures =
+      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
+    let discordWindow = window.open('', '_blank', windowFeatures)
     try {
       dispatch(authenticatePending())
-      await client.resetStore()
+      setDiscordEmail('')
       const res = await discordAuth()
 
       if (res.data) {
-        openDiscordWindow(res.data.generateDiscordUrl)
+        openDiscordWindow(res.data.generateDiscordUrl, discordWindow)
       }
     } catch (error) {
+      discordWindow.close()
       console.log(error)
     }
   }
 
   const getPasswordReset = async (event) => {
     event.preventDefault()
-
     if (forgetEmail.length == 0) {
       setModal('Please fill up the field', true, true)
     } else {
@@ -105,7 +125,7 @@ const Login = (props) => {
 
         if (res.data) {
           setModal(
-            'Successfully sent reset link to your email. Please check yout inbox.',
+            'Successfully sent reset link to your email. Please check your inbox.',
             false,
             true
           )
@@ -119,38 +139,23 @@ const Login = (props) => {
     }
   }
 
-  const openDiscordWindow = (discordUrl) => {
-    const windowFeatures =
-      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
-
-    const discordWindow = window.open(discordUrl, '_blank', windowFeatures)
-
-    if (!discordWindow) {
-      setModal(
-        'Popup is blocked. Please disable it or use a different browser',
-        true,
-        true
-      )
-      dispatch(authenticateComplete())
-    } else {
+  const openDiscordWindow = (discordUrl, discordWindow) => {
+    discordWindow.location.href = discordUrl
+    try {
       window.addEventListener('message', receiveMessage, false)
-
       async function receiveMessage(event) {
         const valueReceived = event.data
         if (valueReceived.payload) {
-          const intervalId = setInterval(async () => {
-            clearInterval(intervalId)
-            if (valueReceived.payload.ok) {
-              Router.push('/nfts')
-            } else if (valueReceived.payload.message) {
-              setModal(valueReceived.payload.message, true, true)
-            }
-          }, 1000)
-          await dispatch(
-            discordAuthenticationComplete({
-              username: valueReceived.payload.username ?? null,
-            })
-          )
+          if (valueReceived.payload.ok) {
+            Router.push('/nfts')
+            dispatch(
+              discordAuthenticationComplete({
+                username: valueReceived.payload.username ?? null,
+              })
+            )
+          } else if (valueReceived.payload.message) {
+            setModal(valueReceived.payload.message, true, true)
+          }
           discordWindow.close()
         } else if (valueReceived.errorMessage) {
           setModal(
@@ -158,7 +163,6 @@ const Login = (props) => {
             true,
             true
           )
-          await dispatch(authenticateComplete())
           discordWindow.close()
         } else if (valueReceived.successMessage) {
           setModal(
@@ -166,27 +170,60 @@ const Login = (props) => {
             false,
             true
           )
-          await dispatch(authenticateComplete())
+          if (valueReceived.email) {
+            setDiscordEmail(valueReceived.email)
+          }
           discordWindow.close()
         } else if (valueReceived.error) {
           setModal(valueReceived.error ?? 'Please try again later.', true, true)
-          await dispatch(authenticateComplete())
           discordWindow.close()
         }
       }
-      const intervalId = setInterval(async () => {
-        if (discordWindow.closed) {
-          clearInterval(intervalId)
-          await dispatch(authenticateComplete())
-        }
-      }, 1000)
+    } catch (error) {
+      setModal(error.message ?? 'Please try again later.', true, true)
+      discordWindow.close()
     }
+    const intervalId = setInterval(async () => {
+      if (discordWindow.closed) {
+        clearInterval(intervalId)
+        dispatch(authenticateComplete())
+      }
+    }, 1000)
   }
 
   const setModal = (message, error, show) => {
     setShowModal(show)
     setMessage(message)
     setError(error)
+  }
+
+  function handleComplete(isComplete) {
+    dispatch(authenticateLoading(isComplete))
+  }
+
+  const resendEmail = async () => {
+    handleComplete(true)
+    let finalEmail = discordEmail ? discordEmail : email ? email : false
+
+    if (discordEmail) {
+      try {
+        const res = await resend({ variables: { email: finalEmail } })
+        if (res.error) {
+          setModal(res.error.message, true, true)
+        } else {
+          setModal(
+            'Successfully resent link to your email. Please check your inbox.',
+            false,
+            true
+          )
+        }
+      } catch (error) {
+        setModal(error.message, true, false)
+      }
+    } else {
+      setModal('Email is not found. Please try again.', true, true)
+    }
+    handleComplete(false)
   }
 
   return (
@@ -282,7 +319,9 @@ const Login = (props) => {
             border border-[#50545A] px-4 py-[1.1rem]"
               >
                 <GeneralButton
-                  onClick={generateDiscordUrl}
+                  onClick={() => {
+                    generateDiscordUrl()
+                  }}
                   loading={gettingDiscordUrl}
                   title={'Login With Discord'}
                   bgColor={'bg-blue-600 hover:bg-blue-700'}
@@ -317,14 +356,15 @@ const Login = (props) => {
             <Image
               src="/images/gifs/moon-holdings-banner-wide.gif"
               alt=""
-              height={0}
-              width={0}
+              height={10}
+              width={10}
               className=" h-full w-full "
             />
           </div>
         </footer>
       </div>
       <BannerModal
+        resendEmail={resendEmail}
         showModal={showModal}
         message={message}
         hasError={error}

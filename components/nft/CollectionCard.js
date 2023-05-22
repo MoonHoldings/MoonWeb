@@ -7,11 +7,14 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Tooltip } from 'antd'
 
 import {
-  insertCurrentCollection,
+  populateCurrentCollection,
   updateCollectionFloorPrice,
 } from 'redux/reducers/walletSlice'
 
-import { HELLO_MOON_URL, AXIOS_CONFIG_HELLO_MOON_KEY } from 'app/constants/api'
+import {
+  HELLO_MOON_URL,
+  AXIOS_CONFIG_HELLO_MOON_KEY,
+} from 'application/constants/api'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
@@ -23,10 +26,7 @@ const CollectionCard = ({ collection, index }) => {
   const router = useRouter()
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
-  const shouldRenderFloorPrice =
-    collection.floorPrice &&
-    collection.floorPrice.floorPriceLamports > 0 &&
-    collection.nfts
+  const shouldRenderFloorPrice = collection.floorPrice && collection.nfts
 
   const fetchFloorPrice = async () => {
     if (!collection.floorPrice && collection.name !== 'unknown') {
@@ -59,24 +59,21 @@ const CollectionCard = ({ collection, index }) => {
 
   const formatFloorPrice = () => {
     return toCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length
     )
   }
 
   const formatShortFloorPrice = () => {
     return toShortCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length
     )
   }
 
   const formatFloorPriceUSD = () => {
     return `$${toCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length *
         solUsdPrice
     )}`
@@ -84,8 +81,7 @@ const CollectionCard = ({ collection, index }) => {
 
   const formatShortFloorPriceUSD = () => {
     return `$${toShortCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length *
         solUsdPrice
     )}`
@@ -93,7 +89,7 @@ const CollectionCard = ({ collection, index }) => {
 
   const collectionClick = async () => {
     if (collection.nfts) {
-      await dispatch(insertCurrentCollection({ collection }))
+      dispatch(populateCurrentCollection(collection))
       router.push('/nfts/collection')
     }
   }

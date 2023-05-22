@@ -1,6 +1,8 @@
 import React from 'react'
 
 const BannerModal = (props) => {
+  const shouldShowButton =
+    typeof props.message === 'string' && props.message.includes('verify')
   return (
     <div
       className={`fixed left-0 top-0 z-50 w-full transform  px-4 py-2 text-black transition-all duration-300 ${
@@ -14,7 +16,21 @@ const BannerModal = (props) => {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between">
-        <h2 className="text-[2.2rem] font-medium">{props.message}</h2>
+        <h2 className="text-[2rem] opacity-70">
+          {props.message}
+          {shouldShowButton && (
+            <>
+              <a> Click </a>
+              <a
+                onClick={props.resendEmail}
+                className="underline hover:cursor-pointer"
+              >
+                here
+              </a>
+              <a> to resend the verification email</a>
+            </>
+          )}
+        </h2>
         <button onClick={props.closeModal} className="text-[3rem] text-black">
           &times;
         </button>

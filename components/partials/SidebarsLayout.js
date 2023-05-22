@@ -16,6 +16,7 @@ import BorrowModal from 'components/modals/BorrowModal'
 import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RepayModal from 'components/modals/RepayModal'
+import CoinModal from 'components/modals/CoinModal'
 
 const SidebarsLayout = ({ children }) => {
   const router = useRouter()
@@ -56,6 +57,7 @@ const SidebarsLayout = ({ children }) => {
         <LoanDetailsModal />
         <RepayModal />
         <AnimatePresence>
+          <CoinModal />
           {walletsModalOpen && <WalletsModal />}
         </AnimatePresence>
         {(addAddressStatus === 'loading' ||
@@ -74,6 +76,10 @@ const SidebarsLayout = ({ children }) => {
     '/redirect',
   ]
   const shouldRenderSidebars = !noSidebarPaths.includes(router.pathname)
+  const shouldRenderNftRightSidebar =
+    router.pathname.includes('nfts') ||
+    router.pathname.includes('dashboard') ||
+    router.pathname.includes('crypto')
 
   if (shouldRenderSidebars) {
     return (
@@ -100,7 +106,7 @@ const SidebarsLayout = ({ children }) => {
             {leftSideBarOpen && innerWidth < 1280 && <LeftSideBar />}
             {rightSideBarOpen &&
               innerWidth < 1280 &&
-              router.pathname.includes('nfts') && <NftRightSideBar />}
+              shouldRenderNftRightSidebar && <NftRightSideBar />}
             {lendRightSideBarOpen &&
               innerWidth < 1280 &&
               router.pathname.includes('defi-loans') && (
@@ -121,7 +127,7 @@ const SidebarsLayout = ({ children }) => {
           {innerWidth > 1280 && (
             <>
               <LeftSideBar />
-              {router.pathname.includes('nfts') && <NftRightSideBar />}
+              {shouldRenderNftRightSidebar && <NftRightSideBar />}
               {router.pathname.includes('defi-loans') && (
                 <DefiLoansRightSideBar />
               )}

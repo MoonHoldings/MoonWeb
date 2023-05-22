@@ -63,6 +63,56 @@ export const MY_HISTORICAL_OFFERS = gql`
   }
 `
 
+export const LOAN_SUMMARY = gql`
+  query GetLoanSummary(
+    $borrower: String
+    $lender: String
+    $paginationToken: String
+  ) {
+    getLoanSummary(
+      borrower: $borrower
+      lender: $lender
+      paginationToken: $paginationToken
+    ) {
+      data {
+        offerBlocktime
+        cancelBlocktime
+        takenBlocktime
+        repayBlocktime
+        repayElapsedTime
+        foreclosedElapsedTime
+        canceledElapsedTime
+        defaultBlocktime
+        extendBlocktime
+        remainingDays
+        daysPercentProgress
+        orderBook
+        loan
+        newLoan
+        amountOffered
+        lender
+        status
+        borrower
+        collateralMint
+        collateralName
+        collectionName
+        collectionImage
+        helloMoonCollectionId
+        tokenMint
+        amountTaken
+        offerInterest
+        borrowInterest
+        apy
+        loanDurationSeconds
+        amountRepayed
+        isRepayEscrow
+        isDefaultEscrow
+      }
+      paginationToken
+    }
+  }
+`
+
 export const MY_LOANS = gql`
   query MyLoans($args: GetLoansArgs) {
     getLoans(args: $args) {
@@ -170,6 +220,24 @@ export const GET_BEST_OFFER_FOR_BORROW = gql`
   }
 `
 
+export const GET_TOTAL_LENDS = gql`
+  query GetTotalLendsByAddress($address: String!) {
+    getTotalLendsByAddress(address: $address) {
+      total
+      interest
+    }
+  }
+`
+
+export const GET_TOTAL_BORROWS = gql`
+  query GetTotalBorrowsByAddress($address: String!) {
+    getTotalBorrowsByAddress(address: $address) {
+      total
+      interest
+    }
+  }
+`
+
 export const GENERATE_DISCORD_URL = gql`
   query GenerateDiscordUrl {
     generateDiscordUrl
@@ -178,5 +246,79 @@ export const GENERATE_DISCORD_URL = gql`
 export const GET_PASSWORD_RESET = gql`
   query Query($email: String!) {
     getPasswordResetUrl(email: $email)
+  }
+`
+
+export const RESEND_EMAIL_CONFIRMATION = gql`
+  query Query($email: String!) {
+    resendEmailConfirmation(email: $email)
+  }
+`
+
+export const GET_USER_PORTFOLIO = gql`
+  query Query {
+    getUserPortfolioCoins {
+      holdings
+      id
+      name
+      symbol
+      verified
+      walletAddress
+      walletName
+      walletId
+      price
+      isConnected
+    }
+  }
+`
+
+export const GET_USER_PORTFOLIO_BY_SYMBOL = gql`
+  query Query($symbol: String!) {
+    getUserPortfolioCoinsBySymbol(symbol: $symbol) {
+      coins {
+        holdings
+        id
+        name
+        symbol
+        verified
+        walletAddress
+        walletName
+        walletId
+        price
+        isConnected
+      }
+      price
+    }
+  }
+`
+
+export const GET_USER_WALLETS = gql`
+  query GetUserWallets($type: String!) {
+    getUserWallets(type: $type) {
+      id
+      address
+      verified
+    }
+  }
+`
+
+export const GET_USER_NFTS = gql`
+  query GetUserNfts {
+    getUserNfts {
+      mint
+      attributes
+      attributesArray
+      owner
+      name
+      symbol
+      image
+      description
+      collection {
+        mint
+        name
+        image
+        floorPrice
+      }
+    }
   }
 `

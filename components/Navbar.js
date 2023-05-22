@@ -1,5 +1,5 @@
 import React from 'react'
-import { MOON_HOLDINGS } from 'app/constants/copy'
+import { MOON_HOLDINGS } from 'application/constants/copy'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
@@ -23,12 +23,21 @@ const Navbar = () => {
   }
 
   const clickWallet = () => {
-    if (router.pathname.includes('nfts')) {
+    if (
+      router.pathname.includes('nfts') ||
+      router.pathname.includes('crypto')
+    ) {
       dispatch(changeRightSideBarOpen(!rightSideBarOpen))
     } else {
       dispatch(changeLendRightSidebarOpen(!lendRightSideBarOpen))
     }
   }
+
+  const hasMobileNavbar =
+    router.pathname.includes('nfts') ||
+    router.pathname.includes('defi-loans') ||
+    router.pathname.includes('crypto') ||
+    router.pathname.includes('dashboard')
 
   return (
     <div className="fixed left-0 right-0 top-0 z-50 flex h-[4.6rem] items-center justify-between border-b border-gray-800 bg-black px-[2rem] xl:hidden">
@@ -36,14 +45,10 @@ const Navbar = () => {
         href="/"
         className="flex items-center"
         style={{
-          order:
-            (router.pathname.includes('/nfts') ||
-              router.pathname.includes('defi-loans')) &&
-            '2',
+          order: hasMobileNavbar && '2',
         }}
       >
-        {router.pathname.includes('/nfts') ||
-        router.pathname.includes('defi-loans') ? (
+        {hasMobileNavbar ? (
           <div className="mr-3 flex h-[2.3rem] w-[2.3rem] items-center justify-center rounded-full bg-white">
             <Image
               className="h-[1.3rem] w-[1.3rem]"
@@ -72,10 +77,7 @@ const Navbar = () => {
         id="btn-hamburger"
         onClick={clickHamburgerMenu}
         style={{
-          order:
-            (router.pathname.includes('/nfts') ||
-              router.pathname.includes('defi-loans')) &&
-            '1',
+          order: hasMobileNavbar && '1',
         }}
       >
         <Image
@@ -87,16 +89,12 @@ const Navbar = () => {
         />
       </button>
 
-      {(router.pathname.includes('/nfts') ||
-        router.pathname.includes('/defi-loans')) && (
+      {hasMobileNavbar && (
         <button
           id="btn-wallet-mobile"
           onClick={clickWallet}
           style={{
-            order:
-              (router.pathname.includes('/nfts') ||
-                router.pathname.includes('defi-loans')) &&
-              '3',
+            order: hasMobileNavbar && '3',
           }}
         >
           <Image

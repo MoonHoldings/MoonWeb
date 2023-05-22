@@ -8,6 +8,7 @@ import walletSlice from './reducers/walletSlice'
 import cryptoSlice from './reducers/cryptoSlice'
 import sharkifySlice from './reducers/sharkifySlice'
 import sharkifyLendSlice from './reducers/sharkifyLendSlice'
+import portfoloSlice from './reducers/portfolioSlice'
 
 const reducer = combineReducers({
   auth: authSlice,
@@ -16,6 +17,7 @@ const reducer = combineReducers({
   crypto: cryptoSlice,
   sharkify: sharkifySlice,
   sharkifyLend: sharkifyLendSlice,
+  portfolio: portfoloSlice,
 })
 
 const makeConfiguredStore = (reducer) =>

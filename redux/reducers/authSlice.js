@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { SERVER_URL } from 'app/constants/api'
+import { SERVER_URL } from 'application/constants/api'
 import axios from 'axios'
 import client from 'utils/apollo-client'
 import { LOGIN_USER } from 'utils/mutations'
@@ -67,6 +67,9 @@ const authSlice = createSlice({
     authenticateComplete(state, action) {
       state.modalLoading = false
     },
+    authenticateLoading(state, action) {
+      state.modalLoading = action.payload
+    },
     logout(state, action) {
       state.username = null
     },
@@ -99,6 +102,7 @@ export const {
   authenticateComplete,
   logout,
   discordAuthenticationComplete,
+  authenticateLoading,
 } = authSlice.actions
 
 export default authSlice.reducer
