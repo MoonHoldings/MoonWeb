@@ -40,20 +40,9 @@ const Crypto = () => {
   useEffect(() => {
     async function getCoinPrice() {
       if (!loadingUserCoins && userCoins && !isSet) {
-        const updatedMyCoins = userCoins.getUserPortfolioCoins.map((myCoin) => {
-          const userCoin = pythCoins.find(
-            (coin) => coin.symbol.toLowerCase() === myCoin.symbol.toLowerCase()
-          )
-          if (userCoin) {
-            return {
-              ...myCoin,
-              key: userCoin.key,
-            }
-          }
-        })
-        const withPrice = await getCoinPrices(updatedMyCoins)
+        const updatedMyCoins = userCoins.getUserPortfolioCoins
 
-        const coin = withPrice.map((myCoin) => {
+        const coin = updatedMyCoins.map((myCoin) => {
           const userCoin = assetsManifest.find(
             (coin) => coin.symbol === myCoin.symbol
           )
@@ -98,10 +87,10 @@ const Crypto = () => {
 
     dispatch(
       populatePortfolioCoins({
-        coins: res.data.getUserPortfolioCoinsBySymbol,
+        coins: res.data.getUserPortfolioCoinsBySymbol.coins,
         symbol: coin.symbol,
         name: coin.name,
-        coinPrice: coin.price,
+        coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
       })
     )
     dispatch(loadingPortfolio(false))

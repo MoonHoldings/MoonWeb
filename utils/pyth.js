@@ -241,7 +241,7 @@ export const pythCoins = [
   {
     symbol: 'ORCA',
     name: 'Orca',
-    key: '4ivThkX8uRxBpHsdWSqyXYihzKF3zpRGAUCqyuagnLoV',
+    key: '4ivThkX8uRxBpHsdWSqyXYihzKF3zpRGHAWKCqyuagnLoV',
   },
   {
     symbol: 'OP',
