@@ -26,10 +26,7 @@ const CollectionCard = ({ collection, index }) => {
   const router = useRouter()
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
-  const shouldRenderFloorPrice =
-    collection.floorPrice &&
-    collection.floorPrice.floorPriceLamports > 0 &&
-    collection.nfts
+  const shouldRenderFloorPrice = collection.floorPrice && collection.nfts
 
   const fetchFloorPrice = async () => {
     if (!collection.floorPrice && collection.name !== 'unknown') {
@@ -62,24 +59,21 @@ const CollectionCard = ({ collection, index }) => {
 
   const formatFloorPrice = () => {
     return toCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length
     )
   }
 
   const formatShortFloorPrice = () => {
     return toShortCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length
     )
   }
 
   const formatFloorPriceUSD = () => {
     return `$${toCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length *
         solUsdPrice
     )}`
@@ -87,8 +81,7 @@ const CollectionCard = ({ collection, index }) => {
 
   const formatShortFloorPriceUSD = () => {
     return `$${toShortCurrencyFormat(
-      (parseFloat(collection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(collection.floorPrice) / LAMPORTS_PER_SOL) *
         collection.nfts.length *
         solUsdPrice
     )}`
