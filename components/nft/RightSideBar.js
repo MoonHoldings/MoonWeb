@@ -297,13 +297,11 @@ const RightSideBar = () => {
 
   const getPortfolioValue = () => {
     return toCurrencyFormat(
-      collections.reduce(
+      collections?.reduce(
         (total, c) =>
           c.floorPrice
             ? total +
-              (parseFloat(c?.floorPrice?.floorPriceLamports) /
-                LAMPORTS_PER_SOL) *
-                c?.nfts?.length
+              (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) * c?.nfts?.length
             : total,
         0
       )
@@ -312,12 +310,11 @@ const RightSideBar = () => {
 
   const getPortfolioValueUsd = () => {
     return `$${toCurrencyFormat(
-      collections.reduce(
+      collections?.reduce(
         (total, c) =>
           c.floorPrice
             ? total +
-              (parseFloat(c?.floorPrice?.floorPriceLamports) /
-                LAMPORTS_PER_SOL) *
+              (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) *
                 c?.nfts?.length *
                 solUsdPrice
             : total,
@@ -328,13 +325,11 @@ const RightSideBar = () => {
 
   const getShortPortfolioValue = () => {
     return toShortCurrencyFormat(
-      collections.reduce(
+      collections?.reduce(
         (total, c) =>
           c.floorPrice
             ? total +
-              (parseFloat(c?.floorPrice?.floorPriceLamports) /
-                LAMPORTS_PER_SOL) *
-                c?.nfts?.length
+              (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) * c?.nfts?.length
             : total,
         0
       )
@@ -343,12 +338,11 @@ const RightSideBar = () => {
 
   const getShortPortfolioValueUsd = () => {
     return `$${toShortCurrencyFormat(
-      collections.reduce(
+      collections?.reduce(
         (total, c) =>
           c.floorPrice
             ? total +
-              (parseFloat(c?.floorPrice?.floorPriceLamports) /
-                LAMPORTS_PER_SOL) *
+              (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) *
                 c?.nfts?.length *
                 solUsdPrice
             : total,

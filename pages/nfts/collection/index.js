@@ -22,39 +22,34 @@ const Index = () => {
 
   const formatFloorPrice = () => {
     return toCurrencyFormat(
-      parseFloat(currentCollection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL
+      parseFloat(currentCollection.floorPrice) / LAMPORTS_PER_SOL
     )
   }
 
   const formatFloorPriceUsd = () => {
     return `$${toCurrencyFormat(
-      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(currentCollection.floorPrice) / LAMPORTS_PER_SOL) *
         solUsdPrice
     )}`
   }
 
   const formatShortFloorPriceUsd = () => {
     return `$${toShortCurrencyFormat(
-      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(currentCollection.floorPrice) / LAMPORTS_PER_SOL) *
         solUsdPrice
     )}`
   }
 
   const formatFloorPriceTotal = () => {
     return toCurrencyFormat(
-      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(currentCollection.floorPrice) / LAMPORTS_PER_SOL) *
         currentCollection?.nfts?.length
     )
   }
 
   const formatFloorPriceUsdTotal = () => {
     return `$${toCurrencyFormat(
-      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(currentCollection.floorPrice) / LAMPORTS_PER_SOL) *
         solUsdPrice *
         currentCollection?.nfts?.length
     )}`
@@ -62,8 +57,7 @@ const Index = () => {
 
   const formatShortFloorPriceUsdTotal = () => {
     return `$${toShortCurrencyFormat(
-      (parseFloat(currentCollection.floorPrice.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(currentCollection.floorPrice) / LAMPORTS_PER_SOL) *
         solUsdPrice *
         currentCollection?.nfts?.length
     )}`

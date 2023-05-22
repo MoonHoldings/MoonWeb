@@ -239,7 +239,7 @@ const Dashboard = () => {
               </div>
               <div className="ml-5">
                 <p className="text-[1.8rem]">Crypto</p>
-                <p className="text-[1.6rem] text-[#637381]">This week</p>
+                {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$390,000</div>
@@ -261,7 +261,7 @@ const Dashboard = () => {
               </div>
               <div className="ml-5">
                 <p className="text-[1.8rem]">NFT</p>
-                <p className="text-[1.6rem] text-[#637381]">This week</p>
+                {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$57,000</div>
@@ -285,7 +285,7 @@ const Dashboard = () => {
               </div>
               <div className="ml-5">
                 <p className="text-[1.8rem]">Loans</p>
-                <p className="text-[1.6rem] text-[#637381]">This week</p>
+                {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$113,000</div>
@@ -307,7 +307,7 @@ const Dashboard = () => {
               </div>
               <div className="ml-5">
                 <p className="text-[1.8rem]">Borrow</p>
-                <p className="text-[1.6rem] text-[#637381]">This week</p>
+                {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">$12,033</div>

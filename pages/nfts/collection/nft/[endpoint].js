@@ -20,15 +20,13 @@ const Nft = () => {
 
   const formatFloorPrice = () => {
     return toCurrencyFormat(
-      parseFloat(currentCollection?.floorPrice?.floorPriceLamports) /
-        LAMPORTS_PER_SOL
+      parseFloat(currentCollection?.floorPrice) / LAMPORTS_PER_SOL
     )
   }
 
   const formatFloorPriceUsd = () => {
     return `$${toCurrencyFormat(
-      (parseFloat(currentCollection?.floorPrice?.floorPriceLamports) /
-        LAMPORTS_PER_SOL) *
+      (parseFloat(currentCollection?.floorPrice) / LAMPORTS_PER_SOL) *
         solUsdPrice
     )}`
   }
