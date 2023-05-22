@@ -266,21 +266,28 @@ export const GET_USER_PORTFOLIO = gql`
       walletAddress
       walletName
       walletId
+      price
+      isConnected
     }
   }
 `
 
 export const GET_USER_PORTFOLIO_BY_SYMBOL = gql`
-  query GetUserPortfolioCoinsBySymbol($symbol: String!) {
+  query Query($symbol: String!) {
     getUserPortfolioCoinsBySymbol(symbol: $symbol) {
-      holdings
-      id
-      name
-      symbol
-      verified
-      walletName
-      walletAddress
-      walletId
+      coins {
+        holdings
+        id
+        name
+        symbol
+        verified
+        walletAddress
+        walletName
+        walletId
+        price
+        isConnected
+      }
+      price
     }
   }
 `

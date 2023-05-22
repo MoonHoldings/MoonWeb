@@ -33,17 +33,16 @@ export const SearchInput = (props) => {
     setFilter(`${coin.symbol} - ${coin.name}`)
 
     dispatch(loadingPortfolio(true))
-    const coinPrice = await getCoinPrice(coin.key)
     const res = await getUserPort({
       variables: { symbol: coin.symbol },
     })
 
     dispatch(
       populatePortfolioCoins({
-        coins: res.data.getUserPortfolioCoinsBySymbol,
+        coins: res.data.getUserPortfolioCoinsBySymbol.coins,
         symbol: coin.symbol,
         name: coin.name,
-        coinPrice: coinPrice[0],
+        coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
       })
     )
     dispatch(loadingPortfolio(false))

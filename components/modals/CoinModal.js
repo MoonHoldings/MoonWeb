@@ -19,7 +19,7 @@ import {
 const CoinModal = () => {
   const dispatch = useDispatch()
   const { coinModalOpen } = useSelector((state) => state.util)
-  const { coins, coinName, coinSymbol, coinPrice } = useSelector(
+  const { coins, coinName, coinSymbol, coinPrice, loading } = useSelector(
     (state) => state.portfolio
   )
   const [coinArray, setCoinArray] = useState(coins)
@@ -33,6 +33,8 @@ const CoinModal = () => {
   const [editWallet, setEditWallet] = useState('')
   const [editHoldings, setEditHoldings] = useState('')
 
+  const [disableRemoveAll, setDisableRemoveAll] = useState(false)
+
   const [addUserCoin] = useMutation(ADD_USER_COIN)
   const [editUserCoin] = useMutation(EDIT_USER_COIN)
   const [deleteUserCoin] = useMutation(DELETE_USER_COIN)
@@ -41,7 +43,14 @@ const CoinModal = () => {
 
   useEffect(() => {
     setCoinArray(coins)
+    const connectedCoin = coins.find((coin) => coin.isConnected === false)
+    setDisableRemoveAll(connectedCoin ? false : true)
   }, [coins])
+
+  useEffect(() => {
+    const connectedCoin = coinArray.find((coin) => coin.isConnected === false)
+    setDisableRemoveAll(connectedCoin ? false : true)
+  }, [coinArray])
 
   useEffect(() => {
     if (containerRef.current != null)
@@ -86,7 +95,9 @@ const CoinModal = () => {
       })
 
       if (res.data.deleteUserCoinBySymbol) {
-        const updatedCoinArray = []
+        const updatedCoinArray = coinArray.filter(
+          (coin) => coin.isConnected === true
+        )
         setCoinArray(updatedCoinArray)
         dispatch(reloadPortfolio(true))
       }
@@ -292,7 +303,7 @@ const CoinModal = () => {
     return (
       <div
         key={index}
-        className={`flex w-full items-center justify-between border border-black bg-[#191C20] px-[2rem] py-[1rem] text-[1.5rem]  ${
+        className={` flex w-full items-center justify-between border border-black bg-[#191C20] px-[2rem] text-[1.5rem] ${
           index === 0 && 'rounded-tl-[0.5rem] rounded-tr-[0.5rem]'
         } ${
           index === coinArray.length - 1 &&
@@ -305,41 +316,32 @@ const CoinModal = () => {
             : 'hover:cursor-pointer hover:bg-[#383C42]'
         }`}
       >
-        <div className="flex w-full flex-row ">
-          <div className="w-1/3 overflow-hidden truncate pl-2">
-            <span>
-              {coin.walletName
-                ? coin.walletName
-                : coin.walletAddress
-                ? coin.walletAddress.substring(0, 5)
-                : ''}
-            </span>
+        <div className="my-2 h-full w-1/3 overflow-hidden truncate ">
+          <div
+            className={`${
+              coin.isConnected
+                ? 'inline-block h-full rounded-[1rem] bg-black p-4'
+                : 'py-4'
+            }`}
+          >
+            {coin.walletName
+              ? coin.walletName
+              : coin.walletAddress
+              ? coin.walletAddress.substring(0, 5)
+              : ''}
           </div>
-          <div className="w-1/3 overflow-hidden truncate pl-2">
-            <span>{coin.holdings}</span>
+        </div>
+        <div className="w-1/3 overflow-hidden truncate pl-2">
+          <span>{coin.holdings.toLocaleString('en-US')}</span>
+        </div>
+        <div className="flex w-1/3 flex-row justify-between">
+          <div className="w-60 overflow-hidden truncate">
+            <span>{`$${(coin.holdings * coinPrice).toLocaleString(
+              'en-US'
+            )}`}</span>
           </div>
-          <div className="flex w-1/3 flex-row justify-between">
-            <div className="w-60 overflow-hidden truncate">
-              <span>{`$${(coin.holdings * coinPrice).toLocaleString(
-                'en-US'
-              )}`}</span>
-            </div>
-            <div className="flex flex-row items-center justify-center">
-              <button
-                disabled={showAddRow || selectedItem != null}
-                onClick={() => {
-                  handleRemoveCoin(coin)
-                }}
-                className="mr-2 h-7 w-7"
-              >
-                <Image
-                  src="/images/svgs/cross-btn.svg"
-                  alt="cross button"
-                  width={20}
-                  height={20}
-                  className="h-full w-full object-cover object-center"
-                />
-              </button>
+          <div className="flex flex-row items-center justify-center">
+            {!coin.isConnected ? (
               <button
                 disabled={showAddRow || selectedItem != null}
                 onClick={() => {
@@ -347,7 +349,7 @@ const CoinModal = () => {
                   setEditHoldings(coin.holdings)
                   handleItemClick(index, coin)
                 }}
-                className="ml-2 h-7 w-7"
+                className="mr-2 h-10 w-10"
               >
                 <Image
                   src="/images/svgs/edit-btn.svg"
@@ -357,7 +359,28 @@ const CoinModal = () => {
                   className="h-full w-full object-cover object-center"
                 />
               </button>
-            </div>
+            ) : (
+              <></>
+            )}
+            {(coin.isConnected && coin.verified) || !coin.isConnected ? (
+              <button
+                disabled={showAddRow || selectedItem != null}
+                onClick={() => {
+                  handleRemoveCoin(coin)
+                }}
+                className="mr-2 h-10 w-10"
+              >
+                <Image
+                  src="/images/svgs/delete.svg"
+                  alt="cross button"
+                  width={20}
+                  height={20}
+                  className="h-full w-full object-cover object-center"
+                />
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
@@ -379,15 +402,38 @@ const CoinModal = () => {
             <h1 className="text-center text-[1.5rem] font-bold">
               {`${coinSymbol} - ${coinName}`}
             </h1>
-            <button onClick={closeCoinModal} className="h-7 w-7">
-              <Image
-                src="/images/svgs/cross-btn.svg"
-                alt="cross button"
-                width={20}
-                height={20}
-                className="h-full w-full object-cover object-center"
-              />
-            </button>
+            {/* <div>
+              <button onClick={closeCoinModal} className="h-10 w-10 ">
+                <svg
+                  className={`white ${loading ? 'animate-spin' : ''}`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+              </button>
+            </div> */}
+            <div className="mt-2 flex flex-row">
+              <h1 className="mr-4 text-center text-[1.5rem] font-bold">
+                {`$${coinPrice}`}
+              </h1>
+              <button onClick={closeCoinModal} className=" h-10 w-10">
+                <Image
+                  src="/images/svgs/x-btn.svg"
+                  alt="cross button"
+                  width={20}
+                  height={20}
+                  className="h-full w-full object-cover object-center"
+                />
+              </button>
+            </div>
           </div>
           <div className="max-h-[24rem] overflow-y-auto" ref={containerRef}>
             <div className="flex w-full items-center justify-between px-[2rem] py-[1rem] text-[1.5rem]">
@@ -420,11 +466,13 @@ const CoinModal = () => {
           <div className="mt-8 flex flex-row items-center ">
             {coinArray.length > 0 && (
               <button
-                disabled={selectedItem != null || showAddRow}
+                disabled={
+                  selectedItem != null || showAddRow || disableRemoveAll
+                }
                 onClick={handleRemoveAllCoins}
                 id="btn-add-wallet"
-                className={`spinner mr-2 h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#E05E28] text-center text-[1.4rem] font-[500]  ${
-                  !(selectedItem != null || showAddRow)
+                className={`spinner h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#E05E28] text-center text-[1.4rem] font-[500]  ${
+                  !(selectedItem != null || showAddRow || disableRemoveAll)
                     ? 'hover:bg-[#D04922]'
                     : 'cursor-not-allowed opacity-50'
                 }`}
@@ -437,7 +485,7 @@ const CoinModal = () => {
               disabled={selectedItem != null || showAddRow}
               onClick={handleAddCoin}
               id="btn-add-wallet"
-              class={`spinner  h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500] 
+              class={`spinner  ml-2 mr-2 h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500] 
               ${
                 !(selectedItem != null || showAddRow)
                   ? 'hover:bg-[#4A1A7C] '
@@ -445,6 +493,19 @@ const CoinModal = () => {
               }`}
             >
               ADD WALLET
+            </button>
+
+            <button
+              onClick={closeCoinModal}
+              id="btn-add-wallet"
+              class={`spinner  h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#61DAE9] text-center text-[1.4rem] font-[500] 
+              ${
+                !(selectedItem != null || showAddRow)
+                  ? 'hover:bg-[#61DAE9] '
+                  : 'cursor-not-allowed opacity-50'
+              }`}
+            >
+              Close
             </button>
           </div>
         </div>

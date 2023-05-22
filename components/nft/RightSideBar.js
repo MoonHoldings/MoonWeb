@@ -32,6 +32,7 @@ import {
   REMOVE_USER_WALLET,
 } from 'utils/mutations'
 import { GET_USER_WALLETS } from 'utils/queries'
+import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -110,12 +111,14 @@ const RightSideBar = () => {
   const removeSingleWallet = async (wallet) => {
     await removeUserWallet({ variables: { wallet } })
     dispatch(fetchUserNfts())
+    dispatch(reloadPortfolio())
   }
 
   const disconnectWallets = async () => {
     if (userWallets.length) {
       await removeAllUserWallets()
       dispatch(fetchUserNfts())
+      dispatch(reloadPortfolio())
     }
 
     disconnect()
