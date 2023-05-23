@@ -11,6 +11,7 @@ import {
   changeRightSideBarOpen,
   changeWalletsModalOpen,
   changeCoinModalOpen,
+  reloadDashboard,
 } from 'redux/reducers/utilSlice'
 import { fetchUserNfts } from 'redux/reducers/walletSlice'
 import {
@@ -101,6 +102,7 @@ const RightSideBar = () => {
 
       dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
+      dispatch(reloadDashboard(true))
     }
   }, [addUserWallet, dispatch, publicKey])
 
@@ -116,13 +118,14 @@ const RightSideBar = () => {
     await removeUserWallet({ variables: { wallet } })
     dispatch(fetchUserNfts())
     dispatch(reloadPortfolio())
+    dispatch(reloadDashboard(true))
   }
 
   const disconnectWallets = async () => {
     if (userWallets.length) {
       await removeAllUserWallets()
       dispatch(fetchUserNfts())
-      dispatch(reloadPortfolio())
+      dispatch(reloadDashboard(true))
     }
 
     disconnect()
