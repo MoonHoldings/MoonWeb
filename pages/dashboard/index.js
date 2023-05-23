@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserNfts } from 'redux/reducers/walletSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { reloadDashboard } from 'redux/reducers/utilSlice'
+import Link from 'next/link'
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -41,7 +42,6 @@ const Dashboard = () => {
   const nftTotal = dashboardData?.nft?.total ?? 0
   const loanTotal = dashboardData?.loan?.total ?? 0
   const borrowTotal = dashboardData?.borrow?.total ?? 0
-
 
   const cryptoTotalUsd = dashboardData?.crypto?.total ?? 0
   const nftTotalUsd = dashboardData?.nft?.total
@@ -539,13 +539,21 @@ const Dashboard = () => {
           </span>
         )}
       </div>
-      <Image
-        className="mt-6 h-auto w-full"
-        src="/images/svgs/ad-sample.svg"
-        alt=""
-        width="0"
-        height="0"
-      />
+      <div className="flex w-full justify-center">
+        <a
+          target="_blank"
+          href="https://studio.glassnode.com/partner/moonholdings"
+          rel="noopener noreferrer"
+        >
+          <Image
+            className="mt-6 h-auto w-[728px]"
+            src="/images/svgs/ad-sample.svg"
+            alt=""
+            width="0"
+            height="0"
+          />
+        </a>
+      </div>
     </div>
   )
 }
