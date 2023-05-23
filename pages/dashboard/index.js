@@ -332,16 +332,18 @@ const Dashboard = () => {
             <div className="mt-4 text-[2.5rem] font-bold">
               ${cryptoTotalUsd.toFixed(2)}
             </div>
-            <div
-              className={mergeClasses(
-                'text-[1.8rem]',
-                getPercentageChangeClassName(
-                  dashboardData?.crypto?.percentChange
-                )
-              )}
-            >
-              {dashboardData?.crypto?.percentChange.toFixed(0)}%
-            </div>
+            {dashboardData?.crypto?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.crypto?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.crypto?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
               Ξ {cryptoTotal?.toFixed(4)}
             </div>
@@ -365,14 +367,18 @@ const Dashboard = () => {
             <div className="mt-4 text-[2.5rem] font-bold">
               ${nftTotalUsd.toFixed(2)}
             </div>
-            <div
-              className={mergeClasses(
-                'text-[1.8rem]',
-                getPercentageChangeClassName(dashboardData?.nft?.percentChange)
-              )}
-            >
-              {dashboardData?.nft?.percentChange.toFixed(0)}%
-            </div>
+            {dashboardData?.nft?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.nft?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.nft?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
               Ξ {nftTotal?.toFixed(4)}
             </div>
@@ -398,14 +404,18 @@ const Dashboard = () => {
             <div className="mt-4 text-[2.5rem] font-bold">
               ${loanTotalUsd.toFixed(2)}
             </div>
-            <div
-              className={mergeClasses(
-                'text-[1.8rem]',
-                getPercentageChangeClassName(dashboardData?.loan?.percentChange)
-              )}
-            >
-              {dashboardData?.loan?.percentChange.toFixed(0)}%
-            </div>
+            {dashboardData?.loan?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.loan?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.loan?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
               Ξ {loanTotal?.toFixed(4)}
             </div>
@@ -429,16 +439,18 @@ const Dashboard = () => {
             <div className="mt-4 text-[2.5rem] font-bold">
               ${borrowTotalUsd.toFixed(2)}
             </div>
-            <div
-              className={mergeClasses(
-                'text-[1.8rem]',
-                getPercentageChangeClassName(
-                  dashboardData?.borrow?.percentChange
-                )
-              )}
-            >
-              {dashboardData?.borrow?.percentChange.toFixed(0)}%
-            </div>
+            {dashboardData?.borrow?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.borrow?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.borrow?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
               Ξ {borrowTotal?.toFixed(4)}
             </div>
@@ -475,7 +487,16 @@ const Dashboard = () => {
         <div className="mt-8 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Total Networth</p>
           <p className="font-medium">${totalNetworthUsd.toFixed(2)}</p>
-          <p className="text-[#45CB85]">0.39%</p>
+          {dashboardData?.percentChangeTotal != 0 && (
+            <p
+              className={mergeClasses(
+                'text-[#45CB85]',
+                getPercentageChangeClassName(dashboardData?.percentChangeTotal)
+              )}
+            >
+              {dashboardData?.percentChangeTotal.toFixed(2)}%
+            </p>
+          )}
           <p>Ξ {totalNetworth.toFixed(4)}</p>
         </div>
         {/* <div className="mt-6 flex justify-between text-[1.6rem] sm:text-[2.4rem]">

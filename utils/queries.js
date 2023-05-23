@@ -342,6 +342,7 @@ export const GET_USER_DASHBOARD = gql`
         total
         percentChange
       }
+      percentChangeTotal
     }
   }
 `
