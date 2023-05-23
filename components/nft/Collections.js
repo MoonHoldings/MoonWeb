@@ -8,9 +8,12 @@ const Collections = ({ collections }) => {
     0
   )
 
-  const sortedCollections = [...collections]?.sort(
-    (a, b) => b?.floorPrice * b?.nfts?.length - a?.floorPrice * a?.nfts?.length
-  )
+  const sortedCollections = collections
+    ? [...collections]?.sort(
+        (a, b) =>
+          b?.floorPrice * b?.nfts?.length - a?.floorPrice * a?.nfts?.length
+      )
+    : []
 
   return (
     <div className="nft-portfolio mt-[2rem] text-white md:order-2">
