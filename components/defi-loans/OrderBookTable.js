@@ -124,6 +124,9 @@ const OrderBookTable = ({ onClickRow, loading }) => {
           pageIndex={pageIndex}
           pageSize={pageSize}
           totalItems={totalItems}
+          onPrevious={() => dispatch(previousPage())}
+          onNext={() => dispatch(nextPage({ length: totalItems }))}
+          previousDisabled={pageIndex === 0}
         />
       </div>
     </>
