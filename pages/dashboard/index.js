@@ -359,7 +359,7 @@ const Dashboard = () => {
                 />
               </div>
               <div className="ml-5">
-                <p className="text-[1.8rem]">NFT</p>
+                <p className="text-[1.8rem]">NFTs</p>
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
