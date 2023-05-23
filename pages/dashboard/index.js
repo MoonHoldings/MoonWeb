@@ -16,10 +16,12 @@ const Dashboard = () => {
   const dispatch = useDispatch()
 
   const [timeRangeType, setTimeRangeType] = useState('Day')
-  const [getUserDashboard, { data, loading, error, stopPolling }] =
-    useLazyQuery(GET_USER_DASHBOARD, {
+  const [getUserDashboard, { data, loading }] = useLazyQuery(
+    GET_USER_DASHBOARD,
+    {
       fetchPolicy: 'no-cache',
-    })
+    }
+  )
   const dashboardData = data?.getUserDashboard
   const { solUsdPrice } = useSelector((state) => state.crypto)
   const { collections } = useSelector((state) => state.wallet)
@@ -32,7 +34,7 @@ const Dashboard = () => {
         .filter((collection) => collection.floorPrice)
     : []
 
-  const { reloadDb } = useSelector((state) => state.util)
+  const { shouldReloadDashboardData } = useSelector((state) => state.util)
 
   const cryptoTotal = dashboardData?.crypto?.total / solUsdPrice ?? 0
   const nftTotal = dashboardData?.nft?.total ?? 0
@@ -61,20 +63,24 @@ const Dashboard = () => {
   const borrowPercent = (borrowTotal / totalNetworth) * 100
 
   useEffect(() => {
-    return () => stopPolling()
-  }, [])
+    if (!data || shouldReloadDashboardData) {
+      console.log('getUserDashboard')
 
-  useEffect(() => {
-    console.log(reloadDb)
-    if (!data || reloadDb) {
       getUserDashboard({
         variables: {
           timeRangeType,
         },
       })
+
       dispatch(reloadDashboard(false))
     }
-  }, [timeRangeType, getUserDashboard, dispatch, reloadDb, data])
+  }, [
+    timeRangeType,
+    getUserDashboard,
+    dispatch,
+    shouldReloadDashboardData,
+    data,
+  ])
 
   useEffect(() => {
     dispatch(fetchUserNfts())

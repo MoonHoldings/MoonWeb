@@ -12,7 +12,7 @@ const initialState = {
   repayModalOpen: false,
   loanDetailsModalOpen: false,
   coinModalOpen: false,
-  reloadDb: false,
+  shouldReloadDashboardData: false,
 }
 
 const utilSlice = createSlice({
@@ -53,7 +53,7 @@ const utilSlice = createSlice({
       state.coinModalOpen = action.payload
     },
     reloadDashboard(state, action) {
-      state.reloadDb = action.payload
+      state.shouldReloadDashboardData = action.payload
     },
   },
 })
