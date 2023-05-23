@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
   PythConnection,
@@ -39,7 +39,7 @@ function useSolUsdPrice() {
       })
 
       pythConnection.start()
-
+      pythConnection.stop()
       return () => {
         pythConnection.stop()
       }
