@@ -424,7 +424,7 @@ const CoinModal = () => {
               <h1 className="mr-4 text-center text-[1.5rem] font-bold">
                 {`$${coinPrice}`}
               </h1>
-              <button onClick={closeCoinModal} className=" h-10 w-10">
+              <button onClick={closeCoinModal} className=" h-9 w-9">
                 <Image
                   src="/images/svgs/x-btn.svg"
                   alt="cross button"

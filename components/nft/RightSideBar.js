@@ -97,6 +97,7 @@ const RightSideBar = () => {
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
       dispatch(fetchUserNfts())
+      dispatch(reloadPortfolio())
     }
   }, [addUserWallet, dispatch, publicKey])
 
