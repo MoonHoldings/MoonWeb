@@ -22,6 +22,7 @@ const Dashboard = () => {
       fetchPolicy: 'no-cache',
     }
   )
+  const [updateTimeRangeType, setUpdateTimeRangeType] = useState(true)
   const dashboardData = data?.getUserDashboard
   const { solUsdPrice } = useSelector((state) => state.crypto)
   const { collections } = useSelector((state) => state.wallet)
@@ -63,7 +64,7 @@ const Dashboard = () => {
   const borrowPercent = (borrowTotal / totalNetworth) * 100
 
   useEffect(() => {
-    if (!data || shouldReloadDashboardData) {
+    if (shouldReloadDashboardData || updateTimeRangeType) {
       console.log('getUserDashboard')
 
       getUserDashboard({
@@ -73,6 +74,7 @@ const Dashboard = () => {
       })
 
       dispatch(reloadDashboard(false))
+      setUpdateTimeRangeType(false)
     }
   }, [
     timeRangeType,
@@ -80,6 +82,7 @@ const Dashboard = () => {
     dispatch,
     shouldReloadDashboardData,
     data,
+    updateTimeRangeType,
   ])
 
   useEffect(() => {
@@ -173,6 +176,10 @@ const Dashboard = () => {
     else return 'text-[#45CB85]'
   }
 
+  const onChangeTimeRangeType = (type) => {
+    setTimeRangeType(type)
+    setUpdateTimeRangeType(true)
+  }
   return (
     <div className="flex flex-col pb-[4rem] pt-[2rem] sm:pt-0 md:order-2">
       <div class="relative flex h-[20rem] w-full items-start justify-between overflow-hidden rounded-2xl bg-gradient-to-t from-[#3B5049] via-[#0089a07d] to-[#0089a07d] p-6">
@@ -276,7 +283,7 @@ const Dashboard = () => {
               'focus:outline-none',
               timeRangeType === 'Day' && 'bg-[#3C434B]'
             )}
-            onClick={() => setTimeRangeType('Day')}
+            onClick={() => onChangeTimeRangeType('Day')}
           >
             1D
           </button>
@@ -297,7 +304,7 @@ const Dashboard = () => {
               'focus:outline-none',
               timeRangeType === 'Week' && 'bg-[#3C434B]'
             )}
-            onClick={() => setTimeRangeType('Week')}
+            onClick={() => onChangeTimeRangeType('Week')}
           >
             1W
           </button>
@@ -318,7 +325,7 @@ const Dashboard = () => {
               'focus:outline-none',
               timeRangeType === 'Month' && 'bg-[#3C434B]'
             )}
-            onClick={() => setTimeRangeType('Month')}
+            onClick={() => onChangeTimeRangeType('Month')}
           >
             1M
           </button>
