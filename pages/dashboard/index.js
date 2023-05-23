@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserNfts } from 'redux/reducers/walletSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { reloadDashboard } from 'redux/reducers/utilSlice'
-import Link from 'next/link'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
