@@ -25,7 +25,8 @@ const Navbar = () => {
   const clickWallet = () => {
     if (
       router.pathname.includes('nfts') ||
-      router.pathname.includes('crypto')
+      router.pathname.includes('crypto') ||
+      router.pathname.includes('dashboard')
     ) {
       dispatch(changeRightSideBarOpen(!rightSideBarOpen))
     } else {

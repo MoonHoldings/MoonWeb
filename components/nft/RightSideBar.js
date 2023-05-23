@@ -11,6 +11,7 @@ import {
   changeRightSideBarOpen,
   changeWalletsModalOpen,
   changeCoinModalOpen,
+  reloadDashboard,
 } from 'redux/reducers/utilSlice'
 import { fetchUserNfts } from 'redux/reducers/walletSlice'
 import {
@@ -66,7 +67,9 @@ const RightSideBar = () => {
 
   useEffect(() => {
     const shouldCallAddWallet =
-      router.pathname.includes('nfts') || router.pathname.includes('crypto')
+      router.pathname.includes('nfts') ||
+      router.pathname.includes('crypto') ||
+      router.pathname.includes('dashboard')
 
     if (publicKey && !disconnecting && shouldCallAddWallet) {
       addConnectedWallet()
@@ -96,7 +99,10 @@ const RightSideBar = () => {
       await addUserWallet({
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
+
       dispatch(fetchUserNfts())
+      dispatch(reloadPortfolio(true))
+      dispatch(reloadDashboard(true))
     }
   }, [addUserWallet, dispatch, publicKey])
 
@@ -111,14 +117,16 @@ const RightSideBar = () => {
   const removeSingleWallet = async (wallet) => {
     await removeUserWallet({ variables: { wallet } })
     dispatch(fetchUserNfts())
-    dispatch(reloadPortfolio())
+    dispatch(reloadPortfolio(true))
+    dispatch(reloadDashboard(true))
   }
 
   const disconnectWallets = async () => {
     if (userWallets.length) {
       await removeAllUserWallets()
       dispatch(fetchUserNfts())
-      dispatch(reloadPortfolio())
+      dispatch(reloadPortfolio(true))
+      dispatch(reloadDashboard(true))
     }
 
     disconnect()
