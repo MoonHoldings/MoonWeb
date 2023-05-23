@@ -42,9 +42,8 @@ const Dashboard = () => {
   const loanTotal = dashboardData?.loan?.total ?? 0
   const borrowTotal = dashboardData?.borrow?.total ?? 0
 
-  const cryptoTotalUsd = dashboardData?.crypto?.total
-    ? dashboardData?.crypto?.total
-    : 0
+
+  const cryptoTotalUsd = dashboardData?.crypto?.total ?? 0
   const nftTotalUsd = dashboardData?.nft?.total
     ? dashboardData?.nft?.total * solUsdPrice
     : 0
@@ -348,7 +347,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="mt-4 text-[2.5rem] font-bold">
-              ${cryptoTotalUsd.toFixed(2)}
+              ${cryptoTotalUsd?.toFixed(4)}
             </div>
             {dashboardData?.crypto?.percentChange != 0 && (
               <div
@@ -363,7 +362,7 @@ const Dashboard = () => {
               </div>
             )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              Ξ {cryptoTotal?.toFixed(4)}
+              Ξ {(cryptoTotalUsd / solUsdPrice).toFixed(4)}
             </div>
           </div>
           <div className="ml-6 mr-0 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:mr-3">
