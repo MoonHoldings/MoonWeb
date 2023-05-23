@@ -103,7 +103,6 @@ const Dashboard = () => {
       dataLabels: {
         enabled: true,
         formatter: function (val, opts) {
-          console.log(opts)
           return val
         },
         textAnchor: 'middle',
