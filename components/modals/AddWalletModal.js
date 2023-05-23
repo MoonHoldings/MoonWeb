@@ -3,7 +3,10 @@ import { useDispatch } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { PublicKey } from '@solana/web3.js'
-import { changeAddWalletModalOpen } from 'redux/reducers/utilSlice'
+import {
+  changeAddWalletModalOpen,
+  reloadDashboard,
+} from 'redux/reducers/utilSlice'
 
 import { ADD_WALLET } from 'application/constants/copy'
 import { ADD_USER_WALLET } from 'utils/mutations'
@@ -50,6 +53,7 @@ const AddWalletModal = () => {
 
     dispatch(fetchUserNfts())
     dispatch(reloadPortfolio())
+    dispatch(reloadDashboard(true))
     dispatch(changeAddWalletModalOpen(false))
   }
 
