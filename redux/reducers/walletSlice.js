@@ -12,6 +12,7 @@ const initialState = {
   collections: [],
   currentCollection: {},
   currentNft: {},
+  reloadWallet: false,
 }
 
 const walletSlice = createSlice({
@@ -30,6 +31,9 @@ const walletSlice = createSlice({
     },
     populateCollections(state, action) {
       state.collections = action.payload
+    },
+    reloadWallets(state, action) {
+      state.reloadWallet = action.payload
     },
   },
   extraReducers(builder) {
@@ -84,6 +88,7 @@ export const {
   populateCurrentCollection,
   populateCollections,
   populateCurrentNft,
+  reloadWallets,
 } = walletSlice.actions
 
 export default walletSlice.reducer

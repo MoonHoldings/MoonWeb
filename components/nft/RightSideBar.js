@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { useMutation, useQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
@@ -13,7 +13,7 @@ import {
   changeCoinModalOpen,
   reloadDashboard,
 } from 'redux/reducers/utilSlice'
-import { fetchUserNfts } from 'redux/reducers/walletSlice'
+import { fetchUserNfts, reloadWallets } from 'redux/reducers/walletSlice'
 import {
   ADD_WALLET_ADDRESS,
   CONNECTED_WALLETS,
@@ -43,8 +43,16 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
-  const { addAddressStatus, collections } = useSelector((state) => state.wallet)
+  const { addAddressStatus, collections, reloadWallet } = useSelector(
+    (state) => state.wallet
+  )
   const { solUsdPrice } = useSelector((state) => state.crypto)
+  const [userWallets, setUserWallets] = useState(null)
+  const [isSet, setIsSet] = useState(false)
+  const [getUserWallet, { data: userWalletsData, loading: loadingWalletData }] =
+    useLazyQuery(GET_USER_WALLETS, {
+      fetchPolicy: 'no-cache',
+    })
 
   const [addUserWallet, { loading: addingUserWallet }] =
     useMutation(ADD_USER_WALLET)
@@ -55,15 +63,31 @@ const RightSideBar = () => {
   const [removeAllUserWallets, { loading: removingAllUserWallets }] =
     useMutation(REMOVE_ALL_USER_WALLETS)
 
-  const { data: userWalletsData } = useQuery(GET_USER_WALLETS, {
-    variables: {
-      type: 'Auto',
-    },
-    pollInterval: 1000,
-  })
-  const userWallets = userWalletsData?.getUserWallets ?? []
-
   const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
+
+  useEffect(() => {
+    console.log(reloadWallet)
+    if (userWallets == null || reloadWallet) {
+      dispatch(reloadWallets(false))
+      setUserWallets([])
+      getUserWallet({
+        variables: {
+          type: 'Auto',
+        },
+      })
+    }
+  }, [userWallets, getUserWallet, reloadWallet, dispatch])
+
+  useEffect(() => {
+    async function getWalletData() {
+      console.log(userWalletsData)
+      if (!loadingWalletData && userWalletsData && !isSet) {
+        setUserWallets(userWalletsData.getUserWallets ?? [])
+      }
+    }
+
+    getWalletData()
+  }, [userWalletsData, loadingWalletData, userWallets, isSet])
 
   useEffect(() => {
     const shouldCallAddWallet =
@@ -100,11 +124,16 @@ const RightSideBar = () => {
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
 
+      await getUserWallet({
+        variables: {
+          type: 'Auto',
+        },
+      })
       dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
       dispatch(reloadDashboard(true))
     }
-  }, [addUserWallet, dispatch, publicKey])
+  }, [addUserWallet, dispatch, publicKey, getUserWallet])
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
@@ -116,6 +145,11 @@ const RightSideBar = () => {
 
   const removeSingleWallet = async (wallet) => {
     await removeUserWallet({ variables: { wallet } })
+    await getUserWallet({
+      variables: {
+        type: 'Auto',
+      },
+    })
     dispatch(fetchUserNfts())
     dispatch(reloadPortfolio())
     dispatch(reloadDashboard(true))
@@ -124,6 +158,11 @@ const RightSideBar = () => {
   const disconnectWallets = async () => {
     if (userWallets.length) {
       await removeAllUserWallets()
+      await getUserWallet({
+        variables: {
+          type: 'Auto',
+        },
+      })
       dispatch(fetchUserNfts())
       dispatch(reloadDashboard(true))
     }
@@ -462,7 +501,7 @@ const RightSideBar = () => {
               <div />
             </div>
             <ul className="all-wallets mb-[2rem] mt-10 grid gap-[1rem]">
-              {userWallets.map((wallet, index) => (
+              {userWallets?.map((wallet, index) => (
                 <li key={index}>
                   <button
                     type="button"
