@@ -66,7 +66,9 @@ const RightSideBar = () => {
 
   useEffect(() => {
     const shouldCallAddWallet =
-      router.pathname.includes('nfts') || router.pathname.includes('crypto')
+      router.pathname.includes('nfts') ||
+      router.pathname.includes('crypto') ||
+      router.pathname.includes('dashboard')
 
     if (publicKey && !disconnecting && shouldCallAddWallet) {
       addConnectedWallet()
@@ -96,6 +98,7 @@ const RightSideBar = () => {
       await addUserWallet({
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
+
       dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
     }

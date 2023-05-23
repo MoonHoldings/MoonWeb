@@ -1,44 +1,109 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import mergeClasses from 'utils/mergeClasses'
+import { getServerSidePropsWithAuth } from 'utils/withAuth'
+import { useLazyQuery } from '@apollo/client'
+import { GET_USER_DASHBOARD } from 'utils/queries'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUserNfts } from 'redux/reducers/walletSlice'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Dashboard = () => {
+  const dispatch = useDispatch()
+
+  const [timeRangeType, setTimeRangeType] = useState('Day')
+  const [getUserDashboard, { data, loading, error, stopPolling }] =
+    useLazyQuery(GET_USER_DASHBOARD)
+  const dashboardData = data?.getUserDashboard
+  const { solUsdPrice } = useSelector((state) => state.crypto)
+  const { collections } = useSelector((state) => state.wallet)
+  const sortedCollections = collections
+    ? [...collections]
+        ?.sort(
+          (a, b) =>
+            b?.floorPrice * b?.nfts?.length - a?.floorPrice * a?.nfts?.length
+        )
+        .filter((collection) => collection.floorPrice)
+    : []
+
+  const cryptoTotal = dashboardData?.crypto?.total ?? 0
+  const nftTotal = dashboardData?.nft?.total ?? 0
+  const loanTotal = dashboardData?.loan?.total ?? 0
+  const borrowTotal = dashboardData?.borrow?.total ?? 0
+
+  const cryptoTotalUsd = dashboardData?.crypto?.total
+    ? dashboardData?.crypto?.total * solUsdPrice
+    : 0
+  const nftTotalUsd = dashboardData?.nft?.total
+    ? dashboardData?.nft?.total * solUsdPrice
+    : 0
+  const loanTotalUsd = dashboardData?.loan?.total
+    ? dashboardData?.loan?.total * solUsdPrice
+    : 0
+  const borrowTotalUsd = dashboardData?.borrow?.total
+    ? dashboardData?.borrow?.total * solUsdPrice
+    : 0
+
+  const totalNetworth = cryptoTotal + nftTotal + loanTotal + borrowTotal
+  const totalNetworthUsd = totalNetworth * solUsdPrice
+
+  const cryptoPercent = (cryptoTotal / totalNetworth) * 100
+  const nftPercent = (nftTotal / totalNetworth) * 100
+  const loanPercent = (loanTotal / totalNetworth) * 100
+  const borrowPercent = (borrowTotal / totalNetworth) * 100
+
+  useEffect(() => {
+    return () => stopPolling()
+  }, [])
+
+  useEffect(() => {
+    getUserDashboard({
+      variables: {
+        timeRangeType,
+      },
+      pollInterval: 2000,
+    })
+  }, [timeRangeType, getUserDashboard])
+
+  useEffect(() => {
+    dispatch(fetchUserNfts())
+  }, [dispatch])
+
+  const getNftTreeMapData = () => {
+    const totalValue = sortedCollections.reduce((total, collection) => {
+      return total + collection.floorPrice * collection.nfts.length
+    }, 0)
+
+    return sortedCollections.map((collection) => ({
+      x: collection.name,
+      y: (
+        ((collection.floorPrice * collection.nfts.length) / totalValue) *
+        100
+      ).toFixed(2),
+      z:
+        '$' +
+        (
+          ((collection.floorPrice * collection.nfts.length) /
+            LAMPORTS_PER_SOL) *
+          solUsdPrice
+        ).toFixed(2),
+    }))
+  }
+
   const chart = {
     series: [
       {
-        data: [
-          {
-            x: 'y00ts: mint t00bs',
-            y: 55,
-          },
-          {
-            x: 'Solana Monkey Business',
-            y: 15,
-          },
-          {
-            x: 'Chill Chat',
-            y: 15,
-          },
-          {
-            x: 'Lotus Gang',
-            y: 10,
-          },
-          {
-            x: 'Doge Capital',
-            y: 5,
-          },
-        ],
+        data: getNftTreeMapData(),
       },
     ],
     options: {
       dataLabels: {
         enabled: true,
         formatter: function (val, opts) {
-          console.log(opts)
-          return val + ' ' + `${opts.value}%`
+          return val
         },
         textAnchor: 'middle',
         style: {
@@ -71,9 +136,27 @@ const Dashboard = () => {
         },
       },
       tooltip: {
-        enabled: false,
+        enabled: true,
+        theme: 'dark',
+        y: {
+          formatter: function (val) {
+            return val + '%'
+          },
+        },
+        z: {
+          title: 'Value',
+        },
+        style: {
+          fontSize: '16px',
+        },
       },
     },
+  }
+
+  const getPercentageChangeClassName = (value) => {
+    if (value < 0) return 'text-[#FE3C00]'
+    else if (value == 0) return 'text-[#637381]'
+    else return 'text-[#45CB85]'
   }
 
   return (
@@ -177,8 +260,9 @@ const Dashboard = () => {
               'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
-              true && 'bg-[#3C434B]'
+              timeRangeType === 'Day' && 'bg-[#3C434B]'
             )}
+            onClick={() => setTimeRangeType('Day')}
           >
             1D
           </button>
@@ -197,8 +281,9 @@ const Dashboard = () => {
               'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
-              false && 'bg-[#3C434B]'
+              timeRangeType === 'Week' && 'bg-[#3C434B]'
             )}
+            onClick={() => setTimeRangeType('Week')}
           >
             1W
           </button>
@@ -217,8 +302,9 @@ const Dashboard = () => {
               'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
-              false && 'bg-[#3C434B]'
+              timeRangeType === 'Month' && 'bg-[#3C434B]'
             )}
+            onClick={() => setTimeRangeType('Month')}
           >
             1M
           </button>
@@ -242,10 +328,23 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">$390,000</div>
-            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="mt-4 text-[2.5rem] font-bold">
+              ${cryptoTotalUsd.toFixed(2)}
+            </div>
+            {dashboardData?.crypto?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.crypto?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.crypto?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              Ξ {(209.00321543).toFixed(4)}
+              Ξ {cryptoTotal?.toFixed(4)}
             </div>
           </div>
           <div className="ml-6 mr-0 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:mr-3">
@@ -264,10 +363,23 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">$57,000</div>
-            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="mt-4 text-[2.5rem] font-bold">
+              ${nftTotalUsd.toFixed(2)}
+            </div>
+            {dashboardData?.nft?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.nft?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.nft?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              Ξ {(209.00321543).toFixed(4)}
+              Ξ {nftTotal?.toFixed(4)}
             </div>
           </div>
         </div>
@@ -288,10 +400,23 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">$113,000</div>
-            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="mt-4 text-[2.5rem] font-bold">
+              ${loanTotalUsd.toFixed(2)}
+            </div>
+            {dashboardData?.loan?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.loan?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.loan?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              Ξ {(209.00321543).toFixed(4)}
+              Ξ {loanTotal?.toFixed(4)}
             </div>
           </div>
           <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
@@ -310,26 +435,68 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">$12,033</div>
-            <div className="text-[1.8rem] text-[#45CB85]">0.39%</div>
+            <div className="mt-4 text-[2.5rem] font-bold">
+              ${borrowTotalUsd.toFixed(2)}
+            </div>
+            {dashboardData?.borrow?.percentChange != 0 && (
+              <div
+                className={mergeClasses(
+                  'text-[1.8rem]',
+                  getPercentageChangeClassName(
+                    dashboardData?.borrow?.percentChange
+                  )
+                )}
+              >
+                {dashboardData?.borrow?.percentChange.toFixed(0)}%
+              </div>
+            )}
             <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              Ξ {(209.00321543).toFixed(4)}
+              Ξ {borrowTotal?.toFixed(4)}
             </div>
           </div>
         </div>
       </div>
       <div className="mt-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
         <div className="flex h-7 w-full">
-          <div className="h-full w-[60%] bg-[#13C296]" />
-          <div className="ml-3 h-full w-[6%] bg-[#3056D3]" />
-          <div className="ml-3 h-full w-[21%] bg-[#F2994A]" />
-          <div className="ml-3 h-full w-[13%] bg-[#EF4123]" />
+          {Math.ceil(cryptoPercent) > 0 && (
+            <div
+              className={`h-full bg-[#13C296]`}
+              style={{ width: `${Math.ceil(cryptoPercent)}%` }}
+            />
+          )}
+          {Math.ceil(nftPercent) > 0 && (
+            <div
+              className={`ml-3 h-full bg-[#3056D3]`}
+              style={{ width: `${Math.ceil(nftPercent)}%` }}
+            />
+          )}
+          {Math.ceil(loanPercent) > 0 && (
+            <div
+              className={`ml-3 h-full bg-[#F2994A]`}
+              style={{ width: `${Math.ceil(loanPercent)}%` }}
+            />
+          )}
+          {Math.ceil(borrowPercent) > 0 && (
+            <div
+              className={`ml-3 h-full bg-[#EF4123]`}
+              style={{ width: `${Math.ceil(borrowPercent)}%` }}
+            />
+          )}
         </div>
         <div className="mt-8 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Total Networth</p>
-          <p className="font-medium">$547,967</p>
-          <p className="text-[#45CB85]">0.39%</p>
-          <p>Ξ 293.65862808</p>
+          <p className="font-medium">${totalNetworthUsd.toFixed(2)}</p>
+          {dashboardData?.percentChangeTotal != 0 && (
+            <p
+              className={mergeClasses(
+                'text-[#45CB85]',
+                getPercentageChangeClassName(dashboardData?.percentChangeTotal)
+              )}
+            >
+              {dashboardData?.percentChangeTotal.toFixed(2)}%
+            </p>
+          )}
+          <p>Ξ {totalNetworth.toFixed(4)}</p>
         </div>
         {/* <div className="mt-6 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Liquid Networth</p>
@@ -340,13 +507,19 @@ const Dashboard = () => {
       </div>
       <div className=" mt-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
         <p className="text-[2rem]">NFT Portfolio Allocation chart</p>
-        <ApexCharts
-          options={chart.options}
-          series={chart.series}
-          type="treemap"
-          width={'100%'}
-          height={350}
-        />
+        {sortedCollections.length ? (
+          <ApexCharts
+            options={chart.options}
+            series={chart.series}
+            type="treemap"
+            width={'100%'}
+            height={350}
+          />
+        ) : (
+          <span className="flex w-full justify-center text-[2rem]">
+            Create an NFT Portfolio Now
+          </span>
+        )}
       </div>
       <Image
         className="mt-6 h-auto w-full"
@@ -360,3 +533,4 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+export const getServerSideProps = getServerSidePropsWithAuth

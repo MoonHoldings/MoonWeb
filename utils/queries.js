@@ -322,3 +322,27 @@ export const GET_USER_NFTS = gql`
     }
   }
 `
+
+export const GET_USER_DASHBOARD = gql`
+  query GetUserDashboard($timeRangeType: String!) {
+    getUserDashboard(timeRangeType: $timeRangeType) {
+      crypto {
+        total
+        percentChange
+      }
+      nft {
+        total
+        percentChange
+      }
+      loan {
+        total
+        percentChange
+      }
+      borrow {
+        total
+        percentChange
+      }
+      percentChangeTotal
+    }
+  }
+`
