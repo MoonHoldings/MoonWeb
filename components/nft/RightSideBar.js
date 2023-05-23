@@ -101,7 +101,7 @@ const RightSideBar = () => {
       })
 
       dispatch(fetchUserNfts())
-      dispatch(reloadPortfolio())
+      dispatch(reloadPortfolio(true))
       dispatch(reloadDashboard(true))
     }
   }, [addUserWallet, dispatch, publicKey])
@@ -117,7 +117,7 @@ const RightSideBar = () => {
   const removeSingleWallet = async (wallet) => {
     await removeUserWallet({ variables: { wallet } })
     dispatch(fetchUserNfts())
-    dispatch(reloadPortfolio())
+    dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
   }
 
@@ -125,6 +125,7 @@ const RightSideBar = () => {
     if (userWallets.length) {
       await removeAllUserWallets()
       dispatch(fetchUserNfts())
+      dispatch(reloadPortfolio(true))
       dispatch(reloadDashboard(true))
     }
 
