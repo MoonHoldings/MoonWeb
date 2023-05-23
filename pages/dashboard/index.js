@@ -65,8 +65,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (shouldReloadDashboardData || updateTimeRangeType) {
-      console.log('getUserDashboard')
-
       getUserDashboard({
         variables: {
           timeRangeType,
