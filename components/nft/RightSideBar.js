@@ -66,10 +66,10 @@ const RightSideBar = () => {
   const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
 
   useEffect(() => {
-    console.log(reloadWallet)
     if (userWallets == null || reloadWallet) {
       dispatch(reloadWallets(false))
       setUserWallets([])
+      setIsSet(false)
       getUserWallet({
         variables: {
           type: 'Auto',
@@ -80,8 +80,8 @@ const RightSideBar = () => {
 
   useEffect(() => {
     async function getWalletData() {
-      console.log(userWalletsData)
       if (!loadingWalletData && userWalletsData && !isSet) {
+        setIsSet(true)
         setUserWallets(userWalletsData.getUserWallets ?? [])
       }
     }
@@ -129,6 +129,7 @@ const RightSideBar = () => {
           type: 'Auto',
         },
       })
+      setIsSet(false)
       dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
       dispatch(reloadDashboard(true))
@@ -150,6 +151,7 @@ const RightSideBar = () => {
         type: 'Auto',
       },
     })
+    setIsSet(false)
     dispatch(fetchUserNfts())
     dispatch(reloadPortfolio())
     dispatch(reloadDashboard(true))
@@ -163,7 +165,9 @@ const RightSideBar = () => {
           type: 'Auto',
         },
       })
+      setIsSet(false)
       dispatch(fetchUserNfts())
+      dispatch(reloadPortfolio())
       dispatch(reloadDashboard(true))
     }
 
