@@ -17,7 +17,9 @@ const Dashboard = () => {
 
   const [timeRangeType, setTimeRangeType] = useState('Day')
   const [getUserDashboard, { data, loading, error, stopPolling }] =
-    useLazyQuery(GET_USER_DASHBOARD)
+    useLazyQuery(GET_USER_DASHBOARD, {
+      fetchPolicy: 'no-cache',
+    })
   const dashboardData = data?.getUserDashboard
   const { solUsdPrice } = useSelector((state) => state.crypto)
   const { collections } = useSelector((state) => state.wallet)
@@ -63,6 +65,7 @@ const Dashboard = () => {
   }, [])
 
   useEffect(() => {
+    console.log(reloadDb)
     if (!data || reloadDb) {
       getUserDashboard({
         variables: {
