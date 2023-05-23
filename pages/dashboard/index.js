@@ -8,6 +8,7 @@ import { GET_USER_DASHBOARD } from 'utils/queries'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserNfts } from 'redux/reducers/walletSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { reloadDashboard } from 'redux/reducers/utilSlice'
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -29,13 +30,15 @@ const Dashboard = () => {
         .filter((collection) => collection.floorPrice)
     : []
 
-  const cryptoTotal = dashboardData?.crypto?.total ?? 0
+  const { reloadDb } = useSelector((state) => state.util)
+
+  const cryptoTotal = dashboardData?.crypto?.total / solUsdPrice ?? 0
   const nftTotal = dashboardData?.nft?.total ?? 0
   const loanTotal = dashboardData?.loan?.total ?? 0
   const borrowTotal = dashboardData?.borrow?.total ?? 0
 
   const cryptoTotalUsd = dashboardData?.crypto?.total
-    ? dashboardData?.crypto?.total * solUsdPrice
+    ? dashboardData?.crypto?.total
     : 0
   const nftTotalUsd = dashboardData?.nft?.total
     ? dashboardData?.nft?.total * solUsdPrice
@@ -60,13 +63,15 @@ const Dashboard = () => {
   }, [])
 
   useEffect(() => {
-    getUserDashboard({
-      variables: {
-        timeRangeType,
-      },
-      pollInterval: 2000,
-    })
-  }, [timeRangeType, getUserDashboard])
+    if (!data || reloadDb) {
+      getUserDashboard({
+        variables: {
+          timeRangeType,
+        },
+      })
+      dispatch(reloadDashboard(false))
+    }
+  }, [timeRangeType, getUserDashboard, dispatch, reloadDb, data])
 
   useEffect(() => {
     dispatch(fetchUserNfts())
