@@ -9,7 +9,7 @@ import shrinkAddress from 'utils/shrinkAddress'
 
 const Nft = () => {
   const router = useRouter()
-  const { currentNft, currentCollection } = useSelector((state) => state.wallet)
+  const { currentNft, currentCollection } = useSelector((state) => state.nft)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const image = currentNft.image

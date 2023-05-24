@@ -1,5 +1,5 @@
 import client from 'utils/apollo-client'
-import { GET_USER_NFTS } from 'utils/queries'
+import { GET_USER_WALLETS } from 'utils/queries'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
 
@@ -7,83 +7,39 @@ const initialState = {
   addAddressStatus: 'idle',
   currentAddAddress: null,
   refreshWalletsStatus: 'idle',
-  refreshFloorPriceStatus: 'idle',
-  fetchingNftDataStatus: 'idle',
-  collections: [],
-  currentCollection: {},
-  currentNft: {},
+  wallets: [],
 }
 
 const walletSlice = createSlice({
   name: 'wallet',
   initialState,
-  reducers: {
-    updateCollectionFloorPrice(state, action) {
-      const { index, floorPrice } = action.payload
-      state.collections[index] = { ...state.collections[index], floorPrice }
-    },
-    populateCurrentCollection(state, action) {
-      state.currentCollection = action.payload
-    },
-    populateCurrentNft(state, action) {
-      state.currentNft = { ...action.payload }
-    },
-    populateCollections(state, action) {
-      state.collections = action.payload
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
-    builder.addCase(fetchUserNfts.fulfilled, (state, action) => {
-      state.collections = action.payload
+    builder.addCase(getUserWallets.fulfilled, (state, action) => {
+      state.wallets = action.payload
     })
   },
 })
 
-export const fetchUserNfts = createAsyncThunk(
-  'wallet/fetchUserNfts',
+export const getUserWallets = createAsyncThunk(
+  'wallet/getUserWallets',
   async () => {
     try {
       const { data } = await client.query({
-        query: GET_USER_NFTS,
+        query: GET_USER_WALLETS,
         fetchPolicy: 'no-cache',
+        variables: {
+          type: 'Auto',
+        },
       })
-      const nfts = data?.getUserNfts
-      const collections = {}
 
-      if (!nfts.length) return []
-
-      for (const nft of nfts) {
-        let collectionName = nft?.collection?.name ?? nft.name.split('#')[0]
-
-        if (collectionName) {
-          if (!collections[collectionName]) {
-            collections[collectionName] = {
-              floorPrice:
-                nft?.collection?.floorPrice === undefined
-                  ? null
-                  : nft?.collection?.floorPrice,
-              image: nfts?.collection?.image ?? nft?.image,
-              name: collectionName,
-              nfts: [],
-            }
-          }
-
-          collections[collectionName].nfts.push(nft)
-        }
-      }
-
-      return Object.values(collections)
+      return data?.getUserWallets
     } catch (e) {
       console.log(e)
     }
   }
 )
 
-export const {
-  updateCollectionFloorPrice,
-  populateCurrentCollection,
-  populateCollections,
-  populateCurrentNft,
-} = walletSlice.actions
+export const {} = walletSlice.actions
 
 export default walletSlice.reducer

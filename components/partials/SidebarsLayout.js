@@ -4,7 +4,7 @@ import RefreshWalletModal from 'components/modals/RefreshWalletModal'
 import RefreshFloorPriceModal from 'components/modals/RefreshFloorPriceModal'
 import WalletsModal from 'components/modals/WalletsModal'
 import LeftSideBar from 'components/partials/LeftSideBar'
-import NftRightSideBar from 'components/nft/RightSideBar'
+import NftRightSideBar from 'components/partials/RightSideBar'
 import DefiLoansRightSideBar from 'components/defi-loans/RightSideBar'
 import { AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
@@ -30,12 +30,8 @@ const SidebarsLayout = ({ children }) => {
     lendRightSideBarOpen,
   } = useSelector((state) => state.util)
 
-  const {
-    addAddressStatus,
-    fetchingNftDataStatus,
-    refreshFloorPriceStatus,
-    refreshWalletsStatus,
-  } = useSelector((state) => state.wallet)
+  const { addAddressStatus, refreshFloorPriceStatus, refreshWalletsStatus } =
+    useSelector((state) => state.wallet)
 
   const { modalLoading } = useSelector((state) => state.auth)
 
@@ -60,8 +56,7 @@ const SidebarsLayout = ({ children }) => {
           <CoinModal />
           {walletsModalOpen && <WalletsModal />}
         </AnimatePresence>
-        {(addAddressStatus === 'loading' ||
-          fetchingNftDataStatus === 'loading') && <LoadingModal />}
+        {addAddressStatus === 'loading' && <LoadingModal />}
         {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
         {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
       </>
@@ -118,9 +113,9 @@ const SidebarsLayout = ({ children }) => {
             {walletsModalOpen && <WalletsModal />}
           </AnimatePresence>
 
-          {(addAddressStatus === 'loading' ||
-            fetchingNftDataStatus === 'loading' ||
-            modalLoading) && <LoadingModal showMessage={modalLoading} />}
+          {(addAddressStatus === 'loading' || modalLoading) && (
+            <LoadingModal showMessage={modalLoading} />
+          )}
           {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
           {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
 
