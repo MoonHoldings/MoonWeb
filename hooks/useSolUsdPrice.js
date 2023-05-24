@@ -56,6 +56,7 @@ function useSolUsdPrice() {
               ]
             : [new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG')]
         feeds = key
+        lastExecutionTime = 0
         dispatch(loadingCrypto(true))
         pythConnection = new PythConnection(
           connection,

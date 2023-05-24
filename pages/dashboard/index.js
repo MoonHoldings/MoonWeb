@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const { shouldReloadDashboardData } = useSelector((state) => state.util)
 
-  const cryptoTotal = dashboardData?.crypto?.total / solUsdPrice ?? 0
+  const cryptoTotal = dashboardData?.crypto?.total / selectedCurrencyPrice ?? 0
   const nftTotal = dashboardData?.nft?.total ?? 0
   const loanTotal = dashboardData?.loan?.total ?? 0
   const borrowTotal = dashboardData?.borrow?.total ?? 0
@@ -406,7 +406,12 @@ const Dashboard = () => {
                     : currentCurrency == 'ETH'
                     ? 'Ξ'
                     : '◎'}{' '}
-                  {toCurrencyFormat(cryptoTotalUsd / solUsdPrice)}
+                  {toCurrencyFormat(
+                    cryptoTotalUsd /
+                      (currentCurrency === 'SOL'
+                        ? solUsdPrice
+                        : selectedCurrencyPrice)
+                  )}
                 </div>
               </>
             )}
