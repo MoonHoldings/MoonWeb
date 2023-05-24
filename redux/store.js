@@ -9,11 +9,13 @@ import cryptoSlice from './reducers/cryptoSlice'
 import sharkifySlice from './reducers/sharkifySlice'
 import sharkifyLendSlice from './reducers/sharkifyLendSlice'
 import portfoloSlice from './reducers/portfolioSlice'
+import nftSlice from './reducers/nftSlice'
 
 const reducer = combineReducers({
   auth: authSlice,
   util: utilSlice,
   wallet: walletSlice,
+  nft: nftSlice,
   crypto: cryptoSlice,
   sharkify: sharkifySlice,
   sharkifyLend: sharkifyLendSlice,

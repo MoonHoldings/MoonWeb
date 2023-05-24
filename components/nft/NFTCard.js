@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
-import { populateCurrentNft } from 'redux/reducers/walletSlice'
+import { populateCurrentNft } from 'redux/reducers/nftSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import LazyLoad from 'react-lazy-load'
 

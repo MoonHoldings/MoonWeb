@@ -9,7 +9,7 @@ import { Tooltip } from 'antd'
 import {
   populateCurrentCollection,
   updateCollectionFloorPrice,
-} from 'redux/reducers/walletSlice'
+} from 'redux/reducers/nftSlice'
 
 import {
   HELLO_MOON_URL,

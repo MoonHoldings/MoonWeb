@@ -13,7 +13,7 @@ import {
   changeCoinModalOpen,
   reloadDashboard,
 } from 'redux/reducers/utilSlice'
-import { fetchUserNfts } from 'redux/reducers/walletSlice'
+import { fetchUserNfts } from 'redux/reducers/nftSlice'
 import {
   ADD_WALLET_ADDRESS,
   CONNECTED_WALLETS,
@@ -43,7 +43,8 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
-  const { addAddressStatus, collections } = useSelector((state) => state.wallet)
+  const { addAddressStatus } = useSelector((state) => state.wallet)
+  const { collections } = useSelector((state) => state.nft)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const [addUserWallet, { loading: addingUserWallet }] =

@@ -11,7 +11,7 @@ import {
 import { ADD_WALLET } from 'application/constants/copy'
 import { ADD_USER_WALLET } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
-import { fetchUserNfts } from 'redux/reducers/walletSlice'
+import { fetchUserNfts } from 'redux/reducers/nftSlice'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 
 const AddWalletModal = () => {

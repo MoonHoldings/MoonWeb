@@ -30,12 +30,8 @@ const SidebarsLayout = ({ children }) => {
     lendRightSideBarOpen,
   } = useSelector((state) => state.util)
 
-  const {
-    addAddressStatus,
-    fetchingNftDataStatus,
-    refreshFloorPriceStatus,
-    refreshWalletsStatus,
-  } = useSelector((state) => state.wallet)
+  const { addAddressStatus, refreshFloorPriceStatus, refreshWalletsStatus } =
+    useSelector((state) => state.wallet)
 
   const { modalLoading } = useSelector((state) => state.auth)
 
@@ -60,8 +56,7 @@ const SidebarsLayout = ({ children }) => {
           <CoinModal />
           {walletsModalOpen && <WalletsModal />}
         </AnimatePresence>
-        {(addAddressStatus === 'loading' ||
-          fetchingNftDataStatus === 'loading') && <LoadingModal />}
+        {addAddressStatus === 'loading' && <LoadingModal />}
         {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
         {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
       </>
@@ -118,9 +113,9 @@ const SidebarsLayout = ({ children }) => {
             {walletsModalOpen && <WalletsModal />}
           </AnimatePresence>
 
-          {(addAddressStatus === 'loading' ||
-            fetchingNftDataStatus === 'loading' ||
-            modalLoading) && <LoadingModal showMessage={modalLoading} />}
+          {(addAddressStatus === 'loading' || modalLoading) && (
+            <LoadingModal showMessage={modalLoading} />
+          )}
           {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
           {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
 
