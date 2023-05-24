@@ -10,6 +10,7 @@ import {
   changeSolUsdPrice,
   updateShouldUpdateCurrency,
   loadingCrypto,
+  updateCurrency,
   changeCurrentCurrencyPrice,
 } from 'redux/reducers/cryptoSlice'
 
@@ -79,6 +80,9 @@ function useSolUsdPrice() {
               ) {
                 dispatch(changeCurrentCurrencyPrice(price.price))
                 lastExecutionTime = currentTime
+                dispatch(loadingCrypto(false))
+              } else if (currentCurrency === null) {
+                dispatch(updateCurrency('SOL'))
                 dispatch(loadingCrypto(false))
               }
             }
