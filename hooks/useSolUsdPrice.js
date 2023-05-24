@@ -71,14 +71,17 @@ function useSolUsdPrice() {
               if (product.base === 'SOL') {
                 dispatch(changeSolUsdPrice(price.price))
               }
-              if (product.base === 'BTC' || product.base === 'ETH') {
+              dispatch(changeCurrentCurrencyPrice(price.price))
+
+              if (
+                (currentCurrency === 'SOL' && product.base === 'SOL') ||
+                (currentCurrency === 'BTC' && product.base === 'BTC') ||
+                (currentCurrency === 'ETH' && product.base === 'ETH')
+              ) {
                 dispatch(changeCurrentCurrencyPrice(price.price))
+                lastExecutionTime = currentTime
+                dispatch(loadingCrypto(false))
               }
-              if (currentCurrency === 'SOL') {
-                dispatch(changeCurrentCurrencyPrice(1))
-              }
-              lastExecutionTime = currentTime
-              dispatch(loadingCrypto(false))
             }
           })
           pythConnection.start()

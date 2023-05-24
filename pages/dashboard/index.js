@@ -47,23 +47,29 @@ const Dashboard = () => {
   const { shouldReloadDashboardData } = useSelector((state) => state.util)
 
   const cryptoTotal = dashboardData?.crypto?.total / selectedCurrencyPrice ?? 0
-  const nftTotal = dashboardData?.nft?.total ?? 0
-  const loanTotal = dashboardData?.loan?.total ?? 0
-  const borrowTotal = dashboardData?.borrow?.total ?? 0
+  const nftTotal =
+    (dashboardData?.nft?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
+  const loanTotal =
+    (dashboardData?.loan?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
+  const borrowTotal =
+    (dashboardData?.borrow?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
 
   const cryptoTotalUsd = dashboardData?.crypto?.total ?? 0
   const nftTotalUsd = dashboardData?.nft?.total
-    ? dashboardData?.nft?.total * solUsdPrice * selectedCurrencyPrice
+    ? dashboardData?.nft?.total * solUsdPrice
     : 0
   const loanTotalUsd = dashboardData?.loan?.total
-    ? dashboardData?.loan?.total * solUsdPrice * selectedCurrencyPrice
+    ? dashboardData?.loan?.total * solUsdPrice
     : 0
   const borrowTotalUsd = dashboardData?.borrow?.total
-    ? dashboardData?.borrow?.total * solUsdPrice * selectedCurrencyPrice
+    ? dashboardData?.borrow?.total * solUsdPrice
     : 0
 
   const totalNetworth = cryptoTotal + nftTotal + loanTotal + borrowTotal
-  const totalNetworthUsd = totalNetworth * solUsdPrice
+  const totalNetworthUsd =
+    currentCurrency == 'SOL'
+      ? totalNetworth * solUsdPrice
+      : totalNetworth * selectedCurrencyPrice
 
   const cryptoPercent = (cryptoTotal / totalNetworth) * 100
   const nftPercent = (nftTotal / totalNetworth) * 100
