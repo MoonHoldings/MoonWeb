@@ -192,6 +192,14 @@ const Dashboard = () => {
     setUpdateTimeRangeType(true)
   }
 
+  const getCurrencySymbol = () => {
+    return currentCurrency === 'BTC'
+      ? '₿'
+      : currentCurrency === 'ETH'
+      ? 'Ξ'
+      : '◎'
+  }
+
   const loadValue = (component) => {
     return (
       <>
@@ -407,11 +415,7 @@ const Dashboard = () => {
                   </div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-                  {currentCurrency === 'BTC'
-                    ? '₿'
-                    : currentCurrency == 'ETH'
-                    ? 'Ξ'
-                    : '◎'}{' '}
+                  {getCurrencySymbol()}
                   {toCurrencyFormat(
                     cryptoTotalUsd /
                       (currentCurrency === 'SOL'
@@ -457,11 +461,7 @@ const Dashboard = () => {
                   </div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-                  {currentCurrency === 'BTC'
-                    ? '₿'
-                    : currentCurrency == 'ETH'
-                    ? 'Ξ'
-                    : '◎'}{' '}
+                  {getCurrencySymbol()}
                   {toCurrencyFormat(nftTotal)}
                 </div>
               </>
@@ -504,11 +504,7 @@ const Dashboard = () => {
                   </div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-                  {currentCurrency === 'BTC'
-                    ? '₿'
-                    : currentCurrency === 'ETH'
-                    ? 'Ξ'
-                    : '◎'}
+                  {getCurrencySymbol()}
                   {toCurrencyFormat(loanTotal)}
                 </div>
               </>
@@ -549,11 +545,7 @@ const Dashboard = () => {
                   </div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-                  {currentCurrency === 'BTC'
-                    ? '₿'
-                    : currentCurrency == 'ETH'
-                    ? 'Ξ'
-                    : '◎'}{' '}
+                  {getCurrencySymbol()}
                   {toCurrencyFormat(borrowTotal)}
                 </div>
               </>
@@ -629,11 +621,7 @@ const Dashboard = () => {
               )}
 
               <p>
-                {currentCurrency === 'BTC'
-                  ? '₿'
-                  : currentCurrency === 'ETH'
-                  ? 'Ξ'
-                  : '◎'}
+                {getCurrencySymbol()}
                 {totalNetworth.toFixed(4)}
               </p>
               {toCurrencyFormat(borrowTotal)}
