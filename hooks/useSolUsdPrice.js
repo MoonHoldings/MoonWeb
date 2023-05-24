@@ -71,7 +71,6 @@ function useSolUsdPrice() {
               if (product.base === 'SOL') {
                 dispatch(changeSolUsdPrice(price.price))
               }
-              dispatch(changeCurrentCurrencyPrice(price.price))
 
               if (
                 (currentCurrency === 'SOL' && product.base === 'SOL') ||
