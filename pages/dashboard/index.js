@@ -98,6 +98,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(fetchUserNfts())
+    dispatch(updateCurrency(currentCurrency ?? 'SOL'))
   }, [dispatch])
 
   const getNftTreeMapData = () => {
