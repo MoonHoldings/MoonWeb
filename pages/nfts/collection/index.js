@@ -13,7 +13,7 @@ import shrinkAddress from 'utils/shrinkAddress'
 
 const Index = () => {
   const router = useRouter()
-  const { currentCollection } = useSelector((state) => state.wallet)
+  const { currentCollection } = useSelector((state) => state.nft)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const handleClick = (url) => {

@@ -19,10 +19,16 @@ const feeds = [new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG')]
 function useSolUsdPrice() {
   const dispatch = useDispatch()
   const { solUsdPrice } = useSelector((state) => state.crypto)
+  const { wallets } = useSelector((state) => state.wallet)
   const router = useRouter()
 
   useEffect(() => {
-    if (router.pathname.includes('nfts')) {
+    if (
+      (router.pathname.includes('nfts') ||
+        router.pathname.includes('dashboard') ||
+        router.pathname.includes('crypto')) &&
+      wallets.length
+    ) {
       const pythConnection = new PythConnection(
         connection,
         pythPublicKey,
@@ -44,7 +50,7 @@ function useSolUsdPrice() {
         pythConnection.stop()
       }
     }
-  }, [dispatch, solUsdPrice, router.pathname])
+  }, [dispatch, solUsdPrice, router.pathname, wallets])
 
   return null
 }

@@ -6,7 +6,7 @@ import { getServerSidePropsWithAuth } from 'utils/withAuth'
 import { useLazyQuery } from '@apollo/client'
 import { GET_USER_DASHBOARD } from 'utils/queries'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchUserNfts } from 'redux/reducers/walletSlice'
+import { fetchUserNfts } from 'redux/reducers/nftSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { reloadDashboard } from 'redux/reducers/utilSlice'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
@@ -26,7 +26,7 @@ const Dashboard = () => {
   const [updateTimeRangeType, setUpdateTimeRangeType] = useState(true)
   const dashboardData = data?.getUserDashboard
   const { solUsdPrice } = useSelector((state) => state.crypto)
-  const { collections } = useSelector((state) => state.wallet)
+  const { collections } = useSelector((state) => state.nft)
   const sortedCollections = collections
     ? [...collections]
         ?.sort(

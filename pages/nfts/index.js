@@ -13,11 +13,11 @@ import {
   WELCOME_MOON_HOLDINGS,
 } from 'application/constants/copy'
 import { getServerSidePropsWithAuth } from '../../utils/withAuth'
-import { fetchUserNfts } from 'redux/reducers/walletSlice'
+import { fetchUserNfts } from 'redux/reducers/nftSlice'
 
 const Nfts = () => {
   const dispatch = useDispatch()
-  const { collections } = useSelector((state) => state.wallet)
+  const { collections } = useSelector((state) => state.nft)
 
   useEffect(() => {
     dispatch(fetchUserNfts())
