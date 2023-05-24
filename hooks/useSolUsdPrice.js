@@ -27,7 +27,7 @@ function useSolUsdPrice() {
       (router.pathname.includes('nfts') ||
         router.pathname.includes('dashboard') ||
         router.pathname.includes('crypto')) &&
-      wallets.length
+      wallets?.length
     ) {
       const pythConnection = new PythConnection(
         connection,
