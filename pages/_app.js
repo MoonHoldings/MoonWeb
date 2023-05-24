@@ -19,6 +19,7 @@ export default wrapper.withRedux(
       <ConfigProvider
         theme={{
           token: {
+            colorFill: '#9BEFE4',
             colorFillContent: '#62EAD2',
           },
         }}

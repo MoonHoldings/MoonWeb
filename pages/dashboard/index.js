@@ -188,11 +188,16 @@ const Dashboard = () => {
   const loadValue = (component) => {
     return (
       <>
-        {!loadingCrypto ? (
+        {!loadingCrypto && !loading ? (
           <>{component}</>
         ) : (
-          <div className="mt-2">
-            <Skeleton paragraph={{ rows: 2 }} title={false} />
+          <div className="mt-6">
+            <Skeleton
+              paragraph={{ rows: 2 }}
+              title={false}
+              loading={true}
+              active
+            />
           </div>
         )}
       </>
@@ -573,7 +578,7 @@ const Dashboard = () => {
         </div>
         <div className="mt-8 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Total Networth</p>
-          {loadingCrypto ? (
+          {loadingCrypto || loading ? (
             <svg
               aria-hidden="true"
               className="mr-2 h-14 w-14 animate-spin fill-teal-400 text-gray-200 dark:text-gray-600"
