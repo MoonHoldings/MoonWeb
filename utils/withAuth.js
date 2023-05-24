@@ -33,7 +33,11 @@ export const getServerSidePropsWithAuth = async (context) => {
 
   if (cookieValue) {
     const aid = cookieValue.split('=')[1]
-    if (publicUrls.includes(context.resolvedUrl) && aid)
+    if (
+      (publicUrls.includes(context.resolvedUrl) ||
+        context.resolvedUrl == '/') &&
+      aid
+    )
       return {
         redirect: {
           destination: '/nfts',
