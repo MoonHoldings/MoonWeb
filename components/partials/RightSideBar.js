@@ -405,12 +405,12 @@ const RightSideBar = () => {
               }
             >
               <div className="flex items-center text-[3.2rem] text-white xl:text-[2.8rem]">
-                {getShortPortfolioValue()}
-                {currentCurrency === 'BTC'
+                {getShortPortfolioValue()}◎
+                {/* {currentCurrency === 'BTC'
                   ? '₿'
                   : currentCurrency == 'ETH'
                   ? 'Ξ'
-                  : '◎'}
+                  : '◎'} */}
               </div>
             </Tooltip>
             {/* <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">

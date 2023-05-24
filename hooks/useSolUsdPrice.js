@@ -38,10 +38,11 @@ function useSolUsdPrice() {
 
   useEffect(() => {
     if (
-      (router.pathname.includes('nfts') ||
+      ((router.pathname.includes('nfts') ||
         router.pathname.includes('dashboard') ||
         router.pathname.includes('crypto')) &&
-      wallets?.length
+        wallets?.length) ||
+      router.pathname.includes('dashboard')
     ) {
       if (pythConnection == null) {
         const key =
