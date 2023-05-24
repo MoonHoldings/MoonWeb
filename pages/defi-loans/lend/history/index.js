@@ -13,7 +13,7 @@ const History = () => {
       <h1 className="text-[3rem]">
         <Link
           href={`/defi-loans/${isLendPage ? 'lend' : 'borrow'}`}
-          className="hover:underline"
+          className="text-[#ffffff4d] underline"
         >
           {isLendPage ? 'Lend' : 'Borrow'}
         </Link>
