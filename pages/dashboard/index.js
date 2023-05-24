@@ -9,8 +9,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { reloadDashboard } from 'redux/reducers/utilSlice'
+import { updateCurrency } from 'redux/reducers/cryptoSlice'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
-
+import { Skeleton } from 'antd'
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Dashboard = () => {
@@ -25,8 +26,14 @@ const Dashboard = () => {
   )
   const [updateTimeRangeType, setUpdateTimeRangeType] = useState(true)
   const dashboardData = data?.getUserDashboard
-  const { solUsdPrice } = useSelector((state) => state.crypto)
+  const {
+    solUsdPrice,
+    currentCurrency,
+    selectedCurrencyPrice,
+    loading: loadingCrypto,
+  } = useSelector((state) => state.crypto)
   const { collections } = useSelector((state) => state.nft)
+
   const sortedCollections = collections
     ? [...collections]
         ?.sort(
@@ -39,10 +46,13 @@ const Dashboard = () => {
 
   const { shouldReloadDashboardData } = useSelector((state) => state.util)
 
-  const cryptoTotal = dashboardData?.crypto?.total / solUsdPrice ?? 0
-  const nftTotal = dashboardData?.nft?.total ?? 0
-  const loanTotal = dashboardData?.loan?.total ?? 0
-  const borrowTotal = dashboardData?.borrow?.total ?? 0
+  const cryptoTotal = dashboardData?.crypto?.total / selectedCurrencyPrice ?? 0
+  const nftTotal =
+    (dashboardData?.nft?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
+  const loanTotal =
+    (dashboardData?.loan?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
+  const borrowTotal =
+    (dashboardData?.borrow?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
 
   const cryptoTotalUsd = dashboardData?.crypto?.total ?? 0
   const nftTotalUsd = dashboardData?.nft?.total
@@ -56,7 +66,10 @@ const Dashboard = () => {
     : 0
 
   const totalNetworth = cryptoTotal + nftTotal + loanTotal + borrowTotal
-  const totalNetworthUsd = totalNetworth * solUsdPrice
+  const totalNetworthUsd =
+    currentCurrency == 'SOL'
+      ? totalNetworth * solUsdPrice
+      : totalNetworth * selectedCurrencyPrice
 
   const cryptoPercent = (cryptoTotal / totalNetworth) * 100
   const nftPercent = (nftTotal / totalNetworth) * 100
@@ -178,6 +191,31 @@ const Dashboard = () => {
     setTimeRangeType(type)
     setUpdateTimeRangeType(true)
   }
+
+  const getCurrencySymbol = () => {
+    if (currentCurrency === 'BTC') return '₿'
+    else if (currentCurrency === 'ETH') return 'Ξ'
+    else return '◎'
+  }
+
+  const loadValue = (component) => {
+    return (
+      <>
+        {!loadingCrypto && !loading ? (
+          <>{component}</>
+        ) : (
+          <div className="mt-6">
+            <Skeleton
+              paragraph={{ rows: 2 }}
+              title={false}
+              loading={true}
+              active
+            />
+          </div>
+        )}
+      </>
+    )
+  }
   return (
     <div className="flex flex-col pb-[4rem] pt-[2rem] sm:pt-0 md:order-2">
       <div class="relative flex h-[20rem] w-full items-start justify-between overflow-hidden rounded-2xl bg-gradient-to-t from-[#3B5049] via-[#0089a07d] to-[#0089a07d] p-6">
@@ -200,8 +238,11 @@ const Dashboard = () => {
               'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
-              true && 'bg-[#3C434B]'
+              currentCurrency == 'SOL' && 'bg-[#3C434B]'
             )}
+            onClick={() => {
+              dispatch(updateCurrency('SOL'))
+            }}
           >
             SOL
           </button>
@@ -220,8 +261,11 @@ const Dashboard = () => {
               'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
-              false && 'bg-[#3C434B]'
+              currentCurrency == 'BTC' && 'bg-[#3C434B]'
             )}
+            onClick={() => {
+              dispatch(updateCurrency('BTC'))
+            }}
           >
             BTC
           </button>
@@ -240,8 +284,11 @@ const Dashboard = () => {
               'text-[1.2rem]',
               'text-white',
               'focus:outline-none',
-              false && 'bg-[#3C434B]'
+              currentCurrency == 'ETH' && 'bg-[#3C434B]'
             )}
+            onClick={() => {
+              dispatch(updateCurrency('ETH'))
+            }}
           >
             ETH
           </button>
@@ -347,24 +394,35 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">
-              ${toCurrencyFormat(cryptoTotalUsd)}
-            </div>
-            {dashboardData?.crypto?.percentChange != 0 && (
-              <div
-                className={mergeClasses(
-                  'text-[1.8rem]',
-                  getPercentageChangeClassName(
-                    dashboardData?.crypto?.percentChange
-                  )
+
+            {loadValue(
+              <>
+                <div className="mt-4 text-[2.5rem] font-bold">
+                  ${toCurrencyFormat(cryptoTotalUsd)}
+                </div>
+                {dashboardData?.crypto?.percentChange != 0 && (
+                  <div
+                    className={mergeClasses(
+                      'text-[1.8rem]',
+                      getPercentageChangeClassName(
+                        dashboardData?.crypto?.percentChange
+                      )
+                    )}
+                  >
+                    {dashboardData?.crypto?.percentChange.toFixed(0)}%
+                  </div>
                 )}
-              >
-                {dashboardData?.crypto?.percentChange.toFixed(0)}%
-              </div>
+                <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+                  {getCurrencySymbol()}
+                  {toCurrencyFormat(
+                    cryptoTotalUsd /
+                      (currentCurrency === 'SOL'
+                        ? solUsdPrice
+                        : selectedCurrencyPrice)
+                  )}
+                </div>
+              </>
             )}
-            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              ◎ {toCurrencyFormat(cryptoTotalUsd / solUsdPrice)}
-            </div>
           </div>
           <div className="ml-6 mr-0 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:mr-3">
             <div className="flex w-full">
@@ -382,24 +440,30 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">
-              ${toCurrencyFormat(nftTotalUsd)}
-            </div>
-            {dashboardData?.nft?.percentChange != 0 && (
-              <div
-                className={mergeClasses(
-                  'text-[1.8rem]',
-                  getPercentageChangeClassName(
-                    dashboardData?.nft?.percentChange
-                  )
+
+            {loadValue(
+              <>
+                <div className="mt-4 text-[2.5rem] font-bold">
+                  ${toCurrencyFormat(nftTotalUsd)}
+                </div>
+                {dashboardData?.nft?.percentChange != 0 && (
+                  <div
+                    className={mergeClasses(
+                      'text-[1.8rem]',
+                      getPercentageChangeClassName(
+                        dashboardData?.nft?.percentChange
+                      )
+                    )}
+                  >
+                    {dashboardData?.nft?.percentChange.toFixed(0)}%
+                  </div>
                 )}
-              >
-                {dashboardData?.nft?.percentChange.toFixed(0)}%
-              </div>
+                <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+                  {getCurrencySymbol()}
+                  {toCurrencyFormat(nftTotal)}
+                </div>
+              </>
             )}
-            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              ◎ {toCurrencyFormat(nftTotal)}
-            </div>
           </div>
         </div>
         <div className="mt-4 flex w-full sm:mt-0">
@@ -419,24 +483,30 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">
-              ${toCurrencyFormat(loanTotalUsd)}
-            </div>
-            {dashboardData?.loan?.percentChange != 0 && (
-              <div
-                className={mergeClasses(
-                  'text-[1.8rem]',
-                  getPercentageChangeClassName(
-                    dashboardData?.loan?.percentChange
-                  )
+
+            {loadValue(
+              <>
+                <div className="mt-4 text-[2.5rem] font-bold">
+                  ${toCurrencyFormat(loanTotalUsd)}
+                </div>
+                {dashboardData?.loan?.percentChange != 0 && (
+                  <div
+                    className={mergeClasses(
+                      'text-[1.8rem]',
+                      getPercentageChangeClassName(
+                        dashboardData?.loan?.percentChange
+                      )
+                    )}
+                  >
+                    {dashboardData?.loan?.percentChange.toFixed(0)}%
+                  </div>
                 )}
-              >
-                {dashboardData?.loan?.percentChange.toFixed(0)}%
-              </div>
+                <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+                  {getCurrencySymbol()}
+                  {toCurrencyFormat(loanTotal)}
+                </div>
+              </>
             )}
-            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              ◎ {toCurrencyFormat(loanTotal)}
-            </div>
           </div>
           <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
             <div className="flex w-full">
@@ -454,24 +524,30 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
-            <div className="mt-4 text-[2.5rem] font-bold">
-              ${toCurrencyFormat(borrowTotalUsd)}
-            </div>
-            {dashboardData?.borrow?.percentChange != 0 && (
-              <div
-                className={mergeClasses(
-                  'text-[1.8rem]',
-                  getPercentageChangeClassName(
-                    dashboardData?.borrow?.percentChange
-                  )
+
+            {loadValue(
+              <>
+                <div className="mt-4 text-[2.5rem] font-bold">
+                  ${toCurrencyFormat(borrowTotalUsd)}
+                </div>
+                {dashboardData?.borrow?.percentChange != 0 && (
+                  <div
+                    className={mergeClasses(
+                      'text-[1.8rem]',
+                      getPercentageChangeClassName(
+                        dashboardData?.borrow?.percentChange
+                      )
+                    )}
+                  >
+                    {dashboardData?.borrow?.percentChange.toFixed(0)}%
+                  </div>
                 )}
-              >
-                {dashboardData?.borrow?.percentChange.toFixed(0)}%
-              </div>
+                <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
+                  {getCurrencySymbol()}
+                  {toCurrencyFormat(borrowTotal)}
+                </div>
+              </>
             )}
-            <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
-              ◎ {toCurrencyFormat(borrowTotal)}
-            </div>
           </div>
         </div>
       </div>
@@ -504,18 +580,51 @@ const Dashboard = () => {
         </div>
         <div className="mt-8 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Total Networth</p>
-          <p className="font-medium">${toCurrencyFormat(totalNetworthUsd)}</p>
-          {dashboardData?.percentChangeTotal != 0 && (
-            <p
-              className={mergeClasses(
-                'text-[#45CB85]',
-                getPercentageChangeClassName(dashboardData?.percentChangeTotal)
-              )}
+          {loadingCrypto || loading ? (
+            <svg
+              aria-hidden="true"
+              className="mr-2 h-14 w-14 animate-spin fill-teal-400 text-gray-200 dark:text-gray-600"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              {toCurrencyFormat(dashboardData?.percentChangeTotal)}%
-            </p>
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+          ) : (
+            <>
+              {totalNetworthUsd !== undefined && (
+                <p className="font-medium">
+                  ${toCurrencyFormat(totalNetworthUsd)}
+                </p>
+              )}
+
+              {dashboardData?.percentChangeTotal !== 0 && (
+                <p
+                  className={mergeClasses(
+                    'text-[#45CB85]',
+                    getPercentageChangeClassName(
+                      dashboardData?.percentChangeTotal
+                    )
+                  )}
+                >
+                  {toCurrencyFormat(dashboardData?.percentChangeTotal)}%
+                </p>
+              )}
+
+              <p>
+                {getCurrencySymbol()}
+                {totalNetworth.toFixed(4)}
+              </p>
+              {toCurrencyFormat(borrowTotal)}
+            </>
           )}
-          <p>◎ {totalNetworth.toFixed(4)}</p>
         </div>
         {/* <div className="mt-6 flex justify-between text-[1.6rem] sm:text-[2.4rem]">
           <p>Liquid Networth</p>
