@@ -81,7 +81,7 @@ function useSolUsdPrice() {
                 dispatch(changeCurrentCurrencyPrice(price.price))
                 lastExecutionTime = currentTime
                 dispatch(loadingCrypto(false))
-              } else if (currentCurrency === null) {
+              } else if (!currentCurrency) {
                 dispatch(updateCurrency('SOL'))
                 dispatch(loadingCrypto(false))
               }
