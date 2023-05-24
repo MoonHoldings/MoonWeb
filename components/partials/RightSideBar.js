@@ -5,12 +5,11 @@ import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
   changeWalletsModalOpen,
-  changeCoinModalOpen,
   reloadDashboard,
 } from 'redux/reducers/utilSlice'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
@@ -32,8 +31,8 @@ import {
   REMOVE_ALL_USER_WALLETS,
   REMOVE_USER_WALLET,
 } from 'utils/mutations'
-import { GET_USER_WALLETS } from 'utils/queries'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
+import { getUserWallets } from 'redux/reducers/walletSlice'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -43,7 +42,9 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
-  const { addAddressStatus } = useSelector((state) => state.wallet)
+  const { addAddressStatus, wallets: userWallets } = useSelector(
+    (state) => state.wallet
+  )
   const { collections } = useSelector((state) => state.nft)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
@@ -56,15 +57,11 @@ const RightSideBar = () => {
   const [removeAllUserWallets, { loading: removingAllUserWallets }] =
     useMutation(REMOVE_ALL_USER_WALLETS)
 
-  const { data: userWalletsData } = useQuery(GET_USER_WALLETS, {
-    variables: {
-      type: 'Auto',
-    },
-    pollInterval: 1000,
-  })
-  const userWallets = userWalletsData?.getUserWallets ?? []
-
   const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
+
+  useEffect(() => {
+    dispatch(getUserWallets())
+  }, [])
 
   useEffect(() => {
     const shouldCallAddWallet =
@@ -101,6 +98,7 @@ const RightSideBar = () => {
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
 
+      dispatch(getUserWallets())
       dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
       dispatch(reloadDashboard(true))
@@ -117,14 +115,16 @@ const RightSideBar = () => {
 
   const removeSingleWallet = async (wallet) => {
     await removeUserWallet({ variables: { wallet } })
+    dispatch(getUserWallets())
     dispatch(fetchUserNfts())
     dispatch(reloadPortfolio())
     dispatch(reloadDashboard(true))
   }
 
   const disconnectWallets = async () => {
-    if (userWallets.length) {
+    if (userWallets?.length) {
       await removeAllUserWallets()
+      dispatch(getUserWallets())
       dispatch(fetchUserNfts())
       dispatch(reloadDashboard(true))
     }
@@ -166,7 +166,7 @@ const RightSideBar = () => {
   }
 
   const refreshWalletsAndFloorPrice = async () => {
-    if (userWallets.length) {
+    if (userWallets?.length) {
       await refreshUserWallets()
       dispatch(fetchUserNfts())
     }
@@ -463,7 +463,7 @@ const RightSideBar = () => {
               <div />
             </div>
             <ul className="all-wallets mb-[2rem] mt-10 grid gap-[1rem]">
-              {userWallets.map((wallet, index) => (
+              {userWallets?.map((wallet, index) => (
                 <li key={index}>
                   <button
                     type="button"
@@ -539,7 +539,7 @@ const RightSideBar = () => {
               // onClick={seeAllOrLessWallets}
               className="text-[1.4rem] font-bold text-[#61DAEA]"
             >
-              {userWallets.length > 4 ? 'See All' : ''}
+              {userWallets?.length > 4 ? 'See All' : ''}
             </button>
           </div>
 
