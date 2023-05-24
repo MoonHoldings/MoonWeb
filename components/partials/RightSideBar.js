@@ -46,7 +46,7 @@ const RightSideBar = () => {
     (state) => state.wallet
   )
   const { collections } = useSelector((state) => state.nft)
-  const { solUsdPrice } = useSelector((state) => state.crypto)
+  const { solUsdPrice, currentCurrency } = useSelector((state) => state.crypto)
 
   const [addUserWallet, { loading: addingUserWallet }] =
     useMutation(ADD_USER_WALLET)
@@ -58,7 +58,6 @@ const RightSideBar = () => {
     useMutation(REMOVE_ALL_USER_WALLETS)
 
   const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
-  const { currentCurrency } = useSelector((state) => state.crypto)
 
   useEffect(() => {
     dispatch(getUserWallets())
