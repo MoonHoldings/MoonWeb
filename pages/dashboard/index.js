@@ -193,11 +193,9 @@ const Dashboard = () => {
   }
 
   const getCurrencySymbol = () => {
-    return currentCurrency === 'BTC'
-      ? '₿'
-      : currentCurrency === 'ETH'
-      ? 'Ξ'
-      : '◎'
+    if (currentCurrency === 'BTC') return '₿'
+    else if (currentCurrency === 'ETH') return 'Ξ'
+    else return '◎'
   }
 
   const loadValue = (component) => {
