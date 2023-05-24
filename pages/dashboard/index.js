@@ -29,6 +29,7 @@ const Dashboard = () => {
   const {
     solUsdPrice,
     currentCurrency,
+    selectedCurrencyPrice,
     loading: loadingCrypto,
   } = useSelector((state) => state.crypto)
   const { collections } = useSelector((state) => state.nft)
@@ -52,13 +53,13 @@ const Dashboard = () => {
 
   const cryptoTotalUsd = dashboardData?.crypto?.total ?? 0
   const nftTotalUsd = dashboardData?.nft?.total
-    ? dashboardData?.nft?.total * solUsdPrice
+    ? dashboardData?.nft?.total * solUsdPrice * selectedCurrencyPrice
     : 0
   const loanTotalUsd = dashboardData?.loan?.total
-    ? dashboardData?.loan?.total * solUsdPrice
+    ? dashboardData?.loan?.total * solUsdPrice * selectedCurrencyPrice
     : 0
   const borrowTotalUsd = dashboardData?.borrow?.total
-    ? dashboardData?.borrow?.total * solUsdPrice
+    ? dashboardData?.borrow?.total * solUsdPrice * selectedCurrencyPrice
     : 0
 
   const totalNetworth = cryptoTotal + nftTotal + loanTotal + borrowTotal

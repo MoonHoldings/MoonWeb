@@ -2,6 +2,7 @@ const { createSlice } = require('@reduxjs/toolkit')
 
 const initialState = {
   solUsdPrice: 0,
+  selectedCurrencyPrice: 0,
   shouldUpdateCurrency: false,
   currentCurrency: 'SOL',
   loading: false,
@@ -13,6 +14,9 @@ const cryptoSlice = createSlice({
   reducers: {
     changeSolUsdPrice(state, action) {
       state.solUsdPrice = action.payload
+    },
+    changeCurrentCurrencyPrice(state, action) {
+      state.selectedCurrencyPrice = action.payload
     },
     updateCurrency(state, action) {
       state.currentCurrency = action.payload
@@ -32,6 +36,7 @@ export const {
   updateCurrency,
   updateShouldUpdateCurrency,
   loadingCrypto,
+  changeCurrentCurrencyPrice,
 } = cryptoSlice.actions
 
 export default cryptoSlice.reducer

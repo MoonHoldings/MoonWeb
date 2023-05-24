@@ -10,6 +10,7 @@ import {
   changeSolUsdPrice,
   updateShouldUpdateCurrency,
   loadingCrypto,
+  changeCurrentCurrencyPrice,
 } from 'redux/reducers/cryptoSlice'
 
 import { useRouter } from 'next/router'
@@ -19,14 +20,18 @@ const connection = new Connection(getPythClusterApiUrl(PYTHNET_CLUSTER_NAME))
 const pythPublicKey = getPythProgramKeyForCluster(PYTHNET_CLUSTER_NAME)
 // This feed ID comes from this list: https://pyth.network/developers/price-feed-ids#solana-mainnet-beta
 // This example shows Crypto.SOL/USD
-let feeds = [new PublicKey('JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB')]
+
 let pythConnection
+const THROTTLE_INTERVAL = 5000
+let lastExecutionTime = 0
 function useSolUsdPrice() {
   const dispatch = useDispatch()
   const { solUsdPrice, currentCurrency, shouldUpdateCurrency } = useSelector(
     (state) => state.crypto
   )
   const { wallets } = useSelector((state) => state.wallet)
+
+  let feeds
 
   const router = useRouter()
 
@@ -38,6 +43,19 @@ function useSolUsdPrice() {
       wallets?.length
     ) {
       if (pythConnection == null) {
+        const key =
+          currentCurrency == 'ETH'
+            ? [
+                new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG'),
+                new PublicKey('JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB'),
+              ]
+            : currentCurrency == 'BTC'
+            ? [
+                new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG'),
+                new PublicKey('GVXRSBjFk6e6J3NbVPXohDJetcTjaeeuykUpbQF8UoMU'),
+              ]
+            : [new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG')]
+        feeds = key
         dispatch(loadingCrypto(true))
         pythConnection = new PythConnection(
           connection,
@@ -45,17 +63,23 @@ function useSolUsdPrice() {
           'confirmed',
           feeds
         )
-
         try {
-          pythConnection.onPriceChangeVerbose(
-            (_productAccount, priceAccount) => {
-              const price = priceAccount.accountInfo.data
-              if (price.price !== solUsdPrice) {
+          pythConnection.onPriceChange((product, price) => {
+            const currentTime = Date.now()
+            if (currentTime - lastExecutionTime >= THROTTLE_INTERVAL) {
+              if (product.base === 'SOL') {
                 dispatch(changeSolUsdPrice(price.price))
-                dispatch(loadingCrypto(false))
               }
+              if (product.base === 'BTC' || product.base === 'ETH') {
+                dispatch(changeCurrentCurrencyPrice(price.price))
+              }
+              if (currentCurrency === 'SOL') {
+                dispatch(changeCurrentCurrencyPrice(1))
+              }
+              lastExecutionTime = currentTime
+              dispatch(loadingCrypto(false))
             }
-          )
+          })
           pythConnection.start()
         } catch (error) {
           pythConnection.stop()
@@ -66,13 +90,6 @@ function useSolUsdPrice() {
         dispatch(loadingCrypto(true))
         pythConnection.stop()
         pythConnection = null
-        const key =
-          currentCurrency == 'ETH'
-            ? 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB'
-            : currentCurrency == 'BTC'
-            ? 'GVXRSBjFk6e6J3NbVPXohDJetcTjaeeuykUpbQF8UoMU'
-            : 'H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG'
-        feeds = [new PublicKey(key)]
         dispatch(updateShouldUpdateCurrency(false))
       }
     }
