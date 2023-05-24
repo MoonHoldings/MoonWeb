@@ -100,6 +100,7 @@ function useSolUsdPrice() {
     }
     if (!currentCurrency) {
       dispatch(updateCurrency('SOL'))
+      dispatch(loadingCrypto(false))
     }
   }, [
     dispatch,
