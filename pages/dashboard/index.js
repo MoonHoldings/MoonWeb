@@ -216,6 +216,26 @@ const Dashboard = () => {
       </>
     )
   }
+
+  const loadDollarValue = (component) => {
+    return (
+      <>
+        {!loading ? (
+          <>{component}</>
+        ) : (
+          <div className="mt-6">
+            <Skeleton
+              paragraph={{ rows: 1 }}
+              title={false}
+              loading={true}
+              active
+            />
+          </div>
+        )}
+      </>
+    )
+  }
+
   return (
     <div className="flex flex-col pb-[4rem] pt-[2rem] sm:pt-0 md:order-2">
       <div class="relative flex h-[20rem] w-full items-start justify-between overflow-hidden rounded-2xl bg-gradient-to-t from-[#3B5049] via-[#0089a07d] to-[#0089a07d] p-6">
@@ -395,11 +415,14 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {loadDollarValue(
+              <div className="mt-4 text-[2.5rem] font-bold">
+                ${toCurrencyFormat(cryptoTotalUsd)}
+              </div>
+            )}
+
             {loadValue(
               <>
-                <div className="mt-4 text-[2.5rem] font-bold">
-                  ${toCurrencyFormat(cryptoTotalUsd)}
-                </div>
                 {dashboardData?.crypto?.percentChange != 0 && (
                   <div
                     className={mergeClasses(
@@ -440,12 +463,14 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
+            {loadDollarValue(
+              <div className="mt-4 text-[2.5rem] font-bold">
+                ${toCurrencyFormat(nftTotalUsd)}
+              </div>
+            )}
 
             {loadValue(
               <>
-                <div className="mt-4 text-[2.5rem] font-bold">
-                  ${toCurrencyFormat(nftTotalUsd)}
-                </div>
                 {dashboardData?.nft?.percentChange != 0 && (
                   <div
                     className={mergeClasses(
@@ -483,12 +508,14 @@ const Dashboard = () => {
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
+            {loadDollarValue(
+              <div className="mt-4 text-[2.5rem] font-bold">
+                ${toCurrencyFormat(loanTotalUsd)}
+              </div>
+            )}
 
             {loadValue(
               <>
-                <div className="mt-4 text-[2.5rem] font-bold">
-                  ${toCurrencyFormat(loanTotalUsd)}
-                </div>
                 {dashboardData?.loan?.percentChange != 0 && (
                   <div
                     className={mergeClasses(
@@ -525,11 +552,14 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {loadDollarValue(
+              <div className="mt-4 text-[2.5rem] font-bold">
+                ${toCurrencyFormat(borrowTotalUsd)}
+              </div>
+            )}
+
             {loadValue(
               <>
-                <div className="mt-4 text-[2.5rem] font-bold">
-                  ${toCurrencyFormat(borrowTotalUsd)}
-                </div>
                 {dashboardData?.borrow?.percentChange != 0 && (
                   <div
                     className={mergeClasses(
