@@ -328,7 +328,9 @@ const RightSideBar = () => {
   const getPortfolioValue = () => {
     if (router.pathname.includes('nfts')) {
       const value = calculatePortfolioValue()
-      return `${toCurrencyFormat(value)}`
+      return `${toCurrencyFormat(
+        (value * solUsdPrice) / selectedCurrencyPrice
+      )}`
     }
 
     if (router.pathname.includes('crypto')) {
@@ -338,7 +340,9 @@ const RightSideBar = () => {
     if (router.pathname.includes('dashboard')) {
       const value = calculatePortfolioValue()
       return `${toCurrencyFormat(
-        value + loanTotal + borrowTotal + cryptoTotal / selectedCurrencyPrice
+        ((value + loanTotal + borrowTotal) * solUsdPrice) /
+          selectedCurrencyPrice +
+          cryptoTotal / selectedCurrencyPrice
       )}`
     }
   }
@@ -387,7 +391,7 @@ const RightSideBar = () => {
   const getShortPortfolioValueUsd = () => {
     if (router.pathname.includes('nfts')) {
       const value = calculatePortfolioValue()
-      return `$${toShortCurrencyFormat(value)}`
+      return `$${toShortCurrencyFormat(value * solUsdPrice)}`
     }
 
     if (router.pathname.includes('crypto')) {

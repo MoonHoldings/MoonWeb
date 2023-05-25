@@ -205,7 +205,7 @@ const Login = (props) => {
     handleComplete(true)
     let finalEmail = discordEmail ? discordEmail : email ? email : false
 
-    if (discordEmail) {
+    if (finalEmail) {
       try {
         const res = await resend({ variables: { email: finalEmail } })
         if (res.error) {
