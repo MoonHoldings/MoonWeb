@@ -46,7 +46,9 @@ const RightSideBar = () => {
     (state) => state.wallet
   )
   const { collections } = useSelector((state) => state.nft)
-  const { solUsdPrice, currentCurrency } = useSelector((state) => state.crypto)
+  const { solUsdPrice, currentCurrency, selectedCurrencyPrice } = useSelector(
+    (state) => state.crypto
+  )
 
   const [addUserWallet, { loading: addingUserWallet }] =
     useMutation(ADD_USER_WALLET)
@@ -57,7 +59,12 @@ const RightSideBar = () => {
   const [removeAllUserWallets, { loading: removingAllUserWallets }] =
     useMutation(REMOVE_ALL_USER_WALLETS)
 
-  const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
+  const {
+    loading: portfolioLoading,
+    cryptoTotal,
+    loanTotal,
+    borrowTotal,
+  } = useSelector((state) => state.portfolio)
 
   useEffect(() => {
     dispatch(getUserWallets())
@@ -304,6 +311,17 @@ const RightSideBar = () => {
     )
   }
 
+  const calculatePortfolioValue = () => {
+    return collections?.reduce((total, c) => {
+      if (c.floorPrice) {
+        const value =
+          (parseFloat(c.floorPrice) / LAMPORTS_PER_SOL) * c?.nfts?.length
+        return total + value
+      }
+      return total
+    }, 0)
+  }
+
   const getPortfolioValue = () => {
     return toCurrencyFormat(
       collections?.reduce(
@@ -318,46 +336,67 @@ const RightSideBar = () => {
   }
 
   const getPortfolioValueUsd = () => {
-    return `$${toCurrencyFormat(
-      collections?.reduce(
-        (total, c) =>
-          c.floorPrice
-            ? total +
-              (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) *
-                c?.nfts?.length *
-                solUsdPrice
-            : total,
-        0
+    if (router.pathname.includes('nfts'))
+      return toCurrencyFormat(
+        collections?.reduce(
+          (total, c) =>
+            c.floorPrice
+              ? total +
+                (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) * c?.nfts?.length
+              : total,
+          0
+        )
       )
-    )}`
+
+    if (router.pathname.includes('crypto')) return toCurrencyFormat(cryptoTotal)
+
+    if (router.pathname.includes('dashboard'))
+      return toCurrencyFormat(
+        collections?.reduce(
+          (total, c) =>
+            c.floorPrice
+              ? total +
+                (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) * c?.nfts?.length
+              : total,
+          0
+        )
+      )
   }
 
   const getShortPortfolioValue = () => {
-    return toShortCurrencyFormat(
-      collections?.reduce(
-        (total, c) =>
-          c.floorPrice
-            ? total +
-              (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) * c?.nfts?.length
-            : total,
-        0
-      )
-    )
+    if (router.pathname.includes('nfts')) {
+      const value = calculatePortfolioValue()
+      return `${toCurrencyFormat(value)}`
+    }
+
+    if (router.pathname.includes('crypto')) {
+      return `${toCurrencyFormat(cryptoTotal / selectedCurrencyPrice)}`
+    }
+
+    if (router.pathname.includes('dashboard')) {
+      const value = calculatePortfolioValue()
+      return `${toCurrencyFormat(
+        value + loanTotal + borrowTotal + cryptoTotal / selectedCurrencyPrice
+      )}`
+    }
   }
 
   const getShortPortfolioValueUsd = () => {
-    return `$${toShortCurrencyFormat(
-      collections?.reduce(
-        (total, c) =>
-          c.floorPrice
-            ? total +
-              (parseFloat(c?.floorPrice) / LAMPORTS_PER_SOL) *
-                c?.nfts?.length *
-                solUsdPrice
-            : total,
-        0
-      )
-    )}`
+    if (router.pathname.includes('nfts')) {
+      const value = calculatePortfolioValue()
+      return `$${toCurrencyFormat(value)}`
+    }
+
+    if (router.pathname.includes('crypto')) {
+      return `$${toCurrencyFormat(cryptoTotal)}`
+    }
+
+    if (router.pathname.includes('dashboard')) {
+      const value = calculatePortfolioValue()
+      return `$${toCurrencyFormat(
+        (value + loanTotal + borrowTotal) * solUsdPrice + cryptoTotal
+      )}`
+    }
   }
 
   const MENUS = {
@@ -381,7 +420,7 @@ const RightSideBar = () => {
               color="#1F2126"
               title={
                 <span className="flex h-full items-center text-[2rem] text-white">
-                  {getPortfolioValueUsd()}
+                  {getShortPortfolioValueUsd()}
                 </span>
               }
               trigger={'hover'}
@@ -397,7 +436,7 @@ const RightSideBar = () => {
               color="#1F2126"
               title={
                 <span className="flex h-full items-center text-[2rem] text-white">
-                  {getPortfolioValue()}
+                  {getShortPortfolioValue()}
                 </span>
               }
               trigger={
@@ -405,12 +444,12 @@ const RightSideBar = () => {
               }
             >
               <div className="flex items-center text-[3.2rem] text-white xl:text-[2.8rem]">
-                {getShortPortfolioValue()}◎
-                {/* {currentCurrency === 'BTC'
-                  ? '₿'
+                {getShortPortfolioValue()}
+                {currentCurrency === 'BTC'
+                  ? ' ₿'
                   : currentCurrency == 'ETH'
-                  ? 'Ξ'
-                  : '◎'} */}
+                  ? ' Ξ'
+                  : ' ◎'}
               </div>
             </Tooltip>
             {/* <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">

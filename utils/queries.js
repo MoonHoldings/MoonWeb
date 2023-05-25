@@ -346,3 +346,9 @@ export const GET_USER_DASHBOARD = gql`
     }
   }
 `
+
+export const GET_USER_PORTFOLIO_TOTAL_BY_TYPE = gql`
+  query GetUserPortfolioTotalByType($type: String!) {
+    getUserPortfolioTotalByType(type: $type)
+  }
+`
