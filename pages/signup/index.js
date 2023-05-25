@@ -57,14 +57,13 @@ const SignUp = () => {
   //handle signup response
   useEffect(() => {
     if (signUpData) {
-      setModal(
-        'You have successfully signed up. Please verify your email to login.',
-        false,
-        true
-      )
+      const message = signUpData.register.isVerified
+        ? 'You have successfully signed up with your email. Please login to continue.'
+        : 'You have successfully signed up. Please check your email to finish the signup process.'
+      setModal(message, false, true)
       setTimeout(function () {
         router.push('/login')
-      }, 1000)
+      }, 2000)
     }
   }, [signUpData, dispatch, router])
 
@@ -175,7 +174,6 @@ const SignUp = () => {
     if (discordEmail) {
       try {
         const res = await resend({ variables: { email: discordEmail } })
-        console.log(res)
         if (res.error) {
           setModal(res.error.message, true, true)
         } else {
