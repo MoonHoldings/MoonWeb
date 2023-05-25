@@ -642,12 +642,6 @@ const Dashboard = () => {
                 loading={true}
                 active
               />
-              <Skeleton
-                paragraph={{ rows: 1 }}
-                title={false}
-                loading={true}
-                active
-              />
             </div>
           ) : (
             <>
@@ -672,9 +666,8 @@ const Dashboard = () => {
 
               <p>
                 {getCurrencySymbol()}
-                {totalNetworth.toFixed(4)}
+                {toCurrencyFormat(totalNetworth)}
               </p>
-              {toCurrencyFormat(borrowTotal)}
             </>
           )}
         </div>
