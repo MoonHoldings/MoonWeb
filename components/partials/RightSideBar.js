@@ -46,7 +46,7 @@ const RightSideBar = () => {
     (state) => state.wallet
   )
   const { collections } = useSelector((state) => state.nft)
-  const { solUsdPrice } = useSelector((state) => state.crypto)
+  const { solUsdPrice, currentCurrency } = useSelector((state) => state.crypto)
 
   const [addUserWallet, { loading: addingUserWallet }] =
     useMutation(ADD_USER_WALLET)
@@ -405,15 +405,12 @@ const RightSideBar = () => {
               }
             >
               <div className="flex items-center text-[3.2rem] text-white xl:text-[2.8rem]">
-                {getShortPortfolioValue()}
-                <Image
-                  className="ml-2 inline h-[2rem] w-[2rem] xl:h-[2rem] xl:w-[2rem]"
-                  src="/images/svgs/sol-symbol.svg"
-                  alt="SOL Symbol"
-                  width={0}
-                  height={0}
-                  unoptimized
-                />
+                {getShortPortfolioValue()}◎
+                {/* {currentCurrency === 'BTC'
+                  ? '₿'
+                  : currentCurrency == 'ETH'
+                  ? 'Ξ'
+                  : '◎'} */}
               </div>
             </Tooltip>
             {/* <div className="flex h-[3.5rem] w-[12.2rem] items-center justify-center rounded-[1.6rem] bg-black text-[1.4rem] text-[#62EAD2]">
