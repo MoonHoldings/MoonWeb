@@ -42,13 +42,14 @@ const portfolioSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(fetchPortfolioTotalByType.fulfilled, (state, action) => {
-      if (action.payload.type === PortfolioType.CRYPTO)
+      const type = action.payload.type ?? ''
+      if (type === PortfolioType.CRYPTO)
         state.cryptoTotal = action.payload.portfolioTotalByType
-      if (action.payload.type === PortfolioType.NFT)
+      if (type === PortfolioType.NFT)
         state.nftTotal = action.payload.portfolioTotalByType
-      if (action.payload.type === PortfolioType.BORROW)
+      if (type === PortfolioType.BORROW)
         state.borrowTotal = action.payload.portfolioTotalByType
-      if (action.payload.type === PortfolioType.LOAN)
+      if (type === PortfolioType.LOAN)
         state.loanTotal = action.payload.portfolioTotalByType
     })
   },
