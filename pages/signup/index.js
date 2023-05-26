@@ -114,7 +114,7 @@ const SignUp = () => {
         const valueReceived = event.data
         if (valueReceived.payload) {
           if (valueReceived.payload.ok) {
-            router.push('/nfts')
+            router.push('/dashboard')
             discordWindow.close()
             dispatch(
               discordAuthenticationComplete({
