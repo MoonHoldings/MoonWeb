@@ -9,6 +9,7 @@ import { useLazyQuery } from '@apollo/client'
 import { getCoinPrices, pythCoins } from 'utils/pyth'
 import { coinStyles } from 'utils/coinStyles'
 import {
+  fetchPortfolioTotalByType,
   loadingPortfolio,
   populatePortfolioCoins,
   reloadPortfolio,
@@ -17,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
 
 import assetsManifest from 'cryptocurrency-icons/manifest.json'
+import { PortfolioType } from 'types/enums'
 
 const Crypto = () => {
   const dispatch = useDispatch()
@@ -75,6 +77,7 @@ const Crypto = () => {
       getUserPort()
       setIsSet(false)
       dispatch(reloadPortfolio(false))
+      dispatch(fetchPortfolioTotalByType({ type: PortfolioType.CRYPTO }))
     }
   }, [coinModalOpen, getUserPort, dispatch, reload])
 

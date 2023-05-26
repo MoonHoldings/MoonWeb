@@ -12,6 +12,7 @@ import { reloadDashboard } from 'redux/reducers/utilSlice'
 import { updateCurrency } from 'redux/reducers/cryptoSlice'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { Skeleton } from 'antd'
+import { populatePortfolioTotals } from 'redux/reducers/portfolioSlice'
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Dashboard = () => {
@@ -95,6 +96,19 @@ const Dashboard = () => {
     data,
     updateTimeRangeType,
   ])
+
+  useEffect(() => {
+    if (dashboardData) {
+      dispatch(
+        populatePortfolioTotals({
+          cryptoTotal: dashboardData.crypto.total,
+          nftTotal: dashboardData.nft.total,
+          borrowTotal: dashboardData.borrow.total,
+          loanTotal: dashboardData.loan.total,
+        })
+      )
+    }
+  }, [dashboardData, dispatch])
 
   useEffect(() => {
     dispatch(fetchUserNfts())
