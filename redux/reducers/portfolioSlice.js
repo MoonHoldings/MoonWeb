@@ -42,7 +42,7 @@ const portfolioSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(fetchPortfolioTotalByType.fulfilled, (state, action) => {
-      const type = action.payload.type ?? ''
+      const type = action?.payload?.type ?? ''
       if (type === PortfolioType.CRYPTO)
         state.cryptoTotal = action.payload.portfolioTotalByType
       if (type === PortfolioType.NFT)
