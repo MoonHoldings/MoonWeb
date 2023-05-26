@@ -117,7 +117,7 @@ const CollectionCard = ({ collection, index }) => {
     >
       {collection.name === 'unknown' ? (
         <Image
-          className="mb-[1rem] h-4/5 w-full rounded-[1rem] object-cover p-1 xl:mb-[1.5rem]"
+          className="mb-[1rem] h-[20rem] w-full rounded-[1rem] object-cover p-1 xl:mb-[1.5rem]"
           src="/images/unknown-collections.png"
           alt="NFT picture"
           width={0}
@@ -126,7 +126,7 @@ const CollectionCard = ({ collection, index }) => {
         />
       ) : (
         <Image
-          className="mb-[1.5rem] h-4/5 w-full rounded-[1rem] object-cover p-1"
+          className="mb-[1.5rem] h-[20rem] w-full rounded-[1rem] object-cover p-1"
           src={collection.image}
           alt="NFT picture"
           width={0}
