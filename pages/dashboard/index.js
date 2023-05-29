@@ -607,7 +607,7 @@ const Dashboard = () => {
             />
           ) : (
             <>
-              {Math.ceil(10) > 0 && (
+              {Math.ceil(cryptoPercent) > 0 && (
                 <div
                   className={`h-full bg-[#13C296] ${
                     Math.ceil(cryptoPercent) > 0 && 'rounded-l-lg'
