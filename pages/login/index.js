@@ -83,7 +83,7 @@ const Login = (props) => {
         })
       )
       if (res.payload.username) {
-        Router.push('/nfts')
+        Router.push('/dashboard')
       } else if (res.payload.message) {
         setModal(res.payload.message, true, true)
       }
@@ -146,7 +146,7 @@ const Login = (props) => {
         const valueReceived = event.data
         if (valueReceived.payload) {
           if (valueReceived.payload.ok) {
-            Router.push('/nfts')
+            Router.push('/dashboard')
             dispatch(
               discordAuthenticationComplete({
                 username: valueReceived.payload.username ?? null,
