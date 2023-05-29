@@ -180,6 +180,7 @@ const RightSideBar = () => {
     if (userWallets?.length) {
       await refreshUserWallets()
       dispatch(fetchUserNfts())
+      dispatch(reloadPortfolio())
     }
   }
 
