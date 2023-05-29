@@ -609,25 +609,51 @@ const Dashboard = () => {
             <>
               {Math.ceil(cryptoPercent) > 0 && (
                 <div
-                  className={`h-full bg-[#13C296]`}
+                  className={`h-full bg-[#13C296] ${
+                    Math.ceil(cryptoPercent) > 0 && 'rounded-l-lg'
+                  } ${
+                    Math.ceil(borrowPercent) === 0 &&
+                    Math.ceil(nftPercent) === 0 &&
+                    Math.ceil(loanPercent) === 0 &&
+                    'rounded-r-lg'
+                  }`}
                   style={{ width: `${Math.ceil(cryptoPercent)}%` }}
                 />
               )}
               {Math.ceil(nftPercent) > 0 && (
                 <div
-                  className={`ml-3 h-full bg-[#3056D3]`}
+                  className={`h-full bg-[#3056D3] ${
+                    Math.ceil(cryptoPercent) === 0
+                      ? 'ml-0 rounded-l-lg'
+                      : 'ml-3'
+                  } ${
+                    Math.ceil(loanPercent) === 0 &&
+                    Math.ceil(borrowPercent) === 0 &&
+                    'rounded-r-lg'
+                  }`}
                   style={{ width: `${Math.ceil(nftPercent)}%` }}
                 />
               )}
               {Math.ceil(loanPercent) > 0 && (
                 <div
-                  className={`ml-3 h-full bg-[#F2994A]`}
+                  className={`h-full bg-[#F2994A] ${
+                    Math.ceil(nftPercent) === 0 &&
+                    Math.ceil(cryptoPercent) === 0
+                      ? 'ml-0 rounded-l-lg'
+                      : 'ml-3'
+                  } ${Math.ceil(borrowPercent) === 0 && 'rounded-r-lg'}`}
                   style={{ width: `${Math.ceil(loanPercent)}%` }}
                 />
               )}
               {Math.ceil(borrowPercent) > 0 && (
                 <div
-                  className={`ml-3 h-full bg-[#EF4123]`}
+                  className={`h-full bg-[#EF4123] ${
+                    Math.ceil(nftPercent) === 0 &&
+                    Math.ceil(cryptoPercent) === 0 &&
+                    Math.ceil(loanPercent) === 0
+                      ? 'ml-0 rounded-l-lg'
+                      : 'ml-3'
+                  } ${Math.ceil(borrowPercent) > 0 && 'rounded-r-lg'}`}
                   style={{ width: `${Math.ceil(borrowPercent)}%` }}
                 />
               )}
