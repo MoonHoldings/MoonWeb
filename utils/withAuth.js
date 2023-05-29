@@ -40,7 +40,7 @@ export const getServerSidePropsWithAuth = async (context) => {
     )
       return {
         redirect: {
-          destination: '/nfts',
+          destination: '/dashboard',
           permanent: false,
         },
       }
