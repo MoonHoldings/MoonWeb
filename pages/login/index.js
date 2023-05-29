@@ -85,7 +85,6 @@ const Login = (props) => {
       if (res.payload.username) {
         Router.push('/nfts')
       } else if (res.payload.message) {
-        console.log(res.payload.message)
         setModal(res.payload.message, true, true)
       }
     }
