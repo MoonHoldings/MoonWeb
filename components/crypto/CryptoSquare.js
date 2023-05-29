@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 import numeral from 'numeral'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
   const totalValue = (holding, price) => {
@@ -74,7 +75,7 @@ const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
           {formattedHolding(crypto.holdings)}
         </h1>
         <div className="value-dollar text-[2.2rem] font-[500]">
-          ${totalValue(crypto.holdings, crypto.price)}
+          ${toCurrencyFormat(crypto.holdings * crypto.price)}
         </div>
         <div className="pct-dollar flex justify-center">
           <div>{`$${crypto.price}`}</div>
