@@ -13,10 +13,12 @@ import { updateCurrency } from 'redux/reducers/cryptoSlice'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { Skeleton } from 'antd'
 import { populatePortfolioTotals } from 'redux/reducers/portfolioSlice'
+import { useRouter } from 'next/router'
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Dashboard = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const [timeRangeType, setTimeRangeType] = useState('Day')
   const [getUserDashboard, { data, loading }] = useLazyQuery(
@@ -251,6 +253,10 @@ const Dashboard = () => {
     )
   }
 
+  const handleClick = (url) => {
+    router.push(`/${url}`)
+  }
+
   return (
     <div className="flex flex-col pb-[4rem] pt-[2rem] sm:pt-0 md:order-2">
       <div class="relative flex h-[20rem] w-full items-start justify-between overflow-hidden rounded-2xl bg-gradient-to-t from-[#3B5049] via-[#0089a07d] to-[#0089a07d] p-6">
@@ -415,7 +421,10 @@ const Dashboard = () => {
         <div className="flex w-full">
           <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
             <div className="flex w-full">
-              <div className="rounded-md bg-[#13c29614] p-6">
+              <div
+                className="cursor-pointer rounded-md bg-[#13c29614] p-6"
+                onClick={() => handleClick('crypto')}
+              >
                 <Image
                   className="h-[3rem] w-[3rem]"
                   src="/images/svgs/dashboard-crypto-icon.svg"
@@ -425,7 +434,12 @@ const Dashboard = () => {
                 />
               </div>
               <div className="ml-5">
-                <p className="text-[1.8rem]">Crypto</p>
+                <p
+                  className="cursor-pointer text-[1.8rem]"
+                  onClick={() => handleClick('crypto')}
+                >
+                  Crypto
+                </p>
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
@@ -438,7 +452,7 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.crypto?.percentChange != 0 && (
+                {dashboardData?.crypto?.percentChange != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -449,6 +463,8 @@ const Dashboard = () => {
                   >
                     {dashboardData?.crypto?.percentChange.toFixed(0)}%
                   </div>
+                ) : (
+                  <div className="text-[1.8rem] text-[#637381]">-</div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
                   {getCurrencySymbol()}
@@ -464,9 +480,12 @@ const Dashboard = () => {
           </div>
           <div className="ml-6 mr-0 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:mr-3">
             <div className="flex w-full">
-              <div className="rounded-md bg-[#3056d314] p-6">
+              <div
+                className="cursor-pointer rounded-md bg-[#3056d314] p-6"
+                onClick={() => handleClick('nfts')}
+              >
                 <Image
-                  className="h-[3rem] w-[3rem]"
+                  className="h-[3rem] w-[3rem] "
                   src="/images/svgs/dashboard-nft-icon.svg"
                   alt=""
                   width="0"
@@ -474,7 +493,12 @@ const Dashboard = () => {
                 />
               </div>
               <div className="ml-5">
-                <p className="text-[1.8rem]">NFTs</p>
+                <p
+                  className="cursor-pointer text-[1.8rem]"
+                  onClick={() => handleClick('nfts')}
+                >
+                  NFTs
+                </p>
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
@@ -486,7 +510,7 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.nft?.percentChange != 0 && (
+                {dashboardData?.nft?.percentChange != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -497,6 +521,8 @@ const Dashboard = () => {
                   >
                     {dashboardData?.nft?.percentChange.toFixed(0)}%
                   </div>
+                ) : (
+                  <div className="text-[1.8rem] text-[#637381]">-</div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
                   {getCurrencySymbol()}
@@ -509,7 +535,10 @@ const Dashboard = () => {
         <div className="mt-4 flex w-full sm:mt-0">
           <div className="mr-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8 sm:ml-3">
             <div className="flex w-full">
-              <div className="rounded-md bg-[#f2994a14] p-6">
+              <div
+                className="cursor-pointer rounded-md bg-[#f2994a14] p-6"
+                onClick={() => handleClick('defi-loans/lend')}
+              >
                 <Image
                   className="h-[3rem] w-[3rem]"
                   src="/images/svgs/dashboard-loans-icon.svg"
@@ -519,7 +548,12 @@ const Dashboard = () => {
                 />
               </div>
               <div className="ml-5">
-                <p className="text-[1.8rem]">Loans</p>
+                <p
+                  className="cursor-pointer text-[1.8rem]"
+                  onClick={() => handleClick('defi-loans/lend')}
+                >
+                  Loans
+                </p>
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
@@ -531,7 +565,7 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.loan?.percentChange != 0 && (
+                {dashboardData?.loan?.percentChange != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -540,8 +574,10 @@ const Dashboard = () => {
                       )
                     )}
                   >
-                    {dashboardData?.loan?.percentChange.toFixed(0)}%
+                    {100}%
                   </div>
+                ) : (
+                  <div className="text-[1.8rem] text-[#637381]">-</div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
                   {getCurrencySymbol()}
@@ -552,7 +588,10 @@ const Dashboard = () => {
           </div>
           <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
             <div className="flex w-full">
-              <div className="rounded-md bg-[#9b51e014] p-6">
+              <div
+                className="cursor-pointer rounded-md bg-[#9b51e014] p-6"
+                onClick={() => handleClick('defi-loans/borrow')}
+              >
                 <Image
                   className="h-[3rem] w-[3rem]"
                   src="/images/svgs/dashboard-borrow-icon.svg"
@@ -562,7 +601,12 @@ const Dashboard = () => {
                 />
               </div>
               <div className="ml-5">
-                <p className="text-[1.8rem]">Borrow</p>
+                <p
+                  className="cursor-pointer text-[1.8rem]"
+                  onClick={() => handleClick('defi-loans/borrow')}
+                >
+                  Borrow
+                </p>
                 {/* <p className="text-[1.6rem] text-[#637381]">This week</p> */}
               </div>
             </div>
@@ -575,7 +619,7 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.borrow?.percentChange != 0 && (
+                {dashboardData?.borrow?.percentChange != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -586,6 +630,8 @@ const Dashboard = () => {
                   >
                     {dashboardData?.borrow?.percentChange.toFixed(0)}%
                   </div>
+                ) : (
+                  <div className="text-[1.8rem] text-[#637381]">-</div>
                 )}
                 <div className="text-[2.2rem] font-bold text-[#637381] xl:text-[2.4rem]">
                   {getCurrencySymbol()}
@@ -597,7 +643,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
-        <div className="flex h-7 w-full ">
+        <div className="flex h-7 w-full overflow-hidden rounded-l-lg rounded-r-lg">
           {loadingCrypto || loading ? (
             <Skeleton
               paragraph={{ rows: 1, width: '100%' }}
@@ -609,27 +655,14 @@ const Dashboard = () => {
             <>
               {Math.ceil(cryptoPercent) > 0 && (
                 <div
-                  className={`h-full bg-[#13C296] ${
-                    Math.ceil(cryptoPercent) > 0 && 'rounded-l-lg'
-                  } ${
-                    Math.ceil(borrowPercent) === 0 &&
-                    Math.ceil(nftPercent) === 0 &&
-                    Math.ceil(loanPercent) === 0 &&
-                    'rounded-r-lg'
-                  }`}
+                  className={`h-full bg-[#13C296]`}
                   style={{ width: `${Math.ceil(cryptoPercent)}%` }}
                 />
               )}
               {Math.ceil(nftPercent) > 0 && (
                 <div
                   className={`h-full bg-[#3056D3] ${
-                    Math.ceil(cryptoPercent) === 0
-                      ? 'ml-0 rounded-l-lg'
-                      : 'ml-3'
-                  } ${
-                    Math.ceil(loanPercent) === 0 &&
-                    Math.ceil(borrowPercent) === 0 &&
-                    'rounded-r-lg'
+                    Math.ceil(cryptoPercent) > 0 && 'ml-3'
                   }`}
                   style={{ width: `${Math.ceil(nftPercent)}%` }}
                 />
@@ -637,23 +670,21 @@ const Dashboard = () => {
               {Math.ceil(loanPercent) > 0 && (
                 <div
                   className={`h-full bg-[#F2994A] ${
-                    Math.ceil(nftPercent) === 0 &&
-                    Math.ceil(cryptoPercent) === 0
-                      ? 'ml-0 rounded-l-lg'
-                      : 'ml-3'
-                  } ${Math.ceil(borrowPercent) === 0 && 'rounded-r-lg'}`}
+                    Math.ceil(nftPercent) > 0 &&
+                    Math.ceil(cryptoPercent) > 0 &&
+                    'ml-3'
+                  }`}
                   style={{ width: `${Math.ceil(loanPercent)}%` }}
                 />
               )}
               {Math.ceil(borrowPercent) > 0 && (
                 <div
                   className={`h-full bg-[#EF4123] ${
-                    Math.ceil(nftPercent) === 0 &&
-                    Math.ceil(cryptoPercent) === 0 &&
-                    Math.ceil(loanPercent) === 0
-                      ? 'ml-0 rounded-l-lg'
-                      : 'ml-3'
-                  } ${Math.ceil(borrowPercent) > 0 && 'rounded-r-lg'}`}
+                    Math.ceil(nftPercent) > 0 &&
+                    Math.ceil(cryptoPercent) > 0 &&
+                    Math.ceil(loanPercent) > 0 &&
+                    'ml-3'
+                  }`}
                   style={{ width: `${Math.ceil(borrowPercent)}%` }}
                 />
               )}
