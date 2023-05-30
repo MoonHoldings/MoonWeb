@@ -38,7 +38,6 @@ const Collections = ({ collections }) => {
 
   const nftTotalValue = calculatePortfolioValue()
 
-  console.log(collections)
   return (
     <div className="nft-portfolio mt-[2rem] text-white md:order-2">
       <h1 className="text-[2.9rem]">{NFT_PORTFOLIO}</h1>
@@ -62,26 +61,12 @@ const Collections = ({ collections }) => {
                   : ' ◎'}
               </div>
             </div>
-            <Tooltip
-              color="#1F2126"
-              title={
-                <span className="flex h-full items-center text-[1.5rem] md:text-[2rem] ">
-                  {`$${nftTotalValue * solUsdPrice}`}
-                </span>
-              }
-              // trigger={
-              //   isShortCurrencyFormat(formatShortFloorPriceUsdTotal())
-              //     ? 'hover'
-              //     : null
-              // }
-            >
-              <div>
-                <TextBlink
-                  className="bold ml-4 text-[1.5rem] text-[#62EAD2] md:text-[2rem]"
-                  text={`$${toCurrencyFormat(nftTotalValue * solUsdPrice)}`}
-                />
-              </div>
-            </Tooltip>
+            <div>
+              <TextBlink
+                className="bold ml-4 text-[1.5rem] text-[#62EAD2] md:text-[2rem]"
+                text={`$${toCurrencyFormat(nftTotalValue * solUsdPrice)}`}
+              />
+            </div>
           </div>
         </div>
       )}
