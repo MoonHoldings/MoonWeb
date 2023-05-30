@@ -485,7 +485,7 @@ const Dashboard = () => {
                 onClick={() => handleClick('nfts')}
               >
                 <Image
-                  className="h-[3rem] w-[3rem] "
+                  className="h-[3rem] w-[3rem]"
                   src="/images/svgs/dashboard-nft-icon.svg"
                   alt=""
                   width="0"
@@ -574,7 +574,7 @@ const Dashboard = () => {
                       )
                     )}
                   >
-                    {100}%
+                    {dashboardData?.loan?.percentChange.toFixed(0)}%
                   </div>
                 ) : (
                   <div className="text-[1.8rem] text-[#637381]">-</div>
