@@ -685,4 +685,32 @@ export const coinStyles = [
       text: '#CFCFCF',
     },
   },
+  {
+    id: 'BONK',
+    name: 'Bonk',
+    colors: {
+      text: '#E9CB44',
+    },
+  },
+  {
+    id: 'Jelly',
+    name: 'Jelly',
+    colors: {
+      text: '#EE7FAD',
+    },
+  },
+  {
+    id: 'KING',
+    name: 'King',
+    colors: {
+      text: '#EDD74B',
+    },
+  },
+  {
+    id: 'FORGE',
+    name: 'FORGE',
+    colors: {
+      text: '#FFFFFF',
+    },
+  },
 ]
