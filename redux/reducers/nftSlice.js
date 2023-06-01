@@ -120,14 +120,13 @@ export const fetchCandleStickData = createAsyncThunk(
 
 export const fetchHelloMoonCollectionIds = createAsyncThunk(
   'nft/fetchHelloMoonCollectionIds',
-  async ({ collectionName }, thunkAPI) => {
+  async ({ mint }, thunkAPI) => {
     const { dispatch } = thunkAPI
 
     const { data: collectionIdResponse } = await axios.post(
-      `${HELLO_MOON_URL}/nft/collection/name`,
+      `${HELLO_MOON_URL}/nft/mints-by-owner`,
       {
-        searchStrategy: 'default',
-        collectionName: collectionName,
+        nftMint: mint,
       },
       AXIOS_CONFIG_HELLO_MOON_KEY
     )

@@ -23,7 +23,7 @@ const Index = () => {
 
   useEffect(() => {
     dispatch(
-      fetchHelloMoonCollectionIds({ collectionName: currentCollection.name })
+      fetchHelloMoonCollectionIds({ mint: currentCollection.nfts[0].mint })
     )
   }, [dispatch])
 
