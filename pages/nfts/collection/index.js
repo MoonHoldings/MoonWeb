@@ -16,15 +16,20 @@ import { fetchHelloMoonCollectionIds } from 'redux/reducers/nftSlice'
 const Index = () => {
   const router = useRouter()
   const dispatch = useDispatch()
-  const { currentCollection, candleStickData, loading } = useSelector(
-    (state) => state.nft
-  )
+  const {
+    currentCollection,
+    candleStickData,
+    loadingCollection,
+    loadingCandle,
+  } = useSelector((state) => state.nft)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   useEffect(() => {
-    dispatch(
-      fetchHelloMoonCollectionIds({ mint: currentCollection.nfts[0].mint })
-    )
+    if (currentCollection.nfts.length > 0) {
+      dispatch(
+        fetchHelloMoonCollectionIds({ mint: currentCollection.nfts[0].mint })
+      )
+    }
   }, [dispatch])
 
   const handleClick = (url) => {
@@ -95,7 +100,7 @@ const Index = () => {
       <div>
         {candleStickData.length > 0 ? (
           <CandlestickChart candleStickData={candleStickData} />
-        ) : loading ? (
+        ) : loadingCollection || loadingCandle ? (
           <div className="flex flex-row justify-center">
             <svg
               aria-hidden="true"
