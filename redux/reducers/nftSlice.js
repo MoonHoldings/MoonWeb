@@ -15,7 +15,8 @@ const initialState = {
   currentNft: {},
   candleStickData: [],
   currentCollectionId: '',
-  loading: false,
+  loadingCollection: false,
+  loadingCandle: false,
 }
 
 const nftSlice = createSlice({
@@ -44,18 +45,18 @@ const nftSlice = createSlice({
         state.collections = action.payload
       })
       .addCase(fetchCandleStickData.pending, (state, action) => {
-        state.loading = true
+        state.loadingCandle = true
       })
       .addCase(fetchCandleStickData.fulfilled, (state, action) => {
         state.candleStickData = action.payload
-        state.loading = false
+        state.loadingCandle = false
       })
       .addCase(fetchHelloMoonCollectionIds.pending, (state, action) => {
-        state.loading = true
+        state.loadingCollection = true
       })
       .addCase(fetchHelloMoonCollectionIds.fulfilled, (state, action) => {
         state.currentCollectionId = action.payload
-        state.loading = false
+        state.loadingCollection = false
       })
   },
 })
@@ -120,14 +121,13 @@ export const fetchCandleStickData = createAsyncThunk(
 
 export const fetchHelloMoonCollectionIds = createAsyncThunk(
   'nft/fetchHelloMoonCollectionIds',
-  async ({ collectionName }, thunkAPI) => {
+  async ({ mint }, thunkAPI) => {
     const { dispatch } = thunkAPI
 
     const { data: collectionIdResponse } = await axios.post(
-      `${HELLO_MOON_URL}/nft/collection/name`,
+      `${HELLO_MOON_URL}/nft/mints-by-owner`,
       {
-        searchStrategy: 'default',
-        collectionName: collectionName,
+        nftMint: mint,
       },
       AXIOS_CONFIG_HELLO_MOON_KEY
     )
