@@ -56,9 +56,9 @@ const Nft = () => {
       </div>
 
       <div className="nft-cards mt-[2rem] flex flex-col sm:flex-row">
-        <div className="cursor mb-[2rem] flex w-[280px] rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white">
+        <div className="cursor mb-[2rem] flex min-w-[280px] rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white 2xl:w-[680px]">
           <Image
-            className="mb-[1rem] h-full w-full rounded-[1rem] object-cover xl:mb-[1.5rem]"
+            className="object-fit mb-[1rem] h-full w-full rounded-[1rem] xl:mb-[1.5rem]"
             src={image}
             width="342"
             height="444"

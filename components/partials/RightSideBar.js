@@ -187,10 +187,14 @@ const RightSideBar = () => {
   const renderConnectWallet = () => {
     return (
       <button
-        disabled={addAddressStatus === 'loading'}
+        disabled={addAddressStatus === 'loading' || refreshingUserWallets}
         onClick={publicKey ? disconnectCurrentWallet : connectWallet}
         type="button"
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
+        className={`xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+          refreshingUserWallets
+            ? 'opacity-50'
+            : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+        }`}
       >
         <div className="flex h-[4.1rem] w-full items-center">
           <Image
@@ -221,7 +225,12 @@ const RightSideBar = () => {
       <button
         type="button"
         onClick={addWalletAddress}
-        className="xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
+        disabled={refreshingUserWallets}
+        className={`xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+          refreshingUserWallets
+            ? 'opacity-50'
+            : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+        }`}
       >
         <div className="flex h-[4.1rem] w-full items-center">
           <Image
@@ -255,8 +264,11 @@ const RightSideBar = () => {
         <button
           type="button"
           onClick={refreshWalletsAndFloorPrice}
-          className='hover:text-[#62EAD2]" mb-[1rem] flex h-[5.8rem] w-full cursor-pointer items-center justify-center rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2]'
           disabled={refreshingUserWallets}
+          className={`mb-[1rem] flex h-[5.8rem] w-full items-center justify-center rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+            !refreshingUserWallets &&
+            'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+          }`}
         >
           <div className="flex w-full items-center justify-center">
             <p className="mr-4 text-[1.9rem]">↻</p>
@@ -494,7 +506,7 @@ const RightSideBar = () => {
           </div>
         </div>
         <ul className="dashboard-menu text-[1.4rem]">
-          <SearchInput loading={portfolioLoading} />
+          <SearchInput loading={portfolioLoading || refreshingUserWallets} />
           {renderConnectWallet()}
           {renderAddAddress()}
           {renderRefreshWallet()}
@@ -619,7 +631,12 @@ const RightSideBar = () => {
                       ? disconnectCurrentWallet
                       : () => removeSingleWallet(wallet.address)
                   }
-                  className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
+                  disabled={refreshingUserWallets}
+                  className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+                    refreshingUserWallets
+                      ? 'opacity-50'
+                      : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+                  }`}
                 >
                   <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
                     <Image
@@ -649,7 +666,12 @@ const RightSideBar = () => {
           <button
             type="button"
             onClick={disconnectWallets}
-            className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
+            disabled={refreshingUserWallets}
+            className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+              refreshingUserWallets
+                ? 'opacity-50'
+                : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+            }`}
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image
