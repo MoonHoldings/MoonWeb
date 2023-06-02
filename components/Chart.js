@@ -6,8 +6,10 @@ import mergeClasses from 'utils/mergeClasses'
 import { fetchHelloMoonCollectionIds } from 'redux/reducers/nftSlice'
 import { GRANULARITY } from 'types/enums'
 import { useDispatch } from 'react-redux'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
-export const CandlestickChart = ({ candleStickData, mint }) => {
+export const CandlestickChart = ({ candleStickData, mint, headerData }) => {
   const dispatch = useDispatch()
   const chartContainerRef = useRef()
   const chart = useRef()
@@ -16,6 +18,7 @@ export const CandlestickChart = ({ candleStickData, mint }) => {
   const [isFocused, setIsFocused] = useState(false)
   const [filter, setFilter] = useState('1d')
   const [candleSeries, setCandleSeries] = useState(null)
+
   const gOptions = [
     { label: '1m', value: GRANULARITY.ONE_MIN },
     { label: '5m', value: GRANULARITY.FIVE_MIN },
@@ -112,21 +115,35 @@ export const CandlestickChart = ({ candleStickData, mint }) => {
     setFilter(granularity.label)
   }
 
+  const formatFloorPriceTotal = (price) => {
+    return toCurrencyFormat(price / LAMPORTS_PER_SOL)
+  }
+
   return (
     <div className="flex flex-col">
-      <div className="mt-8flex inline-flex flex-row justify-between rounded-lg bg-[#191C20]  p-2">
+      <div className="mt-8 flex inline-flex flex-row justify-between rounded-lg p-2">
         <div className="flex flex-row">
-          <div className="bold flex flex-col text-[1.5rem] md:text-[2rem]">
-            LISTED
-            <div className="ml-2 flex">{100}◎</div>
+          <div className="bold flex flex-col text-[1.5rem] md:text-[1.5rem]">
+            Supply
+            <div className="flex">{headerData.supply}</div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[2rem]">
-            Total Volume
-            <div className="ml-2 flex ">{100}◎</div>
+          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
+            Volume (24h)
+            <div className="flex ">
+              {formatFloorPriceTotal(headerData.volume)}◎
+            </div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[2rem]">
+          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
+            Owner Count
+            <div className="flex">{headerData.owner_count}</div>
+          </div>
+          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
             All time High
-            <div className="ml-2 flex">{100}◎</div>
+            <div className="flex">{formatFloorPriceTotal(headerData.ath)}◎</div>
+          </div>
+          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
+            All time Low
+            <div className="flex">{formatFloorPriceTotal(headerData.atl)}◎</div>
           </div>
         </div>
         <div className="relative flex items-end bg-transparent">
