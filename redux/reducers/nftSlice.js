@@ -8,6 +8,7 @@ import {
   AXIOS_CONFIG_HELLO_MOON_KEY,
   HELLO_MOON_URL,
 } from 'application/constants/api'
+import { GRANULARITY } from 'types/enums'
 
 const initialState = {
   collections: [],
@@ -111,6 +112,7 @@ export const fetchCandleStickData = createAsyncThunk(
         },
         AXIOS_CONFIG_HELLO_MOON_KEY
       )
+      console.log(candleStickData)
 
       return candleStickData.data
     } catch (e) {
@@ -121,9 +123,10 @@ export const fetchCandleStickData = createAsyncThunk(
 
 export const fetchHelloMoonCollectionIds = createAsyncThunk(
   'nft/fetchHelloMoonCollectionIds',
-  async ({ mint }, thunkAPI) => {
+  async ({ granularity, mint }, thunkAPI) => {
     const { dispatch } = thunkAPI
-
+    console.log(granularity)
+    console.log(mint)
     const { data: collectionIdResponse } = await axios.post(
       `${HELLO_MOON_URL}/nft/mints-by-owner`,
       {
@@ -135,7 +138,7 @@ export const fetchHelloMoonCollectionIds = createAsyncThunk(
     if (collectionIdResponse.data.length == 1)
       dispatch(
         fetchCandleStickData({
-          granularity: 'ONE_DAY',
+          granularity: granularity ?? GRANULARITY.ONE_DAY,
           currentCollectionId:
             collectionIdResponse.data[0].helloMoonCollectionId,
         })

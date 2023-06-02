@@ -99,7 +99,10 @@ const Index = () => {
       </p>
       <div>
         {candleStickData.length > 0 ? (
-          <CandlestickChart candleStickData={candleStickData} />
+          <CandlestickChart
+            candleStickData={candleStickData}
+            mint={currentCollection.nfts[0].mint}
+          />
         ) : loadingCollection || loadingCandle ? (
           <div className="flex flex-row justify-center">
             <svg

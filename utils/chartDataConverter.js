@@ -28,7 +28,7 @@ export const formatChartData = (candleData) => {
   const chartData = candleData
     .map((item) => {
       return {
-        time: convertUnixTimestamp(item.startTime),
+        time: item.startTime,
         high: formatPrice(item.high),
         low: formatPrice(item.low),
         open: formatPrice(item.open),
@@ -36,6 +36,5 @@ export const formatChartData = (candleData) => {
       }
     })
     .reverse()
-
   return chartData
 }
