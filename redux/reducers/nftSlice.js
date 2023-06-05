@@ -65,7 +65,7 @@ const nftSlice = createSlice({
           owner_count: action.payload.owner_count,
           supply: action.payload.supply,
         }
-        state.candleStickData = action.payload.candleStickData
+        state.candleStickData = action.payload.candleStickData ?? []
         state.loadingCandle = false
       })
       .addCase(fetchHelloMoonCollectionIds.pending, (state, action) => {
@@ -118,10 +118,14 @@ export const fetchUserNfts = createAsyncThunk('nft/fetchUserNfts', async () => {
 export const fetchCandleStickData = createAsyncThunk(
   'nft/fetchCandleStickData',
   async ({ granularity, currentCollectionId }, { getState }) => {
+    const limit =
+      granularity == GRANULARITY.FIVE_MIN || granularity == GRANULARITY.ONE_MIN
+        ? 200
+        : 100
     const fetchCandleStickData = axios.post(
       `${HELLO_MOON_URL}/nft/collection/floorprice/candlesticks`,
       {
-        limit: 100,
+        limit: limit,
         granularity: granularity ?? 'ONE_DAY',
         helloMoonCollectionId: currentCollectionId ?? '',
       },

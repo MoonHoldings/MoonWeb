@@ -127,21 +127,21 @@ export const CandlestickChart = ({ candleStickData, mint, headerData }) => {
             Supply
             <div className="flex">{headerData.supply}</div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
+          <div className="bold ml-6 flex  flex-col text-[1.5rem] ">
             Volume (24h)
             <div className="flex ">
               {formatFloorPriceTotal(headerData.volume)}◎
             </div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
+          <div className="bold ml-6  flex flex-col text-[1.5rem] ">
             Owner Count
             <div className="flex">{headerData.owner_count}</div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
+          <div className="bold ml-6  flex flex-col text-[1.5rem] ">
             All time High
             <div className="flex">{formatFloorPriceTotal(headerData.ath)}◎</div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] md:text-[1.5rem]">
+          <div className="bold ml-6  flex flex-col text-[1.5rem] ">
             All time Low
             <div className="flex">{formatFloorPriceTotal(headerData.atl)}◎</div>
           </div>
