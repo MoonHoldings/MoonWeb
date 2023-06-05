@@ -174,7 +174,7 @@ export const CandlestickChart = ({ candleStickData, mint, headerData }) => {
         </div>
       </div>
 
-      <div className="flex w-[500px] flex-1 flex-col justify-center rounded-lg bg-[#191C20] sm:w-full">
+      <div className="flex w-full flex-1 flex-col justify-center rounded-lg bg-[#191C20] xl:max-w-[800px]">
         <div ref={chartContainerRef} />
       </div>
     </div>
