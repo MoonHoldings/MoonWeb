@@ -110,9 +110,6 @@ const RightSideBar = () => {
   }
 
   const shrinkText = (text) => {
-    // const firstSlice = text.slice(0, 3)
-    // const lastSlice = text.slice(-3)
-    // return `${firstSlice}...${lastSlice}`
     return text.substring(0, 5)
   }
 
@@ -293,27 +290,15 @@ const RightSideBar = () => {
                     />
                   )}
                 </div>
-                {offer.status === 'Active' && (
-                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
-                    {offer.remainingDays} Days Remaining
-                  </div>
-                )}
-                {offer.status !== 'Active' && (
-                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
-                    {offer.status}{' '}
-                    {offer.status === 'Repaid'
-                      ? offer.repayElapsedTime
-                      : offer.foreclosedElapsedTime}
-                  </div>
-                )}
+                <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
+                  {offer.remainingDays} Days Remaining
+                </div>
               </div>
               <div className="ml-5 flex flex-1 flex-col">
-                {offer.status === 'Active' && (
-                  <ProgressIndicator
-                    className="mb-2"
-                    percentValue={offer.daysPercentProgress}
-                  />
-                )}
+                <ProgressIndicator
+                  className="mb-2"
+                  percentValue={offer.daysPercentProgress}
+                />
                 <div className="mb-2 text-[1.5rem]">
                   {offer?.collectionName}
                 </div>
@@ -366,19 +351,12 @@ const RightSideBar = () => {
                     />
                   )}
                 </div>
-                {offer.status === 'Active' && (
-                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
-                    {offer.remainingDays} Days Remaining
-                  </div>
-                )}
-                {offer.status !== 'Active' && (
-                  <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
-                    {offer.status}{' '}
-                    {offer.status === 'Repaid'
-                      ? offer.repayElapsedTime
-                      : offer.foreclosedElapsedTime}
-                  </div>
-                )}
+                <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
+                  {offer.status}{' '}
+                  {offer.status === 'Repaid'
+                    ? offer.repayElapsedTime
+                    : offer.foreclosedElapsedTime}
+                </div>
               </div>
               <div className="ml-5 flex flex-1 flex-col">
                 <div className="text-[1.5rem]">{offer?.collectionName}</div>
@@ -540,15 +518,33 @@ const RightSideBar = () => {
               <div className="text-[1.5rem]">{loan?.collectionName}</div>
               <div className="mt-2 flex text-[1.25rem]">
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
-                  <p>{loan.amountTaken.toFixed(2)}</p>
+                  <p
+                    className={mergeClasses(
+                      loan.status === 'Repaid' && 'text-[#45CB85]'
+                    )}
+                  >
+                    {loan.amountTaken.toFixed(2)}
+                  </p>
                   <p>Borrowed</p>
                 </div>
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
-                  <p>{loan.borrowInterest.toFixed(3)}</p>
+                  <p
+                    className={mergeClasses(
+                      loan.status === 'Repaid' && 'text-[#45CB85]'
+                    )}
+                  >
+                    {loan.borrowInterest.toFixed(3)}
+                  </p>
                   <p>Interest</p>
                 </div>
                 <div className="flex flex-1 flex-col items-center px-3">
-                  <p>{(loan.amountTaken + loan.borrowInterest).toFixed(3)}</p>
+                  <p
+                    className={mergeClasses(
+                      loan.status === 'Repaid' && 'text-[#45CB85]'
+                    )}
+                  >
+                    {(loan.amountTaken + loan.borrowInterest).toFixed(3)}
+                  </p>
                   <p>Repay</p>
                 </div>
               </div>

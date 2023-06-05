@@ -21,6 +21,7 @@ const Index = () => {
     candleStickData,
     loadingCollection,
     loadingCandle,
+    headerData,
   } = useSelector((state) => state.nft)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
@@ -99,7 +100,11 @@ const Index = () => {
       </p>
       <div>
         {candleStickData.length > 0 ? (
-          <CandlestickChart candleStickData={candleStickData} />
+          <CandlestickChart
+            candleStickData={candleStickData}
+            mint={currentCollection.nfts[0].mint}
+            headerData={headerData}
+          />
         ) : loadingCollection || loadingCandle ? (
           <div className="flex flex-row justify-center">
             <svg

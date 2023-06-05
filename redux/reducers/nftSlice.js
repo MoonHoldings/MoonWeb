@@ -8,6 +8,7 @@ import {
   AXIOS_CONFIG_HELLO_MOON_KEY,
   HELLO_MOON_URL,
 } from 'application/constants/api'
+import { GRANULARITY } from 'types/enums'
 
 const initialState = {
   collections: [],
@@ -17,6 +18,14 @@ const initialState = {
   currentCollectionId: '',
   loadingCollection: false,
   loadingCandle: false,
+  headerData: {
+    ath: 0,
+    atl: 0,
+    volume: 0,
+    listing_count: 0,
+    owner_count: 0,
+    supply: 0,
+  },
 }
 
 const nftSlice = createSlice({
@@ -48,7 +57,15 @@ const nftSlice = createSlice({
         state.loadingCandle = true
       })
       .addCase(fetchCandleStickData.fulfilled, (state, action) => {
-        state.candleStickData = action.payload
+        state.headerData = {
+          ath: action.payload.ath,
+          atl: action.payload.atl,
+          volume: action.payload.volume,
+          listing_count: action.payload.listing_count,
+          owner_count: action.payload.owner_count,
+          supply: action.payload.supply,
+        }
+        state.candleStickData = action.payload.candleStickData ?? []
         state.loadingCandle = false
       })
       .addCase(fetchHelloMoonCollectionIds.pending, (state, action) => {
@@ -101,18 +118,61 @@ export const fetchUserNfts = createAsyncThunk('nft/fetchUserNfts', async () => {
 export const fetchCandleStickData = createAsyncThunk(
   'nft/fetchCandleStickData',
   async ({ granularity, currentCollectionId }, { getState }) => {
-    try {
-      const { data: candleStickData } = await axios.post(
-        `${HELLO_MOON_URL}/nft/collection/floorprice/candlesticks`,
-        {
-          limit: 100,
-          granularity: granularity ?? 'ONE_DAY',
-          helloMoonCollectionId: currentCollectionId ?? '',
-        },
-        AXIOS_CONFIG_HELLO_MOON_KEY
-      )
+    const limit =
+      granularity == GRANULARITY.FIVE_MIN || granularity == GRANULARITY.ONE_MIN
+        ? 200
+        : 100
+    const fetchCandleStickData = axios.post(
+      `${HELLO_MOON_URL}/nft/collection/floorprice/candlesticks`,
+      {
+        limit: limit,
+        granularity: granularity ?? 'ONE_DAY',
+        helloMoonCollectionId: currentCollectionId ?? '',
+      },
+      AXIOS_CONFIG_HELLO_MOON_KEY
+    )
 
-      return candleStickData.data
+    const fetchAllTimeData = axios.post(
+      `${HELLO_MOON_URL}/nft/collection/all-time`,
+      {
+        helloMoonCollectionId: currentCollectionId ?? '',
+      },
+      AXIOS_CONFIG_HELLO_MOON_KEY
+    )
+
+    const fetchCollectionStats = axios.post(
+      `${HELLO_MOON_URL}/nft/collection/leaderboard/stats`,
+      {
+        granularity: 'ONE_DAY', // fix to one day
+        helloMoonCollectionId: currentCollectionId ?? '',
+      },
+      AXIOS_CONFIG_HELLO_MOON_KEY
+    )
+    try {
+      const [candleStickResponse, allTimeResponse, collectionStatsResponse] =
+        await Promise.all([
+          fetchCandleStickData,
+          fetchAllTimeData,
+          fetchCollectionStats,
+        ])
+
+      const { data: candleStickData } = candleStickResponse
+      const { data: allTimeData } = allTimeResponse
+      const { data: collectionStatsData } = collectionStatsResponse
+
+      const collectionStats =
+        collectionStatsData.data.length > 0 && collectionStatsData.data[0]
+      const collection = {
+        candleStickData: candleStickData.data,
+        ath: allTimeData.allTimeHighPriceLamports,
+        atl: allTimeData.allTimeLowPriceLamports,
+        volume: collectionStats.volume,
+        supply: collectionStats.supply,
+        listing_count: collectionStats.listing_count,
+        owner_count: collectionStats.current_owner_count,
+      }
+
+      return collection
     } catch (e) {
       console.log(e)
     }
@@ -121,7 +181,7 @@ export const fetchCandleStickData = createAsyncThunk(
 
 export const fetchHelloMoonCollectionIds = createAsyncThunk(
   'nft/fetchHelloMoonCollectionIds',
-  async ({ mint }, thunkAPI) => {
+  async ({ granularity, mint }, thunkAPI) => {
     const { dispatch } = thunkAPI
 
     const { data: collectionIdResponse } = await axios.post(
@@ -135,7 +195,7 @@ export const fetchHelloMoonCollectionIds = createAsyncThunk(
     if (collectionIdResponse.data.length == 1)
       dispatch(
         fetchCandleStickData({
-          granularity: 'ONE_DAY',
+          granularity: granularity ?? GRANULARITY.ONE_DAY,
           currentCollectionId:
             collectionIdResponse.data[0].helloMoonCollectionId,
         })

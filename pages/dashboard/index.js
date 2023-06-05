@@ -260,9 +260,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col pb-[4rem] pt-[2rem] sm:pt-0 md:order-2">
       <div class="relative flex h-[20rem] w-full items-start justify-between overflow-hidden rounded-2xl bg-gradient-to-t from-[#3B5049] via-[#0089a07d] to-[#0089a07d] p-6">
-        <p className="text-[2.2rem] sm:text-[2.4rem]">
-          Welcome to MoonHoldings
-        </p>
+        <p className="text-[2.2rem] sm:text-[2.4rem]"></p>
         <div className="rounded-[30px] bg-[#191C20] p-4">
           <button
             type="button"

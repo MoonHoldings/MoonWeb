@@ -71,9 +71,9 @@ const LeftSideBar = () => {
               alt=""
             />
           </div>
-          {/* <div className="text-[1.6rem] font-semibold text-[#A6A6A6] xl:text-[1.4rem] xl:font-medium">
+          <div className="text-[1.6rem] font-semibold text-[#A6A6A6] xl:text-[1.4rem] xl:font-medium">
             {MOON_HOLDINGS}
-          </div> */}
+          </div>
         </div>
 
         {/* <button className="h-full">
