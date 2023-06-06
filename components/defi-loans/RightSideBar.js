@@ -63,17 +63,6 @@ const RightSideBar = () => {
   }, [publicKey, loadingHistoricalOffers, getMyHistoricalOffers])
 
   useEffect(() => {
-    if (publicKey && !loadingHistoricalLoans) {
-      getMyHistoricalLoans({
-        variables: {
-          borrower: publicKey.toBase58(),
-        },
-        pollInterval: 3_600_000,
-      })
-    }
-  }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
-
-  useEffect(() => {
     if (publicKey && !loadingOffers) {
       getMyOffers({
         variables: {
@@ -88,6 +77,17 @@ const RightSideBar = () => {
       })
     }
   }, [publicKey, loadingOffers, getMyOffers])
+
+  useEffect(() => {
+    if (publicKey && !loadingHistoricalLoans) {
+      getMyHistoricalLoans({
+        variables: {
+          borrower: publicKey.toBase58(),
+        },
+        pollInterval: 3_600_000,
+      })
+    }
+  }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
 
   useEffect(() => {
     if (publicKey && !loadingMyLoans) {
