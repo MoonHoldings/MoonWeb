@@ -30,6 +30,7 @@ const OrderBookTable = ({ onClickRow, loading }) => {
     'Best Offer',
     isLendPage ? 'APY' : 'Interest',
     'Duration',
+    'Floor Price',
     'Action',
   ]
 

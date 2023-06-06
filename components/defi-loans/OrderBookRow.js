@@ -160,6 +160,9 @@ const OrderBookRow = ({ orderBook, onClickRow, loading }) => {
       <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
         {Math.floor(duration)}d
       </td>
+      <td className="px-6 py-6" onClick={() => onClickRow(orderBook)}>
+        {toCurrencyFormat(parseFloat(orderBook?.floorPriceSol))}
+      </td>
       <td className="px-6 py-6">{renderActionButton()}</td>
     </tr>
   )
