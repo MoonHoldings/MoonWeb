@@ -352,3 +352,31 @@ export const GET_USER_PORTFOLIO_TOTAL_BY_TYPE = gql`
     getUserPortfolioTotalByType(type: $type)
   }
 `
+
+export const GET_LEND_HISTORY_CSV = gql`
+  query GetLendHistoryCsv($address: String!) {
+    getLendHistoryCsv(address: $address) {
+      collectionName
+      collateralName
+      amountOffered
+      offerInterest
+      borrowInterest
+      apy
+      status
+    }
+  }
+`
+
+export const GET_BORROW_HISTORY_CSV = gql`
+  query GetBorrowHistoryCsv($address: String!) {
+    getBorrowHistoryCsv(address: $address) {
+      collectionName
+      collateralName
+      amountOffered
+      offerInterest
+      borrowInterest
+      apy
+      status
+    }
+  }
+`
