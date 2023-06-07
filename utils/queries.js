@@ -224,7 +224,10 @@ export const GET_TOTAL_LENDS = gql`
   query GetTotalLendsByAddress($address: String!) {
     getTotalLendsByAddress(address: $address) {
       total
+      totalActive
       interest
+      activeInterest
+      foreclosureRate
     }
   }
 `
