@@ -117,36 +117,82 @@ const Header = ({ title, description }) => {
           View History
         </Link>
       </div>
-      <div className="flex w-full items-end justify-between">
+      <div className="flex w-full items-center justify-between">
         <h1 className="text-[2.5rem] sm:text-[3rem]">{title}</h1>
-        <div className="flex items-center">
-          <div className="flex items-center text-[1.8rem] sm:text-[2.2rem]">
-            SOL {isLend ? 'lent' : 'borrowed'}
-            {loadingLends || loadingBorrows ? (
-              <Spin className="ml-3" />
-            ) : (
-              <span className="ml-2 text-[2.1rem] text-[#57C0CF] sm:text-[2.5rem]">
-                {toCurrencyFormat(
-                  isLend
-                    ? lendData?.getTotalLendsByAddress?.total
-                    : borrowData?.getTotalBorrowsByAddress?.total
+        <div className="flex flex-col items-end">
+          {isLend && (
+            <div className="flex items-center">
+              <div className="flex items-center text-[1.6rem] sm:text-[2rem]">
+                <span className="text-[#666666]">Total Lent</span>
+                {loadingLends ? (
+                  <Spin className="ml-3" />
+                ) : (
+                  <span className="ml-2 text-[1.8rem] text-[#57C0CF] sm:text-[2.2rem]">
+                    {toCurrencyFormat(
+                      isLend
+                        ? lendData?.getTotalLendsByAddress?.total
+                        : borrowData?.getTotalBorrowsByAddress?.total
+                    )}
+                  </span>
                 )}
-              </span>
-            )}
-          </div>
-          <div className="ml-4 flex items-center text-[1.8rem] sm:text-[2.2rem]">
-            Interest
-            {loadingLends || loadingBorrows ? (
-              <Spin className="ml-3" />
-            ) : (
-              <span className="ml-2 text-[2.1rem] text-[#FED007] sm:text-[2.5rem]">
-                {toCurrencyFormat(
-                  isLend
-                    ? lendData?.getTotalLendsByAddress?.interest
-                    : borrowData?.getTotalBorrowsByAddress?.interest
+              </div>
+              <div className="ml-4 flex items-center text-[1.6rem] sm:text-[2rem]">
+                <span className="text-[#666666]">Total Interest Earned</span>
+                {loadingLends ? (
+                  <Spin className="ml-3" />
+                ) : (
+                  <span className="ml-2 text-[1.8rem] text-[#57C0CF] sm:text-[2.2rem]">
+                    {toCurrencyFormat(
+                      isLend
+                        ? lendData?.getTotalLendsByAddress?.interest
+                        : borrowData?.getTotalBorrowsByAddress?.interest
+                    )}
+                  </span>
                 )}
-              </span>
-            )}
+              </div>
+              <div className="ml-4 flex items-center text-[1.6rem] sm:text-[2rem]">
+                <span className="text-[#666666]">Foreclosure Rate</span>
+                {loadingLends ? (
+                  <Spin className="ml-3" />
+                ) : (
+                  <span className="ml-2 text-[1.8rem] text-[#57C0CF] sm:text-[2.2rem]">
+                    {toCurrencyFormat(
+                      lendData?.getTotalLendsByAddress?.foreclosureRate * 100
+                    )}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+          <div className="flex items-center">
+            <div className="flex items-center text-[1.8rem] sm:text-[2.2rem]">
+              {isLend ? 'Current Lending' : 'SOL borrowed'}
+              {loadingLends || loadingBorrows ? (
+                <Spin className="ml-3" />
+              ) : (
+                <span className="ml-2 text-[2.1rem] text-[#57C0CF] sm:text-[2.5rem]">
+                  {toCurrencyFormat(
+                    isLend
+                      ? lendData?.getTotalLendsByAddress?.totalActive
+                      : borrowData?.getTotalBorrowsByAddress?.total
+                  )}
+                </span>
+              )}
+            </div>
+            <div className="ml-4 flex items-center text-[1.8rem] sm:text-[2.2rem]">
+              Current Interest
+              {loadingLends || loadingBorrows ? (
+                <Spin className="ml-3" />
+              ) : (
+                <span className="ml-2 text-[2.1rem] text-[#FED007] sm:text-[2.5rem]">
+                  {toCurrencyFormat(
+                    isLend
+                      ? lendData?.getTotalLendsByAddress?.activeInterest
+                      : borrowData?.getTotalBorrowsByAddress?.interest
+                  )}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
