@@ -1,23 +1,32 @@
 import client from 'utils/apollo-client'
-import { GET_USER_NFTS } from 'utils/queries'
+import axios from 'axios'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
-
-import axios from 'axios'
 import {
   AXIOS_CONFIG_HELLO_MOON_KEY,
+  AXIOS_CONFIG_SHYFT_KEY,
   HELLO_MOON_URL,
+  SHYFT_KEY,
+  SHYFT_URL,
 } from 'application/constants/api'
+
+import { signAndSendTransaction, Network, ShyftSdk } from '@shyft-to/js'
+
 import { GRANULARITY } from 'types/enums'
+import { GET_USER_NFTS } from 'utils/queries'
 
 const initialState = {
   collections: [],
   currentCollection: {},
+  ownedNfts: [],
   currentNft: {},
   candleStickData: [],
+  selectedNfts: [],
   currentCollectionId: '',
   loadingCollection: false,
   loadingCandle: false,
+  loadingTransfer: false,
+  loadingBurning: false,
   headerData: {
     ath: 0,
     atl: 0,
@@ -37,6 +46,13 @@ const nftSlice = createSlice({
       state.collections[index] = { ...state.collections[index], floorPrice }
     },
     populateCurrentCollection(state, action) {
+      console.log(action.payload)
+      const filteredMints = action.payload.nfts
+        .filter(
+          (nft) => nft.owner === 'J8FcrKuB8ew5YU9w9AEhp68xFvKU1sFHhPo9GYk7122k'
+        ) // Filter NFTs based on the given condition
+        .map((nft) => nft.mint)
+      console.log(filteredMints)
       state.currentCollection = action.payload
       state.candleStickData = []
       state.currentCollectionId = ''
@@ -46,6 +62,26 @@ const nftSlice = createSlice({
     },
     populateCollections(state, action) {
       state.collections = action.payload
+    },
+    selectNft(state, action) {
+      const existingIndex = state.selectedNfts.findIndex(
+        (item) => item.mint === action.payload.mint
+      )
+
+      if (existingIndex !== -1) {
+        // If action.payload exists, remove the item from the array
+        state.selectedNfts.splice(existingIndex, 1)
+      } else {
+        // If action.payload does not exist, add it to the array along with the name
+        state.selectedNfts.push({
+          mint: action.payload.mint,
+          name: action.payload.name,
+        })
+      }
+    },
+
+    deselectAllNfts(state, action) {
+      state.selectedNfts = []
     },
   },
   extraReducers(builder) {
@@ -74,6 +110,18 @@ const nftSlice = createSlice({
       .addCase(fetchHelloMoonCollectionIds.fulfilled, (state, action) => {
         state.currentCollectionId = action.payload
         state.loadingCollection = false
+      })
+      .addCase(transferNfts.pending, (state, action) => {
+        state.loadingTransfer = true
+      })
+      .addCase(transferNfts.fulfilled, (state, action) => {
+        state.loadingTransfer = false
+      })
+      .addCase(burnNfts.pending, (state, action) => {
+        state.loadingBurning = true
+      })
+      .addCase(burnNfts.fulfilled, (state, action) => {
+        state.loadingBurning = false
       })
   },
 })
@@ -108,7 +156,6 @@ export const fetchUserNfts = createAsyncThunk('nft/fetchUserNfts', async () => {
         collections[collectionName].nfts.push(nft)
       }
     }
-
     return Object.values(collections)
   } catch (e) {
     console.log(e)
@@ -117,7 +164,7 @@ export const fetchUserNfts = createAsyncThunk('nft/fetchUserNfts', async () => {
 
 export const fetchCandleStickData = createAsyncThunk(
   'nft/fetchCandleStickData',
-  async ({ granularity, currentCollectionId }, { getState }) => {
+  async ({ granularity, currentCollectionId }) => {
     const limit =
       granularity == GRANULARITY.FIVE_MIN || granularity == GRANULARITY.ONE_MIN
         ? 200
@@ -204,11 +251,104 @@ export const fetchHelloMoonCollectionIds = createAsyncThunk(
   }
 )
 
+export const transferNfts = createAsyncThunk(
+  'nft/transferNfts',
+  async ({ fromAddress, toAddress, connection, wallet }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+
+    console.log(fromAddress)
+    try {
+      const data = await axios.post(
+        `${SHYFT_URL}/nft/transfer_many`,
+        {
+          from_address: fromAddress,
+          to_address: toAddress,
+          token_addresses: ['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf'], //state.selectedNfts
+          network: 'devnet',
+        },
+        AXIOS_CONFIG_SHYFT_KEY
+      )
+
+      if (data.data.result.encoded_transactions[0])
+        dispatch(
+          confirmTransaction({
+            encodedTransaction: data.data.result.encoded_transactions[0],
+            connection: connection,
+            wallet: wallet,
+          })
+        )
+      return ''
+    } catch (e) {
+      console.log(e)
+    }
+  }
+)
+
+export const burnNfts = createAsyncThunk(
+  'nft/burnNfts',
+  async ({ fromAddress, connection, wallet }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+    console.log(fromAddress)
+    console.log()
+    try {
+      const data = await axios.delete(`${SHYFT_URL}/nft/burn_many`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': SHYFT_KEY,
+        },
+        data: {
+          wallet: fromAddress,
+          close_accounts: true,
+          nft_addresses: [
+            'yUa5ujMzuGMgVmwdBPUR3QCcFbMzAQkrWcj1auU7Qrj',
+            '7bAN7TN3jUWgQEzNtSKmeELzJxF2Jj1njRsqvUCxcj8e',
+          ], //state.selectedNfts
+          network: 'devnet',
+        },
+      })
+      console.log(data.data)
+      if (data.data.result.encoded_transactions[0])
+        dispatch(
+          confirmTransaction({
+            encodedTransaction: data.data.result.encoded_transactions[0],
+            connection: connection,
+            wallet: wallet,
+          })
+        )
+      return ''
+    } catch (e) {
+      console.log(e)
+    }
+  }
+)
+export const confirmTransaction = createAsyncThunk(
+  'nft/confirmTransaction',
+  async ({ encodedTransaction, connection, wallet }) => {
+    try {
+      const shyft = new ShyftSdk({ apiKey: SHYFT_KEY, network: Network.Devnet })
+      console.log(connection)
+      console.log(wallet)
+
+      const txnSignature = await signAndSendTransaction(
+        connection,
+        encodedTransaction,
+        wallet.adapter
+      )
+      console.log(txnSignature)
+    } catch (error) {
+      console.log(error)
+      throw new Error(error)
+    }
+  }
+)
+
 export const {
   updateCollectionFloorPrice,
   populateCurrentCollection,
   populateCollections,
   populateCurrentNft,
+  selectNft,
+  deselectAllNfts,
 } = nftSlice.actions
 
 export default nftSlice.reducer

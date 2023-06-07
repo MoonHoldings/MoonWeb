@@ -12,6 +12,8 @@ const initialState = {
   repayModalOpen: false,
   loanDetailsModalOpen: false,
   coinModalOpen: false,
+  nftModalOpen: false,
+  nftModalType: '',
   shouldReloadDashboardData: false,
 }
 
@@ -52,6 +54,10 @@ const utilSlice = createSlice({
     changeCoinModalOpen(state, action) {
       state.coinModalOpen = action.payload
     },
+    changeNftModalOpen(state, action) {
+      state.nftModalOpen = action.payload.isShow
+      state.nftModalType = action.payload.type
+    },
     reloadDashboard(state, action) {
       state.shouldReloadDashboardData = action.payload
     },
@@ -70,6 +76,7 @@ export const {
   changeRepayModalOpen,
   changeLoanDetailsModalOpen,
   changeCoinModalOpen,
+  changeNftModalOpen,
   reloadDashboard,
 } = utilSlice.actions
 

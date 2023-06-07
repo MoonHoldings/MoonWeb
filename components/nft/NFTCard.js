@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
-import { populateCurrentNft } from 'redux/reducers/nftSlice'
+import { populateCurrentNft, selectNft } from 'redux/reducers/nftSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import LazyLoad from 'react-lazy-load'
 
-const NFT = ({ nft, floorPrice }) => {
+const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -22,6 +22,11 @@ const NFT = ({ nft, floorPrice }) => {
     )
   }
 
+  const selectNFT = () => {
+    // if (ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1)
+    dispatch(selectNft({ mint: nft.mint, name: nft.name }))
+  }
+
   const formatFloorPrice = () => {
     return (
       parseFloat(floorPrice.floorPriceLamports) / LAMPORTS_PER_SOL
@@ -30,8 +35,16 @@ const NFT = ({ nft, floorPrice }) => {
 
   return (
     <div
-      onClick={nftClick}
-      className="cursor flex min-h-min flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white active:border-[#62EAD2] xl:hover:border-[#62EAD2]"
+      onClick={selectNFT}
+      className={`${
+        selectedNfts.findIndex((item) => item.mint === nft.mint) !== -1
+          ? 'border-[#62EAD2]'
+          : ''
+      } ${
+        ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1
+          ? ' cursor xl:hover:border-[#62EAD2]'
+          : ''
+      } flex min-h-min flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white `}
     >
       <LazyLoad threshold={0.95}>
         <Image
@@ -44,7 +57,13 @@ const NFT = ({ nft, floorPrice }) => {
         />
       </LazyLoad>
 
-      <div className="details">
+      <div
+        onClick={(e) => {
+          e.stopPropagation() // Stop the event from propagating to the parent div
+          nftClick()
+        }}
+        className="cursor "
+      >
         <div className="xl:mb-[1.2rem] xl:flex xl:justify-between">
           {name ? (
             <h1 className="mb-[0.4rem] text-[1.2rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
@@ -53,9 +72,13 @@ const NFT = ({ nft, floorPrice }) => {
           ) : (
             <div className="mb-[0.4rem]" />
           )}
-          {/* <h2 className="mb-[0.4rem] text-[1.2rem] font-semibold leading-[1.5rem] text-[#62EAD2] xl:mb-0">
-            Listed
-          </h2> */}
+          {ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1 ? (
+            <h1 className=" text-[.8rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
+              Connected
+            </h1>
+          ) : (
+            <></>
+          )}
         </div>
 
         {/* <div className="items-center xl:flex xl:justify-between">
@@ -76,6 +99,12 @@ const NFT = ({ nft, floorPrice }) => {
             $482,000
           </div> 
         </div> */}
+
+        <hr className="mb-[0.4rem] h-[0.2rem] w-full rounded border-0 bg-[#A6A6A6] xl:mb-[2rem]" />
+
+        <h1 className="mb-[0.4rem] text-center text-[1.2rem] font-bold leading-[1.5rem] text-[#62EAD2] underline xl:text-[1.4rem]">
+          Details
+        </h1>
       </div>
     </div>
   )

@@ -17,6 +17,7 @@ import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RepayModal from 'components/modals/RepayModal'
 import CoinModal from 'components/modals/CoinModal'
+import NftModal from 'components/modals/NftModal'
 
 const SidebarsLayout = ({ children }) => {
   const router = useRouter()
@@ -27,6 +28,7 @@ const SidebarsLayout = ({ children }) => {
     rightSideBarOpen,
     walletsModalOpen,
     addWalletModalOpen,
+    nftModalOpen,
     lendRightSideBarOpen,
   } = useSelector((state) => state.util)
 
@@ -81,6 +83,7 @@ const SidebarsLayout = ({ children }) => {
       <>
         <AnimatePresence>
           {addWalletModalOpen && <AddWalletModal />}
+          {nftModalOpen && <NftModal />}
         </AnimatePresence>
         <div
           className={mergeClasses(
