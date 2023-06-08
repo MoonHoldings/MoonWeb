@@ -16,6 +16,7 @@
     "start": "next start",
     "lint": "next lint",
     "coverage": "jest --coverage",
+    "cypress": "yarn run cypress open",
     "test": "jest"
   },
   "dependencies": {
