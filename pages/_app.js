@@ -9,33 +9,35 @@ import 'react-tippy/dist/tippy.css'
 import useSolUsdPrice from 'hooks/useSolUsdPrice'
 import client from '../utils/apollo-client'
 import SidebarsLayout from 'components/partials/SidebarsLayout'
-import { Button, ConfigProvider } from 'antd'
+import { Button, ConfigProvider, App } from 'antd'
 
 export default wrapper.withRedux(
   ({ Component, pageProps: { session, ...pageProps } }) => {
     useSolUsdPrice()
     const store = useStore()
     return (
-      <ConfigProvider
-        theme={{
-          token: {
-            colorFill: '#9BEFE4',
-            colorFillContent: '#62EAD2',
-          },
-        }}
-      >
-        <ApolloProvider client={client}>
-          <PersistGate persistor={store.__persistor}>
-            <ThemeProvider enableSystem={true} attribute="class">
-              <Layout>
-                <SidebarsLayout>
-                  <Component {...pageProps} />
-                </SidebarsLayout>
-              </Layout>
-            </ThemeProvider>
-          </PersistGate>
-        </ApolloProvider>
-      </ConfigProvider>
+      <App>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorFill: '#9BEFE4',
+              colorFillContent: '#62EAD2',
+            },
+          }}
+        >
+          <ApolloProvider client={client}>
+            <PersistGate persistor={store.__persistor}>
+              <ThemeProvider enableSystem={true} attribute="class">
+                <Layout>
+                  <SidebarsLayout>
+                    <Component {...pageProps} />
+                  </SidebarsLayout>
+                </Layout>
+              </ThemeProvider>
+            </PersistGate>
+          </ApolloProvider>
+        </ConfigProvider>
+      </App>
     )
   }
 )

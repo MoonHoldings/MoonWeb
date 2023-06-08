@@ -10,9 +10,12 @@ import {
   fetchUserNfts,
   selectNft,
   transferNfts,
+  clearIsSuccessfulTransaction,
 } from 'redux/reducers/nftSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { displayNotifModal } from 'utils/notificationModal'
+import { App } from 'antd'
 
 const NftModal = () => {
   const dispatch = useDispatch()
@@ -20,14 +23,19 @@ const NftModal = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const { publicKey, wallet } = useWallet()
   const { connection } = useConnection()
+
+  const {
+    selectedNfts,
+    loadingTransfer,
+    loadingBurning,
+    isSuccessfulTransaction,
+  } = useSelector((state) => state.nft)
+  const { nftModalType } = useSelector((state) => state.util)
+  const { notification } = App.useApp()
+
   const closeModal = () => {
     dispatch(changeNftModalOpen({ isShow: false, type: '' }))
   }
-
-  const { selectedNfts, loadingTransfer, loadingBurning } = useSelector(
-    (state) => state.nft
-  )
-  const { nftModalType } = useSelector((state) => state.util)
 
   const isValidSolanaAddress = (address) => {
     try {
@@ -41,14 +49,13 @@ const NftModal = () => {
   }
 
   const handleTransferNfts = async () => {
-    console.log(nftModalType)
     if (nftModalType === 'BURN') {
-      console.log(publicKey.toBase58())
       dispatch(
         burnNfts({
           fromAddress: publicKey.toBase58(),
           connection: connection,
           wallet: wallet,
+          notification: notification,
         })
       )
     } else {
@@ -56,13 +63,13 @@ const NftModal = () => {
         setErrorMessage('Invalid wallet address')
         return
       }
-
       dispatch(
         transferNfts({
           toAddress: walletAddress,
           fromAddress: publicKey.toBase58(),
           connection: connection,
           wallet: wallet,
+          notification: notification,
         })
       )
     }
@@ -101,8 +108,8 @@ const NftModal = () => {
   }, [selectedNfts])
 
   const selectNFT = (nft) => {
-    // if (ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1)
-    dispatch(selectNft({ mint: nft.mint, name: nft.name }))
+    if (ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1)
+      dispatch(selectNft({ mint: nft.mint, name: nft.name }))
   }
 
   return (

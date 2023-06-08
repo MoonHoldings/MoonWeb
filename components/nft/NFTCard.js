@@ -5,10 +5,12 @@ import { useDispatch } from 'react-redux'
 import { populateCurrentNft, selectNft } from 'redux/reducers/nftSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import LazyLoad from 'react-lazy-load'
+import { App } from 'antd'
 
 const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
   const dispatch = useDispatch()
   const router = useRouter()
+  const { notification } = App.useApp()
 
   const image = nft.image
   const name = nft?.name || nft?.symbol
@@ -23,8 +25,14 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
   }
 
   const selectNFT = () => {
-    // if (ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1)
-    dispatch(selectNft({ mint: nft.mint, name: nft.name }))
+    if (ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1)
+      dispatch(
+        selectNft({
+          mint: nft.mint,
+          name: nft.name,
+          notification: notification,
+        })
+      )
   }
 
   const formatFloorPrice = () => {

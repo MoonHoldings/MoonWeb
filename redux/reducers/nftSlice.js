@@ -1,7 +1,8 @@
-import client from 'utils/apollo-client'
 import axios from 'axios'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
+import { signAndSendTransaction } from '@shyft-to/js'
+
 import {
   AXIOS_CONFIG_HELLO_MOON_KEY,
   AXIOS_CONFIG_SHYFT_KEY,
@@ -9,11 +10,10 @@ import {
   SHYFT_KEY,
   SHYFT_URL,
 } from 'application/constants/api'
-
-import { signAndSendTransaction, Network, ShyftSdk } from '@shyft-to/js'
-
 import { GRANULARITY } from 'types/enums'
 import { GET_USER_NFTS } from 'utils/queries'
+import { displayNotifModal } from 'utils/notificationModal'
+import client from 'utils/apollo-client'
 
 const initialState = {
   collections: [],
@@ -72,11 +72,19 @@ const nftSlice = createSlice({
         // If action.payload exists, remove the item from the array
         state.selectedNfts.splice(existingIndex, 1)
       } else {
-        // If action.payload does not exist, add it to the array along with the name
-        state.selectedNfts.push({
-          mint: action.payload.mint,
-          name: action.payload.name,
-        })
+        if (state.selectedNfts.length == 7) {
+          displayNotifModal(
+            'warning',
+            'Warning! You have selected the maximum allowed nfts to send/burn',
+            action.payload.notification
+          )
+        } else {
+          // If action.payload does not exist, add it to the array along with the name
+          state.selectedNfts.push({
+            mint: action.payload.mint,
+            name: action.payload.name,
+          })
+        }
       }
     },
 
@@ -253,17 +261,19 @@ export const fetchHelloMoonCollectionIds = createAsyncThunk(
 
 export const transferNfts = createAsyncThunk(
   'nft/transferNfts',
-  async ({ fromAddress, toAddress, connection, wallet }, thunkAPI) => {
+  async (
+    { fromAddress, toAddress, connection, wallet, notification },
+    thunkAPI
+  ) => {
     const { dispatch } = thunkAPI
 
-    console.log(fromAddress)
     try {
       const data = await axios.post(
         `${SHYFT_URL}/nft/transfer_many`,
         {
           from_address: fromAddress,
           to_address: toAddress,
-          token_addresses: ['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf'], //state.selectedNfts
+          token_addresses: state.selectedNfts, // ['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
           network: 'devnet',
         },
         AXIOS_CONFIG_SHYFT_KEY
@@ -275,6 +285,7 @@ export const transferNfts = createAsyncThunk(
             encodedTransaction: data.data.result.encoded_transactions[0],
             connection: connection,
             wallet: wallet,
+            notification: notification,
           })
         )
       return ''
@@ -286,10 +297,8 @@ export const transferNfts = createAsyncThunk(
 
 export const burnNfts = createAsyncThunk(
   'nft/burnNfts',
-  async ({ fromAddress, connection, wallet }, thunkAPI) => {
+  async ({ fromAddress, connection, wallet, notification }, thunkAPI) => {
     const { dispatch } = thunkAPI
-    console.log(fromAddress)
-    console.log()
     try {
       const data = await axios.delete(`${SHYFT_URL}/nft/burn_many`, {
         headers: {
@@ -299,22 +308,21 @@ export const burnNfts = createAsyncThunk(
         data: {
           wallet: fromAddress,
           close_accounts: true,
-          nft_addresses: [
-            'yUa5ujMzuGMgVmwdBPUR3QCcFbMzAQkrWcj1auU7Qrj',
-            '7bAN7TN3jUWgQEzNtSKmeELzJxF2Jj1njRsqvUCxcj8e',
-          ], //state.selectedNfts
+          nft_addresses: state.selectedNfts, //['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
           network: 'devnet',
         },
       })
-      console.log(data.data)
-      if (data.data.result.encoded_transactions[0])
+
+      if (data.data.result.encoded_transactions[0]) {
         dispatch(
           confirmTransaction({
             encodedTransaction: data.data.result.encoded_transactions[0],
             connection: connection,
             wallet: wallet,
+            notification: notification,
           })
         )
+      }
       return ''
     } catch (e) {
       console.log(e)
@@ -323,20 +331,34 @@ export const burnNfts = createAsyncThunk(
 )
 export const confirmTransaction = createAsyncThunk(
   'nft/confirmTransaction',
-  async ({ encodedTransaction, connection, wallet }) => {
+  async (
+    { encodedTransaction, connection, wallet, notification },
+    thunkAPI
+  ) => {
+    const { dispatch } = thunkAPI
     try {
-      const shyft = new ShyftSdk({ apiKey: SHYFT_KEY, network: Network.Devnet })
-      console.log(connection)
-      console.log(wallet)
-
       const txnSignature = await signAndSendTransaction(
         connection,
         encodedTransaction,
         wallet.adapter
       )
+
       console.log(txnSignature)
+      console.log(notification)
+      if (txnSignature != null) {
+        displayNotifModal(
+          'Success',
+          `Done! You've successfully completed your transaction.`,
+          notification
+        )
+        dispatch(deselectAllNfts())
+      }
     } catch (error) {
-      console.log(error)
+      displayNotifModal(
+        'Error',
+        `Done! Failed to send the transaction.`,
+        notification
+      )
       throw new Error(error)
     }
   }

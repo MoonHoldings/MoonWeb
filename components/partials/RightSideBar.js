@@ -14,6 +14,7 @@ import {
   reloadDashboard,
 } from 'redux/reducers/utilSlice'
 import {
+  clearIsSuccessfulTransaction,
   deselectAllNfts,
   fetchUserNfts,
   selectNft,
@@ -27,7 +28,7 @@ import {
 } from 'application/constants/copy'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { Spin, Tooltip } from 'antd'
+import { App, Spin, Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
@@ -40,6 +41,7 @@ import {
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
 import mergeClasses from 'utils/mergeClasses'
+import { displayNotifModal } from 'utils/notificationModal'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -75,6 +77,8 @@ const RightSideBar = () => {
     loanTotal,
     borrowTotal,
   } = useSelector((state) => state.portfolio)
+
+  const { notification } = App.useApp()
 
   useEffect(() => {
     dispatch(getUserWallets())
@@ -125,9 +129,15 @@ const RightSideBar = () => {
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
   }
-
   const transferNftModal = (type) => {
-    dispatch(changeNftModalOpen({ isShow: true, type: type }))
+    if (publicKey) dispatch(changeNftModalOpen({ isShow: true, type: type }))
+    else {
+      return displayNotifModal(
+        'warning',
+        `Warning! No wallet is connected.`,
+        notification
+      )
+    }
   }
 
   const connectWallet = () => {
