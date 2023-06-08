@@ -122,28 +122,32 @@ export const CandlestickChart = ({ candleStickData, mint, headerData }) => {
   return (
     <div className="flex flex-col">
       <div className="mt-8 flex inline-flex flex-row justify-between rounded-lg p-2">
-        <div className="flex flex-row">
-          <div className="bold flex flex-col text-[1.5rem] text-[#666] md:text-[1.5rem]">
+        <div className="flex flex-row text-[#666]">
+          <div className="bold flex flex-col text-[1.5rem] md:text-[1.5rem]">
             Supply
-            <div className="flex">{headerData.supply}</div>
+            <div className="flex text-white">{headerData.supply}</div>
           </div>
-          <div className="bold ml-6 flex  flex-col text-[1.5rem] text-[#666]">
+          <div className="bold ml-6 flex  flex-col text-[1.5rem]">
             Volume (24h)
-            <div className="flex ">
+            <div className="flex text-white">
               {formatFloorPriceTotal(headerData.volume)}◎
             </div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] text-[#666]">
+          <div className="bold ml-6  flex flex-col text-[1.5rem]">
             Owner Count
-            <div className="flex">{headerData.owner_count}</div>
+            <div className="flex text-white">{headerData.owner_count}</div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] text-[#666]">
+          <div className="bold ml-6  flex flex-col text-[1.5rem]">
             All time High
-            <div className="flex">{formatFloorPriceTotal(headerData.ath)}◎</div>
+            <div className="flex text-white">
+              {formatFloorPriceTotal(headerData.ath)}◎
+            </div>
           </div>
-          <div className="bold ml-6  flex flex-col text-[1.5rem] text-[#666]">
+          <div className="bold ml-6  flex flex-col text-[1.5rem]">
             All time Low
-            <div className="flex">{formatFloorPriceTotal(headerData.atl)}◎</div>
+            <div className="flex text-white" text-white>
+              {formatFloorPriceTotal(headerData.atl)}◎
+            </div>
           </div>
         </div>
         <div className="relative flex items-end bg-transparent">
