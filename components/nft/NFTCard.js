@@ -77,7 +77,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
             <div className="mb-[0.4rem]" />
           )}
           {ownedNfts?.findIndex((item) => item === nft.mint) > -1 ? (
-            <h1 className=" text-[.8rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
+            <h1 className=" text-[.5rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1rem]">
               Connected
             </h1>
           ) : (
@@ -109,9 +109,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
         <h1
           onClick={(e) => {
             e.stopPropagation() // Stop the event from propagating to the parent div
-            displayNotifModal('success', 'test', api)
-
-            // nftClick()
+            nftClick()
           }}
           className="cursor mb-[0.4rem] text-center text-[1.2rem] font-bold leading-[1.5rem] text-[#62EAD2] underline xl:text-[1.4rem]"
         >

@@ -24,12 +24,8 @@ const NftModal = () => {
   const { publicKey, wallet } = useWallet()
   const { connection } = useConnection()
 
-  const {
-    selectedNfts,
-    loadingTransfer,
-    loadingBurning,
-    isSuccessfulTransaction,
-  } = useSelector((state) => state.nft)
+  const { selectedNfts, loadingTransfer, loadingBurning, ownedNfts } =
+    useSelector((state) => state.nft)
   const { nftModalType } = useSelector((state) => state.util)
   const [api, contextHolder] = notification.useNotification()
 
@@ -108,7 +104,7 @@ const NftModal = () => {
   }, [selectedNfts])
 
   const selectNFT = (nft) => {
-    if (ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1)
+    if (ownedNfts?.findIndex((item) => item === nft.mint) > -1)
       dispatch(selectNft({ mint: nft.mint, name: nft.name }))
   }
 
