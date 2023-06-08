@@ -28,9 +28,9 @@ const OrderBookTable = ({ onClickRow, loading }) => {
     'Collection',
     'Total Pool',
     'Best Offer',
+    'Floor Price',
     isLendPage ? 'APY' : 'Interest',
     'Duration',
-    'Floor Price',
     'Action',
   ]
 
