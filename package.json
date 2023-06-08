@@ -16,7 +16,8 @@
     "start": "next start",
     "lint": "next lint",
     "coverage": "jest --coverage",
-    "test": "jest"
+    "test": "jest",
+    "cypress": "cypress open"
   },
   "dependencies": {
     "@apollo/client": "^3.7.11",

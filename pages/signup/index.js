@@ -32,6 +32,8 @@ const SignUp = () => {
   const [message, setMessage] = useState('')
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const [signUp, { loading: signingUp, data: signUpData }] = useMutation(
     REGISTER_USER,
@@ -229,18 +231,60 @@ const SignUp = () => {
               placeholder="Email"
               onChange={(e) => setEmail(e.target.value)}
             />
-            <input
-              className="form-field w-full"
-              type="password"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              className="form-field w-full"
-              type="password"
-              placeholder="Confirm Password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            <div className="relative w-full">
+              <input
+                className="form-field w-full pr-16"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {!showPassword ? (
+                <Image
+                  src="/images/svgs/eye-slash.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              ) : (
+                <Image
+                  src="/images/svgs/eye-open.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              )}
+            </div>
+            <div className="relative w-full">
+              <input
+                className="form-field w-full pr-16"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Confirm Password"
+                onChange={(e) => setShowConfirmPassword(e.target.value)}
+              />
+              {!showConfirmPassword ? (
+                <Image
+                  src="/images/svgs/eye-slash.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                />
+              ) : (
+                <Image
+                  src="/images/svgs/eye-open.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                />
+              )}
+            </div>
             <GeneralButton
               onClick={register}
               loading={signingUp}
