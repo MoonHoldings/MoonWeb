@@ -14,8 +14,8 @@ import {
 } from 'redux/reducers/nftSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { displayNotifModal } from 'utils/notificationModal'
-import { App } from 'antd'
+
+import { notification } from 'antd'
 
 const NftModal = () => {
   const dispatch = useDispatch()
@@ -31,7 +31,7 @@ const NftModal = () => {
     isSuccessfulTransaction,
   } = useSelector((state) => state.nft)
   const { nftModalType } = useSelector((state) => state.util)
-  const { notification } = App.useApp()
+  const [api, contextHolder] = notification.useNotification()
 
   const closeModal = () => {
     dispatch(changeNftModalOpen({ isShow: false, type: '' }))
@@ -55,7 +55,7 @@ const NftModal = () => {
           fromAddress: publicKey.toBase58(),
           connection: connection,
           wallet: wallet,
-          notification: notification,
+          notification: api,
         })
       )
     } else {
@@ -69,7 +69,7 @@ const NftModal = () => {
           fromAddress: publicKey.toBase58(),
           connection: connection,
           wallet: wallet,
-          notification: notification,
+          notification: api,
         })
       )
     }
@@ -121,6 +121,7 @@ const NftModal = () => {
       className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex items-center justify-center p-[1rem] font-inter"
     >
       <Overlay closeModal={closeModal} />
+      {contextHolder}
       <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] text-white drop-shadow-lg">
         <div className="top-line mb-[1rem] flex justify-between py-[1rem]">
           <h1 className="text-[1.8rem] font-[700]">Mass Transfer</h1>

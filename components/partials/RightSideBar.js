@@ -28,7 +28,7 @@ import {
 } from 'application/constants/copy'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { App, Spin, Tooltip } from 'antd'
+import { Spin, Tooltip, notification } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
@@ -78,7 +78,7 @@ const RightSideBar = () => {
     borrowTotal,
   } = useSelector((state) => state.portfolio)
 
-  const { notification } = App.useApp()
+  const [api, contextHolder] = notification.useNotification()
 
   useEffect(() => {
     dispatch(getUserWallets())
@@ -135,7 +135,7 @@ const RightSideBar = () => {
       return displayNotifModal(
         'warning',
         `Warning! No wallet is connected.`,
-        notification
+        api
       )
     }
   }
@@ -868,6 +868,7 @@ const RightSideBar = () => {
       exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
+      {contextHolder}
       <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
         {MENUS[currentMenu]}
       </div>

@@ -5,12 +5,14 @@ import { useDispatch } from 'react-redux'
 import { populateCurrentNft, selectNft } from 'redux/reducers/nftSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import LazyLoad from 'react-lazy-load'
-import { App } from 'antd'
+import { notification } from 'antd'
+import { displayNotifModal } from 'utils/notificationModal'
 
 const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { notification } = App.useApp()
+
+  const [api, contextHolder] = notification.useNotification()
 
   const image = nft.image
   const name = nft?.name || nft?.symbol
@@ -65,13 +67,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
         />
       </LazyLoad>
 
-      <div
-        onClick={(e) => {
-          e.stopPropagation() // Stop the event from propagating to the parent div
-          nftClick()
-        }}
-        className="cursor "
-      >
+      <div>
         <div className="xl:mb-[1.2rem] xl:flex xl:justify-between">
           {name ? (
             <h1 className="mb-[0.4rem] text-[1.2rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
@@ -109,8 +105,16 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
         </div> */}
 
         <hr className="mb-[0.4rem] h-[0.2rem] w-full rounded border-0 bg-[#A6A6A6] xl:mb-[2rem]" />
+        {contextHolder}
+        <h1
+          onClick={(e) => {
+            e.stopPropagation() // Stop the event from propagating to the parent div
+            displayNotifModal('success', 'test', api)
 
-        <h1 className="mb-[0.4rem] text-center text-[1.2rem] font-bold leading-[1.5rem] text-[#62EAD2] underline xl:text-[1.4rem]">
+            // nftClick()
+          }}
+          className="cursor mb-[0.4rem] text-center text-[1.2rem] font-bold leading-[1.5rem] text-[#62EAD2] underline xl:text-[1.4rem]"
+        >
           Details
         </h1>
       </div>
