@@ -274,7 +274,7 @@ export const transferNfts = createAsyncThunk(
           from_address: fromAddress,
           to_address: toAddress,
           token_addresses: state.selectedNfts, // ['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
-          network: 'devnet',
+          network: 'mainnet-beta',
         },
         AXIOS_CONFIG_SHYFT_KEY
       )
@@ -309,7 +309,7 @@ export const burnNfts = createAsyncThunk(
           wallet: fromAddress,
           close_accounts: true,
           nft_addresses: state.selectedNfts, //['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
-          network: 'devnet',
+          network: 'mainnet-beta',
         },
       })
 
