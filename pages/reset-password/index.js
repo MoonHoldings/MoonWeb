@@ -22,6 +22,8 @@ const ResetPassword = (props) => {
   const [message, setMessage] = useState('')
   const [error, setError] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const { loading, modalLoading } = useSelector((state) => state.auth)
 
@@ -99,18 +101,60 @@ const ResetPassword = (props) => {
             className="mb-[1rem] flex w-[27.4rem] flex-col items-center rounded-[1.5rem]
             border border-[#50545A] px-4 py-[1.1rem]"
           >
-            <input
-              className="form-field w-full"
-              type="password"
-              placeholder="New Password"
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input
-              className="form-field w-full"
-              type="password"
-              placeholder="Confirm New Password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            <div className="relative w-full">
+              <input
+                className="form-field bg-red w-full pr-16"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="New Password"
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              {!showPassword ? (
+                <Image
+                  src="/images/svgs/eye-slash.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              ) : (
+                <Image
+                  src="/images/svgs/eye-open.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              )}
+            </div>
+            <div className="relative w-full">
+              <input
+                className="form-field w-full pr-16"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Confirm New Password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              {!showConfirmPassword ? (
+                <Image
+                  src="/images/svgs/eye-slash.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                />
+              ) : (
+                <Image
+                  src="/images/svgs/eye-open.svg"
+                  width={10}
+                  height={10}
+                  alt=""
+                  className="absolute right-[2rem] top-[1.4rem] h-[2rem] w-[2rem] cursor-pointer"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                />
+              )}
+            </div>
             <GeneralButton
               onClick={submit}
               loading={loading}
