@@ -20,6 +20,7 @@ import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
 import shrinkAddress from 'utils/shrinkAddress'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const CollectionCard = ({ collection, index }) => {
   const dispatch = useDispatch()
@@ -27,7 +28,7 @@ const CollectionCard = ({ collection, index }) => {
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
   const shouldRenderFloorPrice = collection.floorPrice && collection.nfts
-
+  const { publicKey } = useWallet()
   const fetchFloorPrice = async () => {
     if (!collection.floorPrice && collection.name !== 'unknown') {
       try {
@@ -89,7 +90,12 @@ const CollectionCard = ({ collection, index }) => {
 
   const collectionClick = async () => {
     if (collection.nfts) {
-      dispatch(populateCurrentCollection(collection))
+      dispatch(
+        populateCurrentCollection({
+          collection: collection,
+          publicKey: publicKey ? publicKey.toBase58() : '',
+        })
+      )
       router.push('/nfts/collection')
     }
   }

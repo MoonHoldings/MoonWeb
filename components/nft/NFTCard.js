@@ -25,7 +25,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
   }
 
   const selectNFT = () => {
-    if (ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1)
+    if (ownedNfts?.findIndex((item) => item === nft.mint) > -1)
       dispatch(
         selectNft({
           mint: nft.mint,
@@ -49,7 +49,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
           ? 'border-[#62EAD2]'
           : ''
       } ${
-        ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1
+        ownedNfts?.findIndex((item) => item === nft.mint) > -1
           ? ' cursor xl:hover:border-[#62EAD2]'
           : ''
       } flex min-h-min flex-col rounded-[1rem] border-2 border-[#191C20] bg-[#191C20] p-[1rem] font-inter text-white `}
@@ -80,7 +80,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
           ) : (
             <div className="mb-[0.4rem]" />
           )}
-          {ownedNfts?.findIndex((item) => item.mint === nft.mint) > -1 ? (
+          {ownedNfts?.findIndex((item) => item === nft.mint) > -1 ? (
             <h1 className=" text-[.8rem] font-bold leading-[1.5rem] xl:mb-0 xl:text-[1.4rem]">
               Connected
             </h1>

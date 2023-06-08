@@ -46,14 +46,12 @@ const nftSlice = createSlice({
       state.collections[index] = { ...state.collections[index], floorPrice }
     },
     populateCurrentCollection(state, action) {
-      console.log(action.payload)
-      const filteredMints = action.payload.nfts
-        .filter(
-          (nft) => nft.owner === 'J8FcrKuB8ew5YU9w9AEhp68xFvKU1sFHhPo9GYk7122k'
-        ) // Filter NFTs based on the given condition
+      const filteredMints = action.payload.collection.nfts
+        .filter((nft) => nft.owner === action.payload.publicKey)
         .map((nft) => nft.mint)
-      console.log(filteredMints)
-      state.currentCollection = action.payload
+
+      state.ownedNfts = filteredMints
+      state.currentCollection = action.payload.collection
       state.candleStickData = []
       state.currentCollectionId = ''
     },
@@ -265,7 +263,8 @@ export const transferNfts = createAsyncThunk(
     { fromAddress, toAddress, connection, wallet, notification },
     thunkAPI
   ) => {
-    const { dispatch } = thunkAPI
+    const { dispatch, getState } = thunkAPI
+    const mintArray = getState().nft.selectedNfts.map((item) => item.mint)
 
     try {
       const data = await axios.post(
@@ -273,7 +272,7 @@ export const transferNfts = createAsyncThunk(
         {
           from_address: fromAddress,
           to_address: toAddress,
-          token_addresses: state.selectedNfts, // ['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
+          token_addresses: mintArray, // ['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
           network: 'mainnet-beta',
         },
         AXIOS_CONFIG_SHYFT_KEY
@@ -298,7 +297,8 @@ export const transferNfts = createAsyncThunk(
 export const burnNfts = createAsyncThunk(
   'nft/burnNfts',
   async ({ fromAddress, connection, wallet, notification }, thunkAPI) => {
-    const { dispatch } = thunkAPI
+    const { dispatch, getState } = thunkAPI
+    const mintArray = getState().nft.selectedNfts.map((item) => item.mint)
     try {
       const data = await axios.delete(`${SHYFT_URL}/nft/burn_many`, {
         headers: {
@@ -308,7 +308,7 @@ export const burnNfts = createAsyncThunk(
         data: {
           wallet: fromAddress,
           close_accounts: true,
-          nft_addresses: state.selectedNfts, //['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
+          nft_addresses: mintArray, //['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
           network: 'mainnet-beta',
         },
       })
@@ -343,8 +343,6 @@ export const confirmTransaction = createAsyncThunk(
         wallet.adapter
       )
 
-      console.log(txnSignature)
-      console.log(notification)
       if (txnSignature != null) {
         displayNotifModal(
           'Success',
