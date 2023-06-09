@@ -6,7 +6,6 @@ import { getServerSidePropsWithAuth } from 'utils/withAuth'
 import { GET_USER_PORTFOLIO, GET_USER_PORTFOLIO_BY_SYMBOL } from 'utils/queries'
 import { useLazyQuery } from '@apollo/client'
 
-import { getCoinPrices, pythCoins } from 'utils/pyth'
 import { coinStyles } from 'utils/coinStyles'
 import {
   fetchPortfolioTotalByType,
