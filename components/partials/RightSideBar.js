@@ -711,7 +711,7 @@ const RightSideBar = () => {
 
   const renderNftAddress = () => {
     return (
-      selectedNfts.length > 0 && (
+      selectedNfts?.length > 0 && (
         <div className="connected-wallets  hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] md:mb-[1.6rem] md:block">
           <div className="header mb-[2rem] flex justify-between">
             <h1 className="text-[1.4rem] text-white">Selected NFts</h1>

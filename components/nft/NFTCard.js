@@ -47,7 +47,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
     <div
       onClick={selectNFT}
       className={`${
-        selectedNfts.findIndex((item) => item.mint === nft.mint) !== -1
+        selectedNfts?.findIndex((item) => item.mint === nft.mint) !== -1
           ? 'border-[#62EAD2]'
           : ''
       } ${
