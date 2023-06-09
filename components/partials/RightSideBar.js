@@ -14,11 +14,9 @@ import {
   reloadDashboard,
 } from 'redux/reducers/utilSlice'
 import {
-  clearIsSuccessfulTransaction,
   deselectAllNfts,
   fetchUserNfts,
   selectNft,
-  transferNfts,
 } from 'redux/reducers/nftSlice'
 import {
   ADD_WALLET_ADDRESS,
@@ -148,6 +146,7 @@ const RightSideBar = () => {
     await removeUserWallet({ variables: { wallet } })
     dispatch(getUserWallets())
     dispatch(fetchUserNfts())
+    dispatch(deselectAllNfts())
     dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
   }
@@ -161,10 +160,12 @@ const RightSideBar = () => {
       dispatch(reloadDashboard(true))
     }
 
+    dispatch(deselectAllNfts())
     disconnect()
   }
 
   const disconnectCurrentWallet = () => {
+    dispatch(deselectAllNfts())
     removeSingleWallet(publicKey.toBase58())
     disconnect()
   }
