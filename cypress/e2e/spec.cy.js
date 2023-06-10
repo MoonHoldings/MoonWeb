@@ -32,9 +32,8 @@
 //   })
 // })
 
-describe('Homepage Test', () => {
+describe('Homepage', () => {
   beforeEach(() => {
-    // Visit homepage before each test
     cy.visit('http://localhost:3000', { timeout: 10000 })
   })
 
@@ -43,51 +42,49 @@ describe('Homepage Test', () => {
   })
 
   it('has working Signup link', () => {
-    // Find the Signup button and click it
     cy.contains('button', 'Signup', { timeout: 5000 }).click()
-
-    // Check if it redirects to the correct page
     cy.url().should('eq', 'http://localhost:3000/signup')
   })
 
   it('has working Login link', () => {
-    // Go back to homepage
     cy.visit('http://localhost:3000', { timeout: 10000 })
-
-    // Find the Login button and click it
     cy.contains('button', 'Login', { timeout: 5000 }).click()
-
-    // Check if it redirects to the correct page
     cy.url().should('eq', 'http://localhost:3000/login')
   })
 })
 
-// describe('Login', () => {
-//   const email = Cypress.env('email')
-//   const password = Cypress.env('password')
+describe('Login', () => {
+  const email = Cypress.env('email')
+  const password = Cypress.env('password')
 
-//   before(() => {
-//     cy.visit('http://localhost:3000', { timeout: 10000 })
-//   })
+  beforeEach(() => {
+    cy.visit('http://localhost:3000/login', { timeout: 10000 })
+  })
 
-//   it('Navigate to login', () => {
-//     cy.contains('MoonHoldings', { timeout: 10000 })
-//     cy.get('button').contains('Login').click()
-//   })
+  it('Logs in successfully', () => {
+    cy.intercept('POST', 'http://localhost/graphql', (req) => {
+      if (
+        req.body.operationName === 'Mutation' &&
+        req.body.query.includes('login')
+      ) {
+        req.reply({
+          data: {
+            login: {
+              username: 'OddlyJoviallyConcerned',
+              __typename: 'User',
+            },
+          },
+        })
+      }
+    }).as('loginRequest')
 
-//   it('Should successfully login', () => {
-//     cy.visit('http://localhost:3000/login')
-//     cy.get('input[type=email').type(email)
-//     cy.get('input[type=password').type(password)
-//     cy.get('button').contains('Login').click()
+    cy.get('input[type="email"]').type(email)
+    cy.get('input[type="password"]').type(password)
+    cy.get('form').submit()
 
-//     cy.wait(10000)
-//     cy.url().should('include', 'http://localhost:3000/dashboard')
-//   })
-
-//   it('Dashboard', () => {
-//     cy.visit('http://localhost:3000/dashboard')
-//     cy.contains('Performance')
-//     cy.contains('Total Networth')
-//   })
-// })
+    cy.wait('@loginRequest').then(() => {
+      cy.wait(1000)
+      cy.url().should('include', 'http://localhost:3000/dashboard')
+    })
+  })
+})
