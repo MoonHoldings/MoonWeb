@@ -47,7 +47,7 @@ const nftSlice = createSlice({
     },
     populateCurrentCollection(state, action) {
       const filteredMints = action.payload.collection.nfts
-        .filter((nft) => nft.owner === action.payload.publicKey)
+        ?.filter((nft) => nft.owner === action.payload.publicKey)
         .map((nft) => nft.mint)
 
       state.ownedNfts = filteredMints
@@ -62,15 +62,15 @@ const nftSlice = createSlice({
       state.collections = action.payload
     },
     selectNft(state, action) {
-      const existingIndex = state.selectedNfts.findIndex(
+      const existingIndex = state.selectedNfts?.findIndex(
         (item) => item.mint === action.payload.mint
       )
 
       if (existingIndex !== -1) {
         // If action.payload exists, remove the item from the array
-        state.selectedNfts.splice(existingIndex, 1)
+        state.selectedNfts?.splice(existingIndex, 1)
       } else {
-        if (state.selectedNfts.length == 7) {
+        if (state.selectedNfts?.length == 7) {
           displayNotifModal(
             'warning',
             'Warning! You have selected the maximum allowed nfts to send/burn',
@@ -78,14 +78,13 @@ const nftSlice = createSlice({
           )
         } else {
           // If action.payload does not exist, add it to the array along with the name
-          state.selectedNfts.push({
+          state.selectedNfts?.push({
             mint: action.payload.mint,
             name: action.payload.name,
           })
         }
       }
     },
-
     deselectAllNfts(state, action) {
       state.selectedNfts = []
     },
@@ -264,7 +263,7 @@ export const transferNfts = createAsyncThunk(
     thunkAPI
   ) => {
     const { dispatch, getState } = thunkAPI
-    const mintArray = getState().nft.selectedNfts.map((item) => item.mint)
+    const mintArray = getState().nft.selectedNfts?.map((item) => item.mint)
 
     try {
       const data = await axios.post(
@@ -272,7 +271,7 @@ export const transferNfts = createAsyncThunk(
         {
           from_address: fromAddress,
           to_address: toAddress,
-          token_addresses: mintArray, // ['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
+          token_addresses: mintArray,
           network: 'mainnet-beta',
         },
         AXIOS_CONFIG_SHYFT_KEY
@@ -289,7 +288,11 @@ export const transferNfts = createAsyncThunk(
         )
       return ''
     } catch (e) {
-      console.log(e)
+      displayNotifModal(
+        'Error',
+        `Failed to confirm the transaction.`,
+        notification
+      )
     }
   }
 )
@@ -298,7 +301,7 @@ export const burnNfts = createAsyncThunk(
   'nft/burnNfts',
   async ({ fromAddress, connection, wallet, notification }, thunkAPI) => {
     const { dispatch, getState } = thunkAPI
-    const mintArray = getState().nft.selectedNfts.map((item) => item.mint)
+    const mintArray = getState().nft.selectedNfts?.map((item) => item.mint)
     try {
       const data = await axios.delete(`${SHYFT_URL}/nft/burn_many`, {
         headers: {
@@ -308,12 +311,12 @@ export const burnNfts = createAsyncThunk(
         data: {
           wallet: fromAddress,
           close_accounts: true,
-          nft_addresses: mintArray, //['6yGEWnQi7RURvRhF3o1q3BJGUcjao34mcoZc18E5Y2Rf']
+          nft_addresses: mintArray,
           network: 'mainnet-beta',
         },
       })
 
-      if (data.data.result.encoded_transactions[0]) {
+      if (data.data?.result.encoded_transactions[0]) {
         dispatch(
           confirmTransaction({
             encodedTransaction: data.data.result.encoded_transactions[0],
@@ -325,7 +328,11 @@ export const burnNfts = createAsyncThunk(
       }
       return ''
     } catch (e) {
-      console.log(e)
+      displayNotifModal(
+        'Error',
+        `Failed to confirm the transaction.`,
+        notification
+      )
     }
   }
 )
@@ -354,10 +361,9 @@ export const confirmTransaction = createAsyncThunk(
     } catch (error) {
       displayNotifModal(
         'Error',
-        `Done! Failed to send the transaction.`,
+        `Failed to confirm the transaction.`,
         notification
       )
-      throw new Error(error)
     }
   }
 )
