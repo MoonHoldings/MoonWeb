@@ -47,7 +47,7 @@ const nftSlice = createSlice({
     },
     populateCurrentCollection(state, action) {
       const filteredMints = action.payload.collection.nfts
-        .filter((nft) => nft.owner === action.payload.publicKey)
+        ?.filter((nft) => nft.owner === action.payload.publicKey)
         .map((nft) => nft.mint)
 
       state.ownedNfts = filteredMints
@@ -62,15 +62,15 @@ const nftSlice = createSlice({
       state.collections = action.payload
     },
     selectNft(state, action) {
-      const existingIndex = state.selectedNfts.findIndex(
+      const existingIndex = state.selectedNfts?.findIndex(
         (item) => item.mint === action.payload.mint
       )
 
       if (existingIndex !== -1) {
         // If action.payload exists, remove the item from the array
-        state.selectedNfts.splice(existingIndex, 1)
+        state.selectedNfts?.splice(existingIndex, 1)
       } else {
-        if (state.selectedNfts.length == 7) {
+        if (state.selectedNfts?.length == 7) {
           displayNotifModal(
             'warning',
             'Warning! You have selected the maximum allowed nfts to send/burn',
@@ -78,7 +78,7 @@ const nftSlice = createSlice({
           )
         } else {
           // If action.payload does not exist, add it to the array along with the name
-          state.selectedNfts.push({
+          state.selectedNfts?.push({
             mint: action.payload.mint,
             name: action.payload.name,
           })
@@ -293,7 +293,6 @@ export const transferNfts = createAsyncThunk(
         `Failed to confirm the transaction.`,
         notification
       )
-      console.log(e)
     }
   }
 )
@@ -334,7 +333,6 @@ export const burnNfts = createAsyncThunk(
         `Failed to confirm the transaction.`,
         notification
       )
-      console.log(e)
     }
   }
 )
@@ -366,7 +364,6 @@ export const confirmTransaction = createAsyncThunk(
         `Failed to confirm the transaction.`,
         notification
       )
-      throw new Error(error)
     }
   }
 )

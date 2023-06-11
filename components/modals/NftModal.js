@@ -82,7 +82,7 @@ const NftModal = () => {
 
       dispatch(
         transferNfts({
-          toAddress: '6AhAuhyJDf8j19Ykgt8XSLFdrZLM8guaZDyet2rsBCHo',
+          toAddress: walletAddress,
           fromAddress: publicKey.toBase58(),
           connection: connection,
           wallet: wallet,
@@ -98,7 +98,7 @@ const NftModal = () => {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    if (selectedNfts.length == 0) {
+    if (selectedNfts?.length == 0) {
       closeModal()
     }
   }, [selectedNfts])
