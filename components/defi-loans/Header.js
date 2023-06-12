@@ -155,10 +155,11 @@ const Header = ({ title, description }) => {
                 {loadingLends ? (
                   <Spin className="ml-3" />
                 ) : (
-                  <span className="ml-2 text-[1.8rem] text-[#57C0CF] sm:text-[2.2rem]">
+                  <span className="ml-2 text-[1.8rem] text-[#ccc] sm:text-[2.2rem]">
                     {toCurrencyFormat(
                       lendData?.getTotalLendsByAddress?.foreclosureRate * 100
                     )}
+                    %
                   </span>
                 )}
               </div>
