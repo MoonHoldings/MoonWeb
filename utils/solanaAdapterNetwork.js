@@ -16,6 +16,7 @@ const endpoint = {
 
 export const Get = {
   clusterUrl: function (network) {
+    console.log(endpoint.https['mainnet-beta'])
     try {
       switch (network) {
         case WalletAdapterNetwork.Devnet:

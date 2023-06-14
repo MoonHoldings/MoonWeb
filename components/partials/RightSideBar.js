@@ -12,6 +12,7 @@ import {
   changeWalletsModalOpen,
   changeNftModalOpen,
   reloadDashboard,
+  changeExchangeModalOpen,
 } from 'redux/reducers/utilSlice'
 import {
   deselectAllNfts,
@@ -157,8 +158,12 @@ const RightSideBar = () => {
     }
   }
 
-  const connectWallet = () => {
+  const connectWallet = async () => {
     dispatch(changeWalletsModalOpen(true))
+  }
+
+  const addExchange = async () => {
+    dispatch(changeExchangeModalOpen(true))
   }
 
   const removeSingleWallet = async (wallet) => {
@@ -220,9 +225,10 @@ const RightSideBar = () => {
 
   const refreshWalletsAndFloorPrice = async () => {
     if (userWallets?.length || exchangeWallets?.length) {
-      await refreshUserWallets(tokenHeader)
-      dispatch(fetchUserNfts({}))
+      await refreshUserWallets()
+      dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
+      dispatch(getUserWallets())
     }
   }
 
@@ -283,6 +289,41 @@ const RightSideBar = () => {
             alt="NFTs"
           />
           {ADD_WALLET_ADDRESS}
+        </div>
+        <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+          <Image
+            className="h-[0.8rem] w-[0.8rem]"
+            src="/images/svgs/+.svg"
+            width="11"
+            height="11"
+            alt="plus sign"
+          />
+        </div>
+      </button>
+    )
+  }
+
+  const renderAddExchange = () => {
+    return (
+      <button
+        type="button"
+        onClick={addExchange}
+        disabled={refreshingUserWallets}
+        className={`xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+          refreshingUserWallets
+            ? 'opacity-50'
+            : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+        }`}
+      >
+        <div className="flex h-[4.1rem] w-full items-center">
+          <Image
+            className="mr-[1rem] h-[2rem] w-[2rem]"
+            src="/images/svgs/wallet-white.svg"
+            width="20"
+            height="20"
+            alt="NFTs"
+          />
+          Add Exchange
         </div>
         <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
@@ -625,6 +666,8 @@ const RightSideBar = () => {
           <SearchInput loading={portfolioLoading || refreshingUserWallets} />
           {renderConnectWallet()}
           {renderAddAddress()}
+          {renderAddExchange()}
+
           {renderRefreshWallet()}
           {renderConnectedWalletsMobile()}
         </ul>
@@ -943,32 +986,27 @@ const RightSideBar = () => {
               className="flex h-[4.1rem] w-full items-center rounded-[1rem] bg-[#25282C] px-[1.6rem] text-[1.4rem] text-[#FFFFFF]"
             >
               <Image
-                className="mr-[1rem] h-[2rem] w-[2rem]"
+                className="mr-[1rem] h-[2rem] w-[2rem] "
                 src="/images/svgs/net.svg"
+                width="20"
+                height="20"
                 alt="NFTs"
               />
-              Coinbase
-            </li>
-          ))}
-        </ul>
-        <div className="flex h-[6.4rem] items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem]">
-          <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
-            <Image
-              className="mr-[1rem] h-[2rem] w-[2rem]"
-              src="/images/svgs/net.svg"
-              alt="NFTs"
-            />
-            Disconnect Exchanges
+              Disconnect Exchanges
+            </div>
+            <button
+              onClick={disconnectWallets}
+              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+            >
+              <Image
+                className="h-[0.8rem] w-[0.8rem]  rotate-45"
+                src="/images/svgs/+.svg"
+                width="11"
+                height="11"
+                alt="plus sign"
+              />
+            </button>
           </div>
-          <button className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
-            <Image
-              className="h-[0.8rem] w-[0.8rem]"
-              src="/images/svgs/+.svg"
-              width="11"
-              height="11"
-              alt="plus sign"
-            />
-          </button>
         </div>
       </div> */}
         {renderNftAddress()}

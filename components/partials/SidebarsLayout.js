@@ -18,6 +18,8 @@ import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RepayModal from 'components/modals/RepayModal'
 import CoinModal from 'components/modals/CoinModal'
 import NftModal from 'components/modals/NftModal'
+import ExchangeModal from 'components/modals/ExchangeModal'
+import { detectCedeProvider } from '@cedelabs/providers'
 
 const SidebarsLayout = ({ children }) => {
   const router = useRouter()
@@ -30,12 +32,41 @@ const SidebarsLayout = ({ children }) => {
     addWalletModalOpen,
     nftModalOpen,
     lendRightSideBarOpen,
+    exchangeModalOpen,
   } = useSelector((state) => state.util)
   const { isLoggedIn } = useSelector((state) => state.auth)
   const { addAddressStatus, refreshFloorPriceStatus, refreshWalletsStatus } =
     useSelector((state) => state.wallet)
 
   const { modalLoading } = useSelector((state) => state.auth)
+
+  const [cedeProvider, setCedeProvider] = useState(null)
+
+  useEffect(() => {
+    async function initializeCede() {
+      try {
+        const provider = await detectCedeProvider()
+
+        if (provider == null) {
+          displayNotifModal(
+            'warning',
+            'You might need to install cede.store extension.',
+            api
+          )
+        } else {
+          provider.on('connect', () => setCedeProvider(provider))
+          provider.on('accountsChanged', () => setCedeProvider(provider))
+          provider.on('unlock', () => setCedeProvider(provider))
+          provider.on('lock', () => setCedeProvider(provider))
+        }
+        setCedeProvider(provider)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    initializeCede()
+  }, [])
 
   useEffect(() => {
     setInnerWidth(window.innerWidth)
@@ -83,6 +114,7 @@ const SidebarsLayout = ({ children }) => {
         <AnimatePresence>
           {addWalletModalOpen && <AddWalletModal />}
           {nftModalOpen && <NftModal />}
+          {exchangeModalOpen && <ExchangeModal cedeProvider={cedeProvider} />}
         </AnimatePresence>
         <div
           className={mergeClasses(
