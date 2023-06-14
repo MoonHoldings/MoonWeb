@@ -18,7 +18,7 @@ import { useMemo } from 'react'
 import { Get } from '../utils/solanaAdapterNetwork'
 
 const WalletContextProvider = ({ children }) => {
-  const network = 'devnet'
+  const network = 'mainnet-beta'
   const endpoint = useMemo(() => Get.clusterUrl(network), [network])
 
   const wallets = useMemo(
