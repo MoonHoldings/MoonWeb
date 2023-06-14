@@ -14,6 +14,7 @@ import { GRANULARITY } from 'types/enums'
 import { GET_USER_NFTS } from 'utils/queries'
 import { displayNotifModal } from 'utils/notificationModal'
 import client from 'utils/apollo-client'
+import { Transaction } from '@solana/web3.js'
 
 const initialState = {
   collections: [],
@@ -87,6 +88,8 @@ const nftSlice = createSlice({
     },
     deselectAllNfts(state, action) {
       state.selectedNfts = []
+      state.loadingBurning = false
+      state.loadingTransfer = false
     },
   },
   extraReducers(builder) {
@@ -264,7 +267,6 @@ export const transferNfts = createAsyncThunk(
   ) => {
     const { dispatch, getState } = thunkAPI
     const mintArray = getState().nft.selectedNfts?.map((item) => item.mint)
-
     try {
       const data = await axios.post(
         `${SHYFT_URL}/nft/transfer_many`,
@@ -277,7 +279,7 @@ export const transferNfts = createAsyncThunk(
         AXIOS_CONFIG_SHYFT_KEY
       )
 
-      if (data.data.result.encoded_transactions[0])
+      if (data?.data?.result?.encoded_transactions[0])
         dispatch(
           confirmTransaction({
             encodedTransaction: data.data.result.encoded_transactions[0],
@@ -344,13 +346,22 @@ export const confirmTransaction = createAsyncThunk(
   ) => {
     const { dispatch } = thunkAPI
     try {
-      const txnSignature = await signAndSendTransaction(
-        connection,
-        encodedTransaction,
-        wallet.adapter
+      const recoveredTransaction = Transaction.from(
+        Buffer.from(encodedTransaction, 'base64')
+      )
+      const signedTx = await wallet.adapter.signTransaction(
+        recoveredTransaction
+      )
+      const data = await axios.post(
+        `${SHYFT_URL}/transaction/send_txn`,
+        {
+          network: 'mainnet-beta',
+          encoded_transaction: signedTx?.serialize().toString('base64'),
+        },
+        AXIOS_CONFIG_SHYFT_KEY
       )
 
-      if (txnSignature != null) {
+      if (data != null) {
         displayNotifModal(
           'Success',
           `Done! You've successfully completed your transaction.`,
@@ -359,6 +370,7 @@ export const confirmTransaction = createAsyncThunk(
         dispatch(deselectAllNfts())
       }
     } catch (error) {
+      console.log(error)
       displayNotifModal(
         'Error',
         `Failed to confirm the transaction.`,
