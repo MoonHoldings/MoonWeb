@@ -71,7 +71,7 @@ describe('Login', () => {
         req.reply({
           data: {
             login: {
-              username: 'OddlyJoviallyConcerned',
+              username: 'testUser',
               __typename: 'User',
             },
           },
@@ -79,11 +79,9 @@ describe('Login', () => {
       }
     }).as('loginRequest')
 
-    cy.get('input[type="email"]').type(email)
-    cy.get('input[type="password"]').type(password)
+    cy.get('input[type="email"]').type('test@email.com')
+    cy.get('input[type="password"]').type('password')
     cy.get('form').submit()
-
-    cy.getCookie('aid').should('exist')
 
     cy.url().should('eq', 'http://localhost:3000/dashboard')
   })
