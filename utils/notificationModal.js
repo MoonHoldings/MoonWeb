@@ -16,7 +16,7 @@ export const displayNotifModal = (type, message, notification) => {
     ),
     type: type.toLowerCase(),
     className: 'bg-[#191C20] text-white',
-    description: message,
+    description: <p className="text-white">{message}</p>,
     duration: 5,
     placement: 'top',
     message: <p className="text-capitalize text-white">{type}</p>,

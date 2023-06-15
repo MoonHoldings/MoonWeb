@@ -28,6 +28,7 @@ const initialState = {
   loadingCandle: false,
   loadingTransfer: false,
   loadingBurning: false,
+  confirmingTransaction: false,
   headerData: {
     ath: 0,
     atl: 0,
@@ -130,6 +131,12 @@ const nftSlice = createSlice({
       })
       .addCase(burnNfts.fulfilled, (state, action) => {
         state.loadingBurning = false
+      })
+      .addCase(confirmTransaction.pending, (state, action) => {
+        state.confirmingTransaction = true
+      })
+      .addCase(confirmTransaction.fulfilled, (state, action) => {
+        state.confirmingTransaction = false
       })
   },
 })
@@ -367,7 +374,9 @@ export const confirmTransaction = createAsyncThunk(
           `Done! You've successfully completed your transaction.`,
           notification
         )
-        dispatch(deselectAllNfts())
+        setTimeout(() => {
+          dispatch(deselectAllNfts())
+        }, 1000)
       }
     } catch (error) {
       console.log(error)
