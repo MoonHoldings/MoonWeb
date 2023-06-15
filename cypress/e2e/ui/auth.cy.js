@@ -56,9 +56,11 @@ describe('User login & signup', () => {
       cy.contains('Please use a valid email')
     })
     it('Logs in successfully', () => {
-      cy.get('input[type="email"]').type(email)
-      cy.get('input[type="password"]').type(password)
-      cy.get('form').submit()
+      //   cy.get('input[type="email"]').type(email)
+      //   cy.get('input[type="password"]').type(password)
+      //   cy.get('form').submit()
+
+      cy.login(email, password)
 
       cy.wait('@gqlLogin')
       cy.location('pathname').should('eq', '/dashboard')
@@ -66,7 +68,7 @@ describe('User login & signup', () => {
   })
 
   context('Logout', () => {
-    it.only('Logs out successfully', () => {
+    it('Logs out successfully', () => {
       cy.get('input[type="email"]').type(email)
       cy.get('input[type="password"]').type(password)
       cy.get('form').submit()
