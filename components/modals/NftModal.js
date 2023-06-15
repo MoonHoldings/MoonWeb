@@ -10,7 +10,6 @@ import {
   fetchUserNfts,
   selectNft,
   transferNfts,
-  clearIsSuccessfulTransaction,
 } from 'redux/reducers/nftSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
@@ -24,8 +23,13 @@ const NftModal = () => {
   const { publicKey, wallet } = useWallet()
   const { connection } = useConnection()
 
-  const { selectedNfts, loadingTransfer, loadingBurning, ownedNfts } =
-    useSelector((state) => state.nft)
+  const {
+    selectedNfts,
+    loadingTransfer,
+    loadingBurning,
+    confirmingTransaction,
+    ownedNfts,
+  } = useSelector((state) => state.nft)
   const { nftModalType } = useSelector((state) => state.util)
   const [api, contextHolder] = notification.useNotification()
 
@@ -193,7 +197,7 @@ const NftModal = () => {
                 : 'bg-[#61DAE9] text-black'
             }`}
           >
-            {loadingTransfer || loadingBurning ? (
+            {loadingTransfer || loadingBurning || confirmingTransaction ? (
               <>
                 <div
                   className="mr-[1rem] inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
