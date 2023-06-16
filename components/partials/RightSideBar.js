@@ -40,11 +40,13 @@ import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
 import mergeClasses from 'utils/mergeClasses'
 import { displayNotifModal } from 'utils/notificationModal'
+import CopyClipboardNotification from 'components/modals/CopyClipboardNotification'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const [show, setShow] = useState(false)
   const { disconnect, publicKey, disconnecting } = useWallet()
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
@@ -653,11 +655,10 @@ const RightSideBar = () => {
                 <li key={index}>
                   <button
                     type="button"
-                    onClick={
-                      wallet.address === publicKey?.toBase58()
-                        ? disconnectCurrentWallet
-                        : () => removeSingleWallet(wallet.address)
-                    }
+                    onClick={() => {
+                      navigator.clipboard.writeText(wallet.address)
+                      setShow(true)
+                    }}
                     className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
                   >
                     <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
@@ -671,7 +672,14 @@ const RightSideBar = () => {
                       {shrinkText(`${wallet.address}`)}
                       {removingUserWallet && <Spin className="ml-3" />}
                     </div>
-                    <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
+                    <div
+                      onClick={
+                        wallet.address === publicKey?.toBase58()
+                          ? disconnectCurrentWallet
+                          : () => removeSingleWallet(wallet.address)
+                      }
+                      className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+                    >
                       <Image
                         className="h-[0.8rem] w-[0.8rem] rotate-45"
                         src="/images/svgs/+.svg"
@@ -799,6 +807,11 @@ const RightSideBar = () => {
               <li key={index}>
                 <button
                   type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(wallet.address)
+                    setShow(true)
+                    console.log('hello')
+                  }}
                   disabled={refreshingUserWallets}
                   className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
                     refreshingUserWallets
@@ -877,20 +890,23 @@ const RightSideBar = () => {
   }
 
   return (
-    <motion.div
-      className="fixed left-0 top-0 z-[51] h-full w-full md:sticky md:top-8 md:order-3 md:mb-[1.5rem] md:h-auto"
-      initial={{ x: '101%' }}
-      animate={{ x: '0%' }}
-      exit={{ x: '101%' }}
-      transition={{ duration: 0.6, type: 'spring' }}
-    >
-      {contextHolder}
-      <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
-        {MENUS[currentMenu]}
+    <>
+      <div className="absolute right-24 top-24 z-[52]">
+        <CopyClipboardNotification show={show} setShow={setShow} />
       </div>
+      <motion.div
+        className="fixed left-0 top-0 z-[51] h-full w-full md:sticky md:top-8 md:order-3 md:mb-[1.5rem] md:h-auto"
+        initial={{ x: '101%' }}
+        animate={{ x: '0%' }}
+        exit={{ x: '101%' }}
+        transition={{ duration: 0.6, type: 'spring' }}
+      >
+        <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
+          {MENUS[currentMenu]}
+        </div>
 
-      {/* Connected Exchanges */}
-      {/* <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] border bg-[#191C20] p-[1.5rem] font-inter xl:block">
+        {/* Connected Exchanges */}
+        {/* <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] border bg-[#191C20] p-[1.5rem] font-inter xl:block">
         <div className="header mb-[2rem] flex justify-between">
           <h1 className="text-[1.4rem]">Connected Exchanges</h1>
           <button
@@ -900,8 +916,8 @@ const RightSideBar = () => {
             See All
           </button>
         </div> */}
-      {/* All Exchanges */}
-      {/* <ul className="all-exchanges mb-[2rem]">
+        {/* All Exchanges */}
+        {/* <ul className="all-exchanges mb-[2rem]">
           {allExchanges.map((exchange, index) => (
             <li
               key={index}
@@ -936,9 +952,10 @@ const RightSideBar = () => {
           </button>
         </div>
       </div> */}
-      {renderNftAddress()}
-      {renderConnectedWallets()}
-    </motion.div>
+        {renderNftAddress()}
+        {renderConnectedWallets()}
+      </motion.div>
+    </>
   )
 }
 
