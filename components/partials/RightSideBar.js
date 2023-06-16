@@ -212,6 +212,7 @@ const RightSideBar = () => {
   const refreshWalletsAndFloorPrice = async () => {
     if (userWallets?.length) {
       await refreshUserWallets()
+      dispatch(reloadDashboard(true))
       dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
     }
