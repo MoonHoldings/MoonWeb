@@ -56,10 +56,6 @@ describe('User login & signup', () => {
       cy.contains('Please use a valid email')
     })
     it('Logs in successfully', () => {
-      //   cy.get('input[type="email"]').type(email)
-      //   cy.get('input[type="password"]').type(password)
-      //   cy.get('form').submit()
-
       cy.login(email, password)
 
       cy.wait('@gqlLogin')

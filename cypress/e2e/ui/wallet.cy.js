@@ -113,7 +113,6 @@ describe('Wallet', () => {
 
   it('should add a wallet', () => {
     cy.visit(`${baseUrl}/login`)
-    // cy.login(email, password)
     cy.get('button#btn-wallet-mobile').click()
     cy.get('button').contains('Add Wallet Address').click()
     cy.get('div.search').type(testWalletAddress)
@@ -121,7 +120,7 @@ describe('Wallet', () => {
     cy.get('ul.all-wallets').contains('3bpET').should('exist')
   })
 
-  // NFT TESTS NEED TO BE COMPLETED FIRST
+  // TODO NFT TESTS NEED TO BE COMPLETED FIRST
   // it('should remove all wallets', () => {
   //   cy.visit(`${baseUrl}/login`)
   //   // cy.login(email, password)
