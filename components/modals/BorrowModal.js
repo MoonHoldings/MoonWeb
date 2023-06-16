@@ -55,7 +55,7 @@ const BorrowModal = () => {
     : null
 
   useEffect(() => {
-    if (wallet.publicKey && !loadingMyLoans) {
+    if (wallet.publicKey) {
       getMyLoans({
         variables: {
           args: {
@@ -67,7 +67,7 @@ const BorrowModal = () => {
         },
       })
     }
-  }, [wallet.publicKey, loadingMyLoans, getMyLoans])
+  }, [wallet.publicKey])
 
   useEffect(() => {
     if (orderBook && !loading && borrowModalOpen) {

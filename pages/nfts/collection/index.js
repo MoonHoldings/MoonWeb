@@ -22,6 +22,8 @@ const Index = () => {
     loadingCollection,
     loadingCandle,
     headerData,
+    selectedNfts,
+    ownedNfts,
   } = useSelector((state) => state.nft)
   const { solUsdPrice } = useSelector((state) => state.crypto)
 
@@ -213,6 +215,8 @@ const Index = () => {
             key={index}
             floorPrice={currentCollection.floorPrice}
             nft={nft}
+            selectedNfts={selectedNfts}
+            ownedNfts={ownedNfts}
           />
         ))}
       </div>

@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { useMutation } from '@apollo/client'
 import {
   changeAddWalletModalOpen,
   changeRightSideBarOpen,
   changeWalletsModalOpen,
+  changeNftModalOpen,
   reloadDashboard,
 } from 'redux/reducers/utilSlice'
-import { fetchUserNfts } from 'redux/reducers/nftSlice'
+import {
+  deselectAllNfts,
+  fetchUserNfts,
+  selectNft,
+} from 'redux/reducers/nftSlice'
 import {
   ADD_WALLET_ADDRESS,
   CONNECTED_WALLETS,
@@ -21,7 +26,7 @@ import {
 } from 'application/constants/copy'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { Spin, Tooltip } from 'antd'
+import { Spin, Tooltip, notification } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
@@ -33,6 +38,8 @@ import {
 } from 'utils/mutations'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
+import mergeClasses from 'utils/mergeClasses'
+import { displayNotifModal } from 'utils/notificationModal'
 
 const RightSideBar = () => {
   const dispatch = useDispatch()
@@ -45,7 +52,7 @@ const RightSideBar = () => {
   const { addAddressStatus, wallets: userWallets } = useSelector(
     (state) => state.wallet
   )
-  const { collections } = useSelector((state) => state.nft)
+  const { collections, selectedNfts } = useSelector((state) => state.nft)
   const {
     solUsdPrice,
     currentCurrency,
@@ -68,6 +75,8 @@ const RightSideBar = () => {
     loanTotal,
     borrowTotal,
   } = useSelector((state) => state.portfolio)
+
+  const [api, contextHolder] = notification.useNotification()
 
   useEffect(() => {
     dispatch(getUserWallets())
@@ -118,6 +127,16 @@ const RightSideBar = () => {
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
   }
+  const transferNftModal = (type) => {
+    if (publicKey) dispatch(changeNftModalOpen({ isShow: true, type: type }))
+    else {
+      return displayNotifModal(
+        'warning',
+        `Warning! No wallet is connected.`,
+        api
+      )
+    }
+  }
 
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
@@ -127,6 +146,7 @@ const RightSideBar = () => {
     await removeUserWallet({ variables: { wallet } })
     dispatch(getUserWallets())
     dispatch(fetchUserNfts())
+    dispatch(deselectAllNfts())
     dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
   }
@@ -140,10 +160,12 @@ const RightSideBar = () => {
       dispatch(reloadDashboard(true))
     }
 
+    dispatch(deselectAllNfts())
     disconnect()
   }
 
   const disconnectCurrentWallet = () => {
+    dispatch(deselectAllNfts())
     removeSingleWallet(publicKey.toBase58())
     disconnect()
   }
@@ -255,6 +277,49 @@ const RightSideBar = () => {
     )
   }
 
+  const renderMassButton = (type) => {
+    return (
+      <button
+        type="button"
+        onClick={() => transferNftModal(type)}
+        disabled={refreshingUserWallets}
+        className={mergeClasses(
+          'xl-[1rem]',
+          'mb-[1rem]',
+          'flex',
+          'h-[6.4rem]',
+          'w-full',
+          'items-center',
+          'border',
+          'rounded-[1rem]',
+          'border-black',
+          'bg-[#2A3649]',
+          'px-[1.6rem]',
+          'text-white',
+          refreshingUserWallets
+            ? 'opacity-50'
+            : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]',
+          type == 'BURN' ? 'bg-[#773429]' : 'bg-[#2A3649]'
+        )}
+      >
+        <div className="flex h-[4.1rem] w-full items-center justify-center">
+          <Image
+            className="mr-[1rem] h-[2rem] w-[2rem]"
+            src={
+              type == 'BURN'
+                ? '/images/svgs/burn.svg'
+                : '/images/svgs/transfer.svg'
+            }
+            width="20"
+            height="20"
+            alt="NFTs"
+          />
+          <h1>{type == 'BURN' ? 'MASS BURN' : 'MASS TRANSFER'}</h1>
+        </div>
+      </button>
+    )
+  }
+
   const renderRefreshWallet = () => {
     return (
       <Tooltip
@@ -273,6 +338,37 @@ const RightSideBar = () => {
           <div className="flex w-full items-center justify-center">
             <p className="mr-4 text-[1.9rem]">↻</p>
             {REFRESH_WALLETS}
+            {refreshingUserWallets && <Spin className="ml-3" />}
+          </div>
+        </button>
+      </Tooltip>
+    )
+  }
+
+  const renderDeselectAll = () => {
+    return (
+      <Tooltip
+        color="#1F2126"
+        title={<span className="text-[1.5rem]">{REFRESH_WALLETS_TITLE}</span>}
+      >
+        <button
+          type="button"
+          onClick={() => dispatch(deselectAllNfts())}
+          className={`mb-[1rem] flex h-[5.8rem] w-full items-center justify-center rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+            !refreshingUserWallets &&
+            'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+          }`}
+        >
+          <div className="flex w-full items-center justify-center">
+            <Image
+              className="mr-[1rem] h-[1.8rem] w-[1.8rem] rotate-45"
+              src={'/images/svgs/+.svg'}
+              width="20"
+              height="20"
+              alt="NFTs"
+            />
+
+            {'DESELECT ALL'}
             {refreshingUserWallets && <Spin className="ml-3" />}
           </div>
         </button>
@@ -514,6 +610,7 @@ const RightSideBar = () => {
         </ul>
       </>
     ),
+
     connectedWallets: (
       <motion.div
         className="h-full"
@@ -605,6 +702,71 @@ const RightSideBar = () => {
         </div>
       </motion.div>
     ),
+  }
+
+  useEffect(() => {
+    if (containerRef.current != null)
+      containerRef.current.scrollTo(0, containerRef.current.scrollHeight)
+  }, [selectedNfts])
+  const containerRef = useRef(null)
+
+  const renderNftAddress = () => {
+    return (
+      selectedNfts?.length > 0 && (
+        <div className="connected-wallets  hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] md:mb-[1.6rem] md:block">
+          <div className="header mb-[2rem] flex justify-between">
+            <h1 className="text-[1.4rem] text-white">Selected NFts</h1>
+            <button
+              // onClick={seeAllOrLessWallets}
+              className="text-[1.4rem] font-bold text-[#61DAEA]"
+            >
+              {userWallets?.length > 4 ? 'See All' : ''}
+            </button>
+          </div>
+
+          <ul
+            className="all-wallets  mb-[2rem] grid max-h-64 w-full gap-[1rem] overflow-y-auto"
+            ref={containerRef}
+          >
+            {selectedNfts?.map((nft, index) => (
+              <li key={index}>
+                <button
+                  type="button"
+                  disabled={refreshingUserWallets}
+                  className={`xl-[1rem] flex h-[4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+                    refreshingUserWallets
+                      ? 'opacity-50'
+                      : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+                  }`}
+                >
+                  <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+                    {nft.name}
+                    {removingUserWallet && <Spin className="ml-3" />}
+                  </div>
+                  <div
+                    onClick={() => dispatch(selectNft(nft))}
+                    className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+                  >
+                    <Image
+                      className="h-[0.8rem] w-[0.8rem] rotate-45"
+                      src="/images/svgs/+.svg"
+                      width="11"
+                      height="11"
+                      alt="plus sign"
+                    />
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <ul className="dashboard-menu text-[1.4rem]">
+            {renderDeselectAll()}
+            {renderMassButton('TRANSFER')}
+            {renderMassButton('BURN')}
+          </ul>
+        </div>
+      )
+    )
   }
 
   const renderConnectedWallets = () => {
@@ -707,6 +869,7 @@ const RightSideBar = () => {
       exit={{ x: '101%' }}
       transition={{ duration: 0.6, type: 'spring' }}
     >
+      {contextHolder}
       <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
         {MENUS[currentMenu]}
       </div>
@@ -758,7 +921,7 @@ const RightSideBar = () => {
           </button>
         </div>
       </div> */}
-
+      {renderNftAddress()}
       {renderConnectedWallets()}
     </motion.div>
   )
