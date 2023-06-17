@@ -117,7 +117,7 @@ const RightSideBar = () => {
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
 
-      if (!res.data.addUserWallet) {
+      if (!res?.data?.addUserWallet) {
         displayNotifModal(
           'warning',
           'Wallet is already connected to a different user',
