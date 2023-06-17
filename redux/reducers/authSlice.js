@@ -75,6 +75,9 @@ const authSlice = createSlice({
     },
     logout(state, action) {
       state.username = null
+      state.accessToken = ''
+      state.tokenHeader = {}
+      state.isLoggedIn = false
     },
     discordAuthenticationComplete(state, action) {
       state.modalLoading = false
