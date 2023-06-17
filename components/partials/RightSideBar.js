@@ -113,14 +113,23 @@ const RightSideBar = () => {
 
   const addConnectedWallet = useCallback(async () => {
     if (publicKey) {
-      await addUserWallet({
+      const res = await addUserWallet({
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
 
-      dispatch(getUserWallets())
-      dispatch(fetchUserNfts())
-      dispatch(reloadPortfolio(true))
-      dispatch(reloadDashboard(true))
+      if (!res?.data?.addUserWallet) {
+        displayNotifModal(
+          'warning',
+          'Wallet is already connected to a different user',
+          api
+        )
+        disconnectCurrentWallet()
+      } else {
+        dispatch(getUserWallets())
+        dispatch(fetchUserNfts())
+        dispatch(reloadPortfolio(true))
+        dispatch(reloadDashboard(true))
+      }
     }
   }, [addUserWallet, dispatch, publicKey])
 
