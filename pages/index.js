@@ -4,7 +4,7 @@ import { GeneralButton } from 'components/forms/GeneralButton'
 import Image from 'next/image'
 import { MOON_HOLDINGS } from 'application/constants/copy'
 import Router from 'next/router'
-import { getServerSidePropsWithAuth } from 'utils/withAuth'
+import withAuth from 'hoc/withAuth'
 
 const Index = (props) => {
   const loginInstead = () => {
@@ -91,5 +91,4 @@ const Index = (props) => {
   )
 }
 
-export default Index
-export const getServerSideProps = getServerSidePropsWithAuth
+export default withAuth(Index)

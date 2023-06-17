@@ -2,7 +2,6 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import mergeClasses from 'utils/mergeClasses'
-import { getServerSidePropsWithAuth } from 'utils/withAuth'
 import { useLazyQuery } from '@apollo/client'
 import { GET_USER_DASHBOARD } from 'utils/queries'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,17 +13,20 @@ import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { Skeleton } from 'antd'
 import { populatePortfolioTotals } from 'redux/reducers/portfolioSlice'
 import { useRouter } from 'next/router'
+import withAuth from 'hoc/withAuth'
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Dashboard = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const { tokenHeader } = useSelector((state) => state.auth)
   const [timeRangeType, setTimeRangeType] = useState('Day')
   const [getUserDashboard, { data, loading }] = useLazyQuery(
     GET_USER_DASHBOARD,
     {
       fetchPolicy: 'no-cache',
+      context: tokenHeader,
     }
   )
   const [updateTimeRangeType, setUpdateTimeRangeType] = useState(true)
@@ -85,6 +87,7 @@ const Dashboard = () => {
         variables: {
           timeRangeType,
         },
+        tokenHeader,
       })
 
       dispatch(reloadDashboard(false))
@@ -782,5 +785,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
-export const getServerSideProps = getServerSidePropsWithAuth
+export default withAuth(Dashboard)

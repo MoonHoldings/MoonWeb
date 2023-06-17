@@ -12,8 +12,8 @@ import {
   START_CONNECTING_WALLETS,
   WELCOME_MOON_HOLDINGS,
 } from 'application/constants/copy'
-import { getServerSidePropsWithAuth } from '../../utils/withAuth'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
+import withAuth from 'hoc/withAuth'
 
 const Nfts = () => {
   const dispatch = useDispatch()
@@ -60,5 +60,4 @@ const Nfts = () => {
   )
 }
 
-export default Nfts
-export const getServerSideProps = getServerSidePropsWithAuth
+export default withAuth(Nfts)

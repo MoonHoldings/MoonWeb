@@ -51,20 +51,26 @@ const portfolioSlice = createSlice({
         state.borrowTotal = action.payload.portfolioTotalByType
       if (type === PortfolioType.LOAN)
         state.loanTotal = action.payload.portfolioTotalByType
+
+      state.loading = false
     })
   },
 })
 
 export const fetchPortfolioTotalByType = createAsyncThunk(
   'dashboard/fetchPortfolioTotalByType',
-  async ({ type }) => {
+  async ({ type }, thunkAPI) => {
     try {
+      const { getState } = thunkAPI
+      const tokenHeader = getState().auth.tokenHeader
+
       const { data } = await client.query({
         query: GET_USER_PORTFOLIO_TOTAL_BY_TYPE,
         variables: {
           type,
         },
         fetchPolicy: 'no-cache',
+        context: tokenHeader,
       })
 
       const portfolioTotalByType = data?.getUserPortfolioTotalByType

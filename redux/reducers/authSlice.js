@@ -8,6 +8,9 @@ const initialState = {
   loading: false,
   modalLoading: false,
   username: null,
+  accessToken: '',
+  tokenHeader: {},
+  isLoggedIn: false,
 }
 
 export const loginUser = createAsyncThunk(
@@ -24,7 +27,7 @@ export const loginUser = createAsyncThunk(
       const user = res.data.login
 
       if (user) {
-        return { username: user.username }
+        return { username: user.username, accessToken: user.accessToken }
       }
     } catch (error) {
       return error
@@ -76,6 +79,13 @@ const authSlice = createSlice({
     discordAuthenticationComplete(state, action) {
       state.modalLoading = false
       state.username = action.payload.username
+      state.accessToken = action.payload?.accessToken ?? null
+      state.isLoggedIn = action.payload?.accessToken && true
+      state.tokenHeader = {
+        headers: {
+          'access-token': `Bearer ${action.payload?.accessToken}`,
+        },
+      }
     },
   },
 
@@ -85,7 +95,14 @@ const authSlice = createSlice({
         state.loading = true
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.username = action.payload.username ?? null
+        state.username = action.payload?.username ?? null
+        state.accessToken = action.payload?.accessToken ?? null
+        state.isLoggedIn = action.payload?.accessToken && true
+        state.tokenHeader = {
+          headers: {
+            'access-token': `Bearer ${action.payload?.accessToken}`,
+          },
+        }
         state.loading = false
       })
       .addCase(refreshAccessToken.pending, (state, action) => {

@@ -23,14 +23,17 @@ const walletSlice = createSlice({
 
 export const getUserWallets = createAsyncThunk(
   'wallet/getUserWallets',
-  async () => {
+  async ({}, thunkAPI) => {
     try {
+      const { getState } = thunkAPI
+      const tokenHeader = getState().auth.tokenHeader
       const { data } = await client.query({
         query: GET_USER_WALLETS,
         fetchPolicy: 'no-cache',
         variables: {
           type: 'Auto',
         },
+        context: tokenHeader,
       })
 
       return data?.getUserWallets

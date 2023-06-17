@@ -35,10 +35,16 @@ const CoinModal = () => {
 
   const [disableRemoveAll, setDisableRemoveAll] = useState(false)
 
-  const [addUserCoin] = useMutation(ADD_USER_COIN)
-  const [editUserCoin] = useMutation(EDIT_USER_COIN)
-  const [deleteUserCoin] = useMutation(DELETE_USER_COIN)
-  const [deleteUserCoinBySymbol] = useMutation(DELETE_USER_COIN_BY_SYMBOL)
+  const { tokenHeader } = useSelector((state) => state.auth)
+
+  const [addUserCoin] = useMutation(ADD_USER_COIN, { context: tokenHeader })
+  const [editUserCoin] = useMutation(EDIT_USER_COIN, { context: tokenHeader })
+  const [deleteUserCoin] = useMutation(DELETE_USER_COIN, {
+    context: tokenHeader,
+  })
+  const [deleteUserCoinBySymbol] = useMutation(DELETE_USER_COIN_BY_SYMBOL, {
+    context: tokenHeader,
+  })
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -120,6 +126,7 @@ const CoinModal = () => {
           coinData,
         },
       })
+      console.log(res)
       if (res.data.addUserCoin) {
         const newArray = [...coinArray]
         const newLastItem = res.data.addUserCoin
