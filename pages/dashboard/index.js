@@ -116,7 +116,7 @@ const Dashboard = () => {
   }, [dashboardData, dispatch])
 
   useEffect(() => {
-    dispatch(fetchUserNfts())
+    dispatch(fetchUserNfts({}))
     dispatch(updateCurrency(currentCurrency ?? 'SOL'))
   }, [dispatch])
 

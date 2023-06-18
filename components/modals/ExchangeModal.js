@@ -29,7 +29,7 @@ const ExchangeModal = (props) => {
   }
 
   const onSuccess = () => {
-    dispatch(getUserWallets())
+    dispatch(getUserWallets({}))
     dispatch(reloadPortfolio())
     displayNotifModal(
       'Success',

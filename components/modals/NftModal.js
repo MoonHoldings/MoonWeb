@@ -73,8 +73,8 @@ const NftModal = () => {
         })
       )
     }
-    dispatch(getUserWallets())
-    dispatch(fetchUserNfts())
+    dispatch(getUserWallets({}))
+    dispatch(fetchUserNfts({}))
   }
 
   const handleWalletAddressInput = (event) => {

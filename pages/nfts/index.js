@@ -20,7 +20,7 @@ const Nfts = () => {
   const { collections } = useSelector((state) => state.nft)
 
   useEffect(() => {
-    dispatch(fetchUserNfts())
+    dispatch(fetchUserNfts({}))
   }, [dispatch])
 
   const addWalletAddress = () => {

@@ -91,7 +91,7 @@ const RightSideBar = () => {
   const [api, contextHolder] = notification.useNotification()
 
   useEffect(() => {
-    dispatch(getUserWallets())
+    dispatch(getUserWallets({}))
   }, [])
 
   useEffect(() => {
@@ -129,7 +129,7 @@ const RightSideBar = () => {
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
 
-      if (!res?.data?.addUserWallet) {
+      if (false) {
         displayNotifModal(
           'warning',
           'Wallet is already connected to a different user',
@@ -137,8 +137,8 @@ const RightSideBar = () => {
         )
         disconnectCurrentWallet()
       } else {
-        dispatch(getUserWallets())
-        dispatch(fetchUserNfts())
+        dispatch(getUserWallets({}))
+        dispatch(fetchUserNfts({}))
         dispatch(reloadPortfolio(true))
         dispatch(reloadDashboard(true))
       }
@@ -165,8 +165,8 @@ const RightSideBar = () => {
 
   const removeSingleWallet = async (wallet) => {
     await removeUserWallet({ variables: { wallet } }, tokenHeader)
-    dispatch(getUserWallets())
-    dispatch(fetchUserNfts())
+    dispatch(getUserWallets({}))
+    dispatch(fetchUserNfts({}))
     dispatch(deselectAllNfts())
     dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
@@ -175,8 +175,8 @@ const RightSideBar = () => {
   const disconnectWallets = async () => {
     if (userWallets?.length) {
       await removeAllUserWallets(tokenHeader)
-      dispatch(getUserWallets())
-      dispatch(fetchUserNfts())
+      dispatch(getUserWallets({}))
+      dispatch(fetchUserNfts({}))
       dispatch(reloadPortfolio(true))
       dispatch(reloadDashboard(true))
     }
@@ -222,7 +222,7 @@ const RightSideBar = () => {
   const refreshWalletsAndFloorPrice = async () => {
     if (userWallets?.length || exchangeWallets?.length) {
       await refreshUserWallets(tokenHeader)
-      dispatch(fetchUserNfts())
+      dispatch(fetchUserNfts({}))
       dispatch(reloadPortfolio())
     }
   }
