@@ -21,7 +21,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.11",
+    "@headlessui/react": "^1.7.15",
     "@hellomoon/api": "^1.14.0",
+    "@heroicons/react": "^2.0.18",
     "@project-serum/anchor": "^0.26.0",
     "@pythnetwork/client": "^2.15.0",
     "@reduxjs/toolkit": "^1.9.1",
