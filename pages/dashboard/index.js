@@ -125,20 +125,29 @@ const Dashboard = () => {
       return total + collection.floorPrice * collection.nfts.length
     }, 0)
 
-    return sortedCollections.map((collection) => ({
-      x: collection.name,
-      y: (
-        ((collection.floorPrice * collection.nfts.length) / totalValue) *
-        100
-      ).toFixed(2),
-      z:
-        '$' +
-        (
-          ((collection.floorPrice * collection.nfts.length) /
-            LAMPORTS_PER_SOL) *
-          solUsdPrice
-        ).toFixed(2),
-    }))
+    return sortedCollections
+      .map((collection) => {
+        if (
+          ((collection.floorPrice * collection.nfts.length) / totalValue) *
+            100 >
+          0.019
+        )
+          return {
+            x: collection.name,
+            y: (
+              ((collection.floorPrice * collection.nfts.length) / totalValue) *
+              100
+            ).toFixed(2),
+            z:
+              '$' +
+              (
+                ((collection.floorPrice * collection.nfts.length) /
+                  LAMPORTS_PER_SOL) *
+                solUsdPrice
+              ).toFixed(2),
+          }
+      })
+      .filter(Boolean)
   }
 
   const chart = {
