@@ -905,7 +905,7 @@ const RightSideBar = () => {
         <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
           {MENUS[currentMenu]}
         </div>
-
+        {contextHolder}
         {/* Connected Exchanges */}
         {/* <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] border bg-[#191C20] p-[1.5rem] font-inter xl:block">
         <div className="header mb-[2rem] flex justify-between">
