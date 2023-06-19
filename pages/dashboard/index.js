@@ -129,8 +129,8 @@ const Dashboard = () => {
       .map((collection) => {
         if (
           ((collection.floorPrice * collection.nfts.length) / totalValue) *
-            100 >
-          0.019
+            100 >=
+          0.02
         )
           return {
             x: collection.name,
