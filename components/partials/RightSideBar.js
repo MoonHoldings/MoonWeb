@@ -686,7 +686,10 @@ const RightSideBar = () => {
                       onClick={
                         wallet.address === publicKey?.toBase58()
                           ? disconnectCurrentWallet
-                          : () => removeSingleWallet(wallet.address)
+                          : (e) => {
+                              e.stopPropagation()
+                              removeSingleWallet(wallet.address)
+                            }
                       }
                       className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
                     >
@@ -820,7 +823,6 @@ const RightSideBar = () => {
                   onClick={() => {
                     navigator.clipboard.writeText(wallet.address)
                     setShow(true)
-                    console.log('hello')
                   }}
                   disabled={refreshingUserWallets}
                   className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
@@ -844,7 +846,10 @@ const RightSideBar = () => {
                     onClick={
                       wallet.address === publicKey?.toBase58()
                         ? disconnectCurrentWallet
-                        : () => removeSingleWallet(wallet.address)
+                        : (e) => {
+                            e.stopPropagation()
+                            removeSingleWallet(wallet.address)
+                          }
                     }
                     className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
                   >
