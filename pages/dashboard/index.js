@@ -2,7 +2,6 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import mergeClasses from 'utils/mergeClasses'
-import { getServerSidePropsWithAuth } from 'utils/withAuth'
 import { useLazyQuery } from '@apollo/client'
 import { GET_USER_DASHBOARD } from 'utils/queries'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,17 +13,20 @@ import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { Skeleton } from 'antd'
 import { populatePortfolioTotals } from 'redux/reducers/portfolioSlice'
 import { useRouter } from 'next/router'
+import withAuth from 'hoc/withAuth'
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Dashboard = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const { tokenHeader } = useSelector((state) => state.auth)
   const [timeRangeType, setTimeRangeType] = useState('Day')
   const [getUserDashboard, { data, loading }] = useLazyQuery(
     GET_USER_DASHBOARD,
     {
       fetchPolicy: 'no-cache',
+      context: tokenHeader,
     }
   )
   const [updateTimeRangeType, setUpdateTimeRangeType] = useState(true)
@@ -85,6 +87,7 @@ const Dashboard = () => {
         variables: {
           timeRangeType,
         },
+        tokenHeader,
       })
 
       dispatch(reloadDashboard(false))
@@ -113,7 +116,7 @@ const Dashboard = () => {
   }, [dashboardData, dispatch])
 
   useEffect(() => {
-    dispatch(fetchUserNfts())
+    dispatch(fetchUserNfts({}))
     dispatch(updateCurrency(currentCurrency ?? 'SOL'))
   }, [dispatch])
 
@@ -122,20 +125,29 @@ const Dashboard = () => {
       return total + collection.floorPrice * collection.nfts.length
     }, 0)
 
-    return sortedCollections.map((collection) => ({
-      x: collection.name,
-      y: (
-        ((collection.floorPrice * collection.nfts.length) / totalValue) *
-        100
-      ).toFixed(2),
-      z:
-        '$' +
-        (
-          ((collection.floorPrice * collection.nfts.length) /
-            LAMPORTS_PER_SOL) *
-          solUsdPrice
-        ).toFixed(2),
-    }))
+    return sortedCollections
+      .map((collection) => {
+        if (
+          ((collection.floorPrice * collection.nfts.length) / totalValue) *
+            100 >=
+          0.02
+        )
+          return {
+            x: collection.name,
+            y: (
+              ((collection.floorPrice * collection.nfts.length) / totalValue) *
+              100
+            ).toFixed(2),
+            z:
+              '$' +
+              (
+                ((collection.floorPrice * collection.nfts.length) /
+                  LAMPORTS_PER_SOL) *
+                solUsdPrice
+              ).toFixed(2),
+          }
+      })
+      .filter(Boolean)
   }
 
   const chart = {
@@ -782,5 +794,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
-export const getServerSideProps = getServerSidePropsWithAuth
+export default withAuth(Dashboard)

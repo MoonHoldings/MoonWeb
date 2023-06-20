@@ -61,8 +61,8 @@ const ResetPassword = (props) => {
         if (res.data) {
           setModal('You have successfully updated your password', false, true)
           setTimeout(function () {
-            handlerPageRoute('/')
-          }, 3000)
+            handlerPageRoute('/login')
+          }, 2000)
         } else if (res.payload.message) {
           setModal(res.payload.message, true, true)
         }
@@ -70,8 +70,8 @@ const ResetPassword = (props) => {
         setModal(error.message, true, true)
         if (error.message == 'Invalid token') {
           setTimeout(function () {
-            handlerPageRoute('/')
-          }, 3000)
+            handlerPageRoute('/login')
+          }, 2000)
         }
       }
     }

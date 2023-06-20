@@ -1,22 +1,25 @@
 import { useLazyQuery } from '@apollo/client'
 import { useState, useMemo } from 'react'
 import mergeClasses from 'utils/mergeClasses'
-import { getCoinPrice, pythCoins } from 'utils/pyth'
+import { pythCoins } from 'utils/pyth'
 import { GET_USER_PORTFOLIO_BY_SYMBOL } from 'utils/queries'
 import {
   populatePortfolioCoins,
   loadingPortfolio,
 } from 'redux/reducers/portfolioSlice'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 export const SearchInput = (props) => {
   const dispatch = useDispatch()
   const [isFocused, setIsFocused] = useState(false)
   const [filter, setFilter] = useState('')
 
+  const { tokenHeader } = useSelector((state) => state.auth)
+
   const [getUserPort] = useLazyQuery(GET_USER_PORTFOLIO_BY_SYMBOL, {
     fetchPolicy: 'no-cache',
+    context: tokenHeader,
   })
 
   const handleFocus = () => {

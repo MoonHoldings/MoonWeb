@@ -31,7 +31,7 @@ const SidebarsLayout = ({ children }) => {
     nftModalOpen,
     lendRightSideBarOpen,
   } = useSelector((state) => state.util)
-
+  const { isLoggedIn } = useSelector((state) => state.auth)
   const { addAddressStatus, refreshFloorPriceStatus, refreshWalletsStatus } =
     useSelector((state) => state.wallet)
 
@@ -77,8 +77,7 @@ const SidebarsLayout = ({ children }) => {
     router.pathname.includes('nfts') ||
     router.pathname.includes('dashboard') ||
     router.pathname.includes('crypto')
-
-  if (shouldRenderSidebars) {
+  if (shouldRenderSidebars && isLoggedIn) {
     return (
       <>
         <AnimatePresence>
