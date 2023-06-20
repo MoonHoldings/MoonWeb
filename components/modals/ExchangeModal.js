@@ -115,13 +115,13 @@ const ExchangeModal = (props) => {
         // props.cedeProvider._state.isConnected &&
         props.cedeProvider.getIsUnlocked()
       ) {
-        connectCede()
+        await connectCede()
       } else {
         await props.cedeProvider.request({
           method: 'connect',
         })
 
-        connectCede()
+        await connectCede()
       }
     } catch (error) {
       console.error(error)
