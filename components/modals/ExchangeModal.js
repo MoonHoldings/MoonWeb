@@ -59,7 +59,7 @@ const ExchangeModal = (props) => {
   }
 
   const connectCede = async () => {
-    const fetchVaults = props.cedeProvider._state.vaultPreviews
+    const fetchVaults = props.cedeProvider.getVaultPreviews()
 
     const binanceWallet = fetchVaults.find((obj) =>
       obj.accounts.some((account) => account.cexName === 'binance')
@@ -78,20 +78,19 @@ const ExchangeModal = (props) => {
         },
       })
 
-      const coins = balanceInfo.data
+      const coins = balanceInfo[0].balances
       const matchingCoins = coins
         .filter(
           (coin) =>
-            pythCoins.some((pythCoin) => coin.ticker === pythCoin.symbol) &&
+            pythCoins.some((pythCoin) => coin.token === pythCoin.symbol) &&
             coin.totalBalance > 0.00001
         )
         .map((coin) => ({
-          symbol: coin.ticker,
-          name: pythCoins.find((pythCoin) => pythCoin.symbol === coin.ticker)
+          symbol: coin.token,
+          name: pythCoins.find((pythCoin) => pythCoin.symbol === coin.token)
             ?.name,
           value: coin.totalBalance,
         }))
-
       for (const coin of matchingCoins) {
         await onSave(
           coin.name,
@@ -113,8 +112,8 @@ const ExchangeModal = (props) => {
     try {
       setLoading(true)
       if (
-        props.cedeProvider._state.isConnected &&
-        props.cedeProvider._state.isUnlocked
+        // props.cedeProvider._state.isConnected &&
+        props.cedeProvider.getIsUnlocked()
       ) {
         connectCede()
       } else {
