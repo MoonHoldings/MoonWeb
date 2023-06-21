@@ -9,7 +9,8 @@ import 'react-tippy/dist/tippy.css'
 import useSolUsdPrice from 'hooks/useSolUsdPrice'
 import client from '../utils/apollo-client'
 import SidebarsLayout from 'components/partials/SidebarsLayout'
-import { Button, ConfigProvider } from 'antd'
+import { ConfigProvider } from 'antd'
+import HeapAnalytics from 'components/HeapAnalytics'
 
 export default wrapper.withRedux(
   ({ Component, pageProps: { session, ...pageProps } }) => {
@@ -30,6 +31,7 @@ export default wrapper.withRedux(
               <Layout>
                 <SidebarsLayout>
                   <Component {...pageProps} />
+                  <HeapAnalytics />
                 </SidebarsLayout>
               </Layout>
             </ThemeProvider>

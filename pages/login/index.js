@@ -3,14 +3,16 @@ import Image from 'next/image'
 import Router from 'next/router'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { loginUser } from 'redux/reducers/authSlice'
+import {
+  discordAuthenticationComplete,
+  loginUser,
+} from 'redux/reducers/authSlice'
 import { isValidEmail } from 'utils/string'
-import { getServerSidePropsWithAuth } from '../../utils/withAuth'
+
 import {
   authenticateComplete,
   authenticatePending,
   authenticateLoading,
-  discordAuthenticationComplete,
 } from 'redux/reducers/authSlice'
 import {
   GENERATE_DISCORD_URL,
@@ -24,6 +26,7 @@ import LoadingModal from 'components/modals/LoadingModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
 import { MOON_HOLDINGS } from 'application/constants/copy'
 import { NEXT_WEBAPP_URL } from 'application/constants/api'
+import withAuth from 'hoc/withAuth'
 
 const Login = (props) => {
   const dispatch = useDispatch()
@@ -146,11 +149,13 @@ const Login = (props) => {
       async function receiveMessage(event) {
         const valueReceived = event.data
         if (valueReceived.payload) {
-          if (valueReceived.payload.ok) {
+          if (valueReceived.payload?.ok) {
             Router.push('/dashboard')
             dispatch(
               discordAuthenticationComplete({
                 username: valueReceived.payload.username ?? null,
+                accessToken: valueReceived.payload?.access_token ?? null,
+                isLoggedIn: valueReceived.payload?.access_token && true,
               })
             )
           } else if (valueReceived.payload.message) {
@@ -397,5 +402,4 @@ const Login = (props) => {
   )
 }
 
-export default Login
-export const getServerSideProps = getServerSidePropsWithAuth
+export default withAuth(Login)

@@ -51,9 +51,13 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
-  const { addAddressStatus, wallets: userWallets } = useSelector(
-    (state) => state.wallet
-  )
+  const {
+    addAddressStatus,
+    wallets: userWallets,
+    exchangeWallets,
+  } = useSelector((state) => state.wallet)
+  const { tokenHeader } = useSelector((state) => state.auth)
+
   const { collections, selectedNfts } = useSelector((state) => state.nft)
   const {
     solUsdPrice,
@@ -62,14 +66,20 @@ const RightSideBar = () => {
     loading: loadingCrypto,
   } = useSelector((state) => state.crypto)
 
-  const [addUserWallet, { loading: addingUserWallet }] =
-    useMutation(ADD_USER_WALLET)
-  const [refreshUserWallets, { loading: refreshingUserWallets }] =
-    useMutation(REFRESH_USER_WALLETS)
-  const [removeUserWallet, { loading: removingUserWallet }] =
-    useMutation(REMOVE_USER_WALLET)
+  const [addUserWallet, { loading: addingUserWallet }] = useMutation(
+    ADD_USER_WALLET,
+    { context: tokenHeader }
+  )
+  const [refreshUserWallets, { loading: refreshingUserWallets }] = useMutation(
+    REFRESH_USER_WALLETS,
+    { context: tokenHeader }
+  )
+  const [removeUserWallet, { loading: removingUserWallet }] = useMutation(
+    REMOVE_USER_WALLET,
+    { context: tokenHeader }
+  )
   const [removeAllUserWallets, { loading: removingAllUserWallets }] =
-    useMutation(REMOVE_ALL_USER_WALLETS)
+    useMutation(REMOVE_ALL_USER_WALLETS, { context: tokenHeader })
 
   const {
     loading: portfolioLoading,
@@ -81,7 +91,7 @@ const RightSideBar = () => {
   const [api, contextHolder] = notification.useNotification()
 
   useEffect(() => {
-    dispatch(getUserWallets())
+    dispatch(getUserWallets({}))
   }, [])
 
   useEffect(() => {
@@ -127,10 +137,7 @@ const RightSideBar = () => {
         )
         disconnectCurrentWallet()
       } else {
-        dispatch(getUserWallets())
-        dispatch(fetchUserNfts())
-        dispatch(reloadPortfolio(true))
-        dispatch(reloadDashboard(true))
+        reloadData()
       }
     }
   }, [addUserWallet, dispatch, publicKey])
@@ -154,21 +161,15 @@ const RightSideBar = () => {
   }
 
   const removeSingleWallet = async (wallet) => {
-    await removeUserWallet({ variables: { wallet } })
-    dispatch(getUserWallets())
-    dispatch(fetchUserNfts())
+    await removeUserWallet({ variables: { wallet } }, tokenHeader)
+    reloadData()
     dispatch(deselectAllNfts())
-    dispatch(reloadPortfolio(true))
-    dispatch(reloadDashboard(true))
   }
 
   const disconnectWallets = async () => {
     if (userWallets?.length) {
-      await removeAllUserWallets()
-      dispatch(getUserWallets())
-      dispatch(fetchUserNfts())
-      dispatch(reloadPortfolio(true))
-      dispatch(reloadDashboard(true))
+      await removeAllUserWallets(tokenHeader)
+      reloadData()
     }
 
     dispatch(deselectAllNfts())
@@ -179,6 +180,13 @@ const RightSideBar = () => {
     dispatch(deselectAllNfts())
     removeSingleWallet(publicKey.toBase58())
     disconnect()
+  }
+
+  const reloadData = () => {
+    dispatch(getUserWallets({}))
+    dispatch(fetchUserNfts({}))
+    dispatch(reloadPortfolio(true))
+    dispatch(reloadDashboard(true))
   }
 
   const seeAllOrLessExchanges = () => {
@@ -210,10 +218,9 @@ const RightSideBar = () => {
   }
 
   const refreshWalletsAndFloorPrice = async () => {
-    if (userWallets?.length) {
-      await refreshUserWallets()
-      dispatch(reloadDashboard(true))
-      dispatch(fetchUserNfts())
+    if (userWallets?.length || exchangeWallets?.length) {
+      await refreshUserWallets(tokenHeader)
+      dispatch(fetchUserNfts({}))
       dispatch(reloadPortfolio())
     }
   }
@@ -677,7 +684,10 @@ const RightSideBar = () => {
                       onClick={
                         wallet.address === publicKey?.toBase58()
                           ? disconnectCurrentWallet
-                          : () => removeSingleWallet(wallet.address)
+                          : (e) => {
+                              e.stopPropagation()
+                              removeSingleWallet(wallet.address)
+                            }
                       }
                       className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
                     >
@@ -811,7 +821,6 @@ const RightSideBar = () => {
                   onClick={() => {
                     navigator.clipboard.writeText(wallet.address)
                     setShow(true)
-                    console.log('hello')
                   }}
                   disabled={refreshingUserWallets}
                   className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
@@ -835,7 +844,10 @@ const RightSideBar = () => {
                     onClick={
                       wallet.address === publicKey?.toBase58()
                         ? disconnectCurrentWallet
-                        : () => removeSingleWallet(wallet.address)
+                        : (e) => {
+                            e.stopPropagation()
+                            removeSingleWallet(wallet.address)
+                          }
                     }
                     className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
                   >
@@ -914,9 +926,9 @@ const RightSideBar = () => {
             onClick={seeAllOrLessExchanges}
             className="text-[1.4rem] font-bold text-[#61DAEA]"
           >
-            See All
-          </button>
-        </div> */}
+            See All */}
+        {/* </button> */}
+
         {/* All Exchanges */}
         {/* <ul className="all-exchanges mb-[2rem]">
           {allExchanges.map((exchange, index) => (

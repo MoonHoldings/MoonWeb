@@ -27,8 +27,8 @@ const LeftSideBar = () => {
     router.push(`/${url}`)
   }
 
-  const [logOut, { loading: loggingOut }] = useMutation(LOGOUT_USER)
-  const { username } = useSelector((state) => state.auth)
+  const { username, tokenHeader } = useSelector((state) => state.auth)
+  const [logOut] = useMutation(LOGOUT_USER, { context: tokenHeader })
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
