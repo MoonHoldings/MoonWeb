@@ -40,14 +40,16 @@ export const SearchInput = (props) => {
       variables: { symbol: coin.symbol },
     })
 
-    dispatch(
-      populatePortfolioCoins({
-        coins: res.data.getUserPortfolioCoinsBySymbol.coins,
-        symbol: coin.symbol,
-        name: coin.name,
-        coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
-      })
-    )
+    try {
+      dispatch(
+        populatePortfolioCoins({
+          coins: res.data.getUserPortfolioCoinsBySymbol.coins,
+          symbol: coin.symbol,
+          name: coin.name,
+          coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
+        })
+      )
+    } catch (error) {}
     dispatch(loadingPortfolio(false))
     dispatch(changeCoinModalOpen(true))
   }

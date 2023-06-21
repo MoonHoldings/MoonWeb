@@ -673,7 +673,6 @@ const RightSideBar = () => {
         </ul>
       </>
     ),
-
     connectedWallets: (
       <motion.div
         className="h-full"
@@ -836,6 +835,109 @@ const RightSideBar = () => {
             {renderMassButton('TRANSFER')}
             {renderMassButton('BURN')}
           </ul>
+        </div>
+      )
+    )
+  }
+
+  const renderExchangeWallets = () => {
+    return (
+      exchangeWallets?.length > 0 && (
+        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
+          <div className="header mb-[2rem] flex justify-between">
+            <h1 className="text-[1.4rem] text-white">{'Exchange Wallets'}</h1>
+            <button
+              // onClick={seeAllOrLessWallets}
+              className="text-[1.4rem] font-bold text-[#61DAEA]"
+            >
+              {userWallets?.length > 4 ? 'See All' : ''}
+            </button>
+          </div>
+
+          <ul className="all-wallets mb-[2rem] grid gap-[1rem]">
+            {exchangeWallets?.map((wallet, index) => (
+              <li key={index}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(wallet.address)
+                    setShow(true)
+                  }}
+                  disabled={refreshingUserWallets}
+                  className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+                    refreshingUserWallets
+                      ? 'opacity-50'
+                      : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+                  }`}
+                >
+                  <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+                    <Image
+                      className="mr-[1rem] h-[2rem] w-[2rem]"
+                      src="/images/svgs/wallet-white.svg"
+                      width="20"
+                      height="20"
+                      alt="NFTs"
+                    />
+                    {shrinkText(`${wallet.address}`)}
+                    {removingUserWallet && <Spin className="ml-3" />}
+                  </div>
+                  <div
+                    onClick={
+                      wallet.address === publicKey?.toBase58()
+                        ? disconnectCurrentWallet
+                        : (e) => {
+                            e.stopPropagation()
+                            removeSingleWallet(wallet.address)
+                          }
+                    }
+                    className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+                  >
+                    <Image
+                      className="h-[0.8rem] w-[0.8rem] rotate-45"
+                      src="/images/svgs/+.svg"
+                      width="11"
+                      height="11"
+                      alt="plus sign"
+                    />
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            type="button"
+            disabled={refreshingUserWallets}
+            className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+              refreshingUserWallets
+                ? 'opacity-50'
+                : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+            }`}
+          >
+            <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
+              <Image
+                className="mr-[1rem] h-[2rem] w-[2rem]"
+                src="/images/svgs/wallet-white.svg"
+                width="20"
+                height="20"
+                alt="NFTs"
+              />
+              Disconnect Wallets
+              {removingAllUserWallets && <Spin className="ml-3" />}
+            </div>
+            <div
+              onClick={disconnectWallets}
+              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+            >
+              <Image
+                className="h-[0.8rem] w-[0.8rem] rotate-45"
+                src="/images/svgs/+.svg"
+                width="11"
+                height="11"
+                alt="plus sign"
+              />
+            </div>
+          </button>
         </div>
       )
     )
@@ -1010,6 +1112,7 @@ const RightSideBar = () => {
         </div>
       </div> */}
         {renderNftAddress()}
+        {renderExchangeWallets()}
         {renderConnectedWallets()}
       </motion.div>
     </>
