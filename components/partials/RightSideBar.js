@@ -173,8 +173,8 @@ const RightSideBar = () => {
   }
 
   const disconnectWallets = async () => {
-    if (userWallets?.length) {
-      await removeAllUserWallets(tokenHeader)
+    if (userWallets?.length || exchangeWallets?.length) {
+      await removeAllUserWallets()
       reloadData()
     }
 

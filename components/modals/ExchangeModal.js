@@ -59,48 +59,56 @@ const ExchangeModal = (props) => {
   }
 
   const connectCede = async () => {
-    const fetchVaults = props.cedeProvider.getVaultPreviews()
+    const fetchVaults = props.cedeProvider.getActiveVault()
 
-    const binanceWallet = fetchVaults.find((obj) =>
-      obj.accounts.some((account) => account.cexName === 'binance')
-    )
-
-    if (binanceWallet) {
-      const matchingAccount = binanceWallet.accounts.find(
-        (account) => account.cexName === 'binance'
+    if (fetchVaults) {
+      const binanceWallet = fetchVaults.find((obj) =>
+        obj.accounts.some((account) => account.cexName === 'binance')
       )
 
-      const balanceInfo = await props.cedeProvider.request({
-        method: 'balances',
-        params: {
-          vaultId: binanceWallet.id,
-          accountNames: [matchingAccount.accountName],
-        },
-      })
+      if (binanceWallet) {
+        const matchingAccount = binanceWallet.accounts.find(
+          (account) => account.cexName === 'binance'
+        )
 
-      const coins = balanceInfo[0].balances
-      const matchingCoins = coins
-        .filter(
-          (coin) =>
-            pythCoins.some((pythCoin) => coin.token === pythCoin.symbol) &&
-            coin.totalBalance > 0.00001
-        )
-        .map((coin) => ({
-          symbol: coin.token,
-          name: pythCoins.find((pythCoin) => pythCoin.symbol === coin.token)
-            ?.name,
-          value: coin.totalBalance,
-        }))
-      for (const coin of matchingCoins) {
-        await onSave(
-          coin.name,
-          coin.symbol,
-          coin.value,
-          binanceWallet.id,
-          matchingAccount.cexName
-        )
+        const balanceInfo = await props.cedeProvider.request({
+          method: 'balances',
+          params: {
+            vaultId: binanceWallet.id,
+            accountNames: [matchingAccount.accountName],
+          },
+        })
+
+        const coins = balanceInfo[0].balances
+        const matchingCoins = coins
+          .filter(
+            (coin) =>
+              pythCoins.some((pythCoin) => coin.token === pythCoin.symbol) &&
+              coin.totalBalance > 0.00001
+          )
+          .map((coin) => ({
+            symbol: coin.token,
+            name: pythCoins.find((pythCoin) => pythCoin.symbol === coin.token)
+              ?.name,
+            value: coin.totalBalance,
+          }))
+        for (const coin of matchingCoins) {
+          await onSave(
+            coin.name,
+            coin.symbol,
+            coin.value,
+            binanceWallet.id,
+            matchingAccount.cexName
+          )
+        }
+        onSuccess()
       }
-      onSuccess()
+    } else {
+      displayNotifModal(
+        'warning',
+        'Vault not found. Please try again later',
+        api
+      )
     }
   }
 
