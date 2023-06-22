@@ -51,16 +51,16 @@ const RightSideBar = () => {
     { data: myHistoricalLoans, loading: loadingHistoricalLoans },
   ] = useLazyQuery(MY_HISTORICAL_OFFERS)
 
-  useEffect(() => {
-    if (publicKey && !loadingHistoricalOffers) {
-      getMyHistoricalOffers({
-        variables: {
-          lender: publicKey.toBase58(),
-        },
-        pollInterval: 3_600_000,
-      })
-    }
-  }, [publicKey, loadingHistoricalOffers, getMyHistoricalOffers])
+  // useEffect(() => {
+  //   if (publicKey && !loadingHistoricalOffers) {
+  //     getMyHistoricalOffers({
+  //       variables: {
+  //         lender: publicKey.toBase58(),
+  //       },
+  //       pollInterval: 3_600_000,
+  //     })
+  //   }
+  // }, [publicKey, loadingHistoricalOffers, getMyHistoricalOffers])
 
   useEffect(() => {
     if (publicKey && !loadingOffers) {
@@ -78,16 +78,16 @@ const RightSideBar = () => {
     }
   }, [publicKey, loadingOffers, getMyOffers])
 
-  useEffect(() => {
-    if (publicKey && !loadingHistoricalLoans) {
-      getMyHistoricalLoans({
-        variables: {
-          borrower: publicKey.toBase58(),
-        },
-        pollInterval: 3_600_000,
-      })
-    }
-  }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
+  // useEffect(() => {
+  //   if (publicKey && !loadingHistoricalLoans) {
+  //     getMyHistoricalLoans({
+  //       variables: {
+  //         borrower: publicKey.toBase58(),
+  //       },
+  //       pollInterval: 3_600_000,
+  //     })
+  //   }
+  // }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
 
   useEffect(() => {
     if (publicKey && !loadingMyLoans) {
@@ -610,18 +610,20 @@ const RightSideBar = () => {
                 )}
                 {publicKey && renderTabs()}
                 <div className="mt-8" />
-                {(loadingHistoricalOffers || loadingHistoricalLoans) && (
+                {/* TODO: Bring back after fixing hello moon history */}
+
+                {/* {(loadingHistoricalOffers || loadingHistoricalLoans) && (
                   <Spinner />
-                )}
-                {publicKey &&
+                )} */}
+                {/* {publicKey &&
                   activeTab === 'offers' &&
-                  renderHistoricalActiveOffers()}
+                  renderHistoricalActiveOffers()} */}
                 {publicKey && activeTab === 'offers' && renderOffers()}
-                {publicKey &&
+                {/* {publicKey &&
                   activeTab === 'offers' &&
-                  renderHistoricalNotActiveOffers()}
+                  renderHistoricalNotActiveOffers()} */}
                 {publicKey && activeTab === 'loans' && renderLoans()}
-                {publicKey && activeTab === 'loans' && renderHistoricalLoans()}
+                {/* {publicKey && activeTab === 'loans' && renderHistoricalLoans()} */}
               </div>
             </div>
           </motion.div>
