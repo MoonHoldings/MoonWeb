@@ -52,9 +52,6 @@ const RightSideBar = () => {
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
   const [removingWalletAddress, setRemovingWalletAddress] = useState(null)
-  const { addAddressStatus, wallets: userWallets } = useSelector(
-    (state) => state.wallet
-  )
   const {
     addAddressStatus,
     wallets: userWallets,
