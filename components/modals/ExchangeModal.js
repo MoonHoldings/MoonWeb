@@ -12,6 +12,21 @@ import { getUserWallets } from 'redux/reducers/walletSlice'
 import { displayNotifModal } from 'utils/notificationModal'
 import { detectCedeProvider } from '@cedelabs/providers'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
+import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid'
+
+const configuration = new Configuration({
+  basePath: PlaidEnvironments.sandbox,
+  baseOptions: {
+    headers: {
+      'PLAID-CLIENT-ID': '649303140d9467001be86cee',
+      'PLAID-SECRET': 'e03d1b89c62ae9768c6bc3a355e8b6',
+      'Plaid-Version': '2020-09-14',
+    },
+  },
+})
+
+const plaidClient = new PlaidApi(configuration)
+
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
   const [api, contextHolder] = notification.useNotification()
@@ -113,9 +128,14 @@ const ExchangeModal = (props) => {
   }
 
   const connectBinance = async () => {
-    if (props.cedeProvider == null) {
-      setCurrentStep(2)
-      return
+    const linkTokenOptions = {
+      user: {
+        client_user_id: 'YOUR_UNIQUE_USER_ID',
+      },
+      client_name: 'YOUR_APP_NAME',
+      products: ['auth'], // Add additional products as needed
+      country_codes: ['US'], // Specify country codes if needed
+      language: 'en', // Specify language code if needed
     }
     try {
       setLoading(true)

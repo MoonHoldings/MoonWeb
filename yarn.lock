@@ -3538,7 +3538,7 @@ axe-core@^4.6.2:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.7.2.tgz#040a7342b20765cb18bb50b628394c21bccc17a0"
   integrity sha512-zIURGIS1E1Q4pcrMjp+nnEh+16G56eG/MUllJH8yEvw7asDo7Ac9uhC9KIH5jzpITueEZolfYglnCGIuSBz39g==
 
-axios@^0.21.0:
+axios@0.21.4, axios@^0.21.0:
   version "0.21.4"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
   integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
@@ -7686,6 +7686,13 @@ pkg-dir@^4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
+
+plaid@^14.1.0:
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/plaid/-/plaid-14.1.0.tgz#102174420250403df4e988dfbf41d6365a7d7f01"
+  integrity sha512-ZtwUp7t/h3zHV+Y8DNm/32+tOI2cgYXYWUBSk6CxztGqvF5t10JKRkj8X3t+qKdk3pgzUWhnrRv0Td74FxhLkQ==
+  dependencies:
+    axios "0.21.4"
 
 pngjs@^3.3.0:
   version "3.4.0"

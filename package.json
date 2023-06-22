@@ -50,6 +50,7 @@
     "next-redux-wrapper": "^8.1.0",
     "next-themes": "^0.2.1",
     "numeral": "^2.0.6",
+    "plaid": "^14.1.0",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-csv": "^2.2.2",
