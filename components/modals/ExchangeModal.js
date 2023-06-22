@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -13,7 +13,9 @@ import { displayNotifModal } from 'utils/notificationModal'
 import { detectCedeProvider } from '@cedelabs/providers'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid'
+import { useEthereumProvider, PlaidWeb3OnSuccess } from 'react-plaid-link/web3'
 
+import { PlaidLinkOnExit } from 'react-plaid-link'
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
@@ -43,15 +45,43 @@ const ExchangeModal = (props) => {
     dispatch(changeExchangeModalOpen(false))
   }
 
-  const onSuccess = () => {
-    dispatch(getUserWallets({}))
-    dispatch(reloadPortfolio())
-    displayNotifModal(
-      'Success',
-      `Done! You have successfully added your Binance Wallet.`,
-      api
-    )
-  }
+  // const onSuccess = () => {
+  //   dispatch(getUserWallets({}))
+  //   dispatch(reloadPortfolio())
+  //   displayNotifModal(
+  //     'Success',
+  //     `Done! You have successfully added your Binance Wallet.`,
+  //     api
+  //   )
+  // }
+
+  const onSuccess = useCallback(async (provider, metadata) => {
+    console.log('hey')
+    const walletName = metadata.wallet.name
+    const accounts = await provider.request({
+      method: 'eth_accounts',
+    })
+  }, [])
+
+  const onExit =
+    useCallback <
+    PlaidLinkOnExit >
+    ((error, metadata) => {
+      // Optional callback, called if the user exits without connecting a wallet
+      // See https://plaid.com/docs/link/web/#onexit for details
+    },
+    [])
+  const { open, ready } = useEthereumProvider({
+    token: 'link-sandbox-65661820-151c-4052-bb33-9d333cc0df70',
+    chain: {
+      // Plaid Ethereum Mainnet RPC URL
+      rpcUrl: '',
+      chainId: 'eip155:5',
+    },
+    onSuccess,
+    onExit,
+  })
+
   const onSave = async (coinName, coinSymbol, balance, address, wallet) => {
     const coinData = {
       name: coinName,
@@ -174,7 +204,7 @@ const ExchangeModal = (props) => {
       <div className="overflow-hidden rounded-[10px] border-2 border-black text-white">
         <button
           disabled={exchangeWallets?.length > 0}
-          onClick={exchangeWallets?.length > 0 ? null : connectBinance}
+          onClick={exchangeWallets?.length > 0 ? null : () => open()}
           className="cursor flex w-full flex-col items-center justify-center border-b-2 border-black bg-[#25282C] p-16 hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
         >
           <h1 className="text-[1.8rem] font-[700] text-[#FED007] ">
