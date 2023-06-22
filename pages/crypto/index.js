@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { CRYPTO_PORTFOLIO } from 'application/constants/copy'
 import CryptoSquare from 'components/crypto/CryptoSquare'
 import SingleBar from 'components/crypto/SingleBar'
-import { getServerSidePropsWithAuth } from 'utils/withAuth'
 import { GET_USER_PORTFOLIO, GET_USER_PORTFOLIO_BY_SYMBOL } from 'utils/queries'
 import { useLazyQuery } from '@apollo/client'
 
@@ -18,6 +17,7 @@ import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
 
 import assetsManifest from 'cryptocurrency-icons/manifest.json'
 import { PortfolioType } from 'types/enums'
+import withAuth from 'hoc/withAuth'
 
 const Crypto = () => {
   const dispatch = useDispatch()
@@ -28,14 +28,17 @@ const Crypto = () => {
   const { loading: loadingPage, reload } = useSelector(
     (state) => state.portfolio
   )
+  const { tokenHeader } = useSelector((state) => state.auth)
 
   const [getUserPort, { data: userCoins, loading: loadingUserCoins }] =
     useLazyQuery(GET_USER_PORTFOLIO, {
       fetchPolicy: 'no-cache',
+      context: tokenHeader,
     })
 
   const [getUserPortBySymbol] = useLazyQuery(GET_USER_PORTFOLIO_BY_SYMBOL, {
     fetchPolicy: 'no-cache',
+    context: tokenHeader,
   })
 
   useEffect(() => {
@@ -173,5 +176,4 @@ const Crypto = () => {
   )
 }
 
-export default Crypto
-export const getServerSideProps = getServerSidePropsWithAuth
+export default withAuth(Crypto)

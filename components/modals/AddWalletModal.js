@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { PublicKey } from '@solana/web3.js'
@@ -17,10 +17,14 @@ import { getUserWallets } from 'redux/reducers/walletSlice'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
+  const { tokenHeader } = useSelector((state) => state.auth)
+
   const [walletAddress, setWalletAddress] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const [addUserWallet, { loading: addingUserWallet }] =
-    useMutation(ADD_USER_WALLET)
+  const [addUserWallet, { loading: addingUserWallet }] = useMutation(
+    ADD_USER_WALLET,
+    { context: tokenHeader }
+  )
 
   const closeModal = () => {
     dispatch(changeAddWalletModalOpen(false))
@@ -42,7 +46,7 @@ const AddWalletModal = () => {
       setErrorMessage('Invalid wallet address')
       return
     }
-
+    console.log('HEY')
     const res = await addUserWallet({
       variables: { verified: false, wallet: walletAddress },
     })
@@ -52,8 +56,8 @@ const AddWalletModal = () => {
       return
     }
 
-    dispatch(getUserWallets())
-    dispatch(fetchUserNfts())
+    dispatch(getUserWallets({}))
+    dispatch(fetchUserNfts({}))
     dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
     dispatch(changeAddWalletModalOpen(false))

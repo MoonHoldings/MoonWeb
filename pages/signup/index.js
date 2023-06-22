@@ -16,11 +16,11 @@ import {
   GENERATE_DISCORD_URL,
   RESEND_EMAIL_CONFIRMATION,
 } from 'utils/queries.js'
-import { getServerSidePropsWithAuth } from 'utils/withAuth'
 
 import LoadingModal from 'components/modals/LoadingModal'
 import BannerModal from 'components/modals/BannerModal'
 import { GeneralButton } from 'components/forms/GeneralButton'
+import withAuth from 'hoc/withAuth'
 
 const SignUp = () => {
   const router = useRouter()
@@ -121,6 +121,8 @@ const SignUp = () => {
             dispatch(
               discordAuthenticationComplete({
                 username: valueReceived.payload.username ?? null,
+                accessToken: valueReceived.payload?.access_token ?? null,
+                isLoggedIn: valueReceived.payload?.access_token && true,
               })
             )
           } else if (valueReceived.payload.message) {
@@ -360,5 +362,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
-export const getServerSideProps = getServerSidePropsWithAuth
+export default withAuth(SignUp)

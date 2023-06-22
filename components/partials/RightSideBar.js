@@ -55,6 +55,13 @@ const RightSideBar = () => {
   const { addAddressStatus, wallets: userWallets } = useSelector(
     (state) => state.wallet
   )
+  const {
+    addAddressStatus,
+    wallets: userWallets,
+    exchangeWallets,
+  } = useSelector((state) => state.wallet)
+  const { tokenHeader } = useSelector((state) => state.auth)
+
   const { collections, selectedNfts } = useSelector((state) => state.nft)
   const {
     solUsdPrice,
@@ -63,14 +70,20 @@ const RightSideBar = () => {
     loading: loadingCrypto,
   } = useSelector((state) => state.crypto)
 
-  const [addUserWallet, { loading: addingUserWallet }] =
-    useMutation(ADD_USER_WALLET)
-  const [refreshUserWallets, { loading: refreshingUserWallets }] =
-    useMutation(REFRESH_USER_WALLETS)
-  const [removeUserWallet, { loading: removingUserWallet }] =
-    useMutation(REMOVE_USER_WALLET)
+  const [addUserWallet, { loading: addingUserWallet }] = useMutation(
+    ADD_USER_WALLET,
+    { context: tokenHeader }
+  )
+  const [refreshUserWallets, { loading: refreshingUserWallets }] = useMutation(
+    REFRESH_USER_WALLETS,
+    { context: tokenHeader }
+  )
+  const [removeUserWallet, { loading: removingUserWallet }] = useMutation(
+    REMOVE_USER_WALLET,
+    { context: tokenHeader }
+  )
   const [removeAllUserWallets, { loading: removingAllUserWallets }] =
-    useMutation(REMOVE_ALL_USER_WALLETS)
+    useMutation(REMOVE_ALL_USER_WALLETS, { context: tokenHeader })
 
   const {
     loading: portfolioLoading,
@@ -82,7 +95,7 @@ const RightSideBar = () => {
   const [api, contextHolder] = notification.useNotification()
 
   useEffect(() => {
-    dispatch(getUserWallets())
+    dispatch(getUserWallets({}))
   }, [])
 
   useEffect(() => {
@@ -128,10 +141,7 @@ const RightSideBar = () => {
         )
         disconnectCurrentWallet()
       } else {
-        dispatch(getUserWallets())
-        dispatch(fetchUserNfts())
-        dispatch(reloadPortfolio(true))
-        dispatch(reloadDashboard(true))
+        reloadData()
       }
     }
   }, [addUserWallet, dispatch, publicKey])
@@ -155,21 +165,15 @@ const RightSideBar = () => {
   }
 
   const removeSingleWallet = async (wallet) => {
-    await removeUserWallet({ variables: { wallet } })
-    dispatch(getUserWallets())
-    dispatch(fetchUserNfts())
+    await removeUserWallet({ variables: { wallet } }, tokenHeader)
+    reloadData()
     dispatch(deselectAllNfts())
-    dispatch(reloadPortfolio(true))
-    dispatch(reloadDashboard(true))
   }
 
   const disconnectWallets = async () => {
     if (userWallets?.length) {
-      await removeAllUserWallets()
-      dispatch(getUserWallets())
-      dispatch(fetchUserNfts())
-      dispatch(reloadPortfolio(true))
-      dispatch(reloadDashboard(true))
+      await removeAllUserWallets(tokenHeader)
+      reloadData()
     }
 
     dispatch(deselectAllNfts())
@@ -180,6 +184,13 @@ const RightSideBar = () => {
     dispatch(deselectAllNfts())
     removeSingleWallet(publicKey.toBase58())
     disconnect()
+  }
+
+  const reloadData = () => {
+    dispatch(getUserWallets({}))
+    dispatch(fetchUserNfts({}))
+    dispatch(reloadPortfolio(true))
+    dispatch(reloadDashboard(true))
   }
 
   const seeAllOrLessExchanges = () => {
@@ -211,10 +222,9 @@ const RightSideBar = () => {
   }
 
   const refreshWalletsAndFloorPrice = async () => {
-    if (userWallets?.length) {
-      await refreshUserWallets()
-      dispatch(reloadDashboard(true))
-      dispatch(fetchUserNfts())
+    if (userWallets?.length || exchangeWallets?.length) {
+      await refreshUserWallets(tokenHeader)
+      dispatch(fetchUserNfts({}))
       dispatch(reloadPortfolio())
     }
   }
@@ -678,7 +688,10 @@ const RightSideBar = () => {
                       onClick={
                         wallet.address === publicKey?.toBase58()
                           ? disconnectCurrentWallet
-                          : () => removeSingleWallet(wallet.address)
+                          : (e) => {
+                              e.stopPropagation()
+                              removeSingleWallet(wallet.address)
+                            }
                       }
                       className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
                     >
@@ -839,7 +852,8 @@ const RightSideBar = () => {
                     onClick={
                       wallet.address === publicKey?.toBase58()
                         ? disconnectCurrentWallet
-                        : () => {
+                        : (e) => {
+                            e.stopPropagation()
                             setRemovingWalletAddress(wallet.address)
                             removeSingleWallet(wallet.address)
                           }
@@ -916,7 +930,7 @@ const RightSideBar = () => {
         <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
           {MENUS[currentMenu]}
         </div>
-
+        {contextHolder}
         {/* Connected Exchanges */}
         {/* <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] border bg-[#191C20] p-[1.5rem] font-inter xl:block">
         <div className="header mb-[2rem] flex justify-between">
@@ -925,9 +939,9 @@ const RightSideBar = () => {
             onClick={seeAllOrLessExchanges}
             className="text-[1.4rem] font-bold text-[#61DAEA]"
           >
-            See All
-          </button>
-        </div> */}
+            See All */}
+        {/* </button> */}
+
         {/* All Exchanges */}
         {/* <ul className="all-exchanges mb-[2rem]">
           {allExchanges.map((exchange, index) => (

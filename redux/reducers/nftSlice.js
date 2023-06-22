@@ -141,41 +141,47 @@ const nftSlice = createSlice({
   },
 })
 
-export const fetchUserNfts = createAsyncThunk('nft/fetchUserNfts', async () => {
-  try {
-    const { data } = await client.query({
-      query: GET_USER_NFTS,
-      fetchPolicy: 'no-cache',
-    })
-    const nfts = data?.getUserNfts
-    const collections = {}
+export const fetchUserNfts = createAsyncThunk(
+  'nft/fetchUserNfts',
+  async ({}, thunkAPI) => {
+    try {
+      const { getState } = thunkAPI
+      const tokenHeader = getState().auth.tokenHeader
+      const { data } = await client.query({
+        query: GET_USER_NFTS,
+        fetchPolicy: 'no-cache',
+        context: tokenHeader,
+      })
+      const nfts = data?.getUserNfts
+      const collections = {}
 
-    if (!nfts.length) return []
+      if (!nfts.length) return []
 
-    for (const nft of nfts) {
-      let collectionName = nft?.collection?.name ?? nft.name.split('#')[0]
+      for (const nft of nfts) {
+        let collectionName = nft?.collection?.name ?? nft.name.split('#')[0]
 
-      if (collectionName) {
-        if (!collections[collectionName]) {
-          collections[collectionName] = {
-            floorPrice:
-              nft?.collection?.floorPrice === undefined
-                ? null
-                : nft?.collection?.floorPrice,
-            image: nfts?.collection?.image ?? nft?.image,
-            name: collectionName,
-            nfts: [],
+        if (collectionName) {
+          if (!collections[collectionName]) {
+            collections[collectionName] = {
+              floorPrice:
+                nft?.collection?.floorPrice === undefined
+                  ? null
+                  : nft?.collection?.floorPrice,
+              image: nfts?.collection?.image ?? nft?.image,
+              name: collectionName,
+              nfts: [],
+            }
           }
-        }
 
-        collections[collectionName].nfts.push(nft)
+          collections[collectionName].nfts.push(nft)
+        }
       }
+      return Object.values(collections)
+    } catch (e) {
+      console.log(e)
     }
-    return Object.values(collections)
-  } catch (e) {
-    console.log(e)
   }
-})
+)
 
 export const fetchCandleStickData = createAsyncThunk(
   'nft/fetchCandleStickData',
