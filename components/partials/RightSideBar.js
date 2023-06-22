@@ -51,6 +51,7 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
+  const [removingWalletAddress, setRemovingWalletAddress] = useState(null)
   const {
     addAddressStatus,
     wallets: userWallets,
@@ -230,6 +231,7 @@ const RightSideBar = () => {
       <button
         disabled={addAddressStatus === 'loading' || refreshingUserWallets}
         type="button"
+        onClick={publicKey ? disconnectCurrentWallet : connectWallet}
         className={`xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
           refreshingUserWallets
             ? 'opacity-50'
@@ -247,10 +249,7 @@ const RightSideBar = () => {
           {publicKey ? shrinkText(publicKey.toBase58()) : 'Connect Wallet'}{' '}
           {addingUserWallet && <Spin className="ml-3" />}
         </div>
-        <div
-          onClick={publicKey ? disconnectCurrentWallet : connectWallet}
-          className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
-        >
+        <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
             className="h-[0.8rem] w-[0.8rem] rotate-90"
             src={publicKey ? '/images/svgs/x.svg' : '/images/svgs/+.svg'}
@@ -813,32 +812,36 @@ const RightSideBar = () => {
             </button>
           </div>
 
-          <ul className="all-wallets mb-[2rem] grid gap-[1rem]">
+          <ul
+            className={`all-wallets mb-[2rem] grid gap-[1rem] ${
+              userWallets?.length > 1 && 'grid-cols-2'
+            }`}
+          >
             {userWallets?.map((wallet, index) => (
               <li key={index}>
                 <button
                   type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(wallet.address)
-                    setShow(true)
-                  }}
                   disabled={refreshingUserWallets}
-                  className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
+                  className={`xl-[1rem] flex h-[6.4rem] w-full cursor-default items-center justify-between rounded-[1rem] border border-black bg-[#25282C] ${
+                    userWallets?.length > 1 ? 'px-[1.2rem]' : 'px-[1.6rem]'
+                  } text-white ${
                     refreshingUserWallets
                       ? 'opacity-50'
-                      : 'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
+                      : 'hover:border-[#62EAD2] hover:text-[#62EAD2]'
                   }`}
                 >
                   <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
-                    <Image
-                      className="mr-[1rem] h-[2rem] w-[2rem]"
-                      src="/images/svgs/wallet-white.svg"
-                      width="20"
-                      height="20"
-                      alt="NFTs"
-                    />
-                    {shrinkText(`${wallet.address}`)}
-                    {removingUserWallet && <Spin className="ml-3" />}
+                    <div
+                      onClick={() => {
+                        navigator.clipboard.writeText(wallet.address)
+                        setShow(true)
+                      }}
+                      className="flex h-[3.2rem] w-[7rem] cursor-copy items-center justify-center rounded-2xl bg-black active:bg-[#62EAD2] active:text-black"
+                    >
+                      {shrinkText(`${wallet.address}`)}
+                    </div>
+                    {removingWalletAddress === wallet.address &&
+                      removingUserWallet && <Spin className="ml-3" />}
                   </div>
                   <div
                     onClick={
@@ -846,10 +849,15 @@ const RightSideBar = () => {
                         ? disconnectCurrentWallet
                         : (e) => {
                             e.stopPropagation()
+                            setRemovingWalletAddress(wallet.address)
                             removeSingleWallet(wallet.address)
                           }
                     }
-                    className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
+                    className={`flex h-[3.2rem] w-[3.2rem] cursor-pointer items-center justify-center rounded-[0.8rem] bg-[#191C20] p-[1rem] ${
+                      removingWalletAddress === wallet.address &&
+                      removingUserWallet &&
+                      'hidden'
+                    }`}
                   >
                     <Image
                       className="h-[0.8rem] w-[0.8rem] rotate-45"
@@ -867,6 +875,7 @@ const RightSideBar = () => {
           <button
             type="button"
             disabled={refreshingUserWallets}
+            onClick={disconnectWallets}
             className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
               refreshingUserWallets
                 ? 'opacity-50'
@@ -884,10 +893,7 @@ const RightSideBar = () => {
               Disconnect Wallets
               {removingAllUserWallets && <Spin className="ml-3" />}
             </div>
-            <div
-              onClick={disconnectWallets}
-              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
-            >
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <Image
                 className="h-[0.8rem] w-[0.8rem] rotate-45"
                 src="/images/svgs/+.svg"
