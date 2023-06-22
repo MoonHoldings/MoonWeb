@@ -59,7 +59,7 @@ const ExchangeModal = (props) => {
   }
 
   const connectCede = async () => {
-    const fetchVaults = props.cedeProvider.getActiveVault()
+    const fetchVaults = props.cedeProvider.getVaultPreviews()
 
     if (fetchVaults) {
       const binanceWallet = fetchVaults.find((obj) =>
