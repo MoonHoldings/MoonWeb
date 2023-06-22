@@ -25,7 +25,8 @@ const Header = ({ title, description }) => {
     if (!loadingLends && publicKey && isLend) {
       getTotalLends({
         variables: {
-          address: publicKey.toBase58(),
+          // address: publicKey.toBase58(),
+          address: 'HtPS1sNkzVMp1VkC7iuW2AZanUnD28vaVgEEJ3gUwfYJ',
         },
         pollInterval: 60_000,
       })
@@ -36,7 +37,8 @@ const Header = ({ title, description }) => {
     if (!loadingBorrows && publicKey && isBorrow) {
       getTotalBorrows({
         variables: {
-          address: publicKey.toBase58(),
+          // address: publicKey.toBase58(),
+          address: 'HtPS1sNkzVMp1VkC7iuW2AZanUnD28vaVgEEJ3gUwfYJ',
         },
         pollInterval: 60_000,
       })
@@ -95,7 +97,9 @@ const Header = ({ title, description }) => {
             Borrow
           </Link>
         </div>
-        <Link
+        <div />
+        {/* TODO: Bring back after fixing hello moon history */}
+        {/* <Link
           href={`${isLend ? 'lend' : 'borrow'}/history`}
           className={mergeClasses(
             'inline-flex',
@@ -115,11 +119,12 @@ const Header = ({ title, description }) => {
           )}
         >
           View History
-        </Link>
+        </Link> */}
       </div>
       <div className="flex w-full items-center justify-between">
         <h1 className="text-[2.5rem] sm:text-[3rem]">{title}</h1>
-        <div className="flex flex-col items-end">
+        {/* TODO: Bring back after fixing hello moon history */}
+        {/* <div className="flex flex-col items-end">
           {isLend && (
             <div className="flex items-center">
               <div className="flex items-center text-[1.6rem] sm:text-[2rem]">
@@ -195,7 +200,7 @@ const Header = ({ title, description }) => {
               )}
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <p className="text-[1.4rem] opacity-60 sm:text-[1.6rem]">{description}</p>
     </>
