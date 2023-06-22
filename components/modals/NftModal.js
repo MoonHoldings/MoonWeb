@@ -137,7 +137,7 @@ const NftModal = () => {
         </div>
         <div className="max-h-64 overflow-y-auto">
           <ul
-            className="all-wallets mb-[2rem] w-full overflow-hidden rounded-l-lg rounded-r-lg border border-black "
+            className="all-wallets mb-[2rem] w-full overflow-hidden rounded-l-lg rounded-r-lg border border-black"
             ref={containerRef}
           >
             {selectedNfts?.map((nft, index) => (
