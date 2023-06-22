@@ -8,6 +8,7 @@ const initialState = {
   currentAddAddress: null,
   refreshWalletsStatus: 'idle',
   wallets: [],
+  exchangeWallets: [],
 }
 
 const walletSlice = createSlice({
@@ -16,7 +17,20 @@ const walletSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder.addCase(getUserWallets.fulfilled, (state, action) => {
-      state.wallets = action.payload
+      const userWallets = action.payload
+
+      state.wallets = userWallets?.reduce((acc, item) => {
+        if (item.address && item.name === null) {
+          acc.push(item)
+        }
+        return acc
+      }, [])
+      state.exchangeWallets = userWallets?.reduce((acc, item) => {
+        if (item.name && item.address) {
+          acc.push(item)
+        }
+        return acc
+      }, [])
     })
   },
 })

@@ -301,6 +301,7 @@ export const GET_USER_WALLETS = gql`
       id
       address
       verified
+      name
     }
   }
 `
