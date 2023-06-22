@@ -231,6 +231,7 @@ const RightSideBar = () => {
       <button
         disabled={addAddressStatus === 'loading' || refreshingUserWallets}
         type="button"
+        onClick={publicKey ? disconnectCurrentWallet : connectWallet}
         className={`xl-[1rem] mb-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
           refreshingUserWallets
             ? 'opacity-50'
@@ -248,10 +249,7 @@ const RightSideBar = () => {
           {publicKey ? shrinkText(publicKey.toBase58()) : 'Connect Wallet'}{' '}
           {addingUserWallet && <Spin className="ml-3" />}
         </div>
-        <div
-          onClick={publicKey ? disconnectCurrentWallet : connectWallet}
-          className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
-        >
+        <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
             className="h-[0.8rem] w-[0.8rem] rotate-90"
             src={publicKey ? '/images/svgs/x.svg' : '/images/svgs/+.svg'}
@@ -877,6 +875,7 @@ const RightSideBar = () => {
           <button
             type="button"
             disabled={refreshingUserWallets}
+            onClick={disconnectWallets}
             className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
               refreshingUserWallets
                 ? 'opacity-50'
@@ -894,10 +893,7 @@ const RightSideBar = () => {
               Disconnect Wallets
               {removingAllUserWallets && <Spin className="ml-3" />}
             </div>
-            <div
-              onClick={disconnectWallets}
-              className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
-            >
+            <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <Image
                 className="h-[0.8rem] w-[0.8rem] rotate-45"
                 src="/images/svgs/+.svg"
