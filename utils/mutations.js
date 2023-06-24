@@ -110,3 +110,9 @@ export const REFRESH_USER_WALLETS = gql`
     refreshUserWallets
   }
 `
+
+export const ADD_EXCHANGE_COINS = gql`
+  mutation Mutation($exchangeInfo: ExchangeInfo) {
+    addExchangeCoins(exchangeInfo: $exchangeInfo)
+  }
+`

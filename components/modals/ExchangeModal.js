@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { changeExchangeModalOpen } from 'redux/reducers/utilSlice'
 
 import { Spin, notification } from 'antd'
-import { ADD_USER_COIN } from 'utils/mutations'
+import { ADD_EXCHANGE_COINS } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
 import { getUserWallets } from 'redux/reducers/walletSlice'
@@ -19,7 +19,7 @@ const ExchangeModal = (props) => {
   const [loading, setLoading] = useState(false)
   const { exchangeWallets } = useSelector((state) => state.wallet)
   const { tokenHeader } = useSelector((state) => state.auth)
-  const [addUserCoin] = useMutation(ADD_USER_COIN, {
+  const [addExchangeCoins] = useMutation(ADD_EXCHANGE_COINS, {
     fetchPolicy: 'no-cache',
     context: tokenHeader,
   })
@@ -37,20 +37,17 @@ const ExchangeModal = (props) => {
       api
     )
   }
-  const onSave = async (coinName, coinSymbol, balance, address, wallet) => {
-    const coinData = {
-      name: coinName,
-      symbol: coinSymbol,
+  const onSave = async (coinData, address, wallet) => {
+    const exchangeInfo = {
+      coinData: coinData,
       walletName: wallet,
-      type: 'Auto',
       walletAddress: address,
-      holdings: parseFloat(balance),
     }
 
     try {
-      await addUserCoin({
+      await addExchangeCoins({
         variables: {
-          coinData,
+          exchangeInfo,
         },
       })
     } catch (error) {
@@ -92,15 +89,19 @@ const ExchangeModal = (props) => {
               ?.name,
             value: coin.totalBalance,
           }))
+
+        const coinData = []
         for (const coin of matchingCoins) {
-          await onSave(
-            coin.name,
-            coin.symbol,
-            coin.value,
-            binanceWallet.id,
-            matchingAccount.cexName
-          )
+          coinData.push({
+            name: coin.name,
+            symbol: coin.symbol,
+            walletName: matchingAccount.cexName,
+            type: 'Auto',
+            walletAddress: binanceWallet.id,
+            holdings: parseFloat(coin.value),
+          })
         }
+        await onSave(coinData, binanceWallet.id, matchingAccount.cexName)
         onSuccess()
       }
     } else {
