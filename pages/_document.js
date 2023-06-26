@@ -7,6 +7,22 @@ export default function Document() {
       <Head>
         <Script src="https://cdn.jsdelivr.net/npm/apexcharts" />
         <Script src="https://cdn.jsdelivr.net/npm/react-apexcharts" />
+        {/* Google Analytics tracking code */}
+        <Script
+          strategy="lazyOnload"
+          src="https://www.googletagmanager.com/gtag/js?id=G-EJVZHQ1DVS"
+        />
+        <Script id="google-analytics" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
+            page_path: window.location.pathname,
+            });
+          `}
+        </Script>
+        {/* End Google Analytics tracking code */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

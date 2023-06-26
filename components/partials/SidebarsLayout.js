@@ -124,8 +124,8 @@ const SidebarsLayout = ({ children }) => {
             'xl:mx-auto',
             'xl:grid',
             lendRightSideBarOpen || !router.pathname.includes('defi-loans')
-              ? 'xl:grid-cols-[28.8rem_auto_30.8rem]'
-              : 'xl:grid-cols-[28.8rem_auto_1rem]',
+              ? 'xl:grid-cols-[24rem_auto_30.8rem]'
+              : 'xl:grid-cols-[24rem_auto_1rem]',
             'xl:items-start',
             'xl:gap-[3.2rem]',
             'xl:pt-[2rem]'
