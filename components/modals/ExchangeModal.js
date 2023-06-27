@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { changeExchangeModalOpen } from 'redux/reducers/utilSlice'
 
-import { Spin, notification } from 'antd'
+import { Spin } from 'antd'
 import { ADD_EXCHANGE_COINS } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
@@ -12,9 +12,9 @@ import { getUserWallets } from 'redux/reducers/walletSlice'
 import { displayNotifModal } from 'utils/notificationModal'
 import { detectCedeProvider } from '@cedelabs/providers'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
+
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
-  const [api, contextHolder] = notification.useNotification()
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const { exchangeWallets } = useSelector((state) => state.wallet)
@@ -33,8 +33,7 @@ const ExchangeModal = (props) => {
     dispatch(reloadPortfolio())
     displayNotifModal(
       'Success',
-      `Done! You have successfully added your Binance Wallet.`,
-      api
+      `Done! You have successfully added your Binance Wallet.`
     )
   }
   const onSave = async (coinData, address, wallet) => {
@@ -105,11 +104,7 @@ const ExchangeModal = (props) => {
         onSuccess()
       }
     } else {
-      displayNotifModal(
-        'warning',
-        'Vault not found. Please try again later',
-        api
-      )
+      displayNotifModal('warning', 'Vault not found. Please try again later')
     }
   }
 
@@ -218,7 +213,6 @@ const ExchangeModal = (props) => {
       className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex items-center justify-center p-[1rem] font-inter"
     >
       <Overlay closeModal={closeModal} />
-      {contextHolder}
       <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] text-white drop-shadow-lg">
         <div className="top-line mb-[1rem] flex justify-between py-[1rem]">
           <h1 className="text-[1.8rem] font-[700]">Connect Exchange</h1>

@@ -1,4 +1,6 @@
-export const displayNotifModal = (type, message, notification) => {
+import { notification } from 'antd'
+
+export const displayNotifModal = (type, message) => {
   notification.open({
     closeIcon: (
       <svg

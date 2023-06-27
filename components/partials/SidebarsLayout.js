@@ -20,6 +20,7 @@ import CoinModal from 'components/modals/CoinModal'
 import NftModal from 'components/modals/NftModal'
 import ExchangeModal from 'components/modals/ExchangeModal'
 import { detectCedeProvider } from '@cedelabs/providers'
+import { displayNotifModal } from 'utils/notificationModal'
 
 const SidebarsLayout = ({ children }) => {
   const router = useRouter()
@@ -49,9 +50,8 @@ const SidebarsLayout = ({ children }) => {
 
         if (provider == null) {
           displayNotifModal(
-            'warning',
-            'You might need to install cede.store extension.',
-            api
+            'Warning',
+            'You might need to install cede.store extension.'
           )
         } else {
           provider.on('connect', () => setCedeProvider(provider))
