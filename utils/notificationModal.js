@@ -1,6 +1,6 @@
 import { notification } from 'antd'
 
-export const displayNotifModal = (type, message) => {
+export const displayNotifModal = (type, description, message) => {
   notification.open({
     closeIcon: (
       <svg
@@ -18,9 +18,9 @@ export const displayNotifModal = (type, message) => {
     ),
     type: type.toLowerCase(),
     className: 'bg-[#191C20] text-white',
-    description: <p className="text-white">{message}</p>,
+    description: <p className="text-white">{description}</p>,
     duration: 5,
     placement: 'top',
-    message: <p className="text-capitalize text-white">{type}</p>,
+    message: <p className="text-capitalize text-white">{message ?? type}</p>,
   })
 }
