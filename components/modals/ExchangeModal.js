@@ -10,15 +10,17 @@ import { useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
 import { getUserWallets } from 'redux/reducers/walletSlice'
 import { displayNotifModal } from 'utils/notificationModal'
-import { detectCedeProvider } from '@cedelabs/providers'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
+import encrypt from '../../utils/encrypt'
+import { coinbaseClient } from 'utils/coinbase'
+import { generators } from 'openid-client'
 
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const { exchangeWallets } = useSelector((state) => state.wallet)
-  const { tokenHeader } = useSelector((state) => state.auth)
+  const { tokenHeader, id } = useSelector((state) => state.auth)
   const [addExchangeCoins] = useMutation(ADD_EXCHANGE_COINS, {
     fetchPolicy: 'no-cache',
     context: tokenHeader,
@@ -124,13 +126,29 @@ const ExchangeModal = (props) => {
         await props.cedeProvider.request({
           method: 'connect',
         })
-
         await connectCede()
       }
     } catch (error) {
       console.error(error)
     }
     setLoading(false)
+  }
+
+  const connectCoinbase = async () => {
+    const code_verifier = generators.codeVerifier()
+    const code_challenge = generators.codeChallenge(code_verifier)
+    const url = coinbaseClient.authorizationUrl({
+      scope: 'wallet:accounts:read',
+
+      code_challenge,
+      code_challenge_method: 'S256',
+      state: encrypt('HELLOMOON ' + id),
+    })
+    const windowFeatures =
+      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
+    let discordWindow = window.open('', '_blank', windowFeatures)
+
+    discordWindow.location.href = url
   }
 
   const goToCedeLabs = () => {
