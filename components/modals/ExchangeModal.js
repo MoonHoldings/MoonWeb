@@ -104,7 +104,7 @@ const ExchangeModal = (props) => {
         onSuccess()
       }
     } else {
-      displayNotifModal('warning', 'Vault not found. Please try again later')
+      displayNotifModal('Warning', 'Vault not found. Please try again later.')
     }
   }
 

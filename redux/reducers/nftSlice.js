@@ -74,7 +74,7 @@ const nftSlice = createSlice({
         if (state.selectedNfts?.length == 7) {
           displayNotifModal(
             'Warning',
-            'Warning! You have selected the maximum allowed nfts to send/burn'
+            'Warning! You have selected the maximum allowed nfts to send/burn.'
           )
         } else {
           // If action.payload does not exist, add it to the array along with the name
