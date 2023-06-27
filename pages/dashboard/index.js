@@ -462,7 +462,8 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.crypto?.percentChange != 0 ? (
+                {dashboardData?.crypto?.percentChange != 0 &&
+                totalNetworth != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -520,7 +521,8 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.nft?.percentChange != 0 ? (
+                {dashboardData?.nft?.percentChange != 0 &&
+                totalNetworth != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -575,7 +577,8 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.loan?.percentChange != 0 ? (
+                {dashboardData?.loan?.percentChange != 0 &&
+                totalNetworth != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -629,7 +632,8 @@ const Dashboard = () => {
 
             {loadValue(
               <>
-                {dashboardData?.borrow?.percentChange != 0 ? (
+                {dashboardData?.borrow?.percentChange != 0 &&
+                totalNetworth != 0 ? (
                   <div
                     className={mergeClasses(
                       'text-[1.8rem]',
@@ -732,18 +736,19 @@ const Dashboard = () => {
                 </p>
               )}
 
-              {dashboardData?.percentChangeTotal !== 0 && (
-                <p
-                  className={mergeClasses(
-                    'text-[#45CB85]',
-                    getPercentageChangeClassName(
-                      dashboardData?.percentChangeTotal
-                    )
-                  )}
-                >
-                  {toCurrencyFormat(dashboardData?.percentChangeTotal)}%
-                </p>
-              )}
+              {dashboardData?.percentChangeTotal !== 0 &&
+                totalNetworth != 0 && (
+                  <p
+                    className={mergeClasses(
+                      'text-[#45CB85]',
+                      getPercentageChangeClassName(
+                        dashboardData?.percentChangeTotal
+                      )
+                    )}
+                  >
+                    {toCurrencyFormat(dashboardData?.percentChangeTotal)}%
+                  </p>
+                )}
 
               <p>
                 {getCurrencySymbol()}

@@ -265,7 +265,7 @@ const SignUp = () => {
                 className="form-field w-full pr-16"
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm Password"
-                onChange={(e) => setShowConfirmPassword(e.target.value)}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               {!showConfirmPassword ? (
                 <Image
