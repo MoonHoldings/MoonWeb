@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { useMutation } from '@apollo/client'
 import {
@@ -27,7 +27,7 @@ import {
 } from 'application/constants/copy'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import TextBlink from 'components/partials/TextBlink'
-import { Spin, Tooltip, notification } from 'antd'
+import { Spin, Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
@@ -90,8 +90,6 @@ const RightSideBar = () => {
     borrowTotal,
   } = useSelector((state) => state.portfolio)
 
-  const [api, contextHolder] = notification.useNotification()
-
   useEffect(() => {
     dispatch(getUserWallets({}))
   }, [])
@@ -133,9 +131,8 @@ const RightSideBar = () => {
 
       if (!res?.data?.addUserWallet) {
         displayNotifModal(
-          'warning',
-          'Wallet is already connected to a different user',
-          api
+          'Warning',
+          'Wallet is already connected to a different user'
         )
         disconnectCurrentWallet()
       } else {
@@ -150,11 +147,7 @@ const RightSideBar = () => {
   const transferNftModal = (type) => {
     if (publicKey) dispatch(changeNftModalOpen({ isShow: true, type: type }))
     else {
-      return displayNotifModal(
-        'warning',
-        `Warning! No wallet is connected.`,
-        api
-      )
+      return displayNotifModal('Warning', `Warning! No wallet is connected.`)
     }
   }
 
@@ -1068,7 +1061,6 @@ const RightSideBar = () => {
         <div className="main-buttons mt-0 h-full bg-[rgb(25,28,32)] px-[1.7rem] md:mb-[1.6rem] md:mt-4 md:rounded-[1.5rem] md:p-[1.5rem] lg:mt-0">
           {MENUS[currentMenu]}
         </div>
-        {contextHolder}
         {/* Connected Exchanges */}
         {/* <div className="connected-exchanges mb-[1.6rem] hidden rounded-[2rem] border bg-[#191C20] p-[1.5rem] font-inter xl:block">
         <div className="header mb-[2rem] flex justify-between">

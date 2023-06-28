@@ -1,18 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import { populateCurrentNft, selectNft } from 'redux/reducers/nftSlice'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import LazyLoad from 'react-lazy-load'
-import { notification } from 'antd'
-import { displayNotifModal } from 'utils/notificationModal'
 
 const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
   const dispatch = useDispatch()
   const router = useRouter()
-
-  const [api, contextHolder] = notification.useNotification()
 
   const image = nft.image
   const name = nft?.name || nft?.symbol
@@ -32,7 +28,6 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
         selectNft({
           mint: nft.mint,
           name: nft.name,
-          notification: notification,
         })
       )
   }
@@ -108,7 +103,7 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
         </div> */}
 
         <hr className="mb-[0.4rem] h-[0.2rem] w-full rounded border-0 bg-[#A6A6A6] xl:mb-[2rem]" />
-        {contextHolder}
+
         <h1
           onClick={(e) => {
             e.stopPropagation() // Stop the event from propagating to the parent div

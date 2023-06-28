@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit')
-import { signAndSendTransaction } from '@shyft-to/js'
 
 import {
   AXIOS_CONFIG_HELLO_MOON_KEY,
@@ -74,9 +73,8 @@ const nftSlice = createSlice({
       } else {
         if (state.selectedNfts?.length == 7) {
           displayNotifModal(
-            'warning',
-            'Warning! You have selected the maximum allowed nfts to send/burn',
-            action.payload.notification
+            'Warning',
+            'Warning! You have selected the maximum allowed nfts to send/burn.'
           )
         } else {
           // If action.payload does not exist, add it to the array along with the name
@@ -303,11 +301,7 @@ export const transferNfts = createAsyncThunk(
         )
       return ''
     } catch (e) {
-      displayNotifModal(
-        'Error',
-        `Failed to confirm the transaction.`,
-        notification
-      )
+      displayNotifModal('Error', `Failed to confirm the transaction.`)
     }
   }
 )
@@ -337,26 +331,19 @@ export const burnNfts = createAsyncThunk(
             encodedTransaction: data.data.result.encoded_transactions[0],
             connection: connection,
             wallet: wallet,
-            notification: notification,
           })
         )
       }
       return ''
     } catch (e) {
-      displayNotifModal(
-        'Error',
-        `Failed to confirm the transaction.`,
-        notification
-      )
+      displayNotifModal('Error', `Failed to confirm the transaction.`)
     }
   }
 )
+
 export const confirmTransaction = createAsyncThunk(
   'nft/confirmTransaction',
-  async (
-    { encodedTransaction, connection, wallet, notification },
-    thunkAPI
-  ) => {
+  async ({ encodedTransaction, connection, wallet }, thunkAPI) => {
     const { dispatch } = thunkAPI
     try {
       const recoveredTransaction = Transaction.from(
@@ -377,8 +364,7 @@ export const confirmTransaction = createAsyncThunk(
       if (data != null) {
         displayNotifModal(
           'Success',
-          `Done! You've successfully completed your transaction.`,
-          notification
+          `Done! You've successfully completed your transaction.`
         )
         setTimeout(() => {
           dispatch(deselectAllNfts())
@@ -386,11 +372,7 @@ export const confirmTransaction = createAsyncThunk(
       }
     } catch (error) {
       console.log(error)
-      displayNotifModal(
-        'Error',
-        `Failed to confirm the transaction.`,
-        notification
-      )
+      displayNotifModal('Error', `Failed to confirm the transaction.`)
     }
   }
 )
