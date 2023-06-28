@@ -143,7 +143,11 @@ const HistoryTable = ({ onClickRow, loading }) => {
             </thead>
             <tbody>
               {loanSummary?.getLoanSummary?.data?.map((data, index) => (
-                <HistoryRow history={data} key={index} />
+                <HistoryRow
+                  history={data}
+                  key={index}
+                  isLendPage={isLendPage}
+                />
               ))}
             </tbody>
           </table>

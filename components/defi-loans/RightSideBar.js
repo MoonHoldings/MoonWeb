@@ -52,23 +52,13 @@ const RightSideBar = () => {
   ] = useLazyQuery(MY_HISTORICAL_OFFERS)
 
   useEffect(() => {
-    if (publicKey && !loadingHistoricalOffers) {
-      getMyHistoricalOffers({
-        variables: {
-          lender: publicKey.toBase58(),
-        },
-        pollInterval: 3_600_000,
-      })
-    }
-  }, [publicKey, loadingHistoricalOffers, getMyHistoricalOffers])
-
-  useEffect(() => {
     if (publicKey && !loadingOffers) {
       getMyOffers({
         variables: {
           args: {
             filter: {
               lenderWallet: publicKey.toBase58(),
+              // lenderWallet: 'HtPS1sNkzVMp1VkC7iuW2AZanUnD28vaVgEEJ3gUwfYJ',
               type: 'offered',
             },
           },
@@ -79,23 +69,13 @@ const RightSideBar = () => {
   }, [publicKey, loadingOffers, getMyOffers])
 
   useEffect(() => {
-    if (publicKey && !loadingHistoricalLoans) {
-      getMyHistoricalLoans({
-        variables: {
-          borrower: publicKey.toBase58(),
-        },
-        pollInterval: 3_600_000,
-      })
-    }
-  }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
-
-  useEffect(() => {
     if (publicKey && !loadingMyLoans) {
       getMyLoans({
         variables: {
           args: {
             filter: {
               borrowerWallet: publicKey.toBase58(),
+              // borrowerWallet: 'HtPS1sNkzVMp1VkC7iuW2AZanUnD28vaVgEEJ3gUwfYJ',
               type: 'taken',
             },
           },
@@ -104,6 +84,30 @@ const RightSideBar = () => {
       })
     }
   }, [publicKey, loadingMyLoans, getMyLoans])
+
+  useEffect(() => {
+    if (publicKey && !loadingHistoricalOffers) {
+      getMyHistoricalOffers({
+        variables: {
+          lender: publicKey.toBase58(),
+          // lender: 'HtPS1sNkzVMp1VkC7iuW2AZanUnD28vaVgEEJ3gUwfYJ',
+        },
+        pollInterval: 3_600_000,
+      })
+    }
+  }, [publicKey, loadingHistoricalOffers, getMyHistoricalOffers])
+
+  useEffect(() => {
+    if (publicKey && !loadingHistoricalLoans) {
+      getMyHistoricalLoans({
+        variables: {
+          borrower: publicKey.toBase58(),
+          // borrower: 'HtPS1sNkzVMp1VkC7iuW2AZanUnD28vaVgEEJ3gUwfYJ',
+        },
+        pollInterval: 3_600_000,
+      })
+    }
+  }, [publicKey, loadingHistoricalLoans, getMyHistoricalLoans])
 
   const connectWallet = () => {
     dispatch(changeWalletsModalOpen(true))
@@ -194,9 +198,17 @@ const RightSideBar = () => {
   }
 
   const renderOffers = () => {
+    if (!myOffers?.getLoans?.data) return null
+
+    let offers = [...myOffers?.getLoans?.data]
+
+    if (offers) {
+      offers.sort((a, b) => b.offerTime - a.offerTime)
+    }
+
     return (
       <div className="flex w-full flex-col">
-        {myOffers?.getLoans?.data?.map((offer, index) => (
+        {offers?.map((offer, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
             <div className="flex flex-col items-center justify-center xl:w-[8rem]">
               <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
@@ -412,9 +424,17 @@ const RightSideBar = () => {
       return ((currentUnixTime - loan.start) / loan.duration) * 100
     }
 
+    if (!myLoans?.getLoans?.data) return null
+
+    let loans = [...myLoans?.getLoans?.data]
+
+    if (loans) {
+      loans.sort((a, b) => b.start - a.start)
+    }
+
     return (
       <div className="flex w-full flex-col">
-        {myLoans?.getLoans?.data?.map((loan, index) => (
+        {loans?.map((loan, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
             <div className="flex flex-col items-center justify-center xl:max-w-[4.5rem]">
               <div className="flex h-[3.5rem] w-[3.5rem] items-center justify-center rounded-full bg-white">
@@ -610,8 +630,6 @@ const RightSideBar = () => {
                 )}
                 {publicKey && renderTabs()}
                 <div className="mt-8" />
-                {/* TODO: Bring back after fixing hello moon history */}
-
                 {(loadingHistoricalOffers || loadingHistoricalLoans) && (
                   <Spinner />
                 )}
@@ -619,9 +637,9 @@ const RightSideBar = () => {
                   activeTab === 'offers' &&
                   renderHistoricalActiveOffers()}
                 {publicKey && activeTab === 'offers' && renderOffers()}
-                {/* {publicKey &&
+                {publicKey &&
                   activeTab === 'offers' &&
-                  renderHistoricalNotActiveOffers()} */}
+                  renderHistoricalNotActiveOffers()}
                 {publicKey && activeTab === 'loans' && renderLoans()}
                 {publicKey && activeTab === 'loans' && renderHistoricalLoans()}
               </div>
