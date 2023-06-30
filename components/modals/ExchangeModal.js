@@ -35,7 +35,7 @@ const ExchangeModal = (props) => {
     dispatch(reloadPortfolio())
     displayNotifModal(
       'Success',
-      `Done! You have successfully added your Binance Wallet.`
+      `Done! You have successfully added your Wallet.`
     )
   }
   const onSave = async (coinData, address, wallet) => {
@@ -148,7 +148,29 @@ const ExchangeModal = (props) => {
       'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
     let discordWindow = window.open('', '_blank', windowFeatures)
 
-    discordWindow.location.href = url
+    openDiscordWindow(url, discordWindow)
+  }
+
+  const openDiscordWindow = (discordUrl, discordWindow) => {
+    discordWindow.location.href = discordUrl
+    try {
+      window.addEventListener('message', receiveMessage, false)
+      async function receiveMessage(event) {
+        const valueReceived = event.data
+
+        if (valueReceived?.successMessage) {
+          onSuccess()
+          discordWindow.close()
+        }
+      }
+    } catch (error) {
+      discordWindow.close()
+    }
+    const intervalId = setInterval(async () => {
+      if (discordWindow.closed) {
+        clearInterval(intervalId)
+      }
+    }, 1000)
   }
 
   const goToCedeLabs = () => {
@@ -168,8 +190,14 @@ const ExchangeModal = (props) => {
       <div className="flex flex-row">
         <div className="mr-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
           <button
-            disabled={exchangeWallets?.length > 0}
-            onClick={exchangeWallets?.length > 0 ? null : connectBinance}
+            disabled={exchangeWallets.some(
+              (wallet) => wallet.name === 'binance'
+            )}
+            onClick={
+              exchangeWallets.some((wallet) => wallet.name === 'binance')
+                ? null
+                : connectBinance
+            }
             className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
           >
             <Image
@@ -183,8 +211,15 @@ const ExchangeModal = (props) => {
         </div>
         <div className="ml-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
           <button
-            onClick={() => connectCoinbase()}
-            className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
+            disabled={exchangeWallets.some(
+              (wallet) => wallet.name === 'Coinbase'
+            )}
+            onClick={
+              exchangeWallets.some((wallet) => wallet.name === 'Coinbase')
+                ? null
+                : connectCoinbase
+            }
+            className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-600"
           >
             <Image
               className="m-16 h-full w-[70%]"
