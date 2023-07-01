@@ -10,15 +10,17 @@ import { useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
 import { getUserWallets } from 'redux/reducers/walletSlice'
 import { displayNotifModal } from 'utils/notificationModal'
-import { detectCedeProvider } from '@cedelabs/providers'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
+import encrypt from '../../utils/encrypt'
+import { coinbaseClient } from 'utils/coinbase'
+import { generators } from 'openid-client'
 
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const { exchangeWallets } = useSelector((state) => state.wallet)
-  const { tokenHeader } = useSelector((state) => state.auth)
+  const { tokenHeader, id } = useSelector((state) => state.auth)
   const [addExchangeCoins] = useMutation(ADD_EXCHANGE_COINS, {
     fetchPolicy: 'no-cache',
     context: tokenHeader,
@@ -33,7 +35,7 @@ const ExchangeModal = (props) => {
     dispatch(reloadPortfolio())
     displayNotifModal(
       'Success',
-      `Done! You have successfully added your Binance Wallet.`
+      `Done! You have successfully added your Wallet.`
     )
   }
   const onSave = async (coinData, address, wallet) => {
@@ -124,13 +126,51 @@ const ExchangeModal = (props) => {
         await props.cedeProvider.request({
           method: 'connect',
         })
-
         await connectCede()
       }
     } catch (error) {
       console.error(error)
     }
     setLoading(false)
+  }
+
+  const connectCoinbase = async () => {
+    const code_verifier = generators.codeVerifier()
+    const code_challenge = generators.codeChallenge(code_verifier)
+    const url = coinbaseClient.authorizationUrl({
+      scope: 'wallet:accounts:read',
+
+      code_challenge,
+      code_challenge_method: 'S256',
+      state: encrypt('HELLOMOON ' + id),
+    })
+    const windowFeatures =
+      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
+    let discordWindow = window.open('', '_blank', windowFeatures)
+
+    openDiscordWindow(url, discordWindow)
+  }
+
+  const openDiscordWindow = (discordUrl, discordWindow) => {
+    discordWindow.location.href = discordUrl
+    try {
+      window.addEventListener('message', receiveMessage, false)
+      async function receiveMessage(event) {
+        const valueReceived = event.data
+
+        if (valueReceived?.successMessage) {
+          onSuccess()
+          discordWindow.close()
+        }
+      }
+    } catch (error) {
+      discordWindow.close()
+    }
+    const intervalId = setInterval(async () => {
+      if (discordWindow.closed) {
+        clearInterval(intervalId)
+      }
+    }, 1000)
   }
 
   const goToCedeLabs = () => {
@@ -147,32 +187,49 @@ const ExchangeModal = (props) => {
 
   const renderFirstStep = () => {
     return (
-      <div className="overflow-hidden rounded-[10px] border-2 border-black text-white">
-        <button
-          disabled={exchangeWallets?.length > 0}
-          onClick={exchangeWallets?.length > 0 ? null : connectBinance}
-          className="cursor flex w-full flex-col items-center justify-center border-b-2 border-black bg-[#25282C] p-16 hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
-        >
-          <h1 className="text-[1.8rem] font-[700] text-[#FED007] ">
-            Binance {exchangeWallets?.length > 0 ? '(Connected)' : ''}{' '}
-            {loading && <Spin className="ml-3" />}
-          </h1>
-          <p className="text-center text-[1.4rem] text-[#666666]">
-            Connect and pull portfolio from Binance via Cedelabs wallet
-          </p>
-        </button>
-        <button
-          disabled
-          onClick={() => {}}
-          className="cursor flex w-full flex-col items-center justify-center bg-[#25282C] p-16 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-700"
-        >
-          <h1 className="text-[1.8rem] font-[700] text-[#666666] ">
-            Add More Exchanges
-          </h1>
-          <p className="text-center text-[1.4rem] text-[#666666]">
-            Coinbase, Gemini, Robinhood, Fidelity, Charles Swab & more
-          </p>
-        </button>
+      <div className="flex flex-row">
+        <div className="mr-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
+          <button
+            disabled={exchangeWallets.some(
+              (wallet) => wallet.name === 'binance'
+            )}
+            onClick={
+              exchangeWallets.some((wallet) => wallet.name === 'binance')
+                ? null
+                : connectBinance
+            }
+            className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
+          >
+            <Image
+              className="m-16 h-full w-[70%] "
+              src="/images/svgs/binance_logo.svg"
+              alt="cross button"
+              width={100}
+              height={100}
+            />
+          </button>
+        </div>
+        <div className="ml-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
+          <button
+            disabled={exchangeWallets.some(
+              (wallet) => wallet.name === 'Coinbase'
+            )}
+            onClick={
+              exchangeWallets.some((wallet) => wallet.name === 'Coinbase')
+                ? null
+                : connectCoinbase
+            }
+            className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-600"
+          >
+            <Image
+              className="m-16 h-full w-[70%]"
+              src="/images/svgs/coinbase_logo.svg"
+              alt="cross button"
+              width={100}
+              height={100}
+            />
+          </button>
+        </div>
       </div>
     )
   }
