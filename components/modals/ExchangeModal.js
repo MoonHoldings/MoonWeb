@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -6,7 +6,7 @@ import { changeExchangeModalOpen } from 'redux/reducers/utilSlice'
 
 import { ADD_EXCHANGE_COINS, CONNECT_PLAID_DETAILS } from 'utils/mutations'
 import { GET_PLAID_LINK_TOKEN } from 'utils/queries'
-import { useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
 import {
   getUserWallets,
