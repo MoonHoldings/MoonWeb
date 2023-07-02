@@ -117,3 +117,9 @@ export const ADD_EXCHANGE_COINS = gql`
     addExchangeCoins(exchangeInfo: $exchangeInfo)
   }
 `
+
+export const CONNECT_PLAID_DETAILS = gql`
+  mutation Mutation($publicToken: String!) {
+    connectPlaidDetails(public_token: $publicToken)
+  }
+`

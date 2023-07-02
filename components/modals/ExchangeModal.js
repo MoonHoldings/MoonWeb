@@ -4,8 +4,8 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { changeExchangeModalOpen } from 'redux/reducers/utilSlice'
 
-import { Spin } from 'antd'
-import { ADD_EXCHANGE_COINS } from 'utils/mutations'
+import { ADD_EXCHANGE_COINS, CONNECT_PLAID_DETAILS } from 'utils/mutations'
+import { GET_PLAID_LINK_TOKEN } from 'utils/queries'
 import { useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
 import {
@@ -25,6 +25,19 @@ const ExchangeModal = (props) => {
   const { exchangeWallets } = useSelector((state) => state.wallet)
   const { tokenHeader, id } = useSelector((state) => state.auth)
   const [addExchangeCoins] = useMutation(ADD_EXCHANGE_COINS, {
+    fetchPolicy: 'no-cache',
+    context: tokenHeader,
+  })
+
+  const [connectPlaidDetails] = useMutation(CONNECT_PLAID_DETAILS, {
+    fetchPolicy: 'no-cache',
+    context: tokenHeader,
+  })
+
+  const [
+    getPlaidLInkToken,
+    { data: linkToken, loading: loadingGetPlaidLinkToken },
+  ] = useLazyQuery(GET_PLAID_LINK_TOKEN, {
     fetchPolicy: 'no-cache',
     context: tokenHeader,
   })
