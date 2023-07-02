@@ -37,6 +37,7 @@ const SidebarsLayout = ({ children }) => {
     exchangeModalOpen,
   } = useSelector((state) => state.util)
   const { isLoggedIn } = useSelector((state) => state.auth)
+  const { loading: portfolioLoading } = useSelector((state) => state.portfolio)
   const { addAddressStatus, refreshFloorPriceStatus, refreshWalletsStatus } =
     useSelector((state) => state.wallet)
 
@@ -149,8 +150,10 @@ const SidebarsLayout = ({ children }) => {
             {walletsModalOpen && <WalletsModal />}
           </AnimatePresence>
 
-          {(addAddressStatus === 'loading' || modalLoading) && (
-            <LoadingModal showMessage={modalLoading} />
+          {(addAddressStatus === 'loading' ||
+            modalLoading ||
+            portfolioLoading) && (
+            <LoadingModal showMessage={modalLoading || portfolioLoading} />
           )}
           {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
           {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
