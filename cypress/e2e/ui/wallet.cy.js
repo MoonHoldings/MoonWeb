@@ -6,7 +6,6 @@ describe('Wallet', () => {
   const testWalletAddress = '3bpETYgcq63kWs86BEnWM4QiBUisfP8BrmjHYGjsHL11'
 
   beforeEach(() => {
-    cy.visit(`${baseUrl}/login`)
     cy.intercept('POST', apiGraphQL, (req) => {
       const { body } = req
 
@@ -16,13 +15,25 @@ describe('Wallet', () => {
         req.body.query.includes('login')
       ) {
         req.alias = 'gqlLogin'
-
         req.reply({
           data: {
             login: {
               username: 'testUser',
+              accessToken: 'testAccessToken',
               __typename: 'User',
             },
+          },
+        })
+      }
+      if (
+        body.hasOwnProperty('operationName') &&
+        body.operationName === 'Mutation' &&
+        req.body.query.includes('logout')
+      ) {
+        req.alias = 'gqlLogout'
+        req.reply({
+          data: {
+            logout: {},
           },
         })
       }
@@ -108,11 +119,10 @@ describe('Wallet', () => {
         })
       }
     })
-    cy.setCookie('aid', 'test-aid-cookie')
   })
 
   it('should add a wallet', () => {
-    cy.visit(`${baseUrl}/login`)
+    cy.login(email, password)
     cy.get('button#btn-wallet-mobile').click()
     cy.get('button').contains('Add Wallet Address').click()
     cy.get('div.search').type(testWalletAddress)
