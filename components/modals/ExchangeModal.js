@@ -17,7 +17,7 @@ import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import encrypt from '../../utils/encrypt'
 import { coinbaseClient } from 'utils/coinbase'
 import { generators } from 'openid-client'
-
+import { usePlaidLink, PlaidLinkOnExit } from 'react-plaid-link'
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
   const [currentStep, setCurrentStep] = useState(1)
@@ -40,6 +40,29 @@ const ExchangeModal = (props) => {
   ] = useLazyQuery(GET_PLAID_LINK_TOKEN, {
     fetchPolicy: 'no-cache',
     context: tokenHeader,
+  })
+
+  const onSuccessPlaid = useCallback(async (provider, metadata) => {
+    console.log('hey')
+    const walletName = metadata.wallet.name
+    const accounts = await provider.request({
+      method: 'eth_accounts',
+    })
+  }, [])
+
+  const onExit =
+    useCallback <
+    PlaidLinkOnExit >
+    ((error, metadata) => {
+      // Optional callback, called if the user exits without connecting a wallet
+      // See https://plaid.com/docs/link/web/#onexit for details
+    },
+    [])
+
+  const { open, ready } = usePlaidLink({
+    token: 'link-sandbox-e1f42286-5f25-494b-84f8-b1e0a118a3dd',
+    onSuccessPlaid,
+    onExit,
   })
 
   const closeModal = () => {
@@ -167,6 +190,8 @@ const ExchangeModal = (props) => {
 
     openDiscordWindow(url, discordWindow)
   }
+
+  const connectPlaid = async () => {}
 
   const openDiscordWindow = (discordUrl, discordWindow) => {
     discordWindow.location.href = discordUrl
