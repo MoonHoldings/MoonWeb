@@ -8,7 +8,10 @@ import { Spin } from 'antd'
 import { ADD_EXCHANGE_COINS } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
-import { getUserWallets } from 'redux/reducers/walletSlice'
+import {
+  getUserWallets,
+  completeExchangeInfo,
+} from 'redux/reducers/walletSlice'
 import { displayNotifModal } from 'utils/notificationModal'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import encrypt from '../../utils/encrypt'
@@ -30,13 +33,17 @@ const ExchangeModal = (props) => {
     dispatch(changeExchangeModalOpen(false))
   }
 
-  const onSuccess = () => {
+  const onSuccess = (message) => {
     dispatch(getUserWallets({}))
     dispatch(reloadPortfolio())
-    displayNotifModal(
-      'Success',
-      `Done! You have successfully added your Wallet.`
+    dispatch(
+      completeExchangeInfo({
+        isComplete: true,
+        message,
+      })
     )
+
+    closeModal()
   }
   const onSave = async (coinData, address, wallet) => {
     const exchangeInfo = {
@@ -103,7 +110,7 @@ const ExchangeModal = (props) => {
           })
         }
         await onSave(coinData, binanceWallet.id, matchingAccount.cexName)
-        onSuccess()
+        onSuccess('Done! You have successfully added your Binance Wallet')
       }
     } else {
       displayNotifModal('Warning', 'Vault not found. Please try again later.')
@@ -156,7 +163,7 @@ const ExchangeModal = (props) => {
         const valueReceived = event.data
 
         if (valueReceived?.successMessage) {
-          onSuccess()
+          onSuccess('Done! You have successfully added your Coinbase Wallet')
           discordWindow.close()
         }
       }

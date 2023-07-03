@@ -3,7 +3,7 @@ import { Transition } from '@headlessui/react'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
-export default function CopyClipboardNotification({ show, setShow }) {
+export default function CopyClipboardNotification({ show, hideClip, message }) {
   return (
     <>
       <div
@@ -32,16 +32,14 @@ export default function CopyClipboardNotification({ show, setShow }) {
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
                     <p className="text-2xl font-medium text-white">
-                      Copied to Clipboard!
+                      {message ?? 'Copied to Clipboard!'}
                     </p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
                       type="button"
                       className="inline-flex rounded-md bg-[#191C20] p-2 text-white hover:text-gray-500 focus:outline-none focus:ring-2"
-                      onClick={() => {
-                        setShow(false)
-                      }}
+                      onClick={hideClip}
                     >
                       <span className="sr-only">Close</span>
                       <Image
