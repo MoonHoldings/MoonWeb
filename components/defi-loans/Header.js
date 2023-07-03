@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import mergeClasses from 'utils/mergeClasses'
 import { GET_TOTAL_BORROWS, GET_TOTAL_LENDS } from 'utils/queries'
 import { Spin } from 'antd'
+import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const Header = ({ title, description }) => {
   const router = useRouter()
