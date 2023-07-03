@@ -5,23 +5,33 @@ describe('Dashboard', () => {
   const password = 'testPassword'
 
   beforeEach(() => {
-    cy.visit(`${baseUrl}/login`)
     cy.intercept('POST', apiGraphQL, (req) => {
       const { body } = req
-
       if (
         body.hasOwnProperty('operationName') &&
         body.operationName === 'Mutation' &&
         req.body.query.includes('login')
       ) {
         req.alias = 'gqlLogin'
-
         req.reply({
           data: {
             login: {
               username: 'testUser',
+              accessToken: 'testAccessToken',
               __typename: 'User',
             },
+          },
+        })
+      }
+      if (
+        body.hasOwnProperty('operationName') &&
+        body.operationName === 'Mutation' &&
+        req.body.query.includes('logout')
+      ) {
+        req.alias = 'gqlLogout'
+        req.reply({
+          data: {
+            logout: {},
           },
         })
       }
@@ -62,11 +72,10 @@ describe('Dashboard', () => {
         })
       }
     })
-    cy.setCookie('aid', 'test-cookie')
+    cy.login(email, password)
   })
 
   it('Working page links', () => {
-    cy.login(email, password)
     cy.url().should('eq', `${baseUrl}/dashboard`)
 
     cy.get('button#btn-hamburger').click()
@@ -90,7 +99,6 @@ describe('Dashboard', () => {
   })
 
   it('Functional coin search', () => {
-    cy.login(email, password)
     cy.get('button#btn-wallet-mobile').click()
     cy.get('label').get('input').click().as('coinSearch')
 

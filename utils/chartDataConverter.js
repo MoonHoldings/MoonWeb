@@ -1,5 +1,4 @@
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import toCurrencyFormat from './toCurrencyFormat'
 
 const convertUnixTimestamp = (unixTimestamp) => {
   const timestamp = unixTimestamp // Unix timestamp

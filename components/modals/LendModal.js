@@ -528,13 +528,6 @@ const LendModal = () => {
               </p>
             </div>
           </FormProvider>
-          {/* <Image
-            className="bottom-0 w-full"
-            src="/images/svgs/modal-footer.svg"
-            width={0}
-            height={0}
-            alt=""
-          /> */}
         </div>
       </motion.div>
     )

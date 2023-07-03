@@ -249,10 +249,6 @@ const RightSideBar = () => {
                   </p>
                   <p>Interest</p>
                 </div>
-                {/* <div className="flex flex-1 flex-col items-center">
-                  <p>{offer?.orderBook?.apyAfterFee}%</p>
-                  <p>APY</p>
-                </div> */}
               </div>
             </div>
             <button
@@ -323,10 +319,6 @@ const RightSideBar = () => {
                     <p>{offer.offerInterest.toFixed(4)}</p>
                     <p>Interest</p>
                   </div>
-                  {/* <div className="flex flex-1 flex-col items-center">
-                    <p>{offer?.apy}%</p>
-                    <p>APY</p>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -395,10 +387,6 @@ const RightSideBar = () => {
                     </p>
                     <p>Interest</p>
                   </div>
-                  {/* <div className="flex flex-1 flex-col items-center">
-                    <p>{offer?.apy}%</p>
-                    <p>APY</p>
-                  </div> */}
                 </div>
               </div>
             </div>

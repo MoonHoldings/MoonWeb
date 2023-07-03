@@ -7,9 +7,6 @@ const Attribute = ({ attribute }) => {
       <div className="cap mt-[0.5rem] text-[1.5rem] font-bold ">
         {attribute.value}
       </div>
-      {/* <div className="rounded-[0.5rem] bg-[#114239] p-[0.5rem]">
-        {attribute.percentage} Have this
-      </div> */}
     </div>
   )
 }
