@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ColorType, CrosshairMode, createChart } from 'lightweight-charts'
 import { formatChartData } from 'utils/chartDataConverter'
-import Image from 'next/image'
-import mergeClasses from 'utils/mergeClasses'
 import { fetchHelloMoonCollectionIds } from 'redux/reducers/nftSlice'
 import { GRANULARITY } from 'types/enums'
 import { useDispatch } from 'react-redux'
@@ -14,7 +12,6 @@ export const CandlestickChart = ({ candleStickData, mint, headerData }) => {
   const chartContainerRef = useRef()
   const chart = useRef()
   const resizeObserver = useRef()
-  const [chartData, setChartData] = useState([])
   const [isFocused, setIsFocused] = useState(false)
   const [filter, setFilter] = useState('1d')
   const [candleSeries, setCandleSeries] = useState(null)

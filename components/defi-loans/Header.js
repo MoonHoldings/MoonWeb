@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Spin } from 'antd'
 import { useLazyQuery } from '@apollo/client'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
 import mergeClasses from 'utils/mergeClasses'
 import { GET_TOTAL_BORROWS, GET_TOTAL_LENDS } from 'utils/queries'
-import toCurrencyFormat from 'utils/toCurrencyFormat'
+import { Spin } from 'antd'
 
 const Header = ({ title, description }) => {
   const router = useRouter()

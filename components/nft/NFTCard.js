@@ -83,25 +83,6 @@ const NFT = ({ nft, floorPrice, selectedNfts, ownedNfts }) => {
           )}
         </div>
 
-        {/* <div className="items-center xl:flex xl:justify-between">
-          {floorPrice && (
-            <div className="mb-[0.4rem] flex items-center text-[1.2rem] font-semibold leading-[1.5rem] xl:mb-0 xl:text-[1.8rem]">
-              <div className="">{formatFloorPrice()}</div>
-              <Image
-                className="ml-2 inline h-[1.5rem] w-[1.5rem] xl:h-[2rem] xl:w-[2rem]"
-                src="/images/svgs/sol-symbol.svg"
-                alt="SOL Symbol"
-                width={0}
-                height={0}
-                unoptimized
-              />
-            </div>
-          )} 
-         <div className="mb-[0.4rem] text-[1.2rem] xl:mb-0 xl:text-[1.8rem] xl:font-light xl:leading-[1.5rem]">
-            $482,000
-          </div> 
-        </div> */}
-
         <hr className="mb-[0.4rem] h-[0.2rem] w-full rounded border-0 bg-[#A6A6A6] xl:mb-[2rem]" />
 
         <h1

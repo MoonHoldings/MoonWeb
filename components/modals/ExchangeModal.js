@@ -117,10 +117,7 @@ const ExchangeModal = (props) => {
     }
     try {
       setLoading(true)
-      if (
-        // props.cedeProvider._state.isConnected &&
-        props.cedeProvider.getIsUnlocked()
-      ) {
+      if (props.cedeProvider.getIsUnlocked()) {
         await connectCede()
       } else {
         await props.cedeProvider.request({

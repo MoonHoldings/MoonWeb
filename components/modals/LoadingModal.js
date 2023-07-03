@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
-import { useWallet } from '@solana/wallet-adapter-react'
 
 const LoadingModal = (props) => {
   const { currentAddAddress } = useSelector((state) => state.wallet)
@@ -9,7 +8,6 @@ const LoadingModal = (props) => {
   const [loadingMessage, setLoadingMessage] = useState(
     'Wallet Assets Loading...'
   )
-  const { publicKey } = useWallet()
 
   useEffect(() => {
     setTimeout(() => {

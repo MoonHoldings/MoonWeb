@@ -2,19 +2,14 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import axios from 'axios'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Tooltip } from 'antd'
 
 import {
   populateCurrentCollection,
-  updateCollectionFloorPrice,
 } from 'redux/reducers/nftSlice'
 
-import {
-  HELLO_MOON_URL,
-  AXIOS_CONFIG_HELLO_MOON_KEY,
-} from 'application/constants/api'
+
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
@@ -29,34 +24,6 @@ const CollectionCard = ({ collection, index }) => {
 
   const shouldRenderFloorPrice = collection.floorPrice && collection.nfts
   const { publicKey } = useWallet()
-  const fetchFloorPrice = async () => {
-    if (!collection.floorPrice && collection.name !== 'unknown') {
-      try {
-        let collecionId = collection.helloMoonCollectionId
-
-        if (collecionId) {
-          const { data: floorPrice } = await axios.post(
-            `${HELLO_MOON_URL}/nft/collection/floorprice`,
-            {
-              helloMoonCollectionId: collecionId,
-            },
-            AXIOS_CONFIG_HELLO_MOON_KEY
-          )
-
-          if (floorPrice?.data?.length) {
-            dispatch(
-              updateCollectionFloorPrice({
-                index,
-                floorPrice: floorPrice?.data[0],
-              })
-            )
-          }
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }
 
   const formatFloorPrice = () => {
     return toCurrencyFormat(

@@ -1,10 +1,6 @@
 import Image from 'next/image'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  nextPage,
-  previousPage,
-  changePage,
-} from 'redux/reducers/sharkifyLendSlice'
+import { useDispatch } from 'react-redux'
+import { changePage } from 'redux/reducers/sharkifyLendSlice'
 import mergeClasses from 'utils/mergeClasses'
 
 const Pagination = ({
@@ -80,67 +76,6 @@ const Pagination = ({
           {currentPage} / {lastPage}
         </span>
       )}
-      {/* <button
-        type="button"
-        className={mergeClasses(
-          'flex',
-          'h-14',
-          'w-14',
-          'ml-4',
-          'items-center',
-          'justify-center',
-          'rounded-sm',
-          'border',
-          'border-[#434343]',
-          'text-[1.3rem]',
-          'font-bold'
-        )}
-        onClick={() => dispatch(changePage(currentPage))}
-      >
-        {currentPage}
-      </button>
-      {lastPage > 1 && currentPage !== lastPage && (
-        <button
-          type="button"
-          className={mergeClasses(
-            'flex',
-            'h-14',
-            'w-14',
-            'ml-4',
-            'items-center',
-            'justify-center',
-            'rounded-sm',
-            'border',
-            'border-[#434343]',
-            'text-[1.3rem]',
-            'font-bold'
-          )}
-          onClick={() => dispatch(changePage(currentPage + 1))}
-        >
-          {currentPage + 1}
-        </button>
-      )}
-      {lastPage > 2 && currentPage !== lastPage && (
-        <button
-          type="button"
-          className={mergeClasses(
-            'flex',
-            'h-14',
-            'w-14',
-            'ml-4',
-            'items-center',
-            'justify-center',
-            'rounded-sm',
-            'border',
-            'border-[#434343]',
-            'text-[1.3rem]',
-            'font-bold'
-          )}
-          onClick={() => dispatch(previousPage())}
-        >
-          {lastPage}
-        </button>
-      )} */}
       <button
         type="button"
         className={mergeClasses(
