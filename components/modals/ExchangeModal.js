@@ -187,11 +187,11 @@ const ExchangeModal = (props) => {
       <div className="flex flex-row">
         <div className="mr-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
           <button
-            disabled={exchangeWallets.some(
+            disabled={exchangeWallets?.some(
               (wallet) => wallet.name === 'binance'
             )}
             onClick={
-              exchangeWallets.some((wallet) => wallet.name === 'binance')
+              exchangeWallets?.some((wallet) => wallet.name === 'binance')
                 ? null
                 : connectBinance
             }
@@ -208,11 +208,11 @@ const ExchangeModal = (props) => {
         </div>
         <div className="ml-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
           <button
-            disabled={exchangeWallets.some(
+            disabled={exchangeWallets?.some(
               (wallet) => wallet.name === 'Coinbase'
             )}
             onClick={
-              exchangeWallets.some((wallet) => wallet.name === 'Coinbase')
+              exchangeWallets?.some((wallet) => wallet.name === 'Coinbase')
                 ? null
                 : connectCoinbase
             }
