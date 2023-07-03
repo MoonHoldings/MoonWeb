@@ -38,7 +38,10 @@ import {
   REMOVE_USER_WALLET,
 } from 'utils/mutations'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
-import { getUserWallets } from 'redux/reducers/walletSlice'
+import {
+  getUserWallets,
+  completeExchangeInfo,
+} from 'redux/reducers/walletSlice'
 import mergeClasses from 'utils/mergeClasses'
 import { displayNotifModal } from 'utils/notificationModal'
 import CopyClipboardNotification from 'components/modals/CopyClipboardNotification'
@@ -57,6 +60,8 @@ const RightSideBar = () => {
     addAddressStatus,
     wallets: userWallets,
     exchangeWallets,
+    completeMessage,
+    isComplete,
   } = useSelector((state) => state.wallet)
   const { tokenHeader } = useSelector((state) => state.auth)
 
@@ -103,6 +108,8 @@ const RightSideBar = () => {
     if (publicKey && !disconnecting && shouldCallAddWallet) {
       addConnectedWallet()
     }
+
+    dispatch(changeExchangeModalOpen(false))
   }, [publicKey, addConnectedWallet, disconnecting, router])
 
   useEffect(() => {
@@ -157,6 +164,7 @@ const RightSideBar = () => {
 
   const addExchange = async () => {
     dispatch(changeExchangeModalOpen(true))
+    hideClip()
   }
 
   const removeSingleWallet = async (wallet) => {
@@ -214,6 +222,16 @@ const RightSideBar = () => {
 
   const shrinkText = (text) => {
     return text.substring(0, 5)
+  }
+
+  const hideClip = () => {
+    setShow(false)
+    dispatch(
+      completeExchangeInfo({
+        isComplete: false,
+        message: 'Done! You have successfully added your Wallet.',
+      })
+    )
   }
 
   const refreshWalletsAndFloorPrice = async () => {
@@ -1049,7 +1067,11 @@ const RightSideBar = () => {
   return (
     <>
       <div className="absolute right-24 top-24 z-[52]">
-        <CopyClipboardNotification show={show} setShow={setShow} />
+        <CopyClipboardNotification
+          show={show || isComplete}
+          message={completeMessage}
+          hideClip={hideClip}
+        />
       </div>
       <motion.div
         className="fixed left-0 top-0 z-[51] h-full w-full md:sticky md:top-8 md:order-3 md:mb-[1.5rem] md:h-auto"

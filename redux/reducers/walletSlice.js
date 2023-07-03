@@ -9,12 +9,21 @@ const initialState = {
   refreshWalletsStatus: 'idle',
   wallets: [],
   exchangeWallets: [],
+  isComplete: false,
+  completeMessage: '',
 }
 
 const walletSlice = createSlice({
   name: 'wallet',
   initialState,
-  reducers: {},
+  reducers: {
+    completeExchangeInfo(state, action) {
+      console.log(action)
+      state.isComplete = action.payload.isComplete
+      state.completeMessage = action.payload.message
+      console.log(state.completeMessage)
+    },
+  },
   extraReducers(builder) {
     builder.addCase(getUserWallets.fulfilled, (state, action) => {
       const userWallets = action.payload
@@ -57,6 +66,6 @@ export const getUserWallets = createAsyncThunk(
   }
 )
 
-export const {} = walletSlice.actions
+export const { completeExchangeInfo } = walletSlice.actions
 
 export default walletSlice.reducer
