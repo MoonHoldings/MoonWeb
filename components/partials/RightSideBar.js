@@ -109,6 +109,7 @@ const RightSideBar = () => {
       addConnectedWallet()
     }
     dispatch(
+      completeExchangeInfo({
         isComplete: false,
         message: '',
       })
