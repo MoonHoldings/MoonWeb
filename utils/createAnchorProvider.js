@@ -2,7 +2,7 @@ import { AnchorProvider } from '@project-serum/anchor'
 import Wallet from '@project-serum/anchor/dist/cjs/nodewallet'
 
 import { Connection, Keypair } from '@solana/web3.js'
-import { RPC_URL, HELLO_MOON_RPC_URL } from 'application/constants/api'
+import { HELLO_MOON_RPC_URL } from 'application/constants/api'
 
 export const connection = new Connection(HELLO_MOON_RPC_URL, 'confirmed')
 

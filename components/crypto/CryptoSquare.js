@@ -4,11 +4,6 @@ import numeral from 'numeral'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
-  const totalValue = (holding, price) => {
-    const value = holding * price
-    return numeral(value).format('0,0.00')
-  }
-
   function formatNumber(value) {
     const formattedValue = value.toFixed(2)
 

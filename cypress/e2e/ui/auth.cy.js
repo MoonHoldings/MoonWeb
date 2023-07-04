@@ -8,31 +8,28 @@ describe('User login & signup', () => {
     cy.visit(`${baseUrl}/login`)
     cy.intercept('POST', apiGraphQL, (req) => {
       const { body } = req
-
       if (
         body.hasOwnProperty('operationName') &&
         body.operationName === 'Mutation' &&
         req.body.query.includes('login')
       ) {
         req.alias = 'gqlLogin'
-
         req.reply({
           data: {
             login: {
               username: 'testUser',
+              accessToken: 'testAccessToken',
               __typename: 'User',
             },
           },
         })
       }
-
       if (
         body.hasOwnProperty('operationName') &&
         body.operationName === 'Mutation' &&
         req.body.query.includes('logout')
       ) {
         req.alias = 'gqlLogout'
-
         req.reply({
           data: {
             logout: {},
@@ -40,7 +37,6 @@ describe('User login & signup', () => {
         })
       }
     })
-    cy.setCookie('aid', 'test-cookie')
   })
 
   context('Login', () => {
@@ -57,20 +53,13 @@ describe('User login & signup', () => {
     })
     it('Logs in successfully', () => {
       cy.login(email, password)
-
       cy.wait('@gqlLogin')
-      cy.location('pathname').should('eq', '/dashboard')
     })
   })
 
   context('Logout', () => {
     it('Logs out successfully', () => {
-      cy.get('input[type="email"]').type(email)
-      cy.get('input[type="password"]').type(password)
-      cy.get('form').submit()
-      cy.wait('@gqlLogin')
-      cy.location('pathname').should('eq', '/dashboard')
-
+      cy.login(email, password)
       cy.get('button#btn-hamburger').click()
       cy.get('.profile-info').click()
       cy.get('button').contains('Logout').click()

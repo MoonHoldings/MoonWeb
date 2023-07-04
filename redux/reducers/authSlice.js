@@ -11,6 +11,7 @@ const initialState = {
   accessToken: '',
   tokenHeader: {},
   isLoggedIn: false,
+  id: null,
 }
 
 export const loginUser = createAsyncThunk(
@@ -25,9 +26,12 @@ export const loginUser = createAsyncThunk(
         },
       })
       const user = res.data.login
-
       if (user) {
-        return { username: user.username, accessToken: user.accessToken }
+        return {
+          username: user.username,
+          accessToken: user.accessToken,
+          id: user.id,
+        }
       }
     } catch (error) {
       return error
@@ -78,12 +82,14 @@ const authSlice = createSlice({
       state.accessToken = ''
       state.tokenHeader = {}
       state.isLoggedIn = false
+      state.id = null
     },
     discordAuthenticationComplete(state, action) {
       state.modalLoading = false
       state.username = action.payload.username
       state.accessToken = action.payload?.accessToken ?? null
       state.isLoggedIn = action.payload?.accessToken && true
+      state.id = action.payload?.id && null
       state.tokenHeader = {
         headers: {
           'access-token': `Bearer ${action.payload?.accessToken}`,
@@ -101,6 +107,7 @@ const authSlice = createSlice({
         state.username = action.payload?.username ?? null
         state.accessToken = action.payload?.accessToken ?? null
         state.isLoggedIn = action.payload?.accessToken && true
+        state.id = action.payload?.id ?? null
         state.tokenHeader = {
           headers: {
             'access-token': `Bearer ${action.payload?.accessToken}`,
