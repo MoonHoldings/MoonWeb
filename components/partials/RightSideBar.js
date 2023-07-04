@@ -108,7 +108,11 @@ const RightSideBar = () => {
     if (publicKey && !disconnecting && shouldCallAddWallet) {
       addConnectedWallet()
     }
-
+    dispatch(
+        isComplete: false,
+        message: '',
+      })
+    )
     dispatch(changeExchangeModalOpen(false))
   }, [publicKey, addConnectedWallet, disconnecting, router])
 
@@ -229,7 +233,7 @@ const RightSideBar = () => {
     dispatch(
       completeExchangeInfo({
         isComplete: false,
-        message: 'Done! You have successfully added your Wallet.',
+        message: '',
       })
     )
   }
@@ -1068,7 +1072,7 @@ const RightSideBar = () => {
     <>
       <div className="absolute right-24 top-24 z-[52]">
         <CopyClipboardNotification
-          show={show || isComplete}
+          show={show || (isComplete ?? false)}
           message={completeMessage}
           hideClip={hideClip}
         />
