@@ -24,6 +24,7 @@ const initialState = {
   loanDetails: null,
   revokeLoan: null,
   repayLoan: null,
+  extendLoan: null,
   orderBook: null,
   activeTab: 'offers',
 }
@@ -61,6 +62,9 @@ const sharkifyLendSlice = createSlice({
     setRepayLoan(state, action) {
       state.repayLoan = action.payload
     },
+    setExtendLoan(state, action) {
+      state.extendLoan = action.payload
+    },
     setOrderBook(state, action) {
       state.orderBook = action.payload
     },
@@ -88,6 +92,7 @@ export const {
   setLoanDetails,
   setRevokeLoan,
   setRepayLoan,
+  setExtendLoan,
   setOrderBook,
   setActiveTab,
   setSortOption,

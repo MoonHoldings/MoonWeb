@@ -124,6 +124,7 @@ export const MY_LOANS = gql`
         totalOwedLamports
         nftCollateralMint
         orderBook {
+          id
           nftList {
             collectionImage
             collectionName
@@ -134,6 +135,7 @@ export const MY_LOANS = gql`
           apyAfterFee
           duration
           feePermillicentage
+          pubKey
         }
         state
         start
