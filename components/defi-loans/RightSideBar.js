@@ -9,6 +9,7 @@ import {
   changeLendRightSidebarOpen,
   changeRevokeOfferModalOpen,
   changeRepayModalOpen,
+  changeExtendModalOpen,
 } from 'redux/reducers/utilSlice'
 import mergeClasses from 'utils/mergeClasses'
 import { MY_HISTORICAL_OFFERS, MY_LOANS, MY_OFFERS } from 'utils/queries'
@@ -18,6 +19,7 @@ import {
   setRevokeLoan,
   setRepayLoan,
   setActiveTab,
+  setExtendLoan,
 } from 'redux/reducers/sharkifyLendSlice'
 import calculateLendInterest from 'utils/calculateLendInterest'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
@@ -487,19 +489,34 @@ const RightSideBar = () => {
                 </div>
               </div>
             </div>
-            <button
-              className="absolute left-0 top-0 h-full w-full rounded-lg border border-red-500 bg-red-600 bg-opacity-80 opacity-0 transition duration-200 ease-in-out hover:opacity-100"
-              onClick={() => {
-                dispatch(setRepayLoan(loan))
-                dispatch(changeRepayModalOpen(true))
-              }}
-            >
-              <div className="flex h-full items-center justify-center">
-                <span className="text-[1.8rem] font-medium text-white">
-                  Repay Loan
-                </span>
-              </div>
-            </button>
+            <div className="absolute flex h-full w-full flex-row justify-between opacity-0 transition duration-200 ease-in-out hover:opacity-100">
+              <button
+                className=" left-0 top-0 h-full w-[48%] rounded-lg bg-[#A30000D9] bg-opacity-90"
+                onClick={() => {
+                  dispatch(setRepayLoan(loan))
+                  dispatch(changeRepayModalOpen(true))
+                }}
+              >
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-[1.8rem] font-medium text-white">
+                    Repay Loan
+                  </span>
+                </div>
+              </button>
+              <button
+                className=" right-0 top-0 h-full w-[48%] rounded-lg bg-[#784900D9] bg-opacity-90"
+                onClick={() => {
+                  dispatch(setExtendLoan(loan))
+                  dispatch(changeExtendModalOpen(true))
+                }}
+              >
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-[1.8rem] font-medium text-white">
+                    Extend Loan
+                  </span>
+                </div>
+              </button>
+            </div>
           </div>
         ))}
       </div>

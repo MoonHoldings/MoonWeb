@@ -124,6 +124,7 @@ export const MY_LOANS = gql`
         totalOwedLamports
         nftCollateralMint
         orderBook {
+          id
           nftList {
             collectionImage
             collectionName
@@ -134,6 +135,7 @@ export const MY_LOANS = gql`
           apyAfterFee
           duration
           feePermillicentage
+          pubKey
         }
         state
         start
@@ -215,6 +217,23 @@ export const GET_BEST_OFFER_FOR_BORROW = gql`
         duration
         principalLamports
         pubKey
+      }
+    }
+  }
+`
+
+export const GET_BEST_OFFER_FOR_EXTEND = gql`
+  query GetBestOfferForBorrow($args: GetLoansArgs) {
+    getLoans(args: $args) {
+      data {
+        duration
+        principalLamports
+        pubKey
+        orderBook {
+          id
+          apy
+        }
+        start
       }
     }
   }
