@@ -89,8 +89,8 @@ export const REMOVE_USER_WALLET = gql`
 `
 
 export const REMOVE_ALL_USER_WALLETS = gql`
-  mutation Mutation {
-    removeAllUserWallets
+  mutation RemoveAllUserWallets($isExchange: Boolean!) {
+    removeAllUserWallets(isExchange: $isExchange)
   }
 `
 

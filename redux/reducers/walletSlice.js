@@ -18,10 +18,8 @@ const walletSlice = createSlice({
   initialState,
   reducers: {
     completeExchangeInfo(state, action) {
-      console.log(action)
       state.isComplete = action.payload.isComplete
       state.completeMessage = action.payload.message
-      console.log(state.completeMessage)
     },
   },
   extraReducers(builder) {
