@@ -16,6 +16,7 @@ import BorrowModal from 'components/modals/BorrowModal'
 import RevokeOfferModal from 'components/modals/RevokeOfferModal'
 import LoanDetailsModal from 'components/modals/LoanDetailsModal'
 import RepayModal from 'components/modals/RepayModal'
+import ExtendModal from 'components/modals/ExtendModal'
 import CoinModal from 'components/modals/CoinModal'
 import NftModal from 'components/modals/NftModal'
 import ExchangeModal from 'components/modals/ExchangeModal'
@@ -85,6 +86,7 @@ const SidebarsLayout = ({ children }) => {
         <RevokeOfferModal />
         <LoanDetailsModal />
         <RepayModal />
+        <ExtendModal />
         <AnimatePresence>
           <CoinModal />
           {walletsModalOpen && <WalletsModal />}
