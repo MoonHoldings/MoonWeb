@@ -44,7 +44,7 @@ const ExtendModal = () => {
   const [borrowLoan] = useMutation(BORROW_LOAN)
 
   useEffect(() => {
-    if (extendLoan && !loading && extendModalOpen) {
+    if (extendLoan && extendModalOpen) {
       getBestOffer({
         variables: {
           args: {
@@ -71,14 +71,7 @@ const ExtendModal = () => {
     } else {
       startPolling()
     }
-  }, [
-    extendLoan,
-    getBestOffer,
-    loading,
-    extendModalOpen,
-    stopPolling,
-    startPolling,
-  ])
+  }, [extendLoan, extendModalOpen])
 
   const currentLoan = getLoanInfo(extendLoan)
   const newLoan = getLoanInfo(bestOffer)
@@ -161,9 +154,7 @@ const ExtendModal = () => {
           className="flex items-center justify-center rounded rounded-xl bg-[#6B3A00] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-white"
         >
           <span>
-            {isSuccess
-              ? 'Close'
-              : `Extend by ${newLoan?.remainingTime / 86400}d`}
+            {isSuccess ? 'Close' : `Extend by ${newLoan?.remainingTime}`}
           </span>
           {isSubmitting && (
             <Spinner className="ml-3 h-7 w-7 animate-spin fill-[#6B3A00] text-white" />
@@ -426,7 +417,7 @@ const ExtendModal = () => {
               </div>
               <div className="flex  w-[47%]">
                 <p className="text-[1.6rem]">
-                  {newLoan?.principal.toPrecision(2)}
+                  {loading ? <Spinner /> : newLoan?.principal.toPrecision(2)}
                 </p>
               </div>
             </div>
@@ -448,7 +439,7 @@ const ExtendModal = () => {
               </div>
               <div className="flex  w-[47%]">
                 <p className="text-[1.6rem]">
-                  {newLoan?.interest.toPrecision(2)}
+                  {loading ? <Spinner /> : newLoan?.interest.toPrecision(2)}
                 </p>
               </div>
             </div>
@@ -469,7 +460,9 @@ const ExtendModal = () => {
                 </p>
               </div>
               <div className="flex  w-[47%]">
-                <p className="text-[1.6rem]">{newLoan?.remainingTime}</p>
+                <p className="text-[1.6rem]">
+                  {loading ? <Spinner /> : newLoan?.remainingTime}
+                </p>
               </div>
             </div>
 
@@ -478,10 +471,12 @@ const ExtendModal = () => {
             <div className="flex w-full justify-center">
               {renderExtendButton()}
             </div>
-            <div className="mt-6 flex w-full justify-center text-[1.35rem]">
-              Amount owned after extending:{' '}
-              {(newLoan.principal + newLoan.interest).toPrecision(3)}
-            </div>
+            {!loading && (
+              <div className="mt-6 flex w-full justify-center text-[1.35rem]">
+                Amount owned after extending:{' '}
+                {(newLoan.principal + newLoan.interest).toPrecision(3)}
+              </div>
+            )}
             {txLink && (
               <div className="flex w-full justify-center">
                 <Link
