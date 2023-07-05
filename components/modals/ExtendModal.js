@@ -143,7 +143,7 @@ const ExtendModal = () => {
   }
 
   const renderExtendButton = () => {
-    const disabled = isSubmitting
+    const disabled = isSubmitting || loading
 
     return (
       <div>
@@ -153,11 +153,13 @@ const ExtendModal = () => {
           disabled={disabled}
           className="flex items-center justify-center rounded rounded-xl bg-[#6B3A00] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-white"
         >
-          <span>
-            {isSuccess ? 'Close' : `Extend by ${newLoan?.remainingTime}`}
-          </span>
-          {isSubmitting && (
-            <Spinner className="ml-3 h-7 w-7 animate-spin fill-[#6B3A00] text-white" />
+          {!disabled && (
+            <span>
+              {isSuccess ? 'Close' : `Extend by ${newLoan?.remainingTime}`}
+            </span>
+          )}
+          {disabled && (
+            <Spinner className="h-7 w-7 animate-spin fill-[#6B3A00] text-white" />
           )}
         </button>
       </div>
@@ -417,7 +419,11 @@ const ExtendModal = () => {
               </div>
               <div className="flex  w-[47%]">
                 <p className="text-[1.6rem]">
-                  {loading ? <Spinner /> : newLoan?.principal.toPrecision(2)}
+                  {loading ? (
+                    <Spinner className="h-7 w-7 animate-spin fill-[#6B3A00] text-white" />
+                  ) : (
+                    newLoan?.principal.toPrecision(2)
+                  )}
                 </p>
               </div>
             </div>
@@ -439,7 +445,11 @@ const ExtendModal = () => {
               </div>
               <div className="flex  w-[47%]">
                 <p className="text-[1.6rem]">
-                  {loading ? <Spinner /> : newLoan?.interest.toPrecision(2)}
+                  {loading ? (
+                    <Spinner className="h-7 w-7 animate-spin fill-[#6B3A00] text-white" />
+                  ) : (
+                    newLoan?.interest.toPrecision(2)
+                  )}
                 </p>
               </div>
             </div>
@@ -461,7 +471,11 @@ const ExtendModal = () => {
               </div>
               <div className="flex  w-[47%]">
                 <p className="text-[1.6rem]">
-                  {loading ? <Spinner /> : newLoan?.remainingTime}
+                  {loading ? (
+                    <Spinner className="h-7 w-7 animate-spin fill-[#6B3A00] text-white" />
+                  ) : (
+                    newLoan?.remainingTime
+                  )}
                 </p>
               </div>
             </div>
