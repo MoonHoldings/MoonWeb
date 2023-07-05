@@ -4,19 +4,20 @@ import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { changeExtendModalOpen } from 'redux/reducers/utilSlice'
 import Image from 'next/image'
-import { createSharkyClient } from '@sharkyfi/client'
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import mergeClasses from 'utils/mergeClasses'
-import toCurrencyFormat from 'utils/toCurrencyFormat'
 import createAnchorProvider from 'utils/createAnchorProvider'
 import { Tooltip, notification } from 'antd'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import { GET_BEST_OFFER_FOR_BORROW, MY_LOANS } from 'utils/queries'
+import { GET_BEST_OFFER_FOR_EXTEND } from 'utils/queries'
 import Link from 'next/link'
 import calculateBorrowInterest from 'utils/calculateBorrowInterest'
-import { BORROW_LOAN } from 'utils/mutations'
+import { BORROW_LOAN, DELETE_LOAN_BY_PUBKEY } from 'utils/mutations'
 import axios from 'axios'
 import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'application/constants/api'
+import Spinner from 'components/Spinner'
+import breakdownLoanDuration from 'utils/breakdownLoanDuration'
+import sharkyClient from 'utils/sharkyClient'
 
 const ExtendModal = () => {
   const dispatch = useDispatch()
@@ -24,7 +25,7 @@ const ExtendModal = () => {
   const wallet = useWallet()
 
   const { extendModalOpen } = useSelector((state) => state.util)
-  const { orderBook, extendLoan } = useSelector((state) => state.sharkifyLend)
+  const { extendLoan } = useSelector((state) => state.sharkifyLend)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [failMessage, setFailMessage] = useState(null)
@@ -32,45 +33,21 @@ const ExtendModal = () => {
   const [nftCollateral, setNftCollateral] = useState(null)
 
   const [getBestOffer, { data, loading, stopPolling, startPolling }] =
-    useLazyQuery(GET_BEST_OFFER_FOR_BORROW, {
+    useLazyQuery(GET_BEST_OFFER_FOR_EXTEND, {
       fetchPolicy: 'no-cache',
     })
-  const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
-    useLazyQuery(MY_LOANS)
+  // const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
+  //   useLazyQuery(MY_LOANS)
+
+  const orderBook = extendLoan?.orderBook
   const bestOffer = data?.getLoans?.data[0]
-  const bestOfferSolNum = bestOffer
-    ? bestOffer.principalLamports / LAMPORTS_PER_SOL
-    : 0
-  const bestOfferSol = toCurrencyFormat(
-    bestOffer ? bestOffer.principalLamports / LAMPORTS_PER_SOL : 0
-  )
-  const duration = bestOffer?.duration
-  let interest = calculateBorrowInterest(
-    bestOfferSolNum,
-    duration,
-    orderBook?.apy
-  )
-  interest = interest < 0.01 ? interest.toFixed(3) : interest.toFixed(2)
+
+  const [deleteLoanByPubKey] = useMutation(DELETE_LOAN_BY_PUBKEY)
   const [borrowLoan] = useMutation(BORROW_LOAN)
 
   const floorPriceSol = orderBook?.floorPriceSol
     ? orderBook?.floorPriceSol
     : null
-
-  useEffect(() => {
-    if (wallet.publicKey && !loadingMyLoans) {
-      getMyLoans({
-        variables: {
-          args: {
-            filter: {
-              borrowerWallet: wallet.publicKey.toBase58(),
-              type: 'taken',
-            },
-          },
-        },
-      })
-    }
-  }, [wallet.publicKey, loadingMyLoans, getMyLoans])
 
   useEffect(() => {
     if (extendLoan && !loading && extendModalOpen) {
@@ -83,7 +60,7 @@ const ExtendModal = () => {
             },
             filter: {
               type: 'offered',
-              orderBookId: extendLoan?.orderBook?.id,
+              orderBookId: parseInt(extendLoan?.orderBook?.id),
             },
             sort: {
               order: 'DESC',
@@ -110,10 +87,10 @@ const ExtendModal = () => {
   ])
 
   useEffect(() => {
-    if (extendLoan && !nftCollateral) {
+    if (extendModalOpen) {
       fetchNftCollateral(extendLoan)
     }
-  }, [extendLoan, nftCollateral])
+  }, [extendLoan, nftCollateral, extendModalOpen])
 
   const fetchNftCollateral = async (loan) => {
     const { data } = await axios.get(
@@ -129,6 +106,8 @@ const ExtendModal = () => {
     setFailMessage(null)
     setIsSuccess(false)
     setTxLink(null)
+    setNftCollateral(null)
+    setIsSubmitting(false)
   }
 
   const renderCloseButton = () => {
@@ -162,112 +141,53 @@ const ExtendModal = () => {
         ) : (
           <div className="flex w-full items-center justify-between">
             <h1 className="text-[18px]">You are extending:</h1>
-            <h1 className="text-[2.1rem] font-bold">{nftCollateral?.name}</h1>
+            {nftCollateral ? (
+              <h1 className="text-[2.1rem] font-bold">{nftCollateral?.name}</h1>
+            ) : (
+              <Spinner className="ml-2 mr-2 h-8 w-8 animate-spin fill-[#63EDD0]" />
+            )}
           </div>
         )}
       </motion.div>
     )
   }
 
-  const renderOrderBookInfo = () => {
+  const renderExtendButton = () => {
+    const disabled = isSubmitting
+
     return (
-      <>
-        <div className="mt-8 flex w-full justify-between text-xl">
-          <p>Interest</p>
-          <p>Duration</p>
-          <p>Floor</p>
-        </div>
-        <div className="mt-4 flex w-full justify-between text-3xl">
-          <p className="flex flex-1 justify-start text-[#11AF22]">{interest}</p>
-          <p className="flex flex-1 justify-center">{orderBook?.duration}d</p>
-          <div className="flex flex-1 items-center justify-end">
-            {floorPriceSol && (
-              <Image
-                className="mr-2 h-[2rem] w-[2rem]"
-                src="/images/svgs/sol.svg"
-                width={16}
-                height={16}
-                alt=""
+      <div>
+        <button
+          type="button"
+          onClick={extend}
+          disabled={disabled}
+          className="flex items-center justify-center rounded rounded-xl bg-[#6B3A00] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-white"
+        >
+          <span>Extend by 7d</span>
+          {isSubmitting && (
+            <svg
+              aria-hidden="true"
+              className="ml-2 mr-2 h-7 w-7 animate-spin fill-white"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
               />
-            )}
-            <p>{floorPriceSol ? toCurrencyFormat(floorPriceSol) : 'No Data'}</p>
-          </div>
-        </div>
-      </>
-    )
-  }
-
-  const ownedNftsCount = orderBook?.ownedNfts?.filter(
-    (ownedNft) =>
-      myLoans?.getLoans?.data?.find(
-        (myLoan) => myLoan.nftCollateralMint === ownedNft.mint
-      ) === undefined
-  ).length
-
-  const renderTotal = () => {
-    return (
-      <div className="mt-4 flex justify-between">
-        <p className="text-2xl">Total</p>
-        <div className="flex items-center">
-          <Image
-            className="h-[1.6rem] w-[1.6rem]"
-            src="/images/svgs/sol.svg"
-            width={16}
-            height={16}
-            alt=""
-          />
-          <p className="ml-2 text-2xl">{bestOfferSol}</p>
-        </div>
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+          )}
+        </button>
       </div>
     )
   }
 
-  const renderBorrowButton = () => {
-    const disabled = isSubmitting
-
-    return (
-      <Tooltip
-        color="#1F2126"
-        title={
-          <span className="text-[1.35rem]">Select an NFT as collateral</span>
-        }
-        trigger={disabled ? 'hover' : null}
-      >
-        <div>
-          <button
-            type="button"
-            onClick={null}
-            disabled={disabled}
-            className="flex items-center justify-center rounded rounded-xl bg-[#6B3A00] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-white"
-          >
-            <span>Extend by 7d</span>
-            {isSubmitting && (
-              <svg
-                aria-hidden="true"
-                className="ml-2 mr-2 h-7 w-7 animate-spin fill-white"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
-            )}
-          </button>
-        </div>
-      </Tooltip>
-    )
-  }
-
-  console.log(extendLoan)
-
-  const waitTransactionConfirmation = async (tx, loan) => {
+  const waitTransactionConfirmation = async (tx, oldPubKey, loan) => {
     const provider = createAnchorProvider(wallet)
 
     const confirmedTransaction = await provider.connection.confirmTransaction(
@@ -278,6 +198,13 @@ const ExtendModal = () => {
     if (confirmedTransaction.value.err) {
       setFailMessage(`Transaction failed: ${confirmedTransaction.value.err}`)
     } else {
+      // Call delete loan
+      try {
+        await deleteLoanByPubKey({ variables: { pubKey: oldPubKey } })
+      } catch (error) {
+        console.log(error)
+      }
+
       try {
         await borrowLoan({ variables: { borrowedLoan: loan } })
       } catch (error) {
@@ -312,96 +239,140 @@ const ExtendModal = () => {
     }
   }
 
-  //   const borrow = async () => {
-  //     setIsSubmitting(true)
-  //     setFailMessage(null)
-  //     setIsSuccess(false)
+  const extend = async () => {
+    setIsSubmitting(true)
+    setFailMessage(null)
+    setIsSuccess(false)
 
-  //     const provider = createAnchorProvider(wallet)
-  //     const sharkyClient = createSharkyClient(provider)
-  //     const { program } = sharkyClient
+    const { program } = sharkyClient
 
-  //     // Fetch best loan
-  //     const {
-  //       data: {
-  //         getLoans: { data },
-  //       },
-  //     } = await getBestOffer({
-  //       variables: {
-  //         args: {
-  //           pagination: {
-  //             limit: 1,
-  //             offset: 0,
-  //           },
-  //           filter: {
-  //             type: 'offered',
-  //             orderBookId: orderBook?.id,
-  //           },
-  //           sort: {
-  //             order: 'DESC',
-  //             type: 'amount',
-  //           },
-  //         },
-  //       },
-  //       pollInterval: 0,
-  //     })
+    // Fetch best loan
+    const { data } = await getBestOffer({
+      variables: {
+        args: {
+          pagination: {
+            limit: 1,
+            offset: 0,
+          },
+          filter: {
+            type: 'offered',
+            orderBookId: parseInt(orderBook?.id),
+          },
+          sort: {
+            order: 'DESC',
+            type: 'amount',
+          },
+        },
+      },
+      pollInterval: 0,
+    })
+    const loans = data?.getLoans?.data
 
-  //     if (data && data.length) {
-  //       const bestOffer = data[0]
-  //       const offeredOrTaken = await sharkyClient.fetchLoan({
-  //         program,
-  //         loanPubKey: new PublicKey(bestOffer.pubKey),
-  //       })
+    console.log('loans', loans, orderBook)
 
-  //       if (!offeredOrTaken) {
-  //         setFailMessage(`No loan found with pubkey ${bestOffer.pubKey}`)
-  //       }
-  //       if (!offeredOrTaken.offered) {
-  //         setFailMessage('Loan is already taken.')
-  //       }
+    if (loans && loans.length) {
+      const bestOffer = loans[0]
+      const offeredLoan = await sharkyClient.fetchLoan({
+        program,
+        loanPubKey: new PublicKey(bestOffer.pubKey),
+      })
 
-  //       const loan = offeredOrTaken.offered
-  //       const metadata =
-  //         await sharkyClient.program.provider.connection.getParsedAccountInfo(
-  //           new PublicKey(selectedNft?.mint),
-  //           'confirmed'
-  //         )
-  //       const { freezeAuthority } = metadata?.value?.data?.parsed?.info
-  //       const isFreezable = Boolean(freezeAuthority)
+      if (!offeredLoan) {
+        setFailMessage(`No loan found with pubkey ${bestOffer.pubKey}`)
+        return
+      }
+      if (!('offered' in offeredLoan)) {
+        setFailMessage('Loan is already taken.')
+        return
+      }
 
-  //       try {
-  //         const { takenLoan, sig } = await loan.take({
-  //           program,
-  //           nftMintPubKey: new PublicKey(selectedNft?.mint),
-  //           nftListIndex: selectedNft?.nftListIndex,
-  //           skipFreezingCollateral: !isFreezable,
-  //         })
-  //         const loanToBorrow = {
-  //           pubKey: takenLoan.pubKey.toBase58(),
-  //           nftCollateralMint:
-  //             takenLoan.data.loanState.taken?.taken.nftCollateralMint.toBase58(),
-  //           lenderNoteMint:
-  //             takenLoan.data.loanState.taken?.taken.lenderNoteMint.toBase58(),
-  //           borrowerNoteMint:
-  //             takenLoan.data.loanState.taken?.taken.borrowerNoteMint.toBase58(),
-  //           apy: takenLoan.data.loanState.taken?.taken.apy.fixed?.apy,
-  //           start:
-  //             takenLoan.data.loanState.taken?.taken.terms.time?.start?.toNumber(),
-  //           totalOwedLamports:
-  //             takenLoan.data.loanState.taken?.taken.terms.time?.totalOwedLamports?.toNumber(),
-  //         }
+      console.log('offeredLoan', offeredLoan)
 
-  //         // Check if the transaction was successful
-  //         await waitTransactionConfirmation(sig, loanToBorrow)
-  //       } catch (e) {
-  //         if (e.sig) {
-  //           setFailMessage(`Error taking loan (sig: ${e.sig})`)
-  //         }
-  //       }
-  //     }
+      const currentLoan = await sharkyClient.fetchLoan({
+        program,
+        loanPubKey: new PublicKey(extendLoan?.pubKey),
+      })
 
-  //     setIsSubmitting(false)
-  //   }
+      if (!currentLoan) {
+        setFailMessage(`No loan found with pubkey ${loan.pubKey}`)
+        return
+      }
+      if (!('taken' in currentLoan)) {
+        setFailMessage('Loan is not in taken state')
+        return
+      }
+
+      console.log('currentLoan', currentLoan)
+
+      const sharkyOffer = offeredLoan.offered
+      const sharkyLoan = currentLoan.taken
+
+      const { orderBook } = await sharkyClient.fetchOrderBook({
+        program,
+        orderBookPubKey: sharkyOffer.data.orderBook,
+      })
+
+      console.log('orderBook', orderBook)
+
+      if (orderBook) {
+        console.log('EXTENDINGG')
+        const { takenLoan, sig } = await sharkyLoan.extend({
+          program,
+          orderBook,
+          newLoan: sharkyOffer,
+        })
+
+        const loanToBorrow = {
+          pubKey: takenLoan.pubKey.toBase58(),
+          nftCollateralMint:
+            takenLoan.data.loanState.taken?.taken.nftCollateralMint.toBase58(),
+          lenderNoteMint:
+            takenLoan.data.loanState.taken?.taken.lenderNoteMint.toBase58(),
+          borrowerNoteMint:
+            takenLoan.data.loanState.taken?.taken.borrowerNoteMint.toBase58(),
+          apy: takenLoan.data.loanState.taken?.taken.apy.fixed?.apy,
+          start:
+            takenLoan.data.loanState.taken?.taken.terms.time?.start?.toNumber(),
+          totalOwedLamports:
+            takenLoan.data.loanState.taken?.taken.terms.time?.totalOwedLamports?.toNumber(),
+        }
+
+        // Check if the transaction was successful
+        await waitTransactionConfirmation(
+          sig,
+          sharkyLoan.pubKey.toBase58(),
+          loanToBorrow
+        )
+      }
+    }
+
+    setIsSubmitting(false)
+  }
+
+  const getLoanInfo = (loan) => {
+    let { days, hours, minutes } = breakdownLoanDuration(
+      loan?.start,
+      loan?.duration
+    )
+    const remainingTime = loan?.start
+      ? `${days > 0 && days + 'd'} ${hours > 0 && hours + 'h'} ${
+          minutes > 0 && minutes + 'm'
+        }`
+      : loan?.duration / 86400 + 'd'
+
+    return {
+      principal: loan?.principalLamports / LAMPORTS_PER_SOL,
+      interest: calculateBorrowInterest(
+        loan?.principalLamports / LAMPORTS_PER_SOL,
+        loan?.duration,
+        loan?.orderBook?.apy
+      ),
+      remainingTime,
+    }
+  }
+
+  const currentLoan = getLoanInfo(extendLoan)
+  const newLoan = getLoanInfo(bestOffer)
 
   return (
     extendModalOpen && (
@@ -469,10 +440,14 @@ const ExtendModal = () => {
 
             <div className="flex w-full justify-between">
               <div className="flex w-[47%] justify-end">
-                <p className="text-[1.6rem] text-[#666666]">0.3</p>
+                <p className="text-[1.6rem] text-[#666666]">
+                  {currentLoan?.principal.toPrecision(2)}
+                </p>
               </div>
               <div className="flex  w-[47%]">
-                <p className="text-[1.6rem]">0.21</p>
+                <p className="text-[1.6rem]">
+                  {newLoan?.principal.toPrecision(2)}
+                </p>
               </div>
             </div>
 
@@ -487,10 +462,14 @@ const ExtendModal = () => {
 
             <div className="flex w-full justify-between">
               <div className="flex w-[47%] justify-end">
-                <p className="text-[1.6rem] text-[#666666]">0.3</p>
+                <p className="text-[1.6rem] text-[#666666]">
+                  {currentLoan?.interest.toPrecision(2)}
+                </p>
               </div>
               <div className="flex  w-[47%]">
-                <p className="text-[1.6rem]">0.21</p>
+                <p className="text-[1.6rem]">
+                  {newLoan?.interest.toPrecision(2)}
+                </p>
               </div>
             </div>
 
@@ -505,20 +484,23 @@ const ExtendModal = () => {
 
             <div className="flex w-full justify-between">
               <div className="flex w-[47%] justify-end">
-                <p className="text-[1.6rem] text-[#666666]">1d 1h 27m</p>
+                <p className="text-[1.6rem] text-[#666666]">
+                  {currentLoan?.remainingTime}
+                </p>
               </div>
               <div className="flex  w-[47%]">
-                <p className="text-[1.6rem]">7d</p>
+                <p className="text-[1.6rem]">{newLoan?.remainingTime}</p>
               </div>
             </div>
 
             <div className="my-8 border border-white opacity-10" />
 
-            <div className="mt-4 flex w-full justify-center">
-              {renderBorrowButton()}
+            <div className="flex w-full justify-center">
+              {renderExtendButton()}
             </div>
             <div className="mt-6 flex w-full justify-center text-[1.35rem]">
-              Amount owned after extending: 0.215
+              Amount owned after extending:{' '}
+              {(newLoan.principal + newLoan.interest).toPrecision(3)}
             </div>
             {txLink && (
               <div className="flex w-full justify-center">

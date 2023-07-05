@@ -222,6 +222,23 @@ export const GET_BEST_OFFER_FOR_BORROW = gql`
   }
 `
 
+export const GET_BEST_OFFER_FOR_EXTEND = gql`
+  query GetBestOfferForBorrow($args: GetLoansArgs) {
+    getLoans(args: $args) {
+      data {
+        duration
+        principalLamports
+        pubKey
+        orderBook {
+          id
+          apy
+        }
+        start
+      }
+    }
+  }
+`
+
 export const GET_TOTAL_LENDS = gql`
   query GetTotalLendsByAddress($address: String!) {
     getTotalLendsByAddress(address: $address) {
