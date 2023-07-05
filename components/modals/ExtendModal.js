@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import mergeClasses from 'utils/mergeClasses'
 import createAnchorProvider from 'utils/createAnchorProvider'
-import { Tooltip, notification } from 'antd'
+import { notification } from 'antd'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { GET_BEST_OFFER_FOR_EXTEND } from 'utils/queries'
 import Link from 'next/link'
@@ -17,7 +17,7 @@ import axios from 'axios'
 import { AXIOS_CONFIG_SHYFT_KEY, SHYFT_URL } from 'application/constants/api'
 import Spinner from 'components/Spinner'
 import breakdownLoanDuration from 'utils/breakdownLoanDuration'
-import sharkyClient from 'utils/sharkyClient'
+import { createSharkyClient } from '@sharkyfi/client'
 
 const ExtendModal = () => {
   const dispatch = useDispatch()
@@ -36,18 +36,12 @@ const ExtendModal = () => {
     useLazyQuery(GET_BEST_OFFER_FOR_EXTEND, {
       fetchPolicy: 'no-cache',
     })
-  // const [getMyLoans, { data: myLoans, loading: loadingMyLoans }] =
-  //   useLazyQuery(MY_LOANS)
 
   const orderBook = extendLoan?.orderBook
   const bestOffer = data?.getLoans?.data[0]
 
   const [deleteLoanByPubKey] = useMutation(DELETE_LOAN_BY_PUBKEY)
   const [borrowLoan] = useMutation(BORROW_LOAN)
-
-  const floorPriceSol = orderBook?.floorPriceSol
-    ? orderBook?.floorPriceSol
-    : null
 
   useEffect(() => {
     if (extendLoan && !loading && extendModalOpen) {
@@ -85,6 +79,9 @@ const ExtendModal = () => {
     stopPolling,
     startPolling,
   ])
+
+  const currentLoan = getLoanInfo(extendLoan)
+  const newLoan = getLoanInfo(bestOffer)
 
   useEffect(() => {
     if (extendModalOpen) {
@@ -144,7 +141,7 @@ const ExtendModal = () => {
             {nftCollateral ? (
               <h1 className="text-[2.1rem] font-bold">{nftCollateral?.name}</h1>
             ) : (
-              <Spinner className="ml-2 mr-2 h-8 w-8 animate-spin fill-[#63EDD0]" />
+              <Spinner className="ml-2 mr-2 h-8 w-8 animate-spin fill-teal-400" />
             )}
           </div>
         )}
@@ -159,28 +156,17 @@ const ExtendModal = () => {
       <div>
         <button
           type="button"
-          onClick={extend}
+          onClick={isSuccess ? onClose : extend}
           disabled={disabled}
           className="flex items-center justify-center rounded rounded-xl bg-[#6B3A00] px-[2rem] py-[1.5rem] text-[1.25rem] font-bold text-white"
         >
-          <span>Extend by 7d</span>
+          <span>
+            {isSuccess
+              ? 'Close'
+              : `Extend by ${newLoan?.remainingTime / 86400}d`}
+          </span>
           {isSubmitting && (
-            <svg
-              aria-hidden="true"
-              className="ml-2 mr-2 h-7 w-7 animate-spin fill-white"
-              viewBox="0 0 100 101"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                fill="currentColor"
-              />
-              <path
-                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                fill="currentFill"
-              />
-            </svg>
+            <Spinner className="ml-3 h-7 w-7 animate-spin fill-[#6B3A00] text-white" />
           )}
         </button>
       </div>
@@ -240,116 +226,113 @@ const ExtendModal = () => {
   }
 
   const extend = async () => {
-    setIsSubmitting(true)
-    setFailMessage(null)
-    setIsSuccess(false)
+    try {
+      setIsSubmitting(true)
+      setFailMessage(null)
+      setIsSuccess(false)
 
-    const { program } = sharkyClient
+      const provider = createAnchorProvider(wallet)
+      const sharkyClient = createSharkyClient(provider)
+      const { program } = sharkyClient
 
-    // Fetch best loan
-    const { data } = await getBestOffer({
-      variables: {
-        args: {
-          pagination: {
-            limit: 1,
-            offset: 0,
-          },
-          filter: {
-            type: 'offered',
-            orderBookId: parseInt(orderBook?.id),
-          },
-          sort: {
-            order: 'DESC',
-            type: 'amount',
+      // Fetch best loan
+      const { data } = await getBestOffer({
+        variables: {
+          args: {
+            pagination: {
+              limit: 1,
+              offset: 0,
+            },
+            filter: {
+              type: 'offered',
+              orderBookId: parseInt(orderBook?.id),
+            },
+            sort: {
+              order: 'DESC',
+              type: 'amount',
+            },
           },
         },
-      },
-      pollInterval: 0,
-    })
-    const loans = data?.getLoans?.data
-
-    console.log('loans', loans, orderBook)
-
-    if (loans && loans.length) {
-      const bestOffer = loans[0]
-      const offeredLoan = await sharkyClient.fetchLoan({
-        program,
-        loanPubKey: new PublicKey(bestOffer.pubKey),
+        pollInterval: 0,
       })
+      const bestOffer = data?.getLoans?.data[0]
 
-      if (!offeredLoan) {
-        setFailMessage(`No loan found with pubkey ${bestOffer.pubKey}`)
-        return
-      }
-      if (!('offered' in offeredLoan)) {
-        setFailMessage('Loan is already taken.')
-        return
-      }
-
-      console.log('offeredLoan', offeredLoan)
-
-      const currentLoan = await sharkyClient.fetchLoan({
-        program,
-        loanPubKey: new PublicKey(extendLoan?.pubKey),
-      })
-
-      if (!currentLoan) {
-        setFailMessage(`No loan found with pubkey ${loan.pubKey}`)
-        return
-      }
-      if (!('taken' in currentLoan)) {
-        setFailMessage('Loan is not in taken state')
-        return
-      }
-
-      console.log('currentLoan', currentLoan)
-
-      const sharkyOffer = offeredLoan.offered
-      const sharkyLoan = currentLoan.taken
-
-      const { orderBook } = await sharkyClient.fetchOrderBook({
-        program,
-        orderBookPubKey: sharkyOffer.data.orderBook,
-      })
-
-      console.log('orderBook', orderBook)
-
-      if (orderBook) {
-        console.log('EXTENDINGG')
-        const { takenLoan, sig } = await sharkyLoan.extend({
+      if (bestOffer) {
+        const offeredLoan = await sharkyClient.fetchLoan({
           program,
-          orderBook,
-          newLoan: sharkyOffer,
+          loanPubKey: new PublicKey(bestOffer.pubKey),
         })
 
-        const loanToBorrow = {
-          pubKey: takenLoan.pubKey.toBase58(),
-          nftCollateralMint:
-            takenLoan.data.loanState.taken?.taken.nftCollateralMint.toBase58(),
-          lenderNoteMint:
-            takenLoan.data.loanState.taken?.taken.lenderNoteMint.toBase58(),
-          borrowerNoteMint:
-            takenLoan.data.loanState.taken?.taken.borrowerNoteMint.toBase58(),
-          apy: takenLoan.data.loanState.taken?.taken.apy.fixed?.apy,
-          start:
-            takenLoan.data.loanState.taken?.taken.terms.time?.start?.toNumber(),
-          totalOwedLamports:
-            takenLoan.data.loanState.taken?.taken.terms.time?.totalOwedLamports?.toNumber(),
+        if (!offeredLoan) {
+          setFailMessage(`No loan found with pubkey ${bestOffer.pubKey}`)
+          return
+        }
+        if (!('offered' in offeredLoan)) {
+          setFailMessage('Loan is already taken.')
+          return
         }
 
-        // Check if the transaction was successful
-        await waitTransactionConfirmation(
-          sig,
-          sharkyLoan.pubKey.toBase58(),
-          loanToBorrow
-        )
-      }
-    }
+        const currentLoan = await sharkyClient.fetchLoan({
+          program,
+          loanPubKey: new PublicKey(extendLoan?.pubKey),
+        })
 
-    setIsSubmitting(false)
+        if (!currentLoan) {
+          setFailMessage(`No loan found with pubkey ${loan.pubKey}`)
+          return
+        }
+        if (!('taken' in currentLoan)) {
+          setFailMessage('Loan is not in taken state')
+          return
+        }
+
+        const sharkyOffer = offeredLoan.offered
+        const sharkyLoan = currentLoan.taken
+
+        const { orderBook } = await sharkyClient.fetchOrderBook({
+          program,
+          orderBookPubKey: sharkyOffer.data.orderBook,
+        })
+
+        if (orderBook) {
+          const { takenLoan, sig } = await sharkyLoan.extend({
+            program,
+            orderBook,
+            newLoan: sharkyOffer,
+          })
+
+          const loanToBorrow = {
+            pubKey: takenLoan.pubKey.toBase58(),
+            nftCollateralMint:
+              takenLoan.data.loanState.taken?.taken.nftCollateralMint.toBase58(),
+            lenderNoteMint:
+              takenLoan.data.loanState.taken?.taken.lenderNoteMint.toBase58(),
+            borrowerNoteMint:
+              takenLoan.data.loanState.taken?.taken.borrowerNoteMint.toBase58(),
+            apy: takenLoan.data.loanState.taken?.taken.apy.fixed?.apy,
+            start:
+              takenLoan.data.loanState.taken?.taken.terms.time?.start?.toNumber(),
+            totalOwedLamports:
+              takenLoan.data.loanState.taken?.taken.terms.time?.totalOwedLamports?.toNumber(),
+          }
+
+          // Check if the transaction was successful
+          await waitTransactionConfirmation(
+            sig,
+            sharkyLoan.pubKey.toBase58(),
+            loanToBorrow
+          )
+        }
+      }
+
+      setIsSubmitting(false)
+    } catch (e) {
+      console.log(e)
+      setIsSubmitting(false)
+    }
   }
 
-  const getLoanInfo = (loan) => {
+  function getLoanInfo(loan) {
     let { days, hours, minutes } = breakdownLoanDuration(
       loan?.start,
       loan?.duration
@@ -370,9 +353,6 @@ const ExtendModal = () => {
       remainingTime,
     }
   }
-
-  const currentLoan = getLoanInfo(extendLoan)
-  const newLoan = getLoanInfo(bestOffer)
 
   return (
     extendModalOpen && (
