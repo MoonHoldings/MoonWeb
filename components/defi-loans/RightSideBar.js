@@ -119,6 +119,9 @@ const RightSideBar = () => {
     return text.substring(0, 5)
   }
 
+  const formatCollectionName = (name) =>
+    `${name?.substring(0, 28)}${name?.length > 28 ? '...' : ''}`
+
   const renderConnectWallet = () => {
     return (
       <button
@@ -212,7 +215,7 @@ const RightSideBar = () => {
       <div className="flex w-full flex-col">
         {offers?.map((offer, index) => (
           <div className="relative mb-6 flex items-center px-3" key={index}>
-            <div className="flex flex-col items-center justify-center xl:w-[8rem]">
+            <div className="flex flex-col items-center justify-center">
               <div className="flex h-[5rem] w-[5rem] items-center justify-center rounded-full bg-white">
                 {offer?.orderBook?.nftList?.collectionImage && (
                   <Image
@@ -228,8 +231,10 @@ const RightSideBar = () => {
               </div>
             </div>
             <div className="ml-5 flex flex-1 flex-col">
-              <div className="text-[1.5rem]">
-                {offer?.orderBook?.nftList?.collectionName}
+              <div className="text-[1.25rem]">
+                {formatCollectionName(
+                  offer?.orderBook?.nftList?.collectionName
+                )}
               </div>
               <div className="mt-2 flex text-[1.35rem]">
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
@@ -301,16 +306,16 @@ const RightSideBar = () => {
                   )}
                 </div>
                 <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
-                  {offer.remainingDays} Days Remaining
+                  {offer.remainingDays} D left
                 </div>
               </div>
               <div className="ml-5 flex flex-1 flex-col">
                 <ProgressIndicator
-                  className="mb-2"
+                  className="mb-2 bg-[#333333]"
                   percentValue={offer.daysPercentProgress}
                 />
-                <div className="mb-2 text-[1.5rem]">
-                  {offer?.collectionName}
+                <div className="mb-2 text-[1.25rem]">
+                  {formatCollectionName(offer?.collectionName)}
                 </div>
                 <div className="flex text-[1.35rem]">
                   <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
@@ -365,7 +370,9 @@ const RightSideBar = () => {
                 </div>
               </div>
               <div className="ml-5 flex flex-1 flex-col">
-                <div className="text-[1.5rem]">{offer?.collectionName}</div>
+                <div className="text-[1.25rem]">
+                  {formatCollectionName(offer?.collectionName)}
+                </div>
                 <div className="mt-2 flex text-[1.35rem]">
                   <div className="flex flex-1 flex-col items-center border-r border-white/[0.3]">
                     <p
@@ -441,16 +448,16 @@ const RightSideBar = () => {
                 )}
               </div>
               <div className="mt-2 text-center text-[1.15rem] text-[#62EAD2]">
-                {getRemainingDays(loan)} Days Remaining
+                {getRemainingDays(loan)} D left
               </div>
             </div>
             <div className="ml-6 flex flex-1 flex-col">
               <ProgressIndicator
-                className="mb-2"
+                className="mb-2 bg-[#333333]"
                 percentValue={getDaysPercentProgress(loan)}
               />
-              <div className="text-[1.5rem]">
-                {loan?.orderBook?.nftList?.collectionName}
+              <div className="text-[1.25rem]">
+                {formatCollectionName(loan?.orderBook?.nftList?.collectionName)}
               </div>
               <div className="mt-2 flex text-[1.25rem]">
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
@@ -540,7 +547,9 @@ const RightSideBar = () => {
               )}
             </div>
             <div className="ml-6 flex flex-1 flex-col">
-              <div className="text-[1.5rem]">{loan?.collectionName}</div>
+              <div className="text-[1.25rem]">
+                {formatCollectionName(loan?.collectionName)}
+              </div>
               <div className="mt-2 flex text-[1.25rem]">
                 <div className="flex flex-1 flex-col items-center border-r border-white/[0.3] px-3">
                   <p
