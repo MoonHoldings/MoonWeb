@@ -18,6 +18,8 @@ const Redirect = (props) => {
 
         fetchData()
       }
+
+      console.log(props)
       if (props.errorMessage) {
         window.opener?.postMessage(
           { errorMessage: decodeURIComponent(props.errorMessage) },

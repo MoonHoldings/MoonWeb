@@ -142,10 +142,9 @@ const ExchangeModal = (props) => {
     const code_verifier = generators.codeVerifier()
     const code_challenge = generators.codeChallenge(code_verifier)
     const url = coinbaseClient.authorizationUrl({
-      scope: 'wallet:accounts:read',
-
-      code_challenge,
-      code_challenge_method: 'S256',
+      scope: 'balances:read',
+      // code_challenge,
+      // code_challenge_method: 'S256',
       state: encrypt('HELLOMOON ' + id),
     })
     const windowFeatures =
