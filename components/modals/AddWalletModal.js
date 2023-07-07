@@ -21,6 +21,7 @@ const AddWalletModal = () => {
 
   const [walletAddress, setWalletAddress] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [infoMessage, setInfoMessage] = useState('')
   const [addUserWallet, { loading: addingUserWallet }] = useMutation(
     ADD_USER_WALLET,
     { context: tokenHeader }
@@ -41,14 +42,39 @@ const AddWalletModal = () => {
     }
   }
 
+  const isValidBitcoinAddress = (address) => {
+    try {
+      let regex = new RegExp(/^(bc1|[13])[a-km-zA-HJ-NP-Z1-9]{25,34}$/)
+
+      if (address == null) {
+        return false
+      }
+
+      return regex.test(address)
+    } catch (error) {
+      return false
+    }
+  }
+
   const addWallet = async () => {
-    if (!isValidSolanaAddress(walletAddress)) {
+    setErrorMessage('')
+    setInfoMessage('')
+
+    let walletType = null
+
+    if (isValidSolanaAddress(walletAddress)) {
+      setInfoMessage('Solana wallet detected')
+      walletType = 'solana'
+    } else if (isValidBitcoinAddress(walletAddress)) {
+      setInfoMessage('Bitcoin wallet detected')
+      walletType = 'bitcoin'
+    } else {
       setErrorMessage('Invalid wallet address')
       return
     }
-    console.log('HEY')
+
     const res = await addUserWallet({
-      variables: { verified: false, wallet: walletAddress },
+      variables: { verified: false, wallet: walletAddress, walletType },
     })
 
     if (!res?.data?.addUserWallet) {
@@ -80,7 +106,7 @@ const AddWalletModal = () => {
       <Overlay closeModal={closeModal} />
       <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] text-white drop-shadow-lg">
         <div className="top-line mb-[1rem] flex justify-between py-[1rem]">
-          <h1 className="text-[1.8rem] font-[700]">Add your Solana wallet</h1>
+          <h1 className="text-[1.8rem] font-[700]">Add your wallet</h1>
           <button onClick={closeModal}>
             <Image
               className="h-[2.2rem] w-[2.2rem]"
@@ -103,7 +129,7 @@ const AddWalletModal = () => {
           <input
             className="bg-transparent text-[1.4rem] placeholder:text-[#61DAE9] focus:outline-none"
             type="text"
-            placeholder="Wallet Address"
+            placeholder="Wallet Address (Supports BTC and SOL)"
             onChange={(e) => setWalletAddress(e.target.value)}
             onKeyUp={handleWalletAddressInput}
           />
@@ -131,8 +157,11 @@ const AddWalletModal = () => {
             <>{ADD_WALLET}</>
           )}
         </button>
-        {errorMessage.length > 0 && (
+        {errorMessage && (
           <p className="mt-2 text-[1.5rem] text-red-500">{errorMessage}</p>
+        )}
+        {infoMessage && (
+          <p className="mt-2 text-[1.5rem] text-green-500">{infoMessage}</p>
         )}
       </div>
     </motion.div>
