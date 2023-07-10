@@ -14,6 +14,8 @@ import { useMutation } from '@apollo/client'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
+import validSolanaWallet from 'utils/validSolanaWallet'
+import validBitcoinWallet from 'utils/validBitcoinWallet'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
@@ -21,6 +23,7 @@ const AddWalletModal = () => {
 
   const [walletAddress, setWalletAddress] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [infoMessage, setInfoMessage] = useState('')
   const [addUserWallet, { loading: addingUserWallet }] = useMutation(
     ADD_USER_WALLET,
     { context: tokenHeader }
@@ -30,28 +33,29 @@ const AddWalletModal = () => {
     dispatch(changeAddWalletModalOpen(false))
   }
 
-  const isValidSolanaAddress = (address) => {
-    try {
-      let pubkey = new PublicKey(address)
-      let isSolana = PublicKey.isOnCurve(pubkey.toBuffer())
-
-      return isSolana
-    } catch (error) {
-      return false
-    }
-  }
-
   const addWallet = async () => {
-    if (!isValidSolanaAddress(walletAddress)) {
+    setErrorMessage('')
+    setInfoMessage('')
+
+    let walletType = null
+
+    if (validSolanaWallet(walletAddress)) {
+      setInfoMessage('Solana wallet detected')
+      walletType = 'solana'
+    } else if (validBitcoinWallet(walletAddress)) {
+      setInfoMessage('Bitcoin wallet detected')
+      walletType = 'bitcoin'
+    } else {
       setErrorMessage('Invalid wallet address')
       return
     }
-    console.log('HEY')
+
     const res = await addUserWallet({
-      variables: { verified: false, wallet: walletAddress },
+      variables: { verified: false, wallet: walletAddress, walletType },
     })
 
     if (!res?.data?.addUserWallet) {
+      setInfoMessage('')
       setErrorMessage('Invalid wallet address')
       return
     }
@@ -80,7 +84,7 @@ const AddWalletModal = () => {
       <Overlay closeModal={closeModal} />
       <div className="main-modal w-[60.5rem] rounded-[2rem] bg-[#191C20] p-[2rem] text-white drop-shadow-lg">
         <div className="top-line mb-[1rem] flex justify-between py-[1rem]">
-          <h1 className="text-[1.8rem] font-[700]">Add your Solana wallet</h1>
+          <h1 className="text-[1.8rem] font-[700]">Add your wallet</h1>
           <button onClick={closeModal}>
             <Image
               className="h-[2.2rem] w-[2.2rem]"
@@ -103,7 +107,7 @@ const AddWalletModal = () => {
           <input
             className="bg-transparent text-[1.4rem] placeholder:text-[#61DAE9] focus:outline-none"
             type="text"
-            placeholder="Wallet Address"
+            placeholder="Wallet Address (Supports BTC and SOL)"
             onChange={(e) => setWalletAddress(e.target.value)}
             onKeyUp={handleWalletAddressInput}
           />
@@ -131,8 +135,11 @@ const AddWalletModal = () => {
             <>{ADD_WALLET}</>
           )}
         </button>
-        {errorMessage.length > 0 && (
+        {errorMessage && (
           <p className="mt-2 text-[1.5rem] text-red-500">{errorMessage}</p>
+        )}
+        {infoMessage && (
+          <p className="mt-2 text-[1.5rem] text-green-500">{infoMessage}</p>
         )}
       </div>
     </motion.div>
