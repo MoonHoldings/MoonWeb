@@ -15,6 +15,8 @@ const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
   }
 
   const formattedHolding = (holding) => {
+    if (crypto?.symbol === 'BTC') return formatNumber(holding)
+
     const length = holding
       .toString()
       .split('')
