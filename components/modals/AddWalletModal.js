@@ -14,6 +14,8 @@ import { useMutation } from '@apollo/client'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import { getUserWallets } from 'redux/reducers/walletSlice'
+import validSolanaWallet from 'utils/validSolanaWallet'
+import validBitcoinWallet from 'utils/validBitcoinWallet'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
@@ -31,41 +33,16 @@ const AddWalletModal = () => {
     dispatch(changeAddWalletModalOpen(false))
   }
 
-  const isValidSolanaAddress = (address) => {
-    try {
-      let pubkey = new PublicKey(address)
-      let isSolana = PublicKey.isOnCurve(pubkey.toBuffer())
-
-      return isSolana
-    } catch (error) {
-      return false
-    }
-  }
-
-  const isValidBitcoinAddress = (address) => {
-    try {
-      let regex = new RegExp(/^(bc1|[13])[a-km-zA-HJ-NP-Z1-9]{25,34}$/)
-
-      if (address == null) {
-        return false
-      }
-
-      return regex.test(address)
-    } catch (error) {
-      return false
-    }
-  }
-
   const addWallet = async () => {
     setErrorMessage('')
     setInfoMessage('')
 
     let walletType = null
 
-    if (isValidSolanaAddress(walletAddress)) {
+    if (validSolanaWallet(walletAddress)) {
       setInfoMessage('Solana wallet detected')
       walletType = 'solana'
-    } else if (isValidBitcoinAddress(walletAddress)) {
+    } else if (validBitcoinWallet(walletAddress)) {
       setInfoMessage('Bitcoin wallet detected')
       walletType = 'bitcoin'
     } else {
@@ -78,6 +55,7 @@ const AddWalletModal = () => {
     })
 
     if (!res?.data?.addUserWallet) {
+      setInfoMessage('')
       setErrorMessage('Invalid wallet address')
       return
     }
