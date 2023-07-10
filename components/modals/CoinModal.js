@@ -306,6 +306,7 @@ const CoinModal = () => {
       </div>
     )
   }
+
   const coinComponent = (index, coin) => {
     return (
       <div
@@ -339,7 +340,7 @@ const CoinModal = () => {
           </div>
         </div>
         <div className="w-1/3 overflow-hidden truncate pl-2">
-          <span>{coin.holdings.toLocaleString('en-US')}</span>
+          <span>{coin?.holdings?.toPrecision(2)}</span>
         </div>
         <div className="flex w-1/3 flex-row justify-between">
           <div className="w-60 overflow-hidden truncate">
