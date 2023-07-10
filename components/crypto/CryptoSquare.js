@@ -5,7 +5,7 @@ import toCurrencyFormat from 'utils/toCurrencyFormat'
 
 const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
   function formatNumber(value) {
-    const formattedValue = value.toFixed(2)
+    const formattedValue = value.toPrecision(2)
 
     if (formattedValue.includes('.') && !formattedValue.endsWith('0')) {
       return formattedValue
@@ -13,6 +13,7 @@ const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
 
     return parseFloat(formattedValue).toString()
   }
+
   const formattedHolding = (holding) => {
     const length = holding
       .toString()
@@ -47,6 +48,7 @@ const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
       return 7.5 + 'rem'
     }
   }
+
   return (
     <button
       disabled={loading}
