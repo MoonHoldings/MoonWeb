@@ -1,27 +1,31 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { changeExchangeModalOpen } from 'redux/reducers/utilSlice'
 
-import { Spin } from 'antd'
-import { ADD_EXCHANGE_COINS } from 'utils/mutations'
-import { useMutation } from '@apollo/client'
+import { ADD_EXCHANGE_COINS, CONNECT_PLAID_DETAILS } from 'utils/mutations'
+import { GET_PLAID_LINK_TOKEN } from 'utils/queries'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { pythCoins } from 'utils/pyth'
 import {
   getUserWallets,
   completeExchangeInfo,
 } from 'redux/reducers/walletSlice'
 import { displayNotifModal } from 'utils/notificationModal'
-import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
+import {
+  loadingPortfolio,
+  reloadPortfolio,
+} from 'redux/reducers/portfolioSlice'
 import encrypt from '../../utils/encrypt'
 import { coinbaseClient } from 'utils/coinbase'
 import { generators } from 'openid-client'
-
+import { usePlaidLink, PlaidLinkOnExit } from 'react-plaid-link'
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [token, setToken] = useState('')
   const { exchangeWallets } = useSelector((state) => state.wallet)
   const { tokenHeader, id } = useSelector((state) => state.auth)
   const [addExchangeCoins] = useMutation(ADD_EXCHANGE_COINS, {
@@ -29,11 +33,67 @@ const ExchangeModal = (props) => {
     context: tokenHeader,
   })
 
+  const [connectPlaidDetails] = useMutation(CONNECT_PLAID_DETAILS, {
+    fetchPolicy: 'no-cache',
+    context: tokenHeader,
+  })
+
+  const [getPlaidLInkToken, { data: linkToken }] = useLazyQuery(
+    GET_PLAID_LINK_TOKEN,
+    {
+      fetchPolicy: 'no-cache',
+      context: tokenHeader,
+    }
+  )
+
+  const onSuccess = useCallback(async (provider, metadata) => {
+    dispatch(loadingPortfolio(true))
+    const resp = await connectPlaidDetails({
+      variables: {
+        publicToken: provider,
+      },
+    })
+
+    if (resp?.data?.connectPlaidDetails) {
+      onSuccesss()
+    }
+    dispatch(loadingPortfolio(false))
+  }, [])
+
+  const onExit =
+    useCallback <
+    PlaidLinkOnExit >
+    ((error, metadata) => {
+      // Optional callback, called if the user exits without connecting a wallet
+      // See https://plaid.com/docs/link/web/#onexit for details
+      dispatch(loadingPortfolio(false))
+    },
+    [])
+
+  const { open, ready } = usePlaidLink({
+    token: token,
+    onSuccess,
+    onExit,
+  })
+
   const closeModal = () => {
     dispatch(changeExchangeModalOpen(false))
   }
 
-  const onSuccess = (message) => {
+  useEffect(() => {
+    if (token && ready) {
+      open()
+    }
+  }, [token, ready, open])
+
+  useEffect(() => {
+    if (linkToken) {
+      dispatch(loadingPortfolio(false))
+      setToken(linkToken.getPlaidLinkToken)
+    }
+  }, [linkToken])
+
+  const onSuccesss = () => {
     dispatch(getUserWallets({}))
     dispatch(reloadPortfolio())
     dispatch(
@@ -110,7 +170,7 @@ const ExchangeModal = (props) => {
           })
         }
         await onSave(coinData, binanceWallet.id, matchingAccount.cexName)
-        onSuccess('Done! You have successfully added your Binance Wallet')
+        onSuccesss()
       }
     } else {
       displayNotifModal('Warning', 'Vault not found. Please try again later.')
@@ -155,6 +215,11 @@ const ExchangeModal = (props) => {
     openDiscordWindow(url, discordWindow)
   }
 
+  const connectPlaid = async () => {
+    dispatch(loadingPortfolio(true))
+    getPlaidLInkToken()
+  }
+
   const openDiscordWindow = (discordUrl, discordWindow) => {
     discordWindow.location.href = discordUrl
     try {
@@ -163,7 +228,7 @@ const ExchangeModal = (props) => {
         const valueReceived = event.data
 
         if (valueReceived?.successMessage) {
-          onSuccess('Done! You have successfully added your Coinbase Wallet')
+          onSuccesss()
           discordWindow.close()
         }
       }

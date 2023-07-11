@@ -178,9 +178,9 @@ const RightSideBar = () => {
     dispatch(deselectAllNfts())
   }
 
-  const disconnectWallets = async () => {
+  const disconnectWallets = async (isExchange) => {
     if (userWallets?.length || exchangeWallets?.length) {
-      await removeAllUserWallets()
+      await removeAllUserWallets({ variables: { isExchange: isExchange } })
       reloadData()
     }
 
@@ -763,7 +763,7 @@ const RightSideBar = () => {
           </div>
           <button
             type="button"
-            onClick={disconnectWallets}
+            onClick={() => disconnectWallets(false)}
             className="xl-[1rem] flex h-[6.4rem] w-full cursor-pointer items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white hover:border-[#62EAD2] hover:text-[#62EAD2]"
           >
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
@@ -859,13 +859,10 @@ const RightSideBar = () => {
   const renderExchangeWallets = () => {
     return (
       exchangeWallets?.length > 0 && (
-        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
+        <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:mb-[1.6rem] md:block">
           <div className="header mb-[2rem] flex justify-between">
             <h1 className="text-[1.4rem] text-white">{'Exchange Wallets'}</h1>
-            <button
-              // onClick={seeAllOrLessWallets}
-              className="text-[1.4rem] font-bold text-[#61DAEA]"
-            >
+            <button className="text-[1.4rem] font-bold text-[#61DAEA]">
               {userWallets?.length > 4 ? 'See All' : ''}
             </button>
           </div>
@@ -889,7 +886,7 @@ const RightSideBar = () => {
                   <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
                     <Image
                       className="mr-[1rem] h-[2rem] w-[2rem]"
-                      src="/images/svgs/wallet-white.svg"
+                      src="/images/svgs/net.svg"
                       width="20"
                       height="20"
                       alt="NFTs"
@@ -933,16 +930,16 @@ const RightSideBar = () => {
             <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
               <Image
                 className="mr-[1rem] h-[2rem] w-[2rem]"
-                src="/images/svgs/wallet-white.svg"
+                src="/images/svgs/net.svg"
                 width="20"
                 height="20"
                 alt="NFTs"
               />
-              Disconnect Wallets
+              Disconnect Exchanges
               {removingAllUserWallets && <Spin className="ml-3" />}
             </div>
             <div
-              onClick={disconnectWallets}
+              onClick={() => disconnectWallets(true)}
               className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
             >
               <Image
@@ -1036,7 +1033,7 @@ const RightSideBar = () => {
           <button
             type="button"
             disabled={refreshingUserWallets}
-            onClick={disconnectWallets}
+            onClick={() => disconnectWallets(false)}
             className={`xl-[1rem] flex h-[6.4rem] w-full items-center justify-between rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
               refreshingUserWallets
                 ? 'opacity-50'

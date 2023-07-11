@@ -89,8 +89,8 @@ export const REMOVE_USER_WALLET = gql`
 `
 
 export const REMOVE_ALL_USER_WALLETS = gql`
-  mutation Mutation {
-    removeAllUserWallets
+  mutation RemoveAllUserWallets($isExchange: Boolean!) {
+    removeAllUserWallets(isExchange: $isExchange)
   }
 `
 
@@ -115,5 +115,11 @@ export const REFRESH_USER_WALLETS = gql`
 export const ADD_EXCHANGE_COINS = gql`
   mutation Mutation($exchangeInfo: ExchangeInfo) {
     addExchangeCoins(exchangeInfo: $exchangeInfo)
+  }
+`
+
+export const CONNECT_PLAID_DETAILS = gql`
+  mutation Mutation($publicToken: String!) {
+    connectPlaidDetails(public_token: $publicToken)
   }
 `
