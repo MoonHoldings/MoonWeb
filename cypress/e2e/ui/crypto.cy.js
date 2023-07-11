@@ -18,8 +18,7 @@ describe('Crypto Portfolio', () => {
           data: {
             login: {
               username: 'testUser',
-              accessToken:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWx2YXJlem1pY29oQGdtYWlsLmNvbSIsImlhdCI6MTY4Njg0MzQ1OSwiZXhwIjoxNjg5NDM1NDU5fQ.x9NMt-4kNHn02BzjgZCJe0m5XO992P2o-7PCt4kWduc',
+              accessToken: 'testAccessToken',
               __typename: 'User',
             },
           },

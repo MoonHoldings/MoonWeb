@@ -18,8 +18,7 @@ describe('Lend & Borrow', () => {
           data: {
             login: {
               username: 'testUser',
-              accessToken:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWx2YXJlem1pY29oQGdtYWlsLmNvbSIsImlhdCI6MTY4Njg0MzQ1OSwiZXhwIjoxNjg5NDM1NDU5fQ.x9NMt-4kNHn02BzjgZCJe0m5XO992P2o-7PCt4kWduc',
+              accessToken: 'testAccessToken',
               __typename: 'User',
             },
           },
@@ -164,9 +163,8 @@ describe('Lend & Borrow', () => {
                   apy: 138179,
                   apyAfterFee: 220,
                   feePermillicentage: 16000,
-                  collectionName: 'Mad Lads',
-                  collectionImage:
-                    'https://sharky.fi/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FMad%20Lads.b9eb7c8d.jpg&w=128&q=75',
+                  collectionName: 'Random NFT',
+                  collectionImage: null,
                   totalPool: 7081.09,
                   bestOffer: 70.43,
                   interest: null,
@@ -235,9 +233,9 @@ describe('Lend & Borrow', () => {
                 isDefaultEscrow: null,
                 offerInterest: 0.0042585515380176965,
                 apy: 200,
-                collectionName: 'MoonHolders',
+                collectionName: 'DoggyDogTest',
                 collectionImage:
-                  'https://sharky.fi/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FMoonHolders.10dd0302.jpg&w=128&q=75',
+                  'https://blogs.airdropalert.com/wp-content/uploads/2021/09/top-dog-beach-club.png',
                 status: 'Repaid',
                 remainingDays: -14,
                 foreclosedElapsedTime: null,
@@ -287,7 +285,7 @@ describe('Lend & Borrow', () => {
     cy.get('button#btn-hamburger').click()
     cy.get('button').contains('Lend & Borrow').click()
     cy.location('pathname').should('eq', '/defi-loans/lend')
-    cy.get('div').contains('Mad Lads').should('exist').click()
+    cy.get('div').contains('Random NFT').should('exist').click()
     cy.get('div').contains('Active Lenders').should('exist')
     cy.get('div').contains('Taken').should('exist')
     cy.get('div').contains('Active Offers ').should('exist')
