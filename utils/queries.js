@@ -403,3 +403,8 @@ export const GET_BORROW_HISTORY_CSV = gql`
     }
   }
 `
+export const GET_PLAID_LINK_TOKEN = gql`
+  query Query {
+    getPlaidLinkToken
+  }
+`

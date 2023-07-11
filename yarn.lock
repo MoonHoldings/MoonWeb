@@ -8569,6 +8569,14 @@ react-modal@^3.12.1:
     react-lifecycles-compat "^3.0.0"
     warning "^4.0.3"
 
+react-plaid-link@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/react-plaid-link/-/react-plaid-link-3.4.0.tgz#e52b46b564921eaa936ba6bad8ce1e5d3b94972a"
+  integrity sha512-y5VdjWQJQrFk9+4Dz5ZBVyceskulttBG/zQsWI+v9RBUEW9TitC6T2BAxmLW0TJs64UqKjTPKEcIDWFZhgB6tw==
+  dependencies:
+    prop-types "^15.7.2"
+    react-script-hook "^1.6.0"
+
 react-qr-reader@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-qr-reader/-/react-qr-reader-2.2.1.tgz#dc89046d1c1a1da837a683dd970de5926817d55b"
@@ -8604,6 +8612,11 @@ react-router@6.13.0:
   integrity sha512-Si6KnfEnJw7gUQkNa70dlpI1bul46FuSxX5t5WwlUBxE25DAz2BjVkwaK8Y2s242bQrZPXCpmwLPtIO5pv4tXg==
   dependencies:
     "@remix-run/router" "1.6.3"
+
+react-script-hook@^1.6.0:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/react-script-hook/-/react-script-hook-1.7.2.tgz#ec130d67f9a25fcde57fbfd1faa87e5b97521948"
+  integrity sha512-fhyCEfXb94fag34UPRF0zry1XGwmVY+79iibWwTqAoOiCzYJQOYTiWJ7CnqglA9tMSV8g45cQpHCMcBwr7dwhA==
 
 react-tippy@^1.4.0:
   version "1.4.0"
