@@ -93,7 +93,7 @@ const ExchangeModal = (props) => {
     }
   }, [linkToken])
 
-  const onSuccesss = () => {
+  const onSuccesss = (message) => {
     dispatch(getUserWallets({}))
     dispatch(reloadPortfolio())
     dispatch(
@@ -170,7 +170,7 @@ const ExchangeModal = (props) => {
           })
         }
         await onSave(coinData, binanceWallet.id, matchingAccount.cexName)
-        onSuccesss()
+        onSuccesss('Done! You have successfully added your Binance Wallet')
       }
     } else {
       displayNotifModal('Warning', 'Vault not found. Please try again later.')
@@ -228,7 +228,7 @@ const ExchangeModal = (props) => {
         const valueReceived = event.data
 
         if (valueReceived?.successMessage) {
-          onSuccesss()
+          onSuccesss('Done! You have successfully added your Coinbase Wallet')
           discordWindow.close()
         }
       }
