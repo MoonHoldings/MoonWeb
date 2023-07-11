@@ -8,7 +8,6 @@ describe('Wallet', () => {
   beforeEach(() => {
     cy.intercept('POST', apiGraphQL, (req) => {
       const { body } = req
-
       if (
         body.hasOwnProperty('operationName') &&
         body.operationName === 'Mutation' &&
@@ -19,7 +18,8 @@ describe('Wallet', () => {
           data: {
             login: {
               username: 'testUser',
-              accessToken: 'testAccessToken',
+              accessToken:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWx2YXJlem1pY29oQGdtYWlsLmNvbSIsImlhdCI6MTY4Njg0MzQ1OSwiZXhwIjoxNjg5NDM1NDU5fQ.x9NMt-4kNHn02BzjgZCJe0m5XO992P2o-7PCt4kWduc',
               __typename: 'User',
             },
           },
@@ -79,7 +79,6 @@ describe('Wallet', () => {
         req.body.query.includes('removeAllUserWallets')
       ) {
         req.alias = 'gqlRemoveAllWallets'
-        req.headers['Authorization'] = 'Bearer fakeToken'
         req.reply({
           data: {
             removeAllUserWallets: true,
@@ -87,10 +86,7 @@ describe('Wallet', () => {
         })
       }
 
-      if (
-        req.body.operationName === 'AddUserWallet' &&
-        req.body.variables.wallet === testWalletAddress
-      ) {
+      if (req.body.operationName === 'AddUserWallet') {
         req.alias = 'gqlAddWallet'
         req.reply({
           data: {
@@ -108,10 +104,11 @@ describe('Wallet', () => {
           data: {
             getUserWallets: [
               {
-                id: '1',
+                id: '64',
                 address: testWalletAddress,
                 verified: true,
-                __typename: 'Wallet',
+                name: null,
+                __typename: 'UserWallet',
               },
               // add more wallet objects if needed
             ],
@@ -121,21 +118,13 @@ describe('Wallet', () => {
     })
   })
 
-  it('should add a wallet', () => {
+  it('should add a solana wallet', () => {
     cy.login(email, password)
     cy.get('button#btn-wallet-mobile').click()
     cy.get('button').contains('Add Wallet Address').click()
     cy.get('div.search').type(testWalletAddress)
     cy.get('button#btn-add-wallet').click()
+    cy.wait('@gqlGetWallet')
     cy.get('ul.all-wallets').contains('3bpET').should('exist')
   })
-
-  // TODO NFT TESTS NEED TO BE COMPLETED FIRST
-  // it('should remove all wallets', () => {
-  //   cy.visit(`${baseUrl}/login`)
-  //   // cy.login(email, password)
-  //   cy.get('button#btn-wallet-mobile').click()
-  //   cy.contains('Disconnect Wallets').click()
-  //   cy.contains('3bpET').should('not.exist')
-  // })
 })
