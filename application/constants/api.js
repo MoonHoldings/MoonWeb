@@ -26,3 +26,6 @@ export const LANDING_SITE = process.env.NEXT_PUBLIC_LANDING_SITE
 export const COINBASE_URL = process.env.NEXT_PUBLIC_COINBASE_URL
 export const COINBASE_SECRET = process.env.NEXT_PUBLIC_COINBASE_SECRET
 export const COINBASE_CLIENT = process.env.NEXT_PUBLIC_COINBASE_CLIENT
+export const GEMINI_URL = process.env.NEXT_PUBLIC_GEMINI_URL
+export const GEMINI_SECRET = process.env.NEXT_PUBLIC_GEMINI_SECRET
+export const GEMINI_CLIENT = process.env.NEXT_PUBLIC_GEMINI_CLIENT

@@ -17,6 +17,7 @@ import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import encrypt from '../../utils/encrypt'
 import { coinbaseClient } from 'utils/coinbase'
 import { generators } from 'openid-client'
+import { geminiClient } from 'utils/gemini'
 
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
@@ -149,13 +150,26 @@ const ExchangeModal = (props) => {
     })
     const windowFeatures =
       'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
-    let discordWindow = window.open('', '_blank', windowFeatures)
+    let oauthWindow = window.open('', '_blank', windowFeatures)
 
-    openDiscordWindow(url, discordWindow)
+    openOauthWindow(url, oauthWindow)
   }
 
-  const openDiscordWindow = (discordUrl, discordWindow) => {
-    discordWindow.location.href = discordUrl
+  const connectGemini = async () => {
+    const url = geminiClient.authorizationUrl({
+      scope: 'balances:read',
+
+      state: encrypt('HELLOMOON ' + id),
+    })
+    const windowFeatures =
+      'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'
+    let oauthWindow = window.open('', '_blank', windowFeatures)
+
+    openOauthWindow(url, oauthWindow)
+  }
+
+  const openOauthWindow = (oAuthUrl, oauthWindow) => {
+    oauthWindow.location.href = oAuthUrl
     try {
       window.addEventListener('message', receiveMessage, false)
       async function receiveMessage(event) {
@@ -190,48 +204,94 @@ const ExchangeModal = (props) => {
 
   const renderFirstStep = () => {
     return (
-      <div className="flex flex-row">
-        <div className="mr-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
-          <button
-            disabled={exchangeWallets?.some(
-              (wallet) => wallet.name === 'binance'
-            )}
-            onClick={
-              exchangeWallets?.some((wallet) => wallet.name === 'binance')
-                ? null
-                : connectBinance
-            }
-            className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
-          >
-            <Image
-              className="m-16 h-full w-[70%] "
-              src="/images/svgs/binance_logo.svg"
-              alt="cross button"
-              width={100}
-              height={100}
-            />
-          </button>
+      <div className="flex flex-col">
+        <div className="flex flex-row">
+          <div className="mr-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
+            <button
+              disabled={exchangeWallets?.some(
+                (wallet) => wallet.name === 'binance'
+              )}
+              onClick={
+                exchangeWallets?.some((wallet) => wallet.name === 'binance')
+                  ? null
+                  : connectBinance
+              }
+              className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
+            >
+              <Image
+                className="m-16 h-full w-[70%] "
+                src="/images/svgs/binance_logo.svg"
+                alt="cross button"
+                width={100}
+                height={100}
+              />
+            </button>
+          </div>
+          <div className="ml-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
+            <button
+              disabled={exchangeWallets?.some(
+                (wallet) => wallet.name === 'Coinbase'
+              )}
+              onClick={
+                exchangeWallets?.some((wallet) => wallet.name === 'Coinbase')
+                  ? null
+                  : connectCoinbase
+              }
+              className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-600"
+            >
+              <Image
+                className="m-16 h-full w-[70%]"
+                src="/images/svgs/coinbase_logo.svg"
+                alt="cross button"
+                width={100}
+                height={100}
+              />
+            </button>
+          </div>
         </div>
-        <div className="ml-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
-          <button
-            disabled={exchangeWallets?.some(
-              (wallet) => wallet.name === 'Coinbase'
-            )}
-            onClick={
-              exchangeWallets?.some((wallet) => wallet.name === 'Coinbase')
-                ? null
-                : connectCoinbase
-            }
-            className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-600"
-          >
-            <Image
-              className="m-16 h-full w-[70%]"
-              src="/images/svgs/coinbase_logo.svg"
-              alt="cross button"
-              width={100}
-              height={100}
-            />
-          </button>
+        <div className="mt-2 flex flex-row">
+          <div className="mr-2 h-auto w-full rounded-[10px] bg-black pb-2 pr-2">
+            <button
+              disabled={exchangeWallets?.some(
+                (wallet) => wallet.name === 'binance'
+              )}
+              onClick={
+                exchangeWallets?.some((wallet) => wallet.name === 'binance')
+                  ? null
+                  : connectGemini
+              }
+              className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed  disabled:bg-gray-700"
+            >
+              <Image
+                className="m-16 h-full w-[70%] "
+                src="/images/svgs/gemini.svg"
+                alt="cross button"
+                width={100}
+                height={100}
+              />
+            </button>
+          </div>
+          <div className="ml-2 h-auto w-full rounded-[10px]  pb-2 pr-2">
+            {/* <button
+              disabled={exchangeWallets?.some(
+                (wallet) => wallet.name === 'Coinbase'
+              )}
+              onClick={
+                exchangeWallets?.some((wallet) => wallet.name === 'Coinbase')
+                  ? null
+                  : connectCoinbase
+              }
+              className="cursor flex h-full w-full flex-col items-center justify-center rounded-[10px] border-2 border-black bg-[#25282C] hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-600"
+            > */}
+            {/* <Image
+                className="m-16 h-full w-[70%]"
+                src="/images/svgs/gemini.svg"
+                alt="cross button"
+                width={100}
+                height={100}
+              /> */}
+            {/* </button> */}
+          </div>
         </div>
       </div>
     )

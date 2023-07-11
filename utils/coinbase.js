@@ -7,16 +7,16 @@ import {
 import { Issuer } from 'openid-client'
 
 const CoinbaseIssuerConfig = {
-  issuer: 'https://exchange.sandbox.gemini.com',
-  authorization_endpoint: 'https://exchange.sandbox.gemini.com/auth',
-  token_endpoint: `https://exchange.sandbox.gemini.com/oauth/token`,
-  // userinfo_endpoint: `https://exchange.sandbox.gemini.com/v2/user`,
+  issuer: 'https://www.coinbase.com',
+  authorization_endpoint: 'https://www.coinbase.com/oauth/authorize',
+  token_endpoint: `${COINBASE_URL}/oauth/token`,
+  userinfo_endpoint: `${COINBASE_URL}/v2/user`,
 }
 const coinbaseIssuer = new Issuer(CoinbaseIssuerConfig)
 
 export const coinbaseClient = new coinbaseIssuer.Client({
-  client_id: '64a6ea62-8052-4a97-b85f-f90a2155151a',
-  client_secret: '64a6ea62-c13a-4f94-881f-9c7a5aa35ee3',
-  redirect_uris: [`https://api.moonholdings.xyz/auth/gemini`],
+  client_id: COINBASE_CLIENT,
+  client_secret: COINBASE_SECRET,
+  redirect_uris: [`${BEND_URL}/auth/coinbase`],
   response_types: ['code'],
 })
