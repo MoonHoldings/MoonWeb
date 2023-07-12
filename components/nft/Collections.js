@@ -5,11 +5,30 @@ import TextBlink from 'components/partials/TextBlink'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
 import { useSelector } from 'react-redux'
+import NftPortfolioChart from 'components/NftPortfolioChart'
+import { useQuery } from '@apollo/client'
+import { GET_USER_DASHBOARD_TIMESERIES } from 'utils/queries'
+import { format } from 'date-fns'
 
 const Collections = ({ collections }) => {
+  const { tokenHeader } = useSelector((state) => state.auth)
   const { solUsdPrice, selectedCurrencyPrice, currentCurrency } = useSelector(
     (state) => state.crypto
   )
+
+  const { data, loading, refetch } = useQuery(GET_USER_DASHBOARD_TIMESERIES, {
+    variables: {
+      type: 'nft',
+      timeRangeType: 'week',
+    },
+    context: tokenHeader,
+    fetchPolicy: 'no-cache',
+  })
+  const timeSeries =
+    data?.getTimeSeries?.map((data) => ({
+      time: format(new Date(data.createdAt), 'yyyy-MM-dd'),
+      value: data.total,
+    })) ?? []
 
   const totalNftCount = collections?.reduce(
     (total, col) => total + col.nfts?.length,
@@ -38,6 +57,13 @@ const Collections = ({ collections }) => {
 
   return (
     <div className="nft-portfolio mt-[2rem] text-white md:order-2">
+      <div className="flex w-[50%] flex-row">
+        <NftPortfolioChart
+          data={timeSeries}
+          loading={loading}
+          refetch={(timeRangeType) => refetch({ type: 'nft', timeRangeType })}
+        />
+      </div>
       <h1 className="text-[2.9rem]">{NFT_PORTFOLIO}</h1>
       <p className=" text-[1.6rem]">
         You have <u>{collections?.length}</u> collections containing{' '}

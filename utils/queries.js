@@ -403,3 +403,13 @@ export const GET_BORROW_HISTORY_CSV = gql`
     }
   }
 `
+
+export const GET_USER_DASHBOARD_TIMESERIES = gql`
+  query GetTimeSeries($type: String!, $timeRangeType: String!) {
+    getTimeSeries(type: $type, timeRangeType: $timeRangeType) {
+      type
+      total
+      createdAt
+    }
+  }
+`
