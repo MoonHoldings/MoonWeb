@@ -9,7 +9,7 @@ import NftPortfolioChart from 'components/NftPortfolioChart'
 import { useQuery } from '@apollo/client'
 import { GET_USER_DASHBOARD_TIMESERIES } from 'utils/queries'
 import { format } from 'date-fns'
-import TreeMapChart from './TreeMapChart'
+import TreeMapChart from '../TreeMapChart'
 
 const Collections = ({ collections }) => {
   const { tokenHeader } = useSelector((state) => state.auth)
@@ -91,15 +91,15 @@ const Collections = ({ collections }) => {
 
   return (
     <div className="nft-portfolio mt-[2rem] text-white md:order-2">
-      <div className="flex w-full flex-row justify-between">
-        <div className="w-[49%]">
+      <div className="flex w-full flex-col justify-between md:flex-row">
+        <div className="w-full md:w-[49%]">
           <NftPortfolioChart
             data={timeSeries}
             loading={loading}
             refetch={(timeRangeType) => refetch({ type: 'nft', timeRangeType })}
           />
         </div>
-        <div className="w-[49%]">
+        <div className="w-full md:w-[49%]">
           <TreeMapChart collections={getNftTreeMapData(treemapCollections)} />
         </div>
       </div>
@@ -109,7 +109,7 @@ const Collections = ({ collections }) => {
         <u>{totalNftCount}</u> NFTs
       </p>
       {collections && (
-        <div className="mt-8 flex hidden items-center justify-start  max-[1279px]:block">
+        <div className="mt-8 flex hidden items-center justify-start max-[1279px]:block">
           <div className="flex items-center">
             <div className="bold flex items-center text-center text-[1.5rem] md:text-[2rem]">
               Total Value:

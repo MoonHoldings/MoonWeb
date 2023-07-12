@@ -82,7 +82,7 @@ export const NftPortfolioChart = ({ data, loading, refetch }) => {
     <div className="flex w-full flex-col">
       <div className="mt-8 flex inline-flex flex-row justify-end rounded-lg p-2">
         <button
-          className={`rounded-lg bg-[#25282C] text-[#${
+          className={`rounded-lg bg-[#25282C] font-medium text-[#${
             timeRange === 'week' ? '62EAD2' : 'A6A6A6'
           }] px-5 py-2 text-[1.2rem]`}
           onClick={() => {
@@ -93,7 +93,7 @@ export const NftPortfolioChart = ({ data, loading, refetch }) => {
           1W
         </button>
         <button
-          className={`ml-3 rounded-lg bg-[#25282C] text-[#${
+          className={`ml-3 rounded-lg bg-[#25282C] font-medium text-[#${
             timeRange === 'month' ? '62EAD2' : 'A6A6A6'
           }] px-5 py-2 text-[1.2rem]`}
           onClick={() => {
@@ -104,7 +104,7 @@ export const NftPortfolioChart = ({ data, loading, refetch }) => {
           1M
         </button>
         <button
-          className={`ml-3 rounded-lg bg-[#25282C] text-[#${
+          className={`ml-3 rounded-lg bg-[#25282C] font-medium text-[#${
             timeRange === 'year' ? '62EAD2' : 'A6A6A6'
           }] px-5 py-2 text-[1.2rem]`}
           onClick={() => {
