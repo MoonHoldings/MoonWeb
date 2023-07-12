@@ -1,12 +1,10 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 import mergeClasses from 'utils/mergeClasses'
 import { useLazyQuery } from '@apollo/client'
 import { GET_USER_DASHBOARD } from 'utils/queries'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { reloadDashboard } from 'redux/reducers/utilSlice'
 import { updateCurrency } from 'redux/reducers/cryptoSlice'
 import toCurrencyFormat from 'utils/toCurrencyFormat'
@@ -14,7 +12,6 @@ import { Skeleton } from 'antd'
 import { populatePortfolioTotals } from 'redux/reducers/portfolioSlice'
 import { useRouter } from 'next/router'
 import withAuth from 'hoc/withAuth'
-const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Dashboard = () => {
   const dispatch = useDispatch()
@@ -38,16 +35,6 @@ const Dashboard = () => {
     loading: loadingCrypto,
   } = useSelector((state) => state.crypto)
   const { collections } = useSelector((state) => state.nft)
-
-  const sortedCollections = collections
-    ? [...collections]
-        ?.sort(
-          (a, b) =>
-            b?.floorPrice * b?.nfts?.length - a?.floorPrice * a?.nfts?.length
-        )
-        .filter((collection) => collection.floorPrice)
-        .slice(0, 10)
-    : []
 
   const { shouldReloadDashboardData } = useSelector((state) => state.util)
 
@@ -119,96 +106,6 @@ const Dashboard = () => {
     dispatch(fetchUserNfts({}))
     dispatch(updateCurrency(currentCurrency ?? 'SOL'))
   }, [dispatch])
-
-  const getNftTreeMapData = () => {
-    const totalValue = sortedCollections.reduce((total, collection) => {
-      return total + collection.floorPrice * collection.nfts.length
-    }, 0)
-
-    return sortedCollections
-      .map((collection) => {
-        if (
-          ((collection.floorPrice * collection.nfts.length) / totalValue) *
-            100 >=
-          0.02
-        )
-          return {
-            x: collection.name,
-            y: (
-              ((collection.floorPrice * collection.nfts.length) / totalValue) *
-              100
-            ).toFixed(2),
-            z:
-              '$' +
-              (
-                ((collection.floorPrice * collection.nfts.length) /
-                  LAMPORTS_PER_SOL) *
-                solUsdPrice
-              ).toFixed(2),
-          }
-      })
-      .filter(Boolean)
-  }
-
-  const chart = {
-    series: [
-      {
-        data: getNftTreeMapData(),
-      },
-    ],
-    options: {
-      dataLabels: {
-        enabled: true,
-        formatter: function (val, opts) {
-          return val
-        },
-        textAnchor: 'middle',
-        style: {
-          fontSize: '20px',
-          fontWeight: 'bold',
-        },
-      },
-      legend: {
-        show: false,
-      },
-      chart: {
-        type: 'treemap',
-        toolbar: {
-          show: false,
-        },
-        fontFamily: 'poppins',
-      },
-      colors: [
-        '#915BD3',
-        '#B951EA',
-        '#ADD8C7',
-        '#D35BB1',
-        '#6C5BD3',
-        '#5B84D3',
-      ],
-      plotOptions: {
-        treemap: {
-          distributed: true,
-          enableShades: false,
-        },
-      },
-      tooltip: {
-        enabled: true,
-        theme: 'dark',
-        y: {
-          formatter: function (val) {
-            return val + '%'
-          },
-        },
-        z: {
-          title: 'Value',
-        },
-        style: {
-          fontSize: '16px',
-        },
-      },
-    },
-  }
 
   const getPercentageChangeClassName = (value) => {
     if (value < 0) return 'text-[#FE3C00]'
@@ -763,22 +660,6 @@ const Dashboard = () => {
           <p className="text-[#45CB85]">0.189%</p>
           <p>◎ 239.54983922</p>
         </div> */}
-      </div>
-      <div className=" mt-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
-        <p className="text-[2rem]">NFT Portfolio Allocation chart</p>
-        {sortedCollections.length ? (
-          <ApexCharts
-            options={chart.options}
-            series={chart.series}
-            type="treemap"
-            width={'100%'}
-            height={350}
-          />
-        ) : (
-          <span className="flex w-full justify-center text-[2rem]">
-            Create an NFT Portfolio Now
-          </span>
-        )}
       </div>
       <div className="flex w-full justify-center">
         <a
