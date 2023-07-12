@@ -9,6 +9,7 @@ import NftPortfolioChart from 'components/NftPortfolioChart'
 import { useQuery } from '@apollo/client'
 import { GET_USER_DASHBOARD_TIMESERIES } from 'utils/queries'
 import { format } from 'date-fns'
+import TreeMapChart from './TreeMapChart'
 
 const Collections = ({ collections }) => {
   const { tokenHeader } = useSelector((state) => state.auth)
@@ -41,6 +42,39 @@ const Collections = ({ collections }) => {
           b?.floorPrice * b?.nfts?.length - a?.floorPrice * a?.nfts?.length
       )
     : []
+  const treemapCollections = sortedCollections
+    .filter((collection) => collection.floorPrice)
+    .slice(0, 10)
+
+  const getNftTreeMapData = (collections) => {
+    const totalValue = collections.reduce((total, collection) => {
+      return total + collection.floorPrice * collection.nfts.length
+    }, 0)
+
+    return collections
+      .map((collection) => {
+        if (
+          ((collection.floorPrice * collection.nfts.length) / totalValue) *
+            100 >=
+          0.02
+        )
+          return {
+            x: collection.name,
+            y: (
+              ((collection.floorPrice * collection.nfts.length) / totalValue) *
+              100
+            ).toFixed(2),
+            z:
+              '$' +
+              (
+                ((collection.floorPrice * collection.nfts.length) /
+                  LAMPORTS_PER_SOL) *
+                solUsdPrice
+              ).toFixed(2),
+          }
+      })
+      .filter(Boolean)
+  }
 
   const calculatePortfolioValue = () => {
     return collections?.reduce((total, c) => {
@@ -57,12 +91,17 @@ const Collections = ({ collections }) => {
 
   return (
     <div className="nft-portfolio mt-[2rem] text-white md:order-2">
-      <div className="flex w-[50%] flex-row">
-        <NftPortfolioChart
-          data={timeSeries}
-          loading={loading}
-          refetch={(timeRangeType) => refetch({ type: 'nft', timeRangeType })}
-        />
+      <div className="flex w-full flex-row justify-between">
+        <div className="w-[49%]">
+          <NftPortfolioChart
+            data={timeSeries}
+            loading={loading}
+            refetch={(timeRangeType) => refetch({ type: 'nft', timeRangeType })}
+          />
+        </div>
+        <div className="w-[49%]">
+          <TreeMapChart collections={getNftTreeMapData(treemapCollections)} />
+        </div>
       </div>
       <h1 className="text-[2.9rem]">{NFT_PORTFOLIO}</h1>
       <p className=" text-[1.6rem]">

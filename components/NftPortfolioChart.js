@@ -79,7 +79,7 @@ export const NftPortfolioChart = ({ data, loading, refetch }) => {
   }, [])
 
   return (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col">
       <div className="mt-8 flex inline-flex flex-row justify-end rounded-lg p-2">
         <button
           className={`rounded-lg bg-[#25282C] text-[#${
