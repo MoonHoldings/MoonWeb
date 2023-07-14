@@ -60,4 +60,4 @@ const Nfts = () => {
   )
 }
 
-export default withAuth(Nfts)
+export default Nfts

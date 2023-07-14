@@ -89,9 +89,9 @@ const LeftSideBar = () => {
       <div className="sidebar-menu px-[1.7rem] text-[1.4rem] font-medium xl:px-[1.5rem]">
         <button
           id="btn-nft-portfolio"
-          onClick={() => handleClick('dashboard')}
+          onClick={() => handleClick('/')}
           className={`mb-[1rem] flex h-[4.1rem] w-full items-center px-[1.6rem] xl:mb-[2rem] text-[${
-            router.pathname.includes('dashboard') ? '#62EAD2' : '#FFFFFF'
+            router.pathname === '/' ? '#62EAD2' : '#FFFFFF'
           }]`}
         >
           <Image
