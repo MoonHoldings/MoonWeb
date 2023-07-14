@@ -176,4 +176,4 @@ const Crypto = () => {
   )
 }
 
-export default withAuth(Crypto)
+export default Crypto

@@ -99,19 +99,14 @@ const SidebarsLayout = ({ children }) => {
     )
   }
 
-  const noSidebarPaths = [
-    '/login',
-    '/signup',
-    '/',
-    '/reset-password',
-    '/redirect',
-  ]
+  const noSidebarPaths = ['/login', '/signup', '/reset-password', '/redirect']
   const shouldRenderSidebars = !noSidebarPaths.includes(router.pathname)
   const shouldRenderNftRightSidebar =
     router.pathname.includes('nfts') ||
     router.pathname.includes('dashboard') ||
-    router.pathname.includes('crypto')
-  if (shouldRenderSidebars && isLoggedIn) {
+    router.pathname.includes('crypto') ||
+    router.pathname === '/'
+  if (shouldRenderSidebars) {
     return (
       <>
         <AnimatePresence>
