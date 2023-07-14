@@ -21,7 +21,7 @@ import {
 } from 'redux/reducers/nftSlice'
 import {
   ADD_WALLET_ADDRESS,
-  CONNECTED_WALLETS,
+  DEFI_WALLETS,
   REFRESH_WALLETS,
   REFRESH_WALLETS_TITLE,
 } from 'application/constants/copy'
@@ -468,7 +468,7 @@ const RightSideBar = () => {
             height="20"
             alt="Dashboard"
           />
-          {CONNECTED_WALLETS} ({userWallets?.length})
+          {DEFI_WALLETS} ({userWallets?.length})
         </div>
         <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
           <Image
@@ -857,6 +857,11 @@ const RightSideBar = () => {
   }
 
   const renderExchangeWallets = () => {
+    const LOGOS = {
+      binance: '/images/svgs/binance-wallet-logo.svg',
+      Coinbase: '/images/svgs/coinbase-wallet-logo.svg',
+    }
+
     return (
       exchangeWallets?.length > 0 && (
         <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:mb-[1.6rem] md:block">
@@ -886,7 +891,7 @@ const RightSideBar = () => {
                   <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
                     <Image
                       className="mr-[1rem] h-[2rem] w-[2rem]"
-                      src="/images/svgs/net.svg"
+                      src={LOGOS[wallet?.name] ?? '/images/svgs/net.svg'}
                       width="20"
                       height="20"
                       alt="NFTs"
@@ -961,7 +966,7 @@ const RightSideBar = () => {
       userWallets?.length > 0 && (
         <div className="connected-wallets hidden rounded-[2rem] bg-[#191C20] p-[1.5rem] font-inter md:block">
           <div className="header mb-[2rem] flex justify-between">
-            <h1 className="text-[1.4rem] text-white">{CONNECTED_WALLETS}</h1>
+            <h1 className="text-[1.4rem] text-white">{DEFI_WALLETS}</h1>
             <button
               // onClick={seeAllOrLessWallets}
               className="text-[1.4rem] font-bold text-[#61DAEA]"
