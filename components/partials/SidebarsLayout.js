@@ -150,10 +150,8 @@ const SidebarsLayout = ({ children }) => {
             {walletsModalOpen && <WalletsModal />}
           </AnimatePresence>
 
-          {(addAddressStatus === 'loading' ||
-            modalLoading ||
-            portfolioLoading) && (
-            <LoadingModal showMessage={modalLoading || portfolioLoading} />
+          {(addAddressStatus === 'loading' || modalLoading) && (
+            <LoadingModal showMessage={modalLoading} />
           )}
           {refreshWalletsStatus === 'loading' && <RefreshWalletModal />}
           {refreshFloorPriceStatus === 'loading' && <RefreshFloorPriceModal />}
