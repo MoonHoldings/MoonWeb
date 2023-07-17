@@ -22,7 +22,7 @@ const CryptoSquare = ({ crypto, handleCoinClick, loading }) => {
       .split('')
       .filter((n) => n !== ',').length
 
-    if (length > 7) {
+    if (length > 10) {
       return numeral(holding).format('0a')
     } else {
       if (holding % 1 == 0) return numeral(holding).format('0,0')
