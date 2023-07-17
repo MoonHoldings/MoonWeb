@@ -41,6 +41,9 @@ import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import {
   getUserWallets,
   completeExchangeInfo,
+  removeWallet,
+  addWallet,
+  removeAllWallets,
 } from 'redux/reducers/walletSlice'
 import mergeClasses from 'utils/mergeClasses'
 import { displayNotifModal } from 'utils/notificationModal'
@@ -95,19 +98,21 @@ const RightSideBar = () => {
     borrowTotal,
   } = useSelector((state) => state.portfolio)
 
-  useEffect(() => {
-    dispatch(getUserWallets({}))
-  }, [])
+  // useEffect(() => {
+  //   dispatch(getUserWallets({}))
+  // }, [])
 
   useEffect(() => {
     const shouldCallAddWallet =
       router.pathname.includes('nfts') ||
       router.pathname.includes('crypto') ||
-      router.pathname.includes('dashboard')
+      router.pathname.includes('dashboard') ||
+      router.pathname === '/'
 
     if (publicKey && !disconnecting && shouldCallAddWallet) {
       addConnectedWallet()
     }
+
     dispatch(
       completeExchangeInfo({
         isComplete: false,
@@ -146,9 +151,11 @@ const RightSideBar = () => {
           'Warning',
           'Wallet is already connected to a different user'
         )
+
         disconnectCurrentWallet()
       } else {
         reloadData()
+        dispatch(addWallet(publicKey.toBase58()))
       }
     }
   }, [addUserWallet, dispatch, publicKey])
@@ -156,6 +163,7 @@ const RightSideBar = () => {
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
   }
+
   const transferNftModal = (type) => {
     if (publicKey) dispatch(changeNftModalOpen({ isShow: true, type: type }))
     else {
@@ -173,14 +181,16 @@ const RightSideBar = () => {
   }
 
   const removeSingleWallet = async (wallet) => {
-    await removeUserWallet({ variables: { wallet } }, tokenHeader)
-    reloadData()
+    // await removeUserWallet({ variables: { wallet } }, tokenHeader)
+    dispatch(removeWallet(wallet))
+    // reloadData()
     dispatch(deselectAllNfts())
   }
 
   const disconnectWallets = async (isExchange) => {
     if (userWallets?.length || exchangeWallets?.length) {
-      await removeAllUserWallets({ variables: { isExchange: isExchange } })
+      // await removeAllUserWallets({ variables: { isExchange: isExchange } })
+      dispatch(removeAllWallets())
       reloadData()
     }
 
@@ -195,7 +205,7 @@ const RightSideBar = () => {
   }
 
   const reloadData = () => {
-    dispatch(getUserWallets({}))
+    // dispatch(getUserWallets({}))
     dispatch(fetchUserNfts({}))
     dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
@@ -1076,7 +1086,11 @@ const RightSideBar = () => {
       <div className="absolute right-24 top-24 z-[52]">
         <CopyClipboardNotification
           show={show || (isComplete ?? false)}
-          message={completeMessage}
+          message={
+            completeMessage?.length
+              ? completeMessage
+              : 'Address copied to clipboard!'
+          }
           hideClip={hideClip}
         />
       </div>
