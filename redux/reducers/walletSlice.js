@@ -21,6 +21,24 @@ const walletSlice = createSlice({
       state.isComplete = action.payload.isComplete
       state.completeMessage = action.payload.message
     },
+    addWallet(state, action) {
+      if (state.wallets === undefined || !state.wallets) {
+        state.wallets = [{ address: action.payload }]
+      } else if (
+        state?.wallets?.find((wallet) => wallet.address === action.payload) ===
+        undefined
+      ) {
+        state.wallets = [...state.wallets, { address: action.payload }]
+      }
+    },
+    removeWallet(state, action) {
+      state.wallets = state?.wallets?.filter(
+        (wallet) => wallet?.address !== action.payload
+      )
+    },
+    removeAllWallets(state, action) {
+      state.wallets = []
+    },
   },
   extraReducers(builder) {
     builder.addCase(getUserWallets.fulfilled, (state, action) => {
@@ -64,6 +82,11 @@ export const getUserWallets = createAsyncThunk(
   }
 )
 
-export const { completeExchangeInfo } = walletSlice.actions
+export const {
+  completeExchangeInfo,
+  addWallet,
+  removeWallet,
+  removeAllWallets,
+} = walletSlice.actions
 
 export default walletSlice.reducer

@@ -13,13 +13,14 @@ import { ADD_USER_WALLET } from 'utils/mutations'
 import { useMutation } from '@apollo/client'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
-import { getUserWallets } from 'redux/reducers/walletSlice'
+import { getUserWallets, addWallet } from 'redux/reducers/walletSlice'
 import validSolanaWallet from 'utils/validSolanaWallet'
 import validBitcoinWallet from 'utils/validBitcoinWallet'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
   const { tokenHeader } = useSelector((state) => state.auth)
+  const { wallets } = useSelector((state) => state.wallet)
 
   const [walletAddress, setWalletAddress] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -33,9 +34,15 @@ const AddWalletModal = () => {
     dispatch(changeAddWalletModalOpen(false))
   }
 
-  const addWallet = async () => {
+  const addWalletAndSyncData = async () => {
     setErrorMessage('')
     setInfoMessage('')
+
+    const wallet = wallets?.find((wallet) => wallet.address === walletAddress)
+    if (wallet) {
+      setErrorMessage('Wallet is already added')
+      return
+    }
 
     let walletType = null
 
@@ -54,22 +61,25 @@ const AddWalletModal = () => {
       variables: { verified: false, wallet: walletAddress, walletType },
     })
 
+    dispatch(addWallet(walletAddress))
+
     if (!res?.data?.addUserWallet) {
       setInfoMessage('')
       setErrorMessage('Invalid wallet address')
       return
     }
 
-    dispatch(getUserWallets({}))
-    dispatch(fetchUserNfts({}))
-    dispatch(reloadPortfolio(true))
-    dispatch(reloadDashboard(true))
+    // TODO: Bring back later
+    // dispatch(getUserWallets({}))
+    // dispatch(fetchUserNfts({}))
+    // dispatch(reloadPortfolio(true))
+    // dispatch(reloadDashboard(true))
     dispatch(changeAddWalletModalOpen(false))
   }
 
   const handleWalletAddressInput = (event) => {
     if (event.key === 'Enter') {
-      addWallet()
+      addWalletAndSyncData()
     }
   }
 
@@ -115,7 +125,7 @@ const AddWalletModal = () => {
 
         <button
           id="btn-add-wallet"
-          onClick={addWallet}
+          onClick={addWalletAndSyncData}
           disabled={addingUserWallet}
           className="spinner h-[4.6rem] w-[100%] rounded-[0.5rem] border border-black bg-[#5B218F] text-center text-[1.4rem] font-[500]"
         >
