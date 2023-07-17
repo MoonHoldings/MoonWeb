@@ -144,11 +144,13 @@ export const fetchUserNfts = createAsyncThunk(
   async ({}, thunkAPI) => {
     try {
       const { getState } = thunkAPI
-      const tokenHeader = getState().auth.tokenHeader
+      const wallets = getState().wallet.wallets
       const { data } = await client.query({
         query: GET_USER_NFTS,
         fetchPolicy: 'no-cache',
-        context: tokenHeader,
+        variables: {
+          wallets: wallets.map((wallet) => wallet.address),
+        },
       })
       const nfts = data?.getUserNfts
       const collections = {}

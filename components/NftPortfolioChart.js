@@ -79,8 +79,9 @@ export const NftPortfolioChart = ({ data, loading, refetch }) => {
   }, [])
 
   return (
-    <div className="flex w-full flex-col">
-      <div className="mt-8 flex inline-flex flex-row justify-end rounded-lg p-2">
+    <div className="flex w-full flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
+      <p className="text-[2rem]">NFT Portfolio Value Chart</p>
+      <div className="mb-3 flex inline-flex w-full flex-row justify-end">
         <button
           className={`rounded-lg bg-[#25282C] font-medium text-[#${
             timeRange === 'week' ? '62EAD2' : 'A6A6A6'
