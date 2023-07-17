@@ -105,6 +105,7 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(fetchUserNfts({}))
     dispatch(updateCurrency(currentCurrency ?? 'SOL'))
+    router.replace('/')
   }, [dispatch])
 
   const getPercentageChangeClassName = (value) => {
@@ -680,4 +681,4 @@ const Dashboard = () => {
   )
 }
 
-export default withAuth(Dashboard)
+export default Dashboard

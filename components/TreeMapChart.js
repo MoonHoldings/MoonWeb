@@ -65,8 +65,8 @@ const TreeMapChart = ({ collections }) => {
   }
 
   return (
-    <div className=" mt-6 flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
-      <p className="text-[2rem]">NFT Portfolio Allocation chart</p>
+    <div className="flex flex-1 flex-col justify-center rounded-lg bg-[#191C20] px-6 py-8">
+      <p className="text-[2rem]">NFT Portfolio Allocation Chart</p>
       {collections.length ? (
         <ApexCharts
           options={chart.options}

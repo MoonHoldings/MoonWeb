@@ -119,6 +119,7 @@ const RightSideBar = () => {
         message: '',
       })
     )
+
     dispatch(changeExchangeModalOpen(false))
   }, [publicKey, addConnectedWallet, disconnecting, router])
 
@@ -154,8 +155,8 @@ const RightSideBar = () => {
 
         disconnectCurrentWallet()
       } else {
+        await dispatch(addWallet(publicKey.toBase58()))
         reloadData()
-        dispatch(addWallet(publicKey.toBase58()))
       }
     }
   }, [addUserWallet, dispatch, publicKey])

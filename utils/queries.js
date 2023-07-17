@@ -326,8 +326,8 @@ export const GET_USER_WALLETS = gql`
 `
 
 export const GET_USER_NFTS = gql`
-  query GetUserNfts {
-    getUserNfts {
+  query GetUserNfts($wallets: [String!]!) {
+    getUserNfts(wallets: $wallets) {
       mint
       attributes
       attributesArray
