@@ -410,8 +410,16 @@ export const GET_PLAID_LINK_TOKEN = gql`
 `
 
 export const GET_USER_DASHBOARD_TIMESERIES = gql`
-  query GetTimeSeries($type: String!, $timeRangeType: String!) {
-    getTimeSeries(type: $type, timeRangeType: $timeRangeType) {
+  query GetTimeSeries(
+    $wallets: [String!]!
+    $type: String!
+    $timeRangeType: String!
+  ) {
+    getTimeSeries(
+      wallets: $wallets
+      type: $type
+      timeRangeType: $timeRangeType
+    ) {
       type
       total
       createdAt
