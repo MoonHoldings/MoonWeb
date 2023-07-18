@@ -68,7 +68,7 @@ const NftModal = () => {
         })
       )
     }
-    dispatch(getUserWallets({}))
+
     dispatch(fetchUserNfts({}))
   }
 
