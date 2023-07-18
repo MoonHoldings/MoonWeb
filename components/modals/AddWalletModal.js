@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { PublicKey } from '@solana/web3.js'
 import {
   changeAddWalletModalOpen,
   reloadDashboard,
@@ -69,10 +68,9 @@ const AddWalletModal = () => {
       return
     }
 
-    // TODO: Bring back later
     dispatch(fetchUserNfts({}))
-    // dispatch(reloadPortfolio(true))
-    // dispatch(reloadDashboard(true))
+    dispatch(reloadPortfolio(true))
+    dispatch(reloadDashboard(true))
     dispatch(changeAddWalletModalOpen(false))
   }
 

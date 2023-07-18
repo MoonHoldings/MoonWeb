@@ -31,15 +31,9 @@ import { Spin, Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
-import {
-  ADD_USER_WALLET,
-  REFRESH_USER_WALLETS,
-  REMOVE_ALL_USER_WALLETS,
-  REMOVE_USER_WALLET,
-} from 'utils/mutations'
+import { ADD_USER_WALLET, REFRESH_USER_WALLETS } from 'utils/mutations'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import {
-  getUserWallets,
   completeExchangeInfo,
   removeWallet,
   addWallet,
@@ -84,12 +78,6 @@ const RightSideBar = () => {
     REFRESH_USER_WALLETS,
     { context: tokenHeader }
   )
-  const [removeUserWallet, { loading: removingUserWallet }] = useMutation(
-    REMOVE_USER_WALLET,
-    { context: tokenHeader }
-  )
-  const [removeAllUserWallets, { loading: removingAllUserWallets }] =
-    useMutation(REMOVE_ALL_USER_WALLETS, { context: tokenHeader })
 
   const {
     loading: portfolioLoading,
@@ -97,10 +85,6 @@ const RightSideBar = () => {
     loanTotal,
     borrowTotal,
   } = useSelector((state) => state.portfolio)
-
-  // useEffect(() => {
-  //   dispatch(getUserWallets({}))
-  // }, [])
 
   useEffect(() => {
     const shouldCallAddWallet =

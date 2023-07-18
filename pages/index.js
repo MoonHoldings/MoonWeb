@@ -16,13 +16,12 @@ const Dashboard = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const { tokenHeader } = useSelector((state) => state.auth)
+  const { wallets } = useSelector((state) => state.wallet)
   const [timeRangeType, setTimeRangeType] = useState('Day')
   const [getUserDashboard, { data, loading }] = useLazyQuery(
     GET_USER_DASHBOARD,
     {
       fetchPolicy: 'no-cache',
-      context: tokenHeader,
     }
   )
   const [updateTimeRangeType, setUpdateTimeRangeType] = useState(true)
@@ -33,7 +32,6 @@ const Dashboard = () => {
     selectedCurrencyPrice,
     loading: loadingCrypto,
   } = useSelector((state) => state.crypto)
-  const { collections } = useSelector((state) => state.nft)
 
   const { shouldReloadDashboardData } = useSelector((state) => state.util)
 
@@ -72,8 +70,8 @@ const Dashboard = () => {
       getUserDashboard({
         variables: {
           timeRangeType,
+          wallets: wallets?.map((wallet) => wallet.address),
         },
-        tokenHeader,
       })
 
       dispatch(reloadDashboard(false))

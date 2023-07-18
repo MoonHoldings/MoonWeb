@@ -347,8 +347,8 @@ export const GET_USER_NFTS = gql`
 `
 
 export const GET_USER_DASHBOARD = gql`
-  query GetUserDashboard($timeRangeType: String!) {
-    getUserDashboard(timeRangeType: $timeRangeType) {
+  query GetUserDashboard($wallets: [String!]!, $timeRangeType: String!) {
+    getUserDashboard(wallets: $wallets, timeRangeType: $timeRangeType) {
       crypto {
         total
         percentChange
