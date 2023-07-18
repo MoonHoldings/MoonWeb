@@ -184,7 +184,7 @@ const RightSideBar = () => {
   const removeSingleWallet = async (wallet) => {
     // await removeUserWallet({ variables: { wallet } }, tokenHeader)
     dispatch(removeWallet(wallet))
-    // reloadData()
+    reloadData()
     dispatch(deselectAllNfts())
   }
 
@@ -206,7 +206,6 @@ const RightSideBar = () => {
   }
 
   const reloadData = () => {
-    // dispatch(getUserWallets({}))
     dispatch(fetchUserNfts({}))
     dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
