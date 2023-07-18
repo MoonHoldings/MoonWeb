@@ -52,7 +52,6 @@ const RightSideBar = () => {
   const [allExchanges, setAllExchanges] = useState([1, 2, 3])
   const [currentMenu, setCurrentMenu] = useState('home')
   const [isMobile, setIsMobile] = useState(window?.innerWidth < 768)
-  const [removingWalletAddress, setRemovingWalletAddress] = useState(null)
   const {
     addAddressStatus,
     wallets: userWallets,
@@ -733,7 +732,6 @@ const RightSideBar = () => {
                         alt="NFTs"
                       />
                       {shrinkText(`${wallet.address}`)}
-                      {removingUserWallet && <Spin className="ml-3" />}
                     </div>
                     <div
                       onClick={
@@ -1001,8 +999,6 @@ const RightSideBar = () => {
                     >
                       {shrinkText(`${wallet.address}`)}
                     </div>
-                    {removingWalletAddress === wallet.address &&
-                      removingUserWallet && <Spin className="ml-3" />}
                   </div>
                   <div
                     onClick={
@@ -1010,15 +1006,10 @@ const RightSideBar = () => {
                         ? disconnectCurrentWallet
                         : (e) => {
                             e.stopPropagation()
-                            setRemovingWalletAddress(wallet.address)
                             removeSingleWallet(wallet.address)
                           }
                     }
-                    className={`flex h-[3.2rem] w-[3.2rem] cursor-pointer items-center justify-center rounded-[0.8rem] bg-[#191C20] p-[1rem] ${
-                      removingWalletAddress === wallet.address &&
-                      removingUserWallet &&
-                      'hidden'
-                    }`}
+                    className={`flex h-[3.2rem] w-[3.2rem] cursor-pointer items-center justify-center rounded-[0.8rem] bg-[#191C20] p-[1rem]`}
                   >
                     <Image
                       className="h-[0.8rem] w-[0.8rem] rotate-45"
@@ -1052,7 +1043,6 @@ const RightSideBar = () => {
                 alt="NFTs"
               />
               Disconnect Wallets
-              {removingAllUserWallets && <Spin className="ml-3" />}
             </div>
             <div className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]">
               <Image
