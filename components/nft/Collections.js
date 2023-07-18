@@ -12,7 +12,7 @@ import { format } from 'date-fns'
 import TreeMapChart from '../TreeMapChart'
 
 const Collections = ({ collections }) => {
-  const { tokenHeader } = useSelector((state) => state.auth)
+  const { wallets } = useSelector((state) => state.wallet)
   const { solUsdPrice, selectedCurrencyPrice, currentCurrency } = useSelector(
     (state) => state.crypto
   )
@@ -21,8 +21,8 @@ const Collections = ({ collections }) => {
     variables: {
       type: 'nft',
       timeRangeType: 'week',
+      wallets: wallets?.map((wallet) => wallet.address),
     },
-    context: tokenHeader,
     fetchPolicy: 'no-cache',
   })
   const timeSeries =
