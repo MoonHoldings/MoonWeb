@@ -70,8 +70,7 @@ const AddWalletModal = () => {
     }
 
     // TODO: Bring back later
-    // dispatch(getUserWallets({}))
-    // dispatch(fetchUserNfts({}))
+    dispatch(fetchUserNfts({}))
     // dispatch(reloadPortfolio(true))
     // dispatch(reloadDashboard(true))
     dispatch(changeAddWalletModalOpen(false))

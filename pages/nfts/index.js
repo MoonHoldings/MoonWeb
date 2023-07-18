@@ -13,7 +13,6 @@ import {
   WELCOME_MOON_HOLDINGS,
 } from 'application/constants/copy'
 import { fetchUserNfts } from 'redux/reducers/nftSlice'
-import withAuth from 'hoc/withAuth'
 
 const Nfts = () => {
   const dispatch = useDispatch()

@@ -149,7 +149,7 @@ export const fetchUserNfts = createAsyncThunk(
         query: GET_USER_NFTS,
         fetchPolicy: 'no-cache',
         variables: {
-          wallets: wallets.map((wallet) => wallet.address),
+          wallets: wallets?.map((wallet) => wallet.address),
         },
       })
       const nfts = data?.getUserNfts

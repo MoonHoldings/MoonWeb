@@ -252,10 +252,14 @@ const RightSideBar = () => {
 
   const refreshWalletsAndFloorPrice = async () => {
     if (userWallets?.length || exchangeWallets?.length) {
-      await refreshUserWallets()
+      await refreshUserWallets({
+        variables: {
+          wallets: userWallets?.map((wallet) => wallet.address),
+        },
+      })
       dispatch(fetchUserNfts())
       dispatch(reloadPortfolio())
-      dispatch(getUserWallets())
+      // dispatch(getUserWallets())
     }
   }
 

@@ -107,8 +107,8 @@ export const EDIT_USER_COIN = gql`
 `
 
 export const REFRESH_USER_WALLETS = gql`
-  mutation Mutation {
-    refreshUserWallets
+  mutation RefreshUserWallets($wallets: [String!]!) {
+    refreshUserWallets(wallets: $wallets)
   }
 `
 
