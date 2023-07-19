@@ -89,7 +89,7 @@ const RightSideBar = () => {
     const shouldCallAddWallet =
       router.pathname.includes('nfts') ||
       router.pathname.includes('crypto') ||
-      router.pathname.includes('dashboard') ||
+      router.pathname === '/' ||
       router.pathname === '/'
 
     if (publicKey && !disconnecting && shouldCallAddWallet) {
@@ -520,7 +520,7 @@ const RightSideBar = () => {
       return `${toCurrencyFormat(cryptoTotal / selectedCurrencyPrice)}`
     }
 
-    if (router.pathname.includes('dashboard')) {
+    if (router.pathname === '/') {
       const value = calculatePortfolioValue()
       return `${toCurrencyFormat(
         ((value + loanTotal + borrowTotal) * solUsdPrice) /
@@ -540,7 +540,7 @@ const RightSideBar = () => {
       return `$${toCurrencyFormat(cryptoTotal)}`
     }
 
-    if (router.pathname.includes('dashboard')) {
+    if (router.pathname === '/') {
       const value = calculatePortfolioValue()
       return `$${toCurrencyFormat(
         (value + loanTotal + borrowTotal) * solUsdPrice + cryptoTotal
@@ -560,7 +560,7 @@ const RightSideBar = () => {
       return `${toShortCurrencyFormat(cryptoTotal / selectedCurrencyPrice)}`
     }
 
-    if (router.pathname.includes('dashboard')) {
+    if (router.pathname === '/') {
       const value = calculatePortfolioValue()
 
       return `${toShortCurrencyFormat(
@@ -581,7 +581,7 @@ const RightSideBar = () => {
       return `$${toShortCurrencyFormat(cryptoTotal)}`
     }
 
-    if (router.pathname.includes('dashboard')) {
+    if (router.pathname === '/') {
       const value = calculatePortfolioValue()
       return `$${toShortCurrencyFormat(
         (value + loanTotal + borrowTotal) * solUsdPrice + cryptoTotal
@@ -824,7 +824,6 @@ const RightSideBar = () => {
                 >
                   <div className="flex h-[4.1rem] w-full items-center text-[1.4rem] text-[#FFFFFF]">
                     {nft.name}
-                    {removingUserWallet && <Spin className="ml-3" />}
                   </div>
                   <div
                     onClick={() => dispatch(selectNft(nft))}
@@ -893,7 +892,6 @@ const RightSideBar = () => {
                       alt="NFTs"
                     />
                     {shrinkText(`${wallet.address}`)}
-                    {removingUserWallet && <Spin className="ml-3" />}
                   </div>
                   <div
                     onClick={

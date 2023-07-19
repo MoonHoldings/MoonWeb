@@ -40,6 +40,7 @@ function useSolUsdPrice() {
     if (
       ((router.pathname.includes('nfts') ||
         router.pathname.includes('dashboard') ||
+        router.pathname === '/' ||
         router.pathname.includes('crypto')) &&
         wallets?.length) ||
       router.pathname.includes('dashboard')
