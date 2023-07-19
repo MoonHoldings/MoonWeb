@@ -89,7 +89,6 @@ const RightSideBar = () => {
     const shouldCallAddWallet =
       router.pathname.includes('nfts') ||
       router.pathname.includes('crypto') ||
-      router.pathname === '/' ||
       router.pathname === '/'
 
     if (publicKey && !disconnecting && shouldCallAddWallet) {
