@@ -62,13 +62,13 @@ const portfolioSlice = createSlice({
 
 export const fetchPortfolioTotalByType = createAsyncThunk(
   'dashboard/fetchPortfolioTotalByType',
-  async ({ type, walletAddress }) => {
+  async ({ type, walletAddresses }) => {
     try {
       const { data } = await client.query({
         query: GET_USER_PORTFOLIO_TOTAL_BY_TYPE,
         variables: {
           type,
-          wallets: [walletAddress],
+          wallets: walletAddresses,
         },
         fetchPolicy: 'no-cache',
       })

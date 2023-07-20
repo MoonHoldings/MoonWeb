@@ -160,20 +160,23 @@ const RightSideBar = () => {
 
   const removeSingleWallet = async (wallet) => {
     // await removeUserWallet({ variables: { wallet } }, tokenHeader)
+    if (publicKey != null)
+      if (wallet == publicKey.toBase58()) {
+        disconnect()
+      }
     dispatch(removeWallet(wallet))
     reloadData()
     dispatch(deselectAllNfts())
   }
 
   const disconnectWallets = async (isExchange) => {
+    dispatch(deselectAllNfts())
+    disconnect()
     if (userWallets?.length || exchangeWallets?.length) {
       // await removeAllUserWallets({ variables: { isExchange: isExchange } })
       dispatch(removeAllWallets())
       reloadData()
     }
-
-    dispatch(deselectAllNfts())
-    disconnect()
   }
 
   const disconnectCurrentWallet = () => {
