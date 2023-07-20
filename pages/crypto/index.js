@@ -20,6 +20,7 @@ import assetsManifest from 'cryptocurrency-icons/manifest.json'
 import { PortfolioType } from 'types/enums'
 import withAuth from 'hoc/withAuth'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { displayNotifModal } from 'utils/notificationModal'
 
 const Crypto = () => {
   const dispatch = useDispatch()
@@ -31,6 +32,7 @@ const Crypto = () => {
   const { loading: loadingPage, reload } = useSelector(
     (state) => state.portfolio
   )
+  const { wallets } = useSelector((state) => state.wallet)
 
   const [getUserPort, { data: userCoins, loading: loadingUserCoins }] =
     useLazyQuery(GET_USER_PORTFOLIO, {
@@ -43,7 +45,12 @@ const Crypto = () => {
 
   useEffect(() => {
     async function getCoinPrice() {
-      if (!loadingUserCoins && userCoins && !isSet && publicKey != null) {
+      if (
+        !loadingUserCoins &&
+        userCoins &&
+        !isSet &&
+        (publicKey != null || wallets.length > 0)
+      ) {
         const updatedMyCoins = userCoins.getUserPortfolioCoins
 
         const coin = updatedMyCoins.map((myCoin) => {
@@ -80,20 +87,33 @@ const Crypto = () => {
       dispatch(reloadPortfolio(false))
       dispatch(loadingPortfolio(false))
 
+      var mergedWallets = []
+      var connectedWallet
       if (publicKey != null) {
-        var walletAddress = publicKey.toBase58()
+        connectedWallet = publicKey.toBase58()
+        mergedWallets.push(connectedWallet)
+      }
+      if (wallets.length > 0)
+        mergedWallets = [
+          ...mergedWallets,
+          ...wallets
+            .filter((wallet) => wallet.address !== connectedWallet)
+            .map((wallet) => wallet.address),
+        ]
+
+      if (mergedWallets.length > 0) {
         getUserPort({
-          variables: { walletAddress },
+          variables: { wallets: mergedWallets },
         })
         dispatch(
           fetchPortfolioTotalByType({
             type: PortfolioType.CRYPTO,
-            walletAddress,
+            walletAddresses: mergedWallets,
           })
         )
       }
     }
-  }, [coinModalOpen, getUserPort, dispatch, reload, publicKey])
+  }, [coinModalOpen, getUserPort, dispatch, reload, publicKey, wallets])
 
   useEffect(() => {
     if (publicKey == null) {
@@ -103,10 +123,22 @@ const Crypto = () => {
   }, [publicKey])
 
   const handleCoinClick = async (coin) => {
-    dispatch(loadingPortfolio(true))
     if (publicKey != null) {
+      var mergedWallets = []
+      var connectedWallet = publicKey.toBase58()
+      mergedWallets.push(connectedWallet)
+
+      if (wallets.length > 0)
+        mergedWallets = [
+          ...mergedWallets,
+          ...wallets
+            .filter((wallet) => wallet.address !== connectedWallet)
+            .map((wallet) => wallet.address),
+        ]
+
+      dispatch(loadingPortfolio(true))
       const res = await getUserPortBySymbol({
-        variables: { symbol: coin.symbol, walletAddress: publicKey.toBase58() },
+        variables: { symbol: coin.symbol, wallets: mergedWallets },
       })
       dispatch(
         populatePortfolioCoins({
@@ -118,6 +150,11 @@ const Crypto = () => {
       )
       dispatch(loadingPortfolio(false))
       dispatch(changeCoinModalOpen(true))
+    } else {
+      displayNotifModal(
+        'Warning',
+        `Please connect a wallet to be able to view the details.`
+      )
     }
   }
 
