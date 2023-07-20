@@ -36,44 +36,28 @@ const Dashboard = () => {
   const { shouldReloadDashboardData } = useSelector((state) => state.util)
 
   const cryptoTotal = dashboardData?.crypto?.total / selectedCurrencyPrice ?? 0
-  const nftTotal =
-    (dashboardData?.nft?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
-  const loanTotal =
-    (dashboardData?.loan?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
-  const borrowTotal =
-    (dashboardData?.borrow?.total * solUsdPrice) / selectedCurrencyPrice ?? 0
+  const nftTotal = dashboardData?.nft?.total / selectedCurrencyPrice ?? 0
+  const loanTotal = dashboardData?.loan?.total / selectedCurrencyPrice ?? 0
+  const borrowTotal = dashboardData?.borrow?.total / selectedCurrencyPrice ?? 0
 
   const prevCryptoTotal =
     dashboardData?.crypto?.prevTotal / selectedCurrencyPrice ?? 0
   const prevNftTotal =
-    (dashboardData?.nft?.prevTotal * solUsdPrice) / selectedCurrencyPrice ?? 0
+    dashboardData?.nft?.prevTotal / selectedCurrencyPrice ?? 0
   const prevLoanTotal =
-    (dashboardData?.loan?.prevTotal * solUsdPrice) / selectedCurrencyPrice ?? 0
+    dashboardData?.loan?.prevTotal / selectedCurrencyPrice ?? 0
   const prevBorrowTotal =
-    (dashboardData?.borrow?.prevTotal * solUsdPrice) / selectedCurrencyPrice ??
-    0
+    dashboardData?.borrow?.prevTotal / selectedCurrencyPrice ?? 0
 
   const cryptoTotalUsd = dashboardData?.crypto?.total ?? 0
-  const nftTotalUsd = dashboardData?.nft?.total
-    ? dashboardData?.nft?.total * solUsdPrice
-    : 0
-  const loanTotalUsd = dashboardData?.loan?.total
-    ? dashboardData?.loan?.total * solUsdPrice
-    : 0
-  const borrowTotalUsd = dashboardData?.borrow?.total
-    ? dashboardData?.borrow?.total * solUsdPrice
-    : 0
+  const nftTotalUsd = dashboardData?.nft?.total ?? 0
+  const loanTotalUsd = dashboardData?.loan?.total ?? 0
+  const borrowTotalUsd = dashboardData?.borrow?.total ?? 0
 
   const prevCryptoTotalUsd = dashboardData?.crypto?.prevTotal ?? 0
-  const prevNftTotalUsd = dashboardData?.nft?.prevTotal
-    ? dashboardData?.nft?.prevTotal * solUsdPrice
-    : 0
-  const prevLoanTotalUsd = dashboardData?.loan?.prevTotal
-    ? dashboardData?.loan?.prevTotal * solUsdPrice
-    : 0
-  const prevBorrowTotalUsd = dashboardData?.borrow?.prevTotal
-    ? dashboardData?.borrow?.prevTotal * solUsdPrice
-    : 0
+  const prevNftTotalUsd = dashboardData?.nft?.prevTotal ?? 0
+  const prevLoanTotalUsd = dashboardData?.loan?.prevTotal ?? 0
+  const prevBorrowTotalUsd = dashboardData?.borrow?.prevTotal ?? 0
 
   const cryptoPercentChange = calculatePercentChange(
     prevCryptoTotalUsd,
@@ -101,7 +85,7 @@ const Dashboard = () => {
       ? prevTotalNetworth * solUsdPrice
       : prevTotalNetworth * selectedCurrencyPrice
   const totalPercentageChange = calculatePercentChange(
-    prevBorrowTotalUsd,
+    prevTotalNetworthUsd,
     totalNetworthUsd
   )
 
