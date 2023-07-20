@@ -9,17 +9,15 @@ import {
 } from 'redux/reducers/portfolioSlice'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 export const SearchInput = (props) => {
   const dispatch = useDispatch()
   const [isFocused, setIsFocused] = useState(false)
   const [filter, setFilter] = useState('')
-
-  const { tokenHeader } = useSelector((state) => state.auth)
-
+  const { publicKey } = useWallet()
   const [getUserPort] = useLazyQuery(GET_USER_PORTFOLIO_BY_SYMBOL, {
     fetchPolicy: 'no-cache',
-    context: tokenHeader,
   })
 
   const handleFocus = () => {
@@ -33,25 +31,27 @@ export const SearchInput = (props) => {
   }
 
   const handleCoinClick = async (coin) => {
-    setFilter(`${coin.symbol} - ${coin.name}`)
+    if (publicKey != null) {
+      setFilter(`${coin.symbol} - ${coin.name}`)
 
-    dispatch(loadingPortfolio(true))
-    const res = await getUserPort({
-      variables: { symbol: coin.symbol },
-    })
+      dispatch(loadingPortfolio(true))
+      const res = await getUserPort({
+        variables: { symbol: coin.symbol, walletAddress: publicKey.toBase58() },
+      })
 
-    try {
-      dispatch(
-        populatePortfolioCoins({
-          coins: res.data.getUserPortfolioCoinsBySymbol.coins,
-          symbol: coin.symbol,
-          name: coin.name,
-          coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
-        })
-      )
-    } catch (error) {}
-    dispatch(loadingPortfolio(false))
-    dispatch(changeCoinModalOpen(true))
+      try {
+        dispatch(
+          populatePortfolioCoins({
+            coins: res.data.getUserPortfolioCoinsBySymbol.coins,
+            symbol: coin.symbol,
+            name: coin.name,
+            coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
+          })
+        )
+      } catch (error) {}
+      dispatch(loadingPortfolio(false))
+      dispatch(changeCoinModalOpen(true))
+    }
   }
 
   const handleKeyDown = (e) => {

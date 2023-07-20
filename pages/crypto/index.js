@@ -11,6 +11,7 @@ import {
   loadingPortfolio,
   populatePortfolioCoins,
   reloadPortfolio,
+  clearCryptoTotal,
 } from 'redux/reducers/portfolioSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
@@ -18,32 +19,31 @@ import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
 import assetsManifest from 'cryptocurrency-icons/manifest.json'
 import { PortfolioType } from 'types/enums'
 import withAuth from 'hoc/withAuth'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const Crypto = () => {
   const dispatch = useDispatch()
   const [myCoins, setMyCoins] = useState([])
   const [isSet, setIsSet] = useState(false)
 
+  const { publicKey } = useWallet()
   const { coinModalOpen } = useSelector((state) => state.util)
   const { loading: loadingPage, reload } = useSelector(
     (state) => state.portfolio
   )
-  const { tokenHeader } = useSelector((state) => state.auth)
 
   const [getUserPort, { data: userCoins, loading: loadingUserCoins }] =
     useLazyQuery(GET_USER_PORTFOLIO, {
       fetchPolicy: 'no-cache',
-      context: tokenHeader,
     })
 
   const [getUserPortBySymbol] = useLazyQuery(GET_USER_PORTFOLIO_BY_SYMBOL, {
     fetchPolicy: 'no-cache',
-    context: tokenHeader,
   })
 
   useEffect(() => {
     async function getCoinPrice() {
-      if (!loadingUserCoins && userCoins && !isSet) {
+      if (!loadingUserCoins && userCoins && !isSet && publicKey != null) {
         const updatedMyCoins = userCoins.getUserPortfolioCoins
 
         const coin = updatedMyCoins.map((myCoin) => {
@@ -76,30 +76,49 @@ const Crypto = () => {
   useEffect(() => {
     if (!coinModalOpen || reload) {
       dispatch(loadingPortfolio(true))
-      getUserPort()
       setIsSet(false)
       dispatch(reloadPortfolio(false))
-      dispatch(fetchPortfolioTotalByType({ type: PortfolioType.CRYPTO }))
+      dispatch(loadingPortfolio(false))
+
+      if (publicKey != null) {
+        var walletAddress = publicKey.toBase58()
+        getUserPort({
+          variables: { walletAddress },
+        })
+        dispatch(
+          fetchPortfolioTotalByType({
+            type: PortfolioType.CRYPTO,
+            walletAddress,
+          })
+        )
+      }
     }
-  }, [coinModalOpen, getUserPort, dispatch, reload])
+  }, [coinModalOpen, getUserPort, dispatch, reload, publicKey])
+
+  useEffect(() => {
+    if (publicKey == null) {
+      setMyCoins([])
+      dispatch(clearCryptoTotal(0.0))
+    }
+  }, [publicKey])
 
   const handleCoinClick = async (coin) => {
     dispatch(loadingPortfolio(true))
-
-    const res = await getUserPortBySymbol({
-      variables: { symbol: coin.symbol },
-    })
-
-    dispatch(
-      populatePortfolioCoins({
-        coins: res.data.getUserPortfolioCoinsBySymbol.coins,
-        symbol: coin.symbol,
-        name: coin.name,
-        coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
+    if (publicKey != null) {
+      const res = await getUserPortBySymbol({
+        variables: { symbol: coin.symbol, walletAddress: publicKey.toBase58() },
       })
-    )
-    dispatch(loadingPortfolio(false))
-    dispatch(changeCoinModalOpen(true))
+      dispatch(
+        populatePortfolioCoins({
+          coins: res.data.getUserPortfolioCoinsBySymbol.coins,
+          symbol: coin.symbol,
+          name: coin.name,
+          coinPrice: res.data.getUserPortfolioCoinsBySymbol.price,
+        })
+      )
+      dispatch(loadingPortfolio(false))
+      dispatch(changeCoinModalOpen(true))
+    }
   }
 
   return loadingPage && myCoins.length == 0 ? (

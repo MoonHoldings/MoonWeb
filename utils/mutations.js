@@ -54,8 +54,8 @@ export const BORROW_LOAN = gql`
 `
 
 export const ADD_USER_COIN = gql`
-  mutation Mutation($coinData: CoinData!) {
-    addUserCoin(coinData: $coinData) {
+  mutation Mutation($walletAddress: String!, $coinData: CoinData!) {
+    addUserCoin(walletAddress: $walletAddress, coinData: $coinData) {
       id
       name
       symbol
@@ -66,13 +66,13 @@ export const ADD_USER_COIN = gql`
 `
 
 export const DELETE_USER_COIN = gql`
-  mutation Mutation($coinData: CoinData!) {
-    deleteUserCoin(coinData: $coinData)
+  mutation Mutation($walletAddress: String!, $coinData: CoinData!) {
+    deleteUserCoin(walletAddress: $walletAddress, coinData: $coinData)
   }
 `
 export const DELETE_USER_COIN_BY_SYMBOL = gql`
-  mutation Mutation($symbol: String!) {
-    deleteUserCoinBySymbol(symbol: $symbol)
+  mutation Mutation($walletAddress: String!, $symbol: String!) {
+    deleteUserCoinBySymbol(walletAddress: $walletAddress, symbol: $symbol)
   }
 `
 
@@ -95,8 +95,8 @@ export const REMOVE_ALL_USER_WALLETS = gql`
 `
 
 export const EDIT_USER_COIN = gql`
-  mutation Mutation($coinData: CoinData!) {
-    editUserCoin(coinData: $coinData) {
+  mutation Mutation($coinData: CoinData!, $walletAddress: String!) {
+    editUserCoin(coinData: $coinData, walletAddress: $walletAddress) {
       id
       name
       symbol

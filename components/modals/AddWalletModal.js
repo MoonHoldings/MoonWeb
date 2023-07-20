@@ -18,16 +18,13 @@ import validBitcoinWallet from 'utils/validBitcoinWallet'
 
 const AddWalletModal = () => {
   const dispatch = useDispatch()
-  const { tokenHeader } = useSelector((state) => state.auth)
   const { wallets } = useSelector((state) => state.wallet)
 
   const [walletAddress, setWalletAddress] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [infoMessage, setInfoMessage] = useState('')
-  const [addUserWallet, { loading: addingUserWallet }] = useMutation(
-    ADD_USER_WALLET,
-    { context: tokenHeader }
-  )
+  const [addUserWallet, { loading: addingUserWallet }] =
+    useMutation(ADD_USER_WALLET)
 
   const closeModal = () => {
     dispatch(changeAddWalletModalOpen(false))

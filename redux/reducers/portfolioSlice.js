@@ -39,6 +39,9 @@ const portfolioSlice = createSlice({
       state.borrowTotal = action.payload.borrowTotal
       state.loanTotal = action.payload.loanTotal
     },
+    clearCryptoTotal(state, action) {
+      state.cryptoTotal = action.payload
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchPortfolioTotalByType.fulfilled, (state, action) => {
@@ -59,18 +62,15 @@ const portfolioSlice = createSlice({
 
 export const fetchPortfolioTotalByType = createAsyncThunk(
   'dashboard/fetchPortfolioTotalByType',
-  async ({ type }, thunkAPI) => {
+  async ({ type, walletAddress }) => {
     try {
-      const { getState } = thunkAPI
-      const tokenHeader = getState().auth.tokenHeader
-
       const { data } = await client.query({
         query: GET_USER_PORTFOLIO_TOTAL_BY_TYPE,
         variables: {
           type,
+          wallets: [walletAddress],
         },
         fetchPolicy: 'no-cache',
-        context: tokenHeader,
       })
 
       const portfolioTotalByType = data?.getUserPortfolioTotalByType
@@ -94,6 +94,7 @@ export const {
   loadingPortfolio,
   reloadPortfolio,
   populatePortfolioTotals,
+  clearCryptoTotal,
 } = portfolioSlice.actions
 
 export default portfolioSlice.reducer

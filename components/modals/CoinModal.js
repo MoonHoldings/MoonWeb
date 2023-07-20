@@ -15,6 +15,7 @@ import {
   DELETE_USER_COIN_BY_SYMBOL,
   EDIT_USER_COIN,
 } from 'utils/mutations'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const CoinModal = () => {
   const dispatch = useDispatch()
@@ -35,18 +36,12 @@ const CoinModal = () => {
 
   const [disableRemoveAll, setDisableRemoveAll] = useState(false)
 
-  const { tokenHeader } = useSelector((state) => state.auth)
-
-  const [addUserCoin] = useMutation(ADD_USER_COIN, { context: tokenHeader })
-  const [editUserCoin] = useMutation(EDIT_USER_COIN, { context: tokenHeader })
-  const [deleteUserCoin] = useMutation(DELETE_USER_COIN, {
-    context: tokenHeader,
-  })
-  const [deleteUserCoinBySymbol] = useMutation(DELETE_USER_COIN_BY_SYMBOL, {
-    context: tokenHeader,
-  })
+  const [addUserCoin] = useMutation(ADD_USER_COIN)
+  const [editUserCoin] = useMutation(EDIT_USER_COIN)
+  const [deleteUserCoin] = useMutation(DELETE_USER_COIN)
+  const [deleteUserCoinBySymbol] = useMutation(DELETE_USER_COIN_BY_SYMBOL)
   const containerRef = useRef(null)
-
+  const { publicKey } = useWallet()
   useEffect(() => {
     setCoinArray(coins)
     const connectedCoin = coins.find((coin) => coin.isConnected === false)
@@ -68,116 +63,130 @@ const CoinModal = () => {
   }
 
   const handleRemoveCoin = async (item) => {
-    const coinData = {
-      id: parseInt(item.id),
-      name: item.name,
-      symbol: item.symbol,
-      walletName: item.walletName,
-      holdings: parseInt(item.holdings),
-    }
-
-    try {
-      const res = await deleteUserCoin({
-        variables: {
-          coinData,
-        },
-      })
-      if (res.data.deleteUserCoin) {
-        const updatedCoinArray = coinArray.filter((coin) => coin.id !== item.id)
-        setCoinArray(updatedCoinArray)
-        dispatch(reloadPortfolio(true))
+    if (publicKey != null) {
+      const coinData = {
+        id: parseInt(item.id),
+        name: item.name,
+        symbol: item.symbol,
+        walletName: item.walletName,
+        holdings: parseInt(item.holdings),
       }
-    } catch (error) {
-      console.log(error)
+
+      try {
+        const res = await deleteUserCoin({
+          variables: {
+            walletAddress: publicKey.toBase58(),
+            coinData,
+          },
+        })
+        if (res.data.deleteUserCoin) {
+          const updatedCoinArray = coinArray.filter(
+            (coin) => coin.id !== item.id
+          )
+          setCoinArray(updatedCoinArray)
+          dispatch(reloadPortfolio(true))
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
   const handleRemoveAllCoins = async () => {
-    try {
-      const res = await deleteUserCoinBySymbol({
-        variables: {
-          symbol: coinSymbol,
-        },
-      })
+    if (publicKey != null) {
+      try {
+        const res = await deleteUserCoinBySymbol({
+          variables: {
+            walletAddress: publicKey.toBase58(),
+            symbol: coinSymbol,
+          },
+        })
 
-      if (res.data.deleteUserCoinBySymbol) {
-        const updatedCoinArray = coinArray.filter(
-          (coin) => coin.isConnected === true
-        )
-        setCoinArray(updatedCoinArray)
-        dispatch(reloadPortfolio(true))
+        if (res.data.deleteUserCoinBySymbol) {
+          const updatedCoinArray = coinArray.filter(
+            (coin) => coin.isConnected === true
+          )
+          setCoinArray(updatedCoinArray)
+          dispatch(reloadPortfolio(true))
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
     }
   }
 
   const onSave = async () => {
-    const coinData = {
-      name: coinName,
-      symbol: coinSymbol,
-      walletName: wallet,
-      holdings: parseFloat(holdings),
-    }
-
-    try {
-      const res = await addUserCoin({
-        variables: {
-          coinData,
-        },
-      })
-      console.log(res)
-      if (res.data.addUserCoin) {
-        const newArray = [...coinArray]
-        const newLastItem = res.data.addUserCoin
-        newArray.push(newLastItem)
-        setCoinArray(newArray)
-        dispatch(reloadPortfolio(true))
+    if (publicKey != null) {
+      const coinData = {
+        name: coinName,
+        symbol: coinSymbol,
+        walletName: wallet,
+        holdings: parseFloat(holdings),
       }
-    } catch (error) {
-      console.log(error.message)
-    }
 
-    setWallet('')
-    setHoldings('')
-    setShowAddRow(false)
+      try {
+        const res = await addUserCoin({
+          variables: {
+            walletAddress: publicKey.toBase58(),
+            coinData,
+          },
+        })
+
+        if (res.data.addUserCoin) {
+          const newArray = [...coinArray]
+          const newLastItem = res.data.addUserCoin
+          newArray.push(newLastItem)
+          setCoinArray(newArray)
+          dispatch(reloadPortfolio(true))
+        }
+      } catch (error) {
+        console.log(error.message)
+      }
+
+      setWallet('')
+      setHoldings('')
+      setShowAddRow(false)
+    }
   }
 
   const onEdit = async () => {
-    const coinData = {
-      id: parseInt(selectedCoin.id),
-      name: coinName,
-      symbol: coinSymbol,
-      walletName: editWallet,
-      holdings: parseFloat(editHoldings),
-      walletId: selectedCoin.walletId,
-    }
-
-    try {
-      const res = await editUserCoin({
-        variables: {
-          coinData,
-        },
-      })
-      if (res.data.editUserCoin) {
-        const newArray = [...coinArray]
-        newArray[selectedItem] = {
-          ...newArray[selectedItem],
-          walletName: coinData.walletName,
-          holdings: coinData.holdings,
-        }
-
-        setCoinArray(newArray)
-        dispatch(reloadPortfolio(true))
+    if (publicKey != null) {
+      const coinData = {
+        id: parseInt(selectedCoin.id),
+        name: coinName,
+        symbol: coinSymbol,
+        walletName: editWallet,
+        holdings: parseFloat(editHoldings),
+        walletId: selectedCoin.walletId,
       }
-    } catch (error) {
-      console.log(error.message)
-    }
 
-    setEditWallet('')
-    setEditHoldings('')
-    setSelectedItem(null)
-    setSelectedCoin(null)
+      try {
+        const res = await editUserCoin({
+          variables: {
+            walletAddress: publicKey.toBase58(),
+            coinData,
+          },
+        })
+        if (res.data.editUserCoin) {
+          const newArray = [...coinArray]
+          newArray[selectedItem] = {
+            ...newArray[selectedItem],
+            walletName: coinData.walletName,
+            holdings: coinData.holdings,
+          }
+
+          setCoinArray(newArray)
+          dispatch(reloadPortfolio(true))
+        }
+      } catch (error) {
+        console.log(error.message)
+      }
+
+      setEditWallet('')
+      setEditHoldings('')
+      setSelectedItem(null)
+      setSelectedCoin(null)
+    }
   }
 
   const closeCoinModal = () => {

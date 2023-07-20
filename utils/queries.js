@@ -278,8 +278,8 @@ export const RESEND_EMAIL_CONFIRMATION = gql`
 `
 
 export const GET_USER_PORTFOLIO = gql`
-  query Query {
-    getUserPortfolioCoins {
+  query GetUserPortfolioCoins($walletAddress: String!) {
+    getUserPortfolioCoins(walletAddress: $walletAddress) {
       holdings
       id
       name
@@ -295,8 +295,11 @@ export const GET_USER_PORTFOLIO = gql`
 `
 
 export const GET_USER_PORTFOLIO_BY_SYMBOL = gql`
-  query Query($symbol: String!) {
-    getUserPortfolioCoinsBySymbol(symbol: $symbol) {
+  query GetUserPortfolioCoins($walletAddress: String!, $symbol: String!) {
+    getUserPortfolioCoinsBySymbol(
+      walletAddress: $walletAddress
+      symbol: $symbol
+    ) {
       coins {
         holdings
         id
@@ -372,8 +375,8 @@ export const GET_USER_DASHBOARD = gql`
 `
 
 export const GET_USER_PORTFOLIO_TOTAL_BY_TYPE = gql`
-  query GetUserPortfolioTotalByType($type: String!) {
-    getUserPortfolioTotalByType(type: $type)
+  query GetUserPortfolioCoins($type: String!, $wallets: [String!]!) {
+    getUserPortfolioTotalByType(type: $type, wallets: $wallets)
   }
 `
 
