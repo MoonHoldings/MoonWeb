@@ -59,7 +59,6 @@ const RightSideBar = () => {
     completeMessage,
     isComplete,
   } = useSelector((state) => state.wallet)
-  const { tokenHeader } = useSelector((state) => state.auth)
 
   const { collections, selectedNfts } = useSelector((state) => state.nft)
   const {
@@ -69,14 +68,10 @@ const RightSideBar = () => {
     loading: loadingCrypto,
   } = useSelector((state) => state.crypto)
 
-  const [addUserWallet, { loading: addingUserWallet }] = useMutation(
-    ADD_USER_WALLET,
-    { context: tokenHeader }
-  )
-  const [refreshUserWallets, { loading: refreshingUserWallets }] = useMutation(
-    REFRESH_USER_WALLETS,
-    { context: tokenHeader }
-  )
+  const [addUserWallet, { loading: addingUserWallet }] =
+    useMutation(ADD_USER_WALLET)
+  const [refreshUserWallets, { loading: refreshingUserWallets }] =
+    useMutation(REFRESH_USER_WALLETS)
 
   const {
     loading: portfolioLoading,
@@ -189,7 +184,6 @@ const RightSideBar = () => {
 
   const reloadData = () => {
     dispatch(fetchUserNfts({}))
-    dispatch(reloadPortfolio(true))
     dispatch(reloadDashboard(true))
   }
 
@@ -675,7 +669,11 @@ const RightSideBar = () => {
           </div>
         </div>
         <ul className="dashboard-menu text-[1.4rem]">
-          <SearchInput loading={portfolioLoading || refreshingUserWallets} />
+          <SearchInput
+            loading={
+              portfolioLoading || refreshingUserWallets || publicKey == null
+            }
+          />
           {renderConnectWallet()}
           {renderAddAddress()}
           {renderAddExchange()}
