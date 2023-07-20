@@ -351,21 +351,22 @@ export const GET_USER_DASHBOARD = gql`
     getUserDashboard(wallets: $wallets, timeRangeType: $timeRangeType) {
       crypto {
         total
-        percentChange
+        prevTotal
       }
       nft {
         total
-        percentChange
+        prevTotal
       }
       loan {
         total
-        percentChange
+        prevTotal
       }
       borrow {
         total
-        percentChange
+        prevTotal
       }
-      percentChangeTotal
+      total
+      prevTotal
     }
   }
 `
