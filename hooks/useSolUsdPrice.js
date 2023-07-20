@@ -10,10 +10,8 @@ import {
   changeSolUsdPrice,
   updateShouldUpdateCurrency,
   loadingCrypto,
-  updateCurrency,
   changeCurrentCurrencyPrice,
 } from 'redux/reducers/cryptoSlice'
-
 import { useRouter } from 'next/router'
 
 const PYTHNET_CLUSTER_NAME = 'pythnet'
@@ -25,16 +23,16 @@ const pythPublicKey = getPythProgramKeyForCluster(PYTHNET_CLUSTER_NAME)
 let pythConnection
 const THROTTLE_INTERVAL = 5000
 let lastExecutionTime = 0
+
 function useSolUsdPrice() {
   const dispatch = useDispatch()
   const { solUsdPrice, currentCurrency, shouldUpdateCurrency } = useSelector(
     (state) => state.crypto
   )
   const { wallets } = useSelector((state) => state.wallet)
+  const router = useRouter()
 
   let feeds
-
-  const router = useRouter()
 
   useEffect(() => {
     if (
