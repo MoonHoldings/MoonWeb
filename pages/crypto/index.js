@@ -82,7 +82,6 @@ const Crypto = () => {
 
   useEffect(() => {
     if (reload) {
-      console.log('HUY')
       dispatch(loadingPortfolio(true))
       setIsSet(false)
       if (publicKey != null || wallets.length > 0) {

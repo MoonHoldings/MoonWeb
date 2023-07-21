@@ -325,6 +325,17 @@ export const GET_USER_WALLETS = gql`
   }
 `
 
+export const GET_EXCHANGE_WALLETS = gql`
+  query GetUserPortfolioCoinsBySymbol($walletAddress: String!) {
+    getExchangeWallets(walletAddress: $walletAddress) {
+      id
+      address
+      verified
+      name
+    }
+  }
+`
+
 export const GET_USER_NFTS = gql`
   query GetUserNfts($wallets: [String!]!) {
     getUserNfts(wallets: $wallets) {

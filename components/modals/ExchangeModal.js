@@ -11,6 +11,7 @@ import { pythCoins } from 'utils/pyth'
 import {
   getUserWallets,
   completeExchangeInfo,
+  getExchangeWallets,
 } from 'redux/reducers/walletSlice'
 import { displayNotifModal } from 'utils/notificationModal'
 import {
@@ -21,6 +22,7 @@ import encrypt from '../../utils/encrypt'
 import { coinbaseClient } from 'utils/coinbase'
 import { generators } from 'openid-client'
 import { usePlaidLink, PlaidLinkOnExit } from 'react-plaid-link'
+import { useWallet } from '@solana/wallet-adapter-react'
 const ExchangeModal = (props) => {
   const dispatch = useDispatch()
   const [currentStep, setCurrentStep] = useState(1)
@@ -30,19 +32,18 @@ const ExchangeModal = (props) => {
   const { tokenHeader, id } = useSelector((state) => state.auth)
   const [addExchangeCoins] = useMutation(ADD_EXCHANGE_COINS, {
     fetchPolicy: 'no-cache',
-    context: tokenHeader,
   })
+
+  const { publicKey } = useWallet()
 
   const [connectPlaidDetails] = useMutation(CONNECT_PLAID_DETAILS, {
     fetchPolicy: 'no-cache',
-    context: tokenHeader,
   })
 
   const [getPlaidLInkToken, { data: linkToken }] = useLazyQuery(
     GET_PLAID_LINK_TOKEN,
     {
       fetchPolicy: 'no-cache',
-      context: tokenHeader,
     }
   )
 
@@ -94,7 +95,7 @@ const ExchangeModal = (props) => {
   }, [linkToken])
 
   const onSuccesss = (message) => {
-    dispatch(getUserWallets({}))
+    dispatch(getExchangeWallets({ walletAddress: publicKey.toBase58() }))
     dispatch(reloadPortfolio())
     dispatch(
       completeExchangeInfo({
@@ -116,6 +117,7 @@ const ExchangeModal = (props) => {
       await addExchangeCoins({
         variables: {
           exchangeInfo,
+          walletAddress: publicKey.toBase58(),
         },
       })
     } catch (error) {
@@ -203,10 +205,9 @@ const ExchangeModal = (props) => {
     const code_challenge = generators.codeChallenge(code_verifier)
     const url = coinbaseClient.authorizationUrl({
       scope: 'wallet:accounts:read',
-
       code_challenge,
       code_challenge_method: 'S256',
-      state: encrypt('HELLOMOON ' + id),
+      state: encrypt('HELLOMOON ' + publicKey.toBase58()),
     })
     const windowFeatures =
       'height=800,width=900,resizable=yes,scrollbars=yes,status=yes'

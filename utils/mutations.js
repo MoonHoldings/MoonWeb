@@ -113,13 +113,22 @@ export const REFRESH_USER_WALLETS = gql`
 `
 
 export const ADD_EXCHANGE_COINS = gql`
-  mutation Mutation($exchangeInfo: ExchangeInfo) {
-    addExchangeCoins(exchangeInfo: $exchangeInfo)
+  mutation Mutation($walletAddress: String, $exchangeInfo: ExchangeInfo) {
+    addExchangeCoins(walletAddress: $walletAddress, exchangeInfo: $exchangeInfo)
   }
 `
 
 export const CONNECT_PLAID_DETAILS = gql`
   mutation Mutation($publicToken: String!) {
     connectPlaidDetails(public_token: $publicToken)
+  }
+`
+
+export const REMOVE_EXCHANGE_WALLETS = gql`
+  mutation Mutation($exchangeAddress: String!, $walletAddress: String!) {
+    removeExchangeWallet(
+      exchangeAddress: $exchangeAddress
+      walletAddress: $walletAddress
+    )
   }
 `

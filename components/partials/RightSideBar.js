@@ -31,13 +31,18 @@ import { Spin, Tooltip } from 'antd'
 import toShortCurrencyFormat from 'utils/toShortCurrencyFormat'
 import isShortCurrencyFormat from 'utils/isShortCurrencyFormat'
 import { SearchInput } from 'components/forms/SearchInput'
-import { ADD_USER_WALLET, REFRESH_USER_WALLETS } from 'utils/mutations'
+import {
+  ADD_USER_WALLET,
+  REFRESH_USER_WALLETS,
+  REMOVE_EXCHANGE_WALLETS,
+} from 'utils/mutations'
 import { reloadPortfolio } from 'redux/reducers/portfolioSlice'
 import {
   completeExchangeInfo,
   removeWallet,
   addWallet,
   removeAllWallets,
+  getExchangeWallets,
 } from 'redux/reducers/walletSlice'
 import mergeClasses from 'utils/mergeClasses'
 import { displayNotifModal } from 'utils/notificationModal'
@@ -72,6 +77,7 @@ const RightSideBar = () => {
     useMutation(ADD_USER_WALLET)
   const [refreshUserWallets, { loading: refreshingUserWallets }] =
     useMutation(REFRESH_USER_WALLETS)
+  const [removeExchangeWallet] = useMutation(REMOVE_EXCHANGE_WALLETS)
 
   const {
     loading: portfolioLoading,
@@ -123,6 +129,8 @@ const RightSideBar = () => {
       const res = await addUserWallet({
         variables: { verified: true, wallet: publicKey.toBase58() },
       })
+
+      dispatch(getExchangeWallets({ walletAddress: publicKey.toBase58() }))
 
       if (!res?.data?.addUserWallet) {
         displayNotifModal(
@@ -177,6 +185,18 @@ const RightSideBar = () => {
       }
     dispatch(removeWallet(wallet))
     dispatch(deselectAllNfts())
+  }
+  const removeSingleExWallet = async (wallet) => {
+    try {
+      await removeExchangeWallet({
+        variables: {
+          exchangeAddress: wallet,
+          walletAddress: publicKey.toBase58(),
+        },
+      })
+
+      dispatch(getExchangeWallets({ walletAddress: publicKey.toBase58() }))
+    } catch (error) {}
   }
 
   const disconnectWallets = async (isExchange) => {
@@ -904,14 +924,10 @@ const RightSideBar = () => {
                     {shrinkText(`${wallet.address}`)}
                   </div>
                   <div
-                    onClick={
-                      wallet.address === publicKey?.toBase58()
-                        ? disconnectCurrentWallet
-                        : (e) => {
-                            e.stopPropagation()
-                            removeSingleWallet(wallet.address)
-                          }
-                    }
+                    onClick={async (e) => {
+                      e.stopPropagation()
+                      await removeSingleExWallet(wallet.address)
+                    }}
                     className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-[0.8rem] bg-[#191C20]"
                   >
                     <Image
@@ -945,7 +961,6 @@ const RightSideBar = () => {
                 alt="NFTs"
               />
               Disconnect Exchanges
-              {removingAllUserWallets && <Spin className="ml-3" />}
             </div>
             <div
               onClick={() => disconnectWallets(true)}
