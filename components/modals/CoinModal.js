@@ -196,6 +196,7 @@ const CoinModal = () => {
     setSelectedCoin(null)
     setSelectedItem(null)
     dispatch(changeCoinModalOpen(false))
+    dispatch(reloadPortfolio(true))
     dispatch(
       populatePortfolioCoins({
         coins: [],

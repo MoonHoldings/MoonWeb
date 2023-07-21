@@ -18,7 +18,7 @@ import { changeCoinModalOpen } from 'redux/reducers/utilSlice'
 
 import assetsManifest from 'cryptocurrency-icons/manifest.json'
 import { PortfolioType } from 'types/enums'
-import withAuth from 'hoc/withAuth'
+
 import { useWallet } from '@solana/wallet-adapter-react'
 import { displayNotifModal } from 'utils/notificationModal'
 
@@ -81,46 +81,44 @@ const Crypto = () => {
   }, [userCoins, loadingUserCoins, isSet, myCoins, dispatch])
 
   useEffect(() => {
-    if (!coinModalOpen || reload) {
+    if (reload) {
+      console.log('HUY')
       dispatch(loadingPortfolio(true))
       setIsSet(false)
+      if (publicKey != null || wallets.length > 0) {
+        var mergedWallets = []
+        var connectedWallet
+        if (publicKey != null) {
+          connectedWallet = publicKey.toBase58()
+          mergedWallets.push(connectedWallet)
+        }
+        if (wallets.length > 0)
+          mergedWallets = [
+            ...mergedWallets,
+            ...wallets
+              .filter((wallet) => wallet.address !== connectedWallet)
+              .map((wallet) => wallet.address),
+          ]
+
+        if (mergedWallets.length > 0) {
+          getUserPort({
+            variables: { wallets: mergedWallets },
+          })
+          dispatch(
+            fetchPortfolioTotalByType({
+              type: PortfolioType.CRYPTO,
+              walletAddresses: mergedWallets,
+            })
+          )
+        }
+      } else {
+        setMyCoins([])
+        dispatch(clearCryptoTotal(0.0))
+      }
       dispatch(reloadPortfolio(false))
       dispatch(loadingPortfolio(false))
-
-      var mergedWallets = []
-      var connectedWallet
-      if (publicKey != null) {
-        connectedWallet = publicKey.toBase58()
-        mergedWallets.push(connectedWallet)
-      }
-      if (wallets.length > 0)
-        mergedWallets = [
-          ...mergedWallets,
-          ...wallets
-            .filter((wallet) => wallet.address !== connectedWallet)
-            .map((wallet) => wallet.address),
-        ]
-
-      if (mergedWallets.length > 0) {
-        getUserPort({
-          variables: { wallets: mergedWallets },
-        })
-        dispatch(
-          fetchPortfolioTotalByType({
-            type: PortfolioType.CRYPTO,
-            walletAddresses: mergedWallets,
-          })
-        )
-      }
     }
-  }, [coinModalOpen, getUserPort, dispatch, reload, publicKey, wallets])
-
-  useEffect(() => {
-    if (publicKey == null) {
-      setMyCoins([])
-      dispatch(clearCryptoTotal(0.0))
-    }
-  }, [publicKey])
+  }, [reload])
 
   const handleCoinClick = async (coin) => {
     if (publicKey != null) {

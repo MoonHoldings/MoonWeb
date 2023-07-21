@@ -132,11 +132,15 @@ const RightSideBar = () => {
 
         disconnectCurrentWallet()
       } else {
-        await dispatch(addWallet(publicKey.toBase58()))
         reloadData()
+        await dispatch(addWallet(publicKey.toBase58()))
       }
     }
   }, [addUserWallet, dispatch, publicKey])
+
+  useEffect(() => {
+    dispatch(reloadPortfolio(true))
+  }, [publicKey, userWallets])
 
   const addWalletAddress = () => {
     dispatch(changeAddWalletModalOpen(true))
@@ -169,10 +173,9 @@ const RightSideBar = () => {
     // await removeUserWallet({ variables: { wallet } }, tokenHeader)
     if (publicKey != null)
       if (wallet == publicKey.toBase58()) {
-        disconnect()
+        await disconnect()
       }
     dispatch(removeWallet(wallet))
-    reloadData()
     dispatch(deselectAllNfts())
   }
 
@@ -187,9 +190,7 @@ const RightSideBar = () => {
   }
 
   const disconnectCurrentWallet = () => {
-    dispatch(deselectAllNfts())
     removeSingleWallet(publicKey.toBase58())
-    disconnect()
   }
 
   const reloadData = () => {
