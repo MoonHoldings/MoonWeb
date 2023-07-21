@@ -396,9 +396,7 @@ const Dashboard = () => {
                     <div
                       className={mergeClasses(
                         'text-[1.8rem]',
-                        getPercentageChangeClassName(
-                          dashboardData?.crypto?.percentChange
-                        )
+                        getPercentageChangeClassName(cryptoPercentChange)
                       )}
                     >
                       {cryptoPercentChange.toPrecision(2)}%
@@ -454,9 +452,7 @@ const Dashboard = () => {
                     <div
                       className={mergeClasses(
                         'text-[1.8rem]',
-                        getPercentageChangeClassName(
-                          dashboardData?.nft?.percentChange
-                        )
+                        getPercentageChangeClassName(nftPercentChange)
                       )}
                     >
                       {nftPercentChange.toPrecision(2)}%
@@ -509,9 +505,7 @@ const Dashboard = () => {
                     <div
                       className={mergeClasses(
                         'text-[1.8rem]',
-                        getPercentageChangeClassName(
-                          dashboardData?.loan?.percentChange
-                        )
+                        getPercentageChangeClassName(loanPercentChange)
                       )}
                     >
                       {loanPercentChange.toPrecision(2)}%
@@ -562,9 +556,7 @@ const Dashboard = () => {
                     <div
                       className={mergeClasses(
                         'text-[1.8rem]',
-                        getPercentageChangeClassName(
-                          dashboardData?.borrow?.percentChange
-                        )
+                        getPercentageChangeClassName(borrowPercentChange)
                       )}
                     >
                       {borrowPercentChange.toPrecision(2)}%
@@ -668,12 +660,10 @@ const Dashboard = () => {
                   <p
                     className={mergeClasses(
                       'text-[#45CB85]',
-                      getPercentageChangeClassName(
-                        dashboardData?.percentChangeTotal
-                      )
+                      getPercentageChangeClassName(totalPercentageChange)
                     )}
                   >
-                    {totalPercentageChange.toPrecision(2)}%
+                    {toCurrencyFormat(totalPercentageChange)}%
                   </p>
                 )}
 
