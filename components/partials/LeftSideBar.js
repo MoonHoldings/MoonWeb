@@ -273,7 +273,7 @@ const LeftSideBar = () => {
             />
           </button>
         </div> */}
-        <div
+        {/* <div
           className={`relative mx-[1.5rem] hover:cursor-pointer  ${
             isMenuOpen ? 'rounded-b-[1rem] bg-black' : ''
           }`}
@@ -299,8 +299,8 @@ const LeftSideBar = () => {
                 height={16}
                 alt=""
               />
-            </button>
-            {isMenuOpen && (
+            </button> */}
+        {/* {isMenuOpen && (
               <div
                 className="absolute bottom-full left-0 w-full overflow-hidden rounded-t-[1rem] bg-black px-4 py-4 opacity-100 transition-opacity duration-300 ease-in"
                 style={{ maxHeight: '15rem' }}
@@ -340,9 +340,9 @@ const LeftSideBar = () => {
                   Logout
                 </button>
               </div>
-            )}
-          </div>
-        </div>
+            )} */}
+        {/* </div> */}
+        {/* </div> */}
       </div>
     </motion.div>
   )

@@ -8,9 +8,6 @@ const initialState = {
   loading: false,
   modalLoading: false,
   username: null,
-  accessToken: '',
-  tokenHeader: {},
-  isLoggedIn: false,
   id: null,
 }
 

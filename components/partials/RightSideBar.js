@@ -154,6 +154,13 @@ const RightSideBar = () => {
   }
 
   const addExchange = async () => {
+    if (publicKey == null) {
+      displayNotifModal(
+        'Warning',
+        'You must connect a wallet first to be able to add an exchange wallet.'
+      )
+      return
+    }
     dispatch(changeExchangeModalOpen(true))
     hideClip()
   }
@@ -391,6 +398,8 @@ const RightSideBar = () => {
   }
 
   const renderRefreshWallet = () => {
+    const disabledCondition =
+      publicKey == null || userWallets.length == 0 || userWallets.length == 0
     return (
       <Tooltip
         color="#1F2126"
@@ -399,9 +408,9 @@ const RightSideBar = () => {
         <button
           type="button"
           onClick={refreshWalletsAndFloorPrice}
-          disabled={refreshingUserWallets}
+          disabled={disabledCondition}
           className={`mb-[1rem] flex h-[5.8rem] w-full items-center justify-center rounded-[1rem] border border-black bg-[#25282C] px-[1.6rem] text-white ${
-            !refreshingUserWallets &&
+            !disabledCondition &&
             'cursor-pointer hover:border-[#62EAD2] hover:text-[#62EAD2]'
           }`}
         >
