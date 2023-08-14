@@ -1,4 +1,4 @@
-describe('Wallet', () => {
+describe('Crypto Portfolio', () => {
   const baseUrl = 'http://localhost:3000'
   const apiGraphQL = 'http://localhost/graphql'
   const email = 'test@email.com'
@@ -73,18 +73,6 @@ describe('Wallet', () => {
         })
       }
 
-      if (
-        req.body.operationName === 'Mutation' &&
-        req.body.query.includes('removeAllUserWallets')
-      ) {
-        req.alias = 'gqlRemoveAllWallets'
-        req.reply({
-          data: {
-            removeAllUserWallets: true,
-          },
-        })
-      }
-
       if (req.body.operationName === 'AddUserWallet') {
         req.alias = 'gqlAddWallet'
         req.reply({
@@ -114,16 +102,71 @@ describe('Wallet', () => {
           },
         })
       }
+
+      if (
+        req.body.operationName === 'Query' &&
+        req.body.query.includes('getUserPortfolioCoins')
+      ) {
+        req.alias = 'gqlGetPortfolioCoins'
+        req.reply({
+          data: {
+            getUserPortfolioCoins: [
+              {
+                holdings: 80210.568,
+                id: '157',
+                name: 'Solana',
+                symbol: 'SOL',
+                verified: false,
+                walletAddress: testWalletAddress,
+                walletName: null,
+                walletId: null,
+                price: '21.28',
+                isConnected: true,
+                __typename: 'Coin',
+              },
+              {
+                holdings: 381,
+                id: '244',
+                name: 'USD Coin',
+                symbol: 'USDC',
+                verified: false,
+                walletAddress: testWalletAddress,
+                walletName: null,
+                walletId: null,
+                price: '1.00',
+                isConnected: true,
+                __typename: 'Coin',
+              },
+            ],
+          },
+        })
+      }
+
+      if (req.body.operationName === 'GetUserPortfolioTotalByType') {
+        req.alias = 'gqlGetPortfolioTotal'
+        req.reply({
+          data: { getUserPortfolioTotalByType: 80591.568 },
+        })
+      }
     })
   })
 
-  it('should add a solana wallet', () => {
+  it('crypto portfolio should display users balances', () => {
     cy.login(email, password)
-    cy.get('button#btn-wallet-mobile').click()
-    cy.get('button').contains('Add Wallet Address').click()
-    cy.get('div.search').type(testWalletAddress)
-    cy.get('button#btn-add-wallet').click()
-    cy.wait('@gqlGetWallet')
-    cy.get('ul.all-wallets').contains('3bpET').should('exist')
+    cy.get('button#btn-hamburger').click()
+    cy.get('button').contains('Crypto').click()
+    cy.location('pathname').should('eq', '/crypto')
+    cy.get('button')
+      .get('div')
+      .get('span')
+      .contains('Solana')
+      .should('be.visible')
+    cy.get('button')
+      .get('div')
+      .get('span')
+      .contains('USD Coin')
+      .should('be.visible')
+    cy.get('button').get('div').get('h1').contains('80k').should('be.visible')
+    cy.get('button').get('div').get('h1').contains('381').should('be.visible')
   })
 })
